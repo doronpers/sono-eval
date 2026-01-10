@@ -134,7 +134,7 @@ function continueToPaths() {
     }
     
     const pathsParam = Array.from(selectedPaths).join(',');
-    location.href = `/assess?candidate_id=${encodeURIComponent(candidateId)}&paths=${pathsParam}`;
+    location.href = `/mobile/assess?candidate_id=${encodeURIComponent(candidateId)}&paths=${pathsParam}`;
 }
 
 async function showPathDetails(event, pathId) {
@@ -148,7 +148,7 @@ async function showPathDetails(event, pathId) {
     modalBody.innerHTML = '<div class="loading">Loading...</div>';
     
     try {
-        const response = await fetch(`/api/mobile/explain/${pathId}`);
+        const response = await fetch(`/mobile/api/explain/${pathId}`);
         const data = await response.json();
         
         if (data.success) {

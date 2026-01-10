@@ -6,7 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <title>{% block title %}{{ title }} - Sono-Eval{% endblock %}</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="{{ request.base_url }}static/style.css">
     {% block extra_css %}{% endblock %}
 </head>
 <body>
@@ -37,7 +37,7 @@
         </footer>
     </div>
 
-    <script src="/static/script.js"></script>
+    <script src="{{ request.base_url }}static/script.js"></script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>

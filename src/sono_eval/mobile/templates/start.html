@@ -106,7 +106,7 @@ document.getElementById('start-form').addEventListener('submit', function(e) {
     sessionStorage.setItem('goals', JSON.stringify(goals));
     
     // Navigate to path selection
-    location.href = `/paths?candidate_id=${encodeURIComponent(candidateId)}`;
+    location.href = `/mobile/paths?candidate_id=${encodeURIComponent(candidateId)}`;
 });
 </script>
 {% endblock %}

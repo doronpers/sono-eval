@@ -8,7 +8,7 @@ services:
       dockerfile: Dockerfile
     container_name: sono-eval-app
     ports:
-      - "8000:8000"
+      - "8001:8000"  # Changed external port to 8001 to avoid conflict
     environment:
       - APP_ENV=production
       - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/sono_eval

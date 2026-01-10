@@ -166,7 +166,7 @@ def create_mobile_app() -> FastAPI:
             },
         )
 
-    @app.post("/api/mobile/assess")
+    @app.post("/api/assess")
     async def mobile_submit_assessment(submission: MobileSubmission):
         """
         Submit mobile assessment for evaluation.
@@ -210,7 +210,7 @@ def create_mobile_app() -> FastAPI:
             logger.error(f"Error processing mobile assessment: {e}")
             return {"success": False, "error": str(e)}
 
-    @app.get("/api/mobile/explain/{path}")
+    @app.get("/api/explain/{path}")
     async def mobile_explain_path(path: str):
         """
         Get detailed explanation for a specific path.
