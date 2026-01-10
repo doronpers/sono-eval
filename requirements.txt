@@ -6,7 +6,7 @@ pydantic-settings==2.1.0
 
 # ML and NLP
 torch==2.1.0
-transformers==4.35.0
+transformers==4.53.0
 peft==0.7.0
 sentencepiece==0.1.99
 accelerate==0.25.0
