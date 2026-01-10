@@ -1,54 +1,31 @@
 # sono-eval
 
-An evaluation framework for audio and voice-based technologies.
+A placeholder repository for future audio and voice technology evaluation tools.
 
-## Overview
+## Repository Status
 
-sono-eval is designed to provide comprehensive evaluation tools and metrics for audio processing, voice authentication, and related audio technologies. This framework aims to facilitate standardized testing and benchmarking of audio-based systems.
+This repository is currently empty and contains no source code or implementation. It serves as a reserved namespace for the sono-eval project, which is part of the Sonotheia suite of audio security and evaluation tools.
 
-## Features
+## About
 
+sono-eval is planned to become an evaluation framework for audio processing, voice authentication, and related audio technologies. The project is currently in the planning phase.
+
+## Future Plans
+
+When development begins, this project aims to provide:
 - Evaluation metrics for audio quality and authenticity
 - Benchmarking tools for audio processing systems
 - Standardized testing frameworks
 - Extensible architecture for custom evaluations
 
-## Installation
-
-```bash
-# Installation instructions will be added as the project develops
-git clone https://github.com/doronpers/sono-eval.git
-cd sono-eval
-```
-
-## Usage
-
-```bash
-# Usage examples will be added as the project develops
-```
-
-## Requirements
-
-- Requirements will be specified as the project develops
-
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+This repository is not yet accepting contributions as no implementation exists. For questions about future development plans, please open an issue.
 
 ## License
 
-This project's license will be specified by the repository owner.
+To be determined.
 
 ## Contact
 
-For questions or feedback, please open an issue on GitHub.
-
-## Acknowledgments
-
-Part of the Sonotheia suite of audio security and evaluation tools.
+For inquiries, please open an issue on this repository.
