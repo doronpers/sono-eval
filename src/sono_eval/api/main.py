@@ -9,12 +9,14 @@ from typing import Dict, List, Optional
 
 from fastapi import FastAPI, HTTPException, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from sono_eval.assessment.engine import AssessmentEngine
 from sono_eval.assessment.models import AssessmentInput, AssessmentResult
 from sono_eval.memory.memu import MemUStorage
 from sono_eval.tagging.generator import TagGenerator
+from sono_eval.mobile.app import create_mobile_app
 from sono_eval.utils.config import get_config
 from sono_eval.utils.logger import get_logger
 
@@ -62,6 +64,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Mount mobile companion app
+mobile_app = create_mobile_app()
+app.mount("/mobile", mobile_app)
 
 
 # Request/Response Models

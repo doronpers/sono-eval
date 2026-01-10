@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="paths-screen">
+    <div class="section-header">
+        <span class="section-icon">🎯</span>
+        <h2>Choose Your Focus Areas</h2>
+        <p class="section-subtitle">
+            Select 1-4 areas you'd like to be assessed on. You can always come back for more!
+        </p>
+    </div>
+
+    <div class="info-box info-box-tip">
+        <p class="info-box-icon">💡</p>
+        <div class="info-box-content">
+            <strong>Tip:</strong> Tap each card to learn more before selecting. You can choose multiple paths.
+        </div>
+    </div>
+
+    <form id="paths-form" class="paths-container">
+        {% for path in paths %}
+        <div class="path-card" data-path="{{ path.id }}">
+            <label class="path-card-label">
+                <input type="checkbox" name="paths" value="{{ path.id }}" class="path-checkbox">
+                <div class="path-card-content">
+                    <div class="path-header">
+                        <span class="path-icon">{{ path.icon }}</span>
+                        <div class="path-title-group">
+                            <h3 class="path-title">{{ path.name }}</h3>
+                            <span class="path-time">{{ path.time }}</span>
+                        </div>
+                    </div>
+                    <p class="path-description">{{ path.description }}</p>
+                    <button type="button" class="learn-more-button" onclick="showPathDetails(event, '{{ path.id }}')">
+                        Learn more
+                    </button>
+                </div>
+                <div class="path-checkmark">✓</div>
+            </label>
+        </div>
+        {% endfor %}
+    </form>
+
+    <div class="selection-summary" id="selection-summary" style="display: none;">
+        <div class="summary-content">
+            <p class="summary-text">
+                <span id="selected-count">0</span> area(s) selected
+                <span class="summary-time">Estimated time: <span id="estimated-time">0</span> min</span>
+            </p>
+        </div>
+    </div>
+
+    <div class="action-buttons">
+        <button type="button" class="secondary-button" onclick="history.back()">
+            ← Back
+        </button>
+        <button type="button" id="continue-button" class="primary-button" disabled onclick="continueToPaths()">
+            Start Assessment
+            <span class="button-arrow">→</span>
+        </button>
+    </div>
+</div>
+
+<!-- Path Details Modal -->
+<div id="path-modal" class="modal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+        <div id="modal-body" class="modal-body">
+            <div class="loading">Loading...</div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const candidateId = '{{ candidate_id }}';
+const pathTimes = {
+    'technical': 17.5,
+    'design': 12.5,
+    'collaboration': 12.5,
+    'problem_solving': 17.5
+};
+
+// Track selected paths
+let selectedPaths = new Set();
+
+// Setup checkboxes
+document.querySelectorAll('.path-checkbox').forEach(checkbox => {
+    checkbox.addEventListener('change', function() {
+        const pathCard = this.closest('.path-card');
+        const pathId = pathCard.dataset.path;
+        
+        if (this.checked) {
+            selectedPaths.add(pathId);
+            pathCard.classList.add('selected');
+        } else {
+            selectedPaths.delete(pathId);
+            pathCard.classList.remove('selected');
+        }
+        
+        updateSelectionSummary();
+    });
+});
+
+function updateSelectionSummary() {
+    const count = selectedPaths.size;
+    const summary = document.getElementById('selection-summary');
+    const continueButton = document.getElementById('continue-button');
+    const countSpan = document.getElementById('selected-count');
+    const timeSpan = document.getElementById('estimated-time');
+    
+    if (count > 0) {
+        summary.style.display = 'block';
+        continueButton.disabled = false;
+        countSpan.textContent = count;
+        
+        // Calculate total time
+        let totalTime = 0;
+        selectedPaths.forEach(pathId => {
+            totalTime += pathTimes[pathId] || 15;
+        });
+        timeSpan.textContent = Math.round(totalTime);
+    } else {
+        summary.style.display = 'none';
+        continueButton.disabled = true;
+    }
+}
+
+function continueToPaths() {
+    if (selectedPaths.size === 0) {
+        alert('Please select at least one focus area');
+        return;
+    }
+    
+    const pathsParam = Array.from(selectedPaths).join(',');
+    location.href = `/assess?candidate_id=${encodeURIComponent(candidateId)}&paths=${pathsParam}`;
+}
+
+async function showPathDetails(event, pathId) {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    const modal = document.getElementById('path-modal');
+    const modalBody = document.getElementById('modal-body');
+    
+    modal.style.display = 'flex';
+    modalBody.innerHTML = '<div class="loading">Loading...</div>';
+    
+    try {
+        const response = await fetch(`/api/mobile/explain/${pathId}`);
+        const data = await response.json();
+        
+        if (data.success) {
+            const exp = data.explanation;
+            modalBody.innerHTML = `
+                <h3>${exp.title}</h3>
+                <p class="modal-overview">${exp.overview}</p>
+                
+                <h4>What We Look For:</h4>
+                <ul class="modal-list">
+                    ${exp.what_we_look_for.map(item => `<li>${item}</li>`).join('')}
+                </ul>
+                
+                <h4>Tips for Success:</h4>
+                <ul class="modal-list tips-list">
+                    ${exp.tips.map(tip => `<li>💡 ${tip}</li>`).join('')}
+                </ul>
+                
+                <button class="primary-button" onclick="closeModal()">Got it!</button>
+            `;
+        } else {
+            modalBody.innerHTML = '<p>Error loading details. Please try again.</p>';
+        }
+    } catch (error) {
+        modalBody.innerHTML = '<p>Error loading details. Please try again.</p>';
+    }
+}
+
+function closeModal() {
+    document.getElementById('path-modal').style.display = 'none';
+}
+
+// Close modal when clicking outside
+document.getElementById('path-modal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeModal();
+    }
+});
+</script>
+{% endblock %}

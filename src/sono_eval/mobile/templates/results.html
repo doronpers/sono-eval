@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="results-screen">
+    <div class="hero-section results-hero">
+        <div class="hero-icon">🎉</div>
+        <h2 class="hero-title">Assessment Complete!</h2>
+        <p class="hero-subtitle">Here's your detailed feedback</p>
+    </div>
+
+    <div class="results-container" id="results-container">
+        <div class="loading-results">
+            <div class="spinner"></div>
+            <p>Analyzing your assessment...</p>
+        </div>
+    </div>
+
+    <div class="action-buttons" id="action-buttons" style="display: none;">
+        <button class="secondary-button" onclick="location.href='/'">
+            Take Another Assessment
+        </button>
+        <button class="primary-button" onclick="shareResults()">
+            Share Results
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const assessmentId = '{{ assessment_id }}';
+
+async function loadResults() {
+    try {
+        // In a real implementation, this would fetch from the API
+        // For now, we'll show a demo result
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        displayResults();
+    } catch (error) {
+        document.getElementById('results-container').innerHTML = `
+            <div class="error-message">
+                <p>Error loading results. Please try again.</p>
+                <button class="primary-button" onclick="loadResults()">Retry</button>
+            </div>
+        `;
+    }
+}
+
+function displayResults() {
+    const resultsContainer = document.getElementById('results-container');
+    const actionButtons = document.getElementById('action-buttons');
+    
+    // Sample results - in production, this would come from API
+    const results = {
+        overall_score: 78,
+        confidence: 0.85,
+        path_scores: [
+            {
+                path: 'Technical',
+                score: 82,
+                strengths: [
+                    'Clean code structure',
+                    'Good error handling',
+                    'Appropriate use of design patterns'
+                ],
+                improvements: [
+                    'Consider adding more inline comments',
+                    'Edge case handling could be more robust'
+                ]
+            }
+        ],
+        summary: "You've demonstrated strong technical skills with clean, well-structured code. Your approach shows good understanding of core concepts and best practices.",
+        recommendations: [
+            'Focus on documenting complex logic',
+            'Practice with more edge cases',
+            'Explore advanced design patterns'
+        ]
+    };
+    
+    resultsContainer.innerHTML = `
+        <div class="overall-score-card">
+            <div class="score-circle">
+                <svg width="120" height="120">
+                    <circle cx="60" cy="60" r="54" fill="none" stroke="#e0e0e0" stroke-width="8"/>
+                    <circle cx="60" cy="60" r="54" fill="none" stroke="#4CAF50" stroke-width="8"
+                            stroke-dasharray="${339.3 * results.overall_score / 100} 339.3"
+                            transform="rotate(-90 60 60)"/>
+                </svg>
+                <div class="score-text">
+                    <span class="score-number">${results.overall_score}</span>
+                    <span class="score-label">Overall</span>
+                </div>
+            </div>
+            <p class="confidence-text">
+                Confidence: ${Math.round(results.confidence * 100)}%
+            </p>
+        </div>
+
+        <div class="info-box info-box-success">
+            <p class="info-box-icon">✨</p>
+            <div class="info-box-content">
+                <strong>Summary:</strong> ${results.summary}
+            </div>
+        </div>
+
+        ${results.path_scores.map(pathScore => `
+            <div class="path-result-card">
+                <div class="path-result-header">
+                    <h3>${pathScore.path}</h3>
+                    <span class="path-score-badge">${pathScore.score}/100</span>
+                </div>
+
+                <div class="strengths-section">
+                    <h4>
+                        <span class="section-icon">💪</span>
+                        Your Strengths
+                    </h4>
+                    <ul class="result-list">
+                        ${pathScore.strengths.map(strength => `
+                            <li class="strength-item">
+                                <span class="item-icon">✓</span>
+                                ${strength}
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+
+                <div class="improvements-section">
+                    <h4>
+                        <span class="section-icon">📈</span>
+                        Areas for Growth
+                    </h4>
+                    <ul class="result-list">
+                        ${pathScore.improvements.map(improvement => `
+                            <li class="improvement-item">
+                                <span class="item-icon">→</span>
+                                ${improvement}
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+            </div>
+        `).join('')}
+
+        <div class="recommendations-card">
+            <h3>
+                <span class="section-icon">💡</span>
+                Recommended Next Steps
+            </h3>
+            <ol class="recommendations-list">
+                ${results.recommendations.map(rec => `
+                    <li class="recommendation-item">${rec}</li>
+                `).join('')}
+            </ol>
+        </div>
+
+        <div class="info-box">
+            <p class="info-box-icon">📊</p>
+            <div class="info-box-content">
+                <strong>Want more insights?</strong> Take another assessment focusing on different areas to get a complete picture of your skills.
+            </div>
+        </div>
+    `;
+    
+    actionButtons.style.display = 'flex';
+}
+
+function shareResults() {
+    if (navigator.share) {
+        navigator.share({
+            title: 'My Sono-Eval Assessment Results',
+            text: 'I just completed a skills assessment on Sono-Eval!',
+            url: window.location.href
+        }).catch(err => console.log('Error sharing:', err));
+    } else {
+        // Fallback: copy link
+        navigator.clipboard.writeText(window.location.href)
+            .then(() => alert('Link copied to clipboard!'))
+            .catch(() => alert('Unable to share. Copy this URL: ' + window.location.href));
+    }
+}
+
+// Load results on page load
+loadResults();
+</script>
+{% endblock %}
