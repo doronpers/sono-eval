@@ -42,6 +42,7 @@
 ### User Guides
 - **[CLI Reference](Guides/user-guide/cli-reference.md)** - Complete command-line interface documentation
 - **[API Reference](Guides/user-guide/api-reference.md)** - REST API endpoints and usage
+- **[Assessment Path Guide](Guides/assessment-path-guide.md)** - Complete guide to all assessment paths
 
 ### Help & Support
 - **[FAQ](Guides/faq.md)** - Frequently asked questions
@@ -52,7 +53,7 @@
 - **[Learning Resources](Guides/resources/learning.md)** - Tutorials and educational content
 - **[Examples](Guides/resources/examples/README.md)** - Practical code examples
 
-**Total Guide Files**: 9 files
+**Total Guide Files**: 10 files
 
 ---
 

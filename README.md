@@ -98,6 +98,7 @@ curl -X POST http://localhost:8000/api/v1/assessments \
 - **[Glossary](Documentation/Core/concepts/glossary.md)** - Comprehensive terminology
 
 ### Help & Resources
+- **[Assessment Path Guide](Documentation/Guides/assessment-path-guide.md)** - Complete guide to all assessment paths
 - **[FAQ](Documentation/Guides/faq.md)** - Frequently asked questions
 - **[Troubleshooting](Documentation/Guides/troubleshooting.md)** - Solutions to common issues
 - **[Learning Resources](Documentation/Guides/resources/learning.md)** - Tutorials and guides

@@ -26,6 +26,7 @@ This documentation is organized following our [Documentation Organization Standa
 - **[Contributing](../CONTRIBUTING.md)** - How to contribute to Sono-Eval
 
 ### 📚 Resources & Help
+- **[Assessment Path Guide](Guides/assessment-path-guide.md)** - Complete guide to all assessment paths
 - **[Candidate Guide](Guides/resources/candidate-guide.md)** - Welcome guide for candidates
 - **[Learning Resources](Guides/resources/learning.md)** - Tutorials and educational content
 - **[Examples](Guides/resources/examples/)** - Practical code examples

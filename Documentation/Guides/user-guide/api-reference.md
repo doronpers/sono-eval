@@ -54,21 +54,120 @@ All responses follow this structure:
 
 ### Health & Status
 
-#### `GET /api/v1/health`
-Check API health status.
+#### `GET /health`
+Basic health check endpoint. Returns component status without sensitive details.
+Suitable for load balancers and monitoring tools.
 
 **Response:**
 ```json
 {
   "status": "healthy",
   "version": "0.1.0",
-  "timestamp": "2026-01-10T12:00:00Z"
+  "timestamp": "2026-01-10T12:00:00Z",
+  "components": {
+    "assessment": "operational",
+    "memory": "operational",
+    "tagging": "operational",
+    "database": "operational",
+    "redis": "operational",
+    "filesystem": "operational"
+  },
+  "details": null
 }
 ```
+
+**Status Codes:**
+- `200 OK`: System is healthy
+- `503 Service Unavailable`: One or more components are unhealthy
+
+**Example:**
+```bash
+curl http://localhost:8000/health
+```
+
+#### `GET /api/v1/health`
+Detailed health check endpoint. Returns component status with detailed information.
+Suitable for monitoring and debugging. Sensitive paths are sanitized.
+
+**Response:**
+```json
+{
+  "status": "healthy",
+  "version": "0.1.0",
+  "timestamp": "2026-01-10T12:00:00Z",
+  "components": {
+    "assessment": "operational",
+    "memory": "operational",
+    "tagging": "operational",
+    "database": "operational",
+    "redis": "operational",
+    "filesystem": "operational"
+  },
+  "details": {
+    "assessment": {
+      "version": "1.0",
+      "initialized": true
+    },
+    "memory": {
+      "candidates_count": 5,
+      "accessible": true
+    },
+    "tagging": {
+      "model_name": "t5-base",
+      "initialized": true
+    },
+    "database": {
+      "type": "sqlite",
+      "exists": true
+    },
+    "redis": {
+      "connected": true
+    },
+    "filesystem": {
+      "storage": {"writable": true},
+      "cache": {"writable": true},
+      "tagstudio": {"writable": true}
+    }
+  }
+}
+```
+
+**Status Codes:**
+- `200 OK`: System is healthy
+- `503 Service Unavailable`: One or more components are unhealthy
+
+**Component Status Values:**
+- `operational`: Component is working correctly
+- `degraded`: Component has issues but may still function
+- `unavailable`: Component is not available (may be optional)
+- `unhealthy`: Component has critical issues
+
+**Note**: Health checks are cached for 5 seconds to avoid expensive operations on every request.
 
 **Example:**
 ```bash
 curl http://localhost:8000/api/v1/health
+```
+
+#### `GET /`
+Root endpoint with API information. Returns health status with details.
+
+**Response:** Same format as `/api/v1/health`
+
+#### `GET /status`
+Detailed status information about the API configuration.
+
+**Response:**
+```json
+{
+  "api_version": "0.1.0",
+  "assessment_engine_version": "1.0",
+  "config": {
+    "multi_path_tracking": true,
+    "explanations_enabled": true,
+    "dark_horse_mode": "enabled"
+  }
+}
 ```
 
 ---

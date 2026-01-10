@@ -5,9 +5,12 @@ Provides REST API for assessments, candidate management, and tagging.
 """
 
 from contextlib import asynccontextmanager
-from typing import Dict, List, Optional
+from datetime import datetime
+from pathlib import Path
+from time import time
+from typing import Any, Dict, List, Optional
 
-from fastapi import FastAPI, HTTPException, UploadFile, File
+from fastapi import FastAPI, HTTPException, Response, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -56,12 +59,15 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# CORS middleware
+# CORS middleware - configure via ALLOWED_HOSTS environment variable for production
+# In production, set ALLOWED_HOSTS to specific origins (comma-separated)
+# Default allows all origins for development
+cors_origins = [origin.strip() for origin in config.allowed_hosts.split(",")] if config.allowed_hosts else ["*"]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=cors_origins,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 
@@ -76,7 +82,9 @@ class HealthResponse(BaseModel):
 
     status: str
     version: str
+    timestamp: str
     components: Dict[str, str]
+    details: Optional[Dict[str, Any]] = None
 
 
 class CandidateCreateRequest(BaseModel):
@@ -93,32 +101,324 @@ class TagRequest(BaseModel):
     max_tags: int = 5
 
 
+# Health check caching (5 second cache to avoid expensive operations on every call)
+_health_check_cache: Dict[str, Any] = {}
+_health_check_cache_time: float = 0
+_HEALTH_CHECK_CACHE_TTL: float = 5.0  # 5 seconds
+
+
+async def check_component_health(include_details: bool = True) -> Dict[str, Any]:
+    """
+    Check the health of all system components.
+    
+    Args:
+        include_details: Whether to include detailed information (may expose paths)
+    
+    Returns:
+        Dictionary with component statuses and details
+    """
+    global _health_check_cache, _health_check_cache_time
+    
+    # Check cache first
+    current_time = time()
+    if (
+        _health_check_cache
+        and (current_time - _health_check_cache_time) < _HEALTH_CHECK_CACHE_TTL
+    ):
+        cached_result = _health_check_cache.copy()
+        # If cached result has details but we don't want them, remove them
+        if not include_details and "details" in cached_result:
+            cached_result["details"] = None
+        return cached_result
+    
+    components = {}
+    details: Dict[str, Any] = {} if include_details else {}
+    overall_healthy = True
+    
+    # Check Assessment Engine
+    try:
+        if assessment_engine is None:
+            components["assessment"] = "unavailable"
+            if include_details:
+                details["assessment"] = {"error": "Not initialized"}
+            overall_healthy = False
+        else:
+            # Try a simple operation to verify it's working
+            components["assessment"] = "operational"
+            if include_details:
+                details["assessment"] = {
+                    "version": getattr(assessment_engine, "version", "unknown"),
+                    "initialized": True
+                }
+    except Exception as e:
+        components["assessment"] = "degraded"
+        if include_details:
+            details["assessment"] = {"error": "Initialization error"}
+        logger.error(f"Assessment engine health check failed: {e}")
+        overall_healthy = False
+    
+    # Check Memory Storage (MemU)
+    try:
+        if memu_storage is None:
+            components["memory"] = "unavailable"
+            if include_details:
+                details["memory"] = {"error": "Not initialized"}
+            overall_healthy = False
+        else:
+            # Check if storage path is accessible
+            storage_path = config.get_storage_path()
+            if storage_path.exists() and storage_path.is_dir():
+                # Try to list candidates (lightweight operation)
+                try:
+                    candidates = memu_storage.list_candidates()
+                    components["memory"] = "operational"
+                    if include_details:
+                        details["memory"] = {
+                            "candidates_count": len(candidates),
+                            "accessible": True
+                        }
+                except Exception as e:
+                    components["memory"] = "degraded"
+                    if include_details:
+                        details["memory"] = {"error": "Storage access failed"}
+                    logger.error(f"Memory storage health check failed: {e}")
+                    overall_healthy = False
+            else:
+                components["memory"] = "degraded"
+                if include_details:
+                    details["memory"] = {"error": "Storage path not accessible"}
+                overall_healthy = False
+    except Exception as e:
+        components["memory"] = "degraded"
+        if include_details:
+            details["memory"] = {"error": "Storage check failed"}
+        logger.error(f"Memory storage health check error: {e}")
+        overall_healthy = False
+    
+    # Check Tag Generator
+    try:
+        if tag_generator is None:
+            components["tagging"] = "unavailable"
+            if include_details:
+                details["tagging"] = {"error": "Not initialized"}
+            overall_healthy = False
+        else:
+            # Check if model cache directory exists
+            cache_dir = config.get_cache_dir()
+            if cache_dir.exists():
+                components["tagging"] = "operational"
+                if include_details:
+                    details["tagging"] = {
+                        "model_name": config.t5_model_name,
+                        "initialized": True
+                    }
+            else:
+                components["tagging"] = "degraded"
+                if include_details:
+                    details["tagging"] = {
+                        "model_name": config.t5_model_name,
+                        "warning": "Cache directory not found (models may download on first use)"
+                    }
+    except Exception as e:
+        components["tagging"] = "degraded"
+        if include_details:
+            details["tagging"] = {"error": "Tagging check failed"}
+        logger.error(f"Tag generator health check error: {e}")
+        overall_healthy = False
+    
+    # Check Database (if configured)
+    try:
+        database_url = config.database_url
+        if database_url.startswith("sqlite"):
+            # SQLite - check if file path is writable
+            db_path = database_url.replace("sqlite:///", "")
+            if db_path:
+                db_file = Path(db_path)
+                # Check if directory is writable
+                if db_file.parent.exists():
+                    components["database"] = "operational"
+                    if include_details:
+                        details["database"] = {
+                            "type": "sqlite",
+                            "exists": db_file.exists()
+                        }
+                else:
+                    components["database"] = "degraded"
+                    if include_details:
+                        details["database"] = {"error": "Database directory not accessible"}
+                    overall_healthy = False
+            else:
+                components["database"] = "operational"
+                if include_details:
+                    details["database"] = {"type": "sqlite", "in_memory": True}
+        else:
+            # PostgreSQL or other - mark as configured but not tested
+            components["database"] = "operational"
+            if include_details:
+                details["database"] = {
+                    "type": "postgresql",
+                    "configured": True,
+                    "note": "Connection not tested"
+                }
+    except Exception as e:
+        components["database"] = "degraded"
+        if include_details:
+            details["database"] = {"error": "Database check failed"}
+        logger.error(f"Database health check error: {e}")
+        overall_healthy = False
+    
+    # Check Redis (optional)
+    try:
+        # Try to connect to Redis (non-blocking check)
+        try:
+            import redis
+            r = redis.Redis(
+                host=config.redis_host,
+                port=config.redis_port,
+                db=config.redis_db,
+                password=config.redis_password,
+                socket_connect_timeout=1,
+                socket_timeout=1
+            )
+            r.ping()
+            components["redis"] = "operational"
+            if include_details:
+                details["redis"] = {"connected": True}
+        except ImportError:
+            components["redis"] = "unavailable"
+            if include_details:
+                details["redis"] = {"error": "redis package not installed"}
+        except Exception as e:
+            # Redis is optional, so this is not a failure
+            components["redis"] = "unavailable"
+            if include_details:
+                details["redis"] = {
+                    "note": "Redis is optional - system works without it",
+                    "status": "unavailable"
+                }
+            logger.debug(f"Redis health check: {type(e).__name__}")
+    except Exception as e:
+        components["redis"] = "unavailable"
+        if include_details:
+            details["redis"] = {"error": "Redis check failed"}
+        logger.error(f"Redis health check error: {e}")
+    
+    # Check File System
+    try:
+        storage_path = config.get_storage_path()
+        cache_dir = config.get_cache_dir()
+        tagstudio_root = config.get_tagstudio_root()
+        
+        all_paths_ok = True
+        path_details = {}
+        
+        for name, path in [("storage", storage_path), ("cache", cache_dir), ("tagstudio", tagstudio_root)]:
+            if path.exists() and path.is_dir():
+                # Check if writable
+                try:
+                    test_file = path / ".health_check"
+                    test_file.touch()
+                    test_file.unlink()
+                    path_details[name] = {"writable": True}
+                except Exception:
+                    path_details[name] = {"writable": False}
+                    all_paths_ok = False
+            else:
+                path_details[name] = {"exists": False}
+                all_paths_ok = False
+        
+        if all_paths_ok:
+            components["filesystem"] = "operational"
+            if include_details:
+                details["filesystem"] = path_details
+        else:
+            components["filesystem"] = "degraded"
+            if include_details:
+                details["filesystem"] = path_details
+            overall_healthy = False
+    except Exception as e:
+        components["filesystem"] = "degraded"
+        if include_details:
+            details["filesystem"] = {"error": "Filesystem check failed"}
+        logger.error(f"Filesystem health check error: {e}")
+        overall_healthy = False
+    
+    result: Dict[str, Any] = {
+        "components": components,
+        "healthy": overall_healthy
+    }
+    if include_details:
+        result["details"] = details
+    
+    # Cache the result (always cache with details for efficiency)
+    _health_check_cache = {
+        "components": components,
+        "healthy": overall_healthy,
+        "details": details if include_details else {}
+    }
+    _health_check_cache_time = current_time
+    
+    return result
+
+
 # Health and Status Endpoints
 @app.get("/", response_model=HealthResponse)
 async def root():
     """Root endpoint with API information."""
+    health_data = await check_component_health(include_details=True)
     return HealthResponse(
-        status="healthy",
+        status="healthy" if health_data["healthy"] else "degraded",
         version="0.1.0",
-        components={
-            "assessment": "operational",
-            "memory": "operational",
-            "tagging": "operational",
-        },
+        timestamp=datetime.utcnow().isoformat() + "Z",
+        components=health_data["components"],
+        details=health_data.get("details"),
     )
 
 
 @app.get("/health", response_model=HealthResponse)
-async def health_check():
-    """Health check endpoint."""
+async def health_check(response: Response):
+    """
+    Health check endpoint.
+    
+    Returns basic health status without sensitive details.
+    Suitable for load balancers and monitoring tools.
+    """
+    health_data = await check_component_health(include_details=False)
+    
+    # Set appropriate status code
+    if not health_data["healthy"]:
+        response.status_code = 503  # Service Unavailable
+    
     return HealthResponse(
-        status="healthy",
+        status="healthy" if health_data["healthy"] else "unhealthy",
         version="0.1.0",
-        components={
-            "assessment": "operational",
-            "memory": "operational",
-            "tagging": "operational",
-        },
+        timestamp=datetime.utcnow().isoformat() + "Z",
+        components=health_data["components"],
+        details=None,  # No sensitive details in basic health check
+    )
+
+
+@app.get("/api/v1/health", response_model=HealthResponse)
+async def health_check_v1(response: Response):
+    """
+    Health check endpoint (v1 API path).
+    
+    Returns detailed health status of all system components.
+    Includes component details but sanitizes sensitive information.
+    Suitable for monitoring and debugging.
+    """
+    health_data = await check_component_health(include_details=True)
+    
+    # Set appropriate status code
+    if not health_data["healthy"]:
+        response.status_code = 503  # Service Unavailable
+    
+    return HealthResponse(
+        status="healthy" if health_data["healthy"] else "unhealthy",
+        version="0.1.0",
+        timestamp=datetime.utcnow().isoformat() + "Z",
+        components=health_data["components"],
+        details=health_data.get("details"),
     )
 
 
