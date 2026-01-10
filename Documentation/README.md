@@ -2,58 +2,62 @@
 
 Welcome to the Sono-Eval documentation! This guide will help you understand, install, and use the Sono-Eval explainable multi-path developer assessment system.
 
+> 📖 **Complete Index**: See [DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md) for a complete catalog of all documentation.
+
 ## 📚 Documentation Structure
 
-### Getting Started
-- **[Quick Start Guide](quick-start.md)** - Get up and running in 5 minutes
-- **[Installation Guide](user-guide/installation.md)** - Detailed installation instructions
-- **[Configuration Guide](user-guide/configuration.md)** - Configure Sono-Eval for your needs
+This documentation is organized following our [Documentation Organization Standards](Governance/DOCUMENTATION_ORGANIZATION_STANDARDS.md):
 
-### User Guides
-- **[CLI Reference](user-guide/cli-reference.md)** - Complete command-line interface documentation
-- **[API Reference](user-guide/api-reference.md)** - REST API endpoints and usage
-- **[Docker Deployment](user-guide/docker.md)** - Container-based deployment guide
+### 🚀 Getting Started (Guides)
+- **[Quick Start Guide](Guides/quick-start.md)** - Get up and running in 5 minutes
+- **[Installation Guide](Guides/user-guide/installation.md)** - Detailed installation instructions
+- **[Configuration Guide](Guides/user-guide/configuration.md)** - Configure Sono-Eval for your needs
 
-### Core Concepts
-- **[Architecture Overview](concepts/architecture.md)** - System design and components
-- **[Assessment Paths](concepts/assessment-paths.md)** - Understanding multi-path assessment
-- **[Dark Horse Model](concepts/dark-horse.md)** - Micro-motive tracking explained
-- **[Glossary](concepts/glossary.md)** - Comprehensive terminology reference
+### 📖 User Guides
+- **[CLI Reference](Guides/user-guide/cli-reference.md)** - Complete command-line interface documentation
+- **[API Reference](Guides/user-guide/api-reference.md)** - REST API endpoints and usage
 
-### Development
-- **[Development Setup](development/setup.md)** - Set up your development environment
-- **[Testing Guide](development/testing.md)** - Write and run tests
-- **[Implementation Details](development/implementation.md)** - Technical implementation overview
+### 🧠 Core Concepts
+- **[Architecture Overview](Core/concepts/architecture.md)** - System design and components
+- **[Glossary](Core/concepts/glossary.md)** - Comprehensive terminology reference
+
+### 💻 Development
+- **[Implementation Details](Core/development/implementation.md)** - Technical implementation overview
 - **[Contributing](../CONTRIBUTING.md)** - How to contribute to Sono-Eval
 
-### Resources
-- **[Learning Resources](resources/learning.md)** - Tutorials and educational content
-- **[Examples](resources/examples/)** - Practical code examples
-- **[Troubleshooting](troubleshooting.md)** - Common issues and solutions
-- **[FAQ](faq.md)** - Frequently asked questions
+### 📚 Resources & Help
+- **[Candidate Guide](Guides/resources/candidate-guide.md)** - Welcome guide for candidates
+- **[Learning Resources](Guides/resources/learning.md)** - Tutorials and educational content
+- **[Examples](Guides/resources/examples/)** - Practical code examples
+- **[Troubleshooting](Guides/troubleshooting.md)** - Common issues and solutions
+- **[FAQ](Guides/faq.md)** - Frequently asked questions
 
-### Reference
-- **[Design Audit](DESIGN_AUDIT.md)** - Comprehensive design review and improvements
+### 📊 Reports & Reviews
+- **[Design Audit](Reports/DESIGN_AUDIT.md)** - Comprehensive design review and improvements
+- **[Final Report](Reports/FINAL_REPORT.md)** - Summary of design improvements
+
+### 📋 Reference
 - **[Changelog](../CHANGELOG.md)** - Version history and changes
+- **[Documentation Index](DOCUMENTATION_INDEX.md)** - Complete catalog of all docs
 
 ---
 
 ## 🚀 Quick Links
 
 ### For Users
-- New to Sono-Eval? Start with the **[Quick Start Guide](quick-start.md)**
-- Need to configure? Check the **[Configuration Guide](user-guide/configuration.md)**
-- Having issues? See **[Troubleshooting](troubleshooting.md)**
+- New to Sono-Eval? Start with the **[Quick Start Guide](Guides/quick-start.md)**
+- Need to configure? Check the **[Configuration Guide](Guides/user-guide/configuration.md)**
+- Having issues? See **[Troubleshooting](Guides/troubleshooting.md)**
 
 ### For Developers
-- Setting up dev environment? **[Development Setup](development/setup.md)**
 - Want to contribute? **[Contributing Guide](../CONTRIBUTING.md)**
-- Understanding the code? **[Implementation Details](development/implementation.md)**
+- Understanding the code? **[Implementation Details](Core/development/implementation.md)**
+- Setting up? Check **[Installation Guide](Guides/user-guide/installation.md)**
 
 ### For Architects
-- System design? **[Architecture Overview](concepts/architecture.md)**
-- Assessment logic? **[Assessment Paths](concepts/assessment-paths.md)**
-- API integration? **[API Reference](user-guide/api-reference.md)**
+- System design? **[Architecture Overview](Core/concepts/architecture.md)**
+- Terminology? **[Glossary](Core/concepts/glossary.md)**
+- API integration? **[API Reference](Guides/user-guide/api-reference.md)**
 
 ---
 
@@ -125,7 +129,7 @@ curl -X POST http://localhost:8000/api/v1/assessments \
 └─────────────────────────────────────────────────────────────┘
 ```
 
-See **[Architecture Overview](concepts/architecture.md)** for detailed diagrams.
+See **[Architecture Overview](Core/concepts/architecture.md)** for detailed diagrams.
 
 ---
 

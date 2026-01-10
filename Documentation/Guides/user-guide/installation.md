@@ -435,9 +435,9 @@ pytest -v
 
 ### Recommended Next Steps
 
-1. **Read Quick Start**: [docs/quick-start.md](../quick-start.md)
-2. **Configure**: [docs/user-guide/configuration.md](../user-guide/configuration.md)
-3. **Try Examples**: [docs/resources/examples/](../resources/examples/)
+1. **Read Quick Start**: [Quick Start Guide](../quick-start.md)
+2. **Configure**: [Configuration Guide](configuration.md)
+3. **Try Examples**: [Examples](../resources/examples/)
 4. **Explore API**: http://localhost:8000/docs
 
 ### Optional Setup
@@ -547,8 +547,8 @@ cd .. && rm -rf sono-eval
 ## Getting Help
 
 - **Documentation**: [docs/README.md](../README.md)
-- **Troubleshooting**: [docs/troubleshooting.md](../troubleshooting.md)
-- **FAQ**: [docs/faq.md](../faq.md)
+- **Troubleshooting**: [Troubleshooting Guide](../troubleshooting.md)
+- **FAQ**: [FAQ](../faq.md)
 - **Issues**: [GitHub Issues](https://github.com/doronpers/sono-eval/issues)
 
 ---
