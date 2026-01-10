@@ -4,312 +4,177 @@
 
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Version](https://img.shields.io/badge/version-0.1.0-green.svg)](CHANGELOG.md)
 
-Sono-Eval is a comprehensive developer assessment platform featuring:
-- 🧠 **Explainable Scoring** - Evidence-based assessments with detailed explanations
-- 🛤️ **Multi-Path Evaluation** - Technical, design, collaboration, and more
-- 🎯 **Dark Horse Tracking** - Micro-motive analysis based on the tex-assist-coding model
-- 🏷️ **Semantic Tagging** - T5 + PEFT (LoRA) for intelligent code tagging
-- 💾 **Hierarchical Memory** - MemU persistent candidate memory storage
-- 📊 **Analytics Dashboard** - Apache Superset for cohort insights
-- 🚀 **Easy Deployment** - Docker + one-click launcher
+> A growth-oriented assessment platform that explains its reasoning, tracks your progress, and helps you improve.
 
 ---
 
-## Table of Contents
+## 🎯 What is Sono-Eval?
 
-- [Quick Start](#quick-start)
-- [Features](#features)
-- [Architecture](#architecture)
-- [Installation](#installation)
-- [Usage](#usage)
-  - [CLI](#cli)
-  - [API](#api)
-  - [Docker](#docker)
-- [Configuration](#configuration)
-- [Development](#development)
-- [Documentation](#documentation)
-- [Contributing](#contributing)
-- [License](#license)
+Sono-Eval is an assessment system designed to **help you understand and grow your skills**. Unlike traditional tests that just give you a score, Sono-Eval:
+
+- **Explains every score** with concrete evidence from your work
+- **Evaluates multiple dimensions** - not just code, but design thinking, collaboration, and problem-solving
+- **Identifies your strengths** and shows you exactly where to improve
+- **Tracks your growth** over time with detailed history
+- **Provides actionable feedback** you can use immediately
+
+**For Candidates**: Think of it as a helpful coach, not just a grader!  
+**For Teams**: Get deep insights into skills and growth potential, not just pass/fail.
 
 ---
 
-## Quick Start
+## ⚡ Quick Start
 
-### One-Click Launcher
+### 5-Minute Setup (Docker)
 
 ```bash
-# Clone the repository
+# 1. Clone and enter directory
 git clone https://github.com/doronpers/sono-eval.git
 cd sono-eval
 
-# Start all services
+# 2. Start everything
 ./launcher.sh start
 
-# Access the services
-# - API: http://localhost:8000
-# - API Docs: http://localhost:8000/docs
-# - Superset: http://localhost:8088 (admin/admin)
+# 3. Access services
+# API Docs: http://localhost:8000/docs
+# Dashboard: http://localhost:8088 (admin/admin)
 ```
 
-### Local Development
+### Run Your First Assessment
 
 ```bash
-# Setup development environment
-./launcher.sh dev
+# Using the CLI
+sono-eval assess run \
+  --candidate-id your_name \
+  --file your_code.py \
+  --paths technical design
 
-# Activate virtual environment
-source venv/bin/activate
-
-# Run CLI
-sono-eval --help
-
-# Start API server
-sono-eval server start
+# Using the API
+curl -X POST http://localhost:8000/api/v1/assessments \
+  -H "Content-Type: application/json" \
+  -d '{"candidate_id": "your_name", "submission_type": "code", ...}'
 ```
+
+**New to Sono-Eval?** Start with the **[Quick Start Guide](docs/quick-start.md)** →
 
 ---
 
-## Features
+## 🌟 Key Features
 
-### 🧠 Explainable Assessment Engine
+### For Candidates
 
-The core assessment engine provides:
-- **Evidence-Based Scoring**: Every score backed by concrete evidence
-- **Multi-Path Evaluation**: Technical, design, collaboration, problem-solving paths
-- **Confidence Metrics**: Understand the reliability of assessments
-- **Detailed Explanations**: Natural language explanations for all scores
+- **📖 Clear Explanations** - Understand exactly why you received each score
+- **🎯 Multiple Paths** - Evaluated on technical skills, design thinking, collaboration, and more
+- **📈 Track Progress** - See how you improve over time
+- **💡 Actionable Feedback** - Specific recommendations for growth
+- **🏆 Identify Strengths** - Understand what you're naturally good at
 
-Example assessment:
-```python
-from sono_eval.assessment import AssessmentEngine, AssessmentInput, PathType
+### For Evaluators
 
-engine = AssessmentEngine()
-result = await engine.assess(AssessmentInput(
-    candidate_id="candidate_001",
-    submission_type="code",
-    content={"code": "..."},
-    paths_to_evaluate=[PathType.TECHNICAL, PathType.DESIGN]
-))
-
-print(f"Score: {result.overall_score}/100")
-print(f"Summary: {result.summary}")
-```
-
-### 🎯 Dark Horse Micro-Motive Tracking
-
-Based on the tex-assist-coding model, Sono-Eval tracks:
-- **Mastery** - Deep technical skill development
-- **Exploration** - Willingness to try new approaches
-- **Collaboration** - Team-oriented behaviors
-- **Innovation** - Creative problem-solving
-- **Quality** - Attention to detail and craftsmanship
-
-### 🏷️ Semantic Tagging with T5 + PEFT
-
-Automated code tagging using:
-- **T5 Base Model** - Pre-trained transformer for text generation
-- **LoRA Fine-Tuning** - Parameter-efficient adaptation
-- **Semantic Understanding** - Context-aware tag generation
-
-```python
-from sono_eval.tagging import TagGenerator
-
-generator = TagGenerator()
-tags = generator.generate_tags(code_text, max_tags=5)
-
-for tag in tags:
-    print(f"{tag.tag} ({tag.category}): {tag.confidence:.2f}")
-```
-
-### 💾 MemU Hierarchical Memory
-
-Persistent, hierarchical storage for candidate data:
-- **Multi-Level Structure** - Configurable depth (default: 5 levels)
-- **Efficient Caching** - LRU cache for frequently accessed data
-- **Version Control** - Track memory evolution over time
-- **Fast Retrieval** - Optimized for quick access patterns
-
-```python
-from sono_eval.memory import MemUStorage
-
-storage = MemUStorage()
-memory = storage.create_candidate_memory("candidate_001")
-storage.add_memory_node(
-    "candidate_001",
-    memory.root_node.node_id,
-    data={"assessment": "results..."}
-)
-```
-
-### 📊 Analytics with Apache Superset
-
-Pre-configured dashboards for:
-- **Candidate Performance** - Score trends and distributions
-- **Cohort Analytics** - Comparative analysis across groups
-- **Assessment Insights** - Deep dive into evaluation metrics
-- **Micro-Motive Analysis** - Dark Horse model tracking
+- **🔍 Deep Insights** - Go beyond surface-level scores
+- **📊 Analytics** - Visualize candidate performance and cohorts
+- **⚖️ Fair Assessment** - Consistent, evidence-based evaluation
+- **🤝 Better Experience** - Candidates learn even if not hired
+- **🚀 Easy Setup** - Docker deployment in minutes
 
 ---
 
-## Architecture
+## 📚 Documentation
 
-```
-sono-eval/
-├── src/sono_eval/           # Main package
-│   ├── assessment/          # Assessment engine
-│   │   ├── engine.py        # Core assessment logic
-│   │   └── models.py        # Data models
-│   ├── memory/              # MemU storage
-│   │   └── memu.py          # Hierarchical memory
-│   ├── tagging/             # Semantic tagging
-│   │   ├── generator.py     # T5 tag generator
-│   │   └── tagstudio.py     # File management
-│   ├── api/                 # FastAPI backend
-│   │   └── main.py          # REST endpoints
-│   ├── cli/                 # CLI interface
-│   │   └── main.py          # Click commands
-│   └── utils/               # Utilities
-│       ├── config.py        # Configuration
-│       └── logger.py        # Logging
-├── config/                  # Configuration files
-│   └── superset/            # Superset config
-├── docs/                    # Documentation
-├── tests/                   # Test suite
-├── docker-compose.yml       # Docker orchestration
-├── Dockerfile               # Container definition
-├── launcher.sh              # One-click launcher
-└── pyproject.toml           # Package configuration
-```
+### Getting Started
+- **[Quick Start](docs/quick-start.md)** - 5-minute setup guide
+- **[Installation](docs/user-guide/installation.md)** - Detailed installation for all platforms
+- **[For Candidates](docs/resources/candidate-guide.md)** - Welcome guide for candidates 👋
+
+### User Guides
+- **[CLI Reference](docs/user-guide/cli-reference.md)** - Complete command-line guide
+- **[API Reference](docs/user-guide/api-reference.md)** - REST API documentation
+- **[Configuration](docs/user-guide/configuration.md)** - Configure for your needs
+
+### Concepts
+- **[Architecture](docs/concepts/architecture.md)** - System design and components
+- **[Glossary](docs/concepts/glossary.md)** - Comprehensive terminology
+
+### Help & Resources
+- **[FAQ](docs/faq.md)** - Frequently asked questions
+- **[Troubleshooting](docs/troubleshooting.md)** - Solutions to common issues
+- **[Learning Resources](docs/resources/learning.md)** - Tutorials and guides
+
+📖 **[Browse All Documentation](docs/README.md)** →
 
 ---
 
-## Installation
+## 🏗️ Architecture
 
-### Prerequisites
-
-- Python 3.9+
-- Docker & Docker Compose (for containerized deployment)
-- Git
-
-### Option 1: Docker (Recommended)
-
-```bash
-git clone https://github.com/doronpers/sono-eval.git
-cd sono-eval
-./launcher.sh start
+```
+┌─────────────────────────────────────────────────────────────┐
+│                     Sono-Eval System                        │
+├─────────────────────────────────────────────────────────────┤
+│  Interfaces:  CLI  │  REST API  │  Python SDK               │
+├─────────────────────────────────────────────────────────────┤
+│  Core Engine:                                               │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐    │
+│  │  Assessment  │  │   Semantic   │  │    Memory    │    │
+│  │    Engine    │  │    Tagging   │  │   (MemU)     │    │
+│  └──────────────┘  └──────────────┘  └──────────────┘    │
+├─────────────────────────────────────────────────────────────┤
+│  Storage:  PostgreSQL  │  Redis  │  File System            │
+├─────────────────────────────────────────────────────────────┤
+│  Analytics:  Apache Superset Dashboards                    │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-### Option 2: Local Installation
-
-```bash
-# Clone repository
-git clone https://github.com/doronpers/sono-eval.git
-cd sono-eval
-
-# Create virtual environment
-python3 -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install dependencies
-pip install -r requirements.txt
-pip install -e .
-
-# Copy environment configuration
-cp .env.example .env
-# Edit .env with your settings
-
-# Initialize storage directories
-mkdir -p data/memory data/tagstudio models/cache
-```
+See **[Architecture Overview](docs/concepts/architecture.md)** for details.
 
 ---
 
-## Usage
+## 💻 Usage Examples
 
-### CLI
-
-The CLI provides commands for all major operations:
-
-#### Configuration
-
+### Command Line
 ```bash
-# Show current configuration
-sono-eval config show
-```
+# Create a candidate
+sono-eval candidate create --id candidate_001
 
-#### Assessment
-
-```bash
-# Run assessment on a file
+# Run assessment
 sono-eval assess run \
   --candidate-id candidate_001 \
   --file solution.py \
-  --paths technical design \
-  --output results.json
+  --paths technical design collaboration
+
+# Generate code tags
+sono-eval tag generate --file mycode.js --max-tags 5
+
+# Start API server
+sono-eval server start --reload
+```
+
+### Python API
+```python
+from sono_eval.assessment import AssessmentEngine, AssessmentInput, PathType
+
+# Initialize engine
+engine = AssessmentEngine()
+
+# Run assessment
+result = await engine.assess(AssessmentInput(
+    candidate_id="candidate_001",
+    submission_type="code",
+    content={"code": your_code},
+    paths_to_evaluate=[PathType.TECHNICAL, PathType.DESIGN]
+))
 
 # View results
-cat results.json
+print(f"Score: {result.overall_score}/100")
+print(f"Summary: {result.summary}")
+for finding in result.key_findings:
+    print(f"• {finding}")
 ```
 
-#### Candidate Management
-
+### REST API
 ```bash
-# Create candidate
-sono-eval candidate create --id candidate_001
-
-# List candidates
-sono-eval candidate list
-
-# View candidate details
-sono-eval candidate show --id candidate_001
-
-# Delete candidate
-sono-eval candidate delete --id candidate_001
-```
-
-#### Tagging
-
-```bash
-# Generate tags for file
-sono-eval tag generate --file code.py --max-tags 5
-
-# Generate tags from text
-sono-eval tag generate --text "async function..." --max-tags 3
-```
-
-#### Server Management
-
-```bash
-# Start API server
-sono-eval server start
-
-# Start with custom settings
-sono-eval server start --host 0.0.0.0 --port 9000 --reload
-```
-
-### API
-
-The REST API provides programmatic access to all features.
-
-#### Start the Server
-
-```bash
-sono-eval server start
-# or
-uvicorn sono_eval.api.main:app --reload
-```
-
-#### API Documentation
-
-Interactive API docs available at:
-- **Swagger UI**: http://localhost:8000/docs
-- **ReDoc**: http://localhost:8000/redoc
-
-#### Example Requests
-
-**Create Assessment:**
-```bash
+# Create assessment
 curl -X POST http://localhost:8000/api/v1/assessments \
   -H "Content-Type: application/json" \
   -d '{
@@ -320,122 +185,70 @@ curl -X POST http://localhost:8000/api/v1/assessments \
   }'
 ```
 
-**Generate Tags:**
-```bash
-curl -X POST http://localhost:8000/api/v1/tags/generate \
-  -H "Content-Type: application/json" \
-  -d '{
-    "text": "async function fetchData() { ... }",
-    "max_tags": 5
-  }'
-```
+---
 
-**Create Candidate:**
-```bash
-curl -X POST http://localhost:8000/api/v1/candidates \
-  -H "Content-Type: application/json" \
-  -d '{
-    "candidate_id": "candidate_001",
-    "initial_data": {"name": "John Doe"}
-  }'
-```
+## 🚀 Deployment
 
-### Docker
-
-Using Docker Compose for full deployment:
-
+### Docker (Recommended)
 ```bash
 # Start all services
-docker-compose up -d
+./launcher.sh start
+
+# View status
+./launcher.sh status
 
 # View logs
-docker-compose logs -f
+./launcher.sh logs
 
 # Stop services
-docker-compose down
-
-# Rebuild after changes
-docker-compose up -d --build
+./launcher.sh stop
 ```
 
-**Services:**
-- **sono-eval**: Main application (port 8000)
-- **postgres**: Database (port 5432)
-- **redis**: Cache/queue (port 6379)
-- **superset**: Analytics (port 8088)
-
----
-
-## Configuration
-
-Configuration is managed via environment variables. Copy `.env.example` to `.env` and customize:
-
+### Local Development
 ```bash
-# Application
-APP_NAME=sono-eval
-APP_ENV=development
-DEBUG=true
-
-# API Server
-API_HOST=0.0.0.0
-API_PORT=8000
-
-# Database
-DATABASE_URL=sqlite:///./sono_eval.db
-
-# Redis
-REDIS_HOST=localhost
-REDIS_PORT=6379
-
-# Assessment
-ASSESSMENT_ENABLE_EXPLANATIONS=true
-ASSESSMENT_MULTI_PATH_TRACKING=true
-DARK_HORSE_MODE=enabled
-
-# T5 Model
-T5_MODEL_NAME=t5-base
-T5_LORA_RANK=8
-T5_LORA_ALPHA=16
-
-# Storage
-MEMU_STORAGE_PATH=./data/memory
-MEMU_MAX_DEPTH=5
-```
-
-See `.env.example` for all available options.
-
----
-
-## Development
-
-### Setup Development Environment
-
-```bash
-# Use the launcher script
+# Setup environment
 ./launcher.sh dev
 
-# Or manually:
-python3 -m venv venv
+# Activate virtual environment
 source venv/bin/activate
-pip install -r requirements.txt
+
+# Run directly
+sono-eval assess run --candidate-id test --file test.py
+```
+
+See **[Installation Guide](docs/user-guide/installation.md)** for detailed instructions.
+
+---
+
+## 🧪 Development
+
+### Setup
+```bash
+# Clone repository
+git clone https://github.com/doronpers/sono-eval.git
+cd sono-eval
+
+# Setup dev environment
+./launcher.sh dev
+source venv/bin/activate
+
+# Install with dev dependencies
 pip install -e ".[dev]"
 ```
 
-### Running Tests
-
+### Testing
 ```bash
-# Run all tests
+# Run tests
 pytest
 
-# Run with coverage
+# With coverage
 pytest --cov=src/sono_eval --cov-report=html
 
-# Run specific test file
+# Specific test file
 pytest tests/test_assessment.py
 ```
 
 ### Code Quality
-
 ```bash
 # Format code
 black src/ tests/
@@ -443,58 +256,72 @@ black src/ tests/
 # Lint
 flake8 src/ tests/
 
-# Type checking
+# Type check
 mypy src/
 ```
 
-### Project Structure
-
-- `src/sono_eval/` - Main application code
-- `tests/` - Test suite
-- `docs/` - Documentation
-- `config/` - Configuration files
-- `scripts/` - Utility scripts
+See **[Contributing Guide](CONTRIBUTING.md)** for more details.
 
 ---
 
-## Documentation
+## 🤝 Contributing
 
-Additional documentation:
+We welcome contributions! Whether you're:
+- 🐛 Reporting bugs
+- 💡 Suggesting features
+- 📝 Improving documentation
+- 🔧 Submitting code
 
-- **[Glossary](GLOSSARY.md)** - Comprehensive definitions of all terms, tools, and technologies
-- **[Learning Resources](docs/learning-resources.md)** - Tutorials and educational content
-- **[API Reference](docs/api.md)** - Complete API documentation
-- **[Assessment Guide](docs/assessment.md)** - Assessment system details
-- **[Configuration](docs/configuration.md)** - Configuration options
-- **[Development Guide](docs/development.md)** - Contributing guidelines
-- **[Architecture](docs/architecture.md)** - System architecture
+**[Read our Contributing Guide](CONTRIBUTING.md)** to get started.
 
 ---
 
-## Contributing
+## 📄 License
 
-We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+Sono-Eval is licensed under the **[MIT License](LICENSE)**.
 
-### Quick Contributing Guide
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Make your changes
-4. Run tests (`pytest`)
-5. Format code (`black src/`)
-6. Commit changes (`git commit -m 'Add amazing feature'`)
-7. Push to branch (`git push origin feature/amazing-feature`)
-8. Open a Pull Request
+You're free to use, modify, and distribute it. See the LICENSE file for details.
 
 ---
 
-## License
+## 🆘 Getting Help
 
-This project is licensed under the MIT License - see [LICENSE](LICENSE) for details.
+- **📚 Documentation**: [docs/README.md](docs/README.md)
+- **❓ FAQ**: [docs/faq.md](docs/faq.md)
+- **🐛 Issues**: [GitHub Issues](https://github.com/doronpers/sono-eval/issues)
+- **💬 Discussions**: [GitHub Discussions](https://github.com/doronpers/sono-eval/discussions)
+- **📧 Email**: support@sono-eval.example
 
 ---
 
-## Acknowledgments
+## 🗺️ Roadmap
+
+### Current (v0.1.0) ✅
+- Explainable assessment engine
+- Multi-path evaluation
+- CLI and REST API
+- Docker deployment
+- Comprehensive documentation
+
+### Next Release (v0.2.0)
+- [ ] Real ML-based scoring (not placeholder)
+- [ ] Batch assessment processing
+- [ ] Authentication system
+- [ ] Web UI for reviews
+- [ ] Enhanced analytics
+
+### Future
+- [ ] Multi-language support
+- [ ] Plugin system
+- [ ] Real-time collaboration
+- [ ] Integration with GitHub/GitLab
+- [ ] Mobile dashboards
+
+See **[CHANGELOG.md](CHANGELOG.md)** for version history.
+
+---
+
+## 🙏 Acknowledgments
 
 - **Dark Horse Model** - Based on tex-assist-coding research
 - **T5** - Google's Text-to-Text Transfer Transformer
@@ -503,24 +330,19 @@ This project is licensed under the MIT License - see [LICENSE](LICENSE) for deta
 
 ---
 
-## Support
+## 📊 Stats
 
-- 📧 Email: support@sono-eval.local
-- 💬 Issues: [GitHub Issues](https://github.com/doronpers/sono-eval/issues)
-- 📖 Docs: [Documentation](docs/)
-
----
-
-## Roadmap
-
-- [ ] Batch assessment processing
-- [ ] Web-based review interface
-- [ ] Advanced onboarding analytics
-- [ ] Multi-language support
-- [ ] Real-time collaboration features
-- [ ] Enhanced ML model fine-tuning tools
-- [ ] Integration with popular code platforms
+- **Lines of Code**: ~2,500
+- **Documentation Pages**: 15+
+- **Test Coverage**: Core functionality tested
+- **Docker Services**: 4 containers
+- **API Endpoints**: 10+ REST endpoints
+- **CLI Commands**: 15+ commands
 
 ---
 
 **Built with ❤️ by the Sono-Eval Team**
+
+**Version**: 0.1.0 | **Last Updated**: January 10, 2026
+
+[⬆ Back to top](#sono-eval)
