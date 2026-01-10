@@ -35,16 +35,16 @@ async def lifespan(app: FastAPI):
     """Lifecycle manager for the application."""
     # Startup
     global assessment_engine, memu_storage, tag_generator
-    
+
     logger.info("Starting Sono-Eval API server")
     assessment_engine = AssessmentEngine()
     memu_storage = MemUStorage()
     tag_generator = TagGenerator()
-    
+
     logger.info("API server initialized")
-    
+
     yield
-    
+
     # Shutdown
     logger.info("Shutting down Sono-Eval API server")
 
@@ -73,6 +73,7 @@ app.mount("/mobile", mobile_app)
 # Request/Response Models
 class HealthResponse(BaseModel):
     """Health check response."""
+
     status: str
     version: str
     components: Dict[str, str]
@@ -80,12 +81,14 @@ class HealthResponse(BaseModel):
 
 class CandidateCreateRequest(BaseModel):
     """Request to create a candidate."""
+
     candidate_id: str
     initial_data: Optional[Dict] = None
 
 
 class TagRequest(BaseModel):
     """Request to generate tags."""
+
     text: str
     max_tags: int = 5
 
@@ -101,7 +104,7 @@ async def root():
             "assessment": "operational",
             "memory": "operational",
             "tagging": "operational",
-        }
+        },
     )
 
 
@@ -115,7 +118,7 @@ async def health_check():
             "assessment": "operational",
             "memory": "operational",
             "tagging": "operational",
-        }
+        },
     )
 
 
@@ -129,7 +132,7 @@ async def status():
             "multi_path_tracking": config.assessment_multi_path_tracking,
             "explanations_enabled": config.assessment_enable_explanations,
             "dark_horse_mode": config.dark_horse_mode,
-        }
+        },
     }
 
 
@@ -138,19 +141,19 @@ async def status():
 async def create_assessment(assessment_input: AssessmentInput):
     """
     Create a new assessment.
-    
+
     Args:
         assessment_input: Assessment input data
-    
+
     Returns:
         Complete assessment result with scores and explanations
     """
     if not assessment_engine:
         raise HTTPException(status_code=503, detail="Assessment engine not initialized")
-    
+
     try:
         result = await assessment_engine.assess(assessment_input)
-        
+
         # Store result in memory if candidate exists
         if memu_storage:
             memory = memu_storage.get_candidate_memory(assessment_input.candidate_id)
@@ -161,7 +164,7 @@ async def create_assessment(assessment_input: AssessmentInput):
                     data={"assessment_result": result.model_dump(mode="json")},
                     metadata={"type": "assessment"},
                 )
-        
+
         return result
     except Exception as e:
         logger.error(f"Error creating assessment: {e}")
@@ -179,25 +182,22 @@ async def get_assessment(assessment_id: str):
 async def create_candidate(request: CandidateCreateRequest):
     """
     Create a new candidate in memory storage.
-    
+
     Args:
         request: Candidate creation request
-    
+
     Returns:
         Created candidate memory
     """
     if not memu_storage:
         raise HTTPException(status_code=503, detail="Memory storage not initialized")
-    
+
     try:
-        memory = memu_storage.create_candidate_memory(
-            request.candidate_id,
-            request.initial_data
-        )
+        memory = memu_storage.create_candidate_memory(request.candidate_id, request.initial_data)
         return {
             "candidate_id": memory.candidate_id,
             "created": memory.last_updated,
-            "status": "created"
+            "status": "created",
         }
     except Exception as e:
         logger.error(f"Error creating candidate: {e}")
@@ -208,20 +208,20 @@ async def create_candidate(request: CandidateCreateRequest):
 async def get_candidate(candidate_id: str):
     """
     Get candidate memory.
-    
+
     Args:
         candidate_id: Candidate identifier
-    
+
     Returns:
         Candidate memory structure
     """
     if not memu_storage:
         raise HTTPException(status_code=503, detail="Memory storage not initialized")
-    
+
     memory = memu_storage.get_candidate_memory(candidate_id)
     if not memory:
         raise HTTPException(status_code=404, detail="Candidate not found")
-    
+
     return memory.model_dump(mode="json")
 
 
@@ -230,7 +230,7 @@ async def list_candidates():
     """List all candidates."""
     if not memu_storage:
         raise HTTPException(status_code=503, detail="Memory storage not initialized")
-    
+
     candidates = memu_storage.list_candidates()
     return {"candidates": candidates, "count": len(candidates)}
 
@@ -240,11 +240,11 @@ async def delete_candidate(candidate_id: str):
     """Delete a candidate."""
     if not memu_storage:
         raise HTTPException(status_code=503, detail="Memory storage not initialized")
-    
+
     success = memu_storage.delete_candidate_memory(candidate_id)
     if not success:
         raise HTTPException(status_code=404, detail="Candidate not found")
-    
+
     return {"status": "deleted", "candidate_id": candidate_id}
 
 
@@ -253,22 +253,19 @@ async def delete_candidate(candidate_id: str):
 async def generate_tags(request: TagRequest):
     """
     Generate semantic tags for text.
-    
+
     Args:
         request: Tag generation request
-    
+
     Returns:
         List of generated tags
     """
     if not tag_generator:
         raise HTTPException(status_code=503, detail="Tag generator not initialized")
-    
+
     try:
         tags = tag_generator.generate_tags(request.text, max_tags=request.max_tags)
-        return {
-            "tags": [tag.model_dump() for tag in tags],
-            "count": len(tags)
-        }
+        return {"tags": [tag.model_dump() for tag in tags], "count": len(tags)}
     except Exception as e:
         logger.error(f"Error generating tags: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -278,29 +275,24 @@ async def generate_tags(request: TagRequest):
 async def upload_file(file: UploadFile = File(...)):
     """
     Upload a file for assessment.
-    
+
     Args:
         file: Uploaded file
-    
+
     Returns:
         File information and initial tags
     """
     try:
         content = await file.read()
         text_content = content.decode("utf-8")
-        
+
         # Generate tags
         tags = []
         if tag_generator:
             semantic_tags = tag_generator.generate_tags(text_content)
             tags = [tag.model_dump() for tag in semantic_tags]
-        
-        return {
-            "filename": file.filename,
-            "size": len(content),
-            "tags": tags,
-            "status": "uploaded"
-        }
+
+        return {"filename": file.filename, "size": len(content), "tags": tags, "status": "uploaded"}
     except Exception as e:
         logger.error(f"Error uploading file: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -313,7 +305,7 @@ def create_app() -> FastAPI:
 
 if __name__ == "__main__":
     import uvicorn
-    
+
     uvicorn.run(
         "sono_eval.api.main:app",
         host=config.api_host,

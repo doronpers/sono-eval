@@ -346,3 +346,6 @@ See **[CHANGELOG.md](CHANGELOG.md)** for version history.
 **Version**: 0.1.0 | **Last Updated**: January 10, 2026
 
 [⬆ Back to top](#sono-eval)
+
+## Agent Instructions
+This repository follows [Agent Behavioral Standards](documentation/Governance/AGENT_BEHAVIORAL_STANDARDS.md). All AI agents MUST read these before performing any tasks.

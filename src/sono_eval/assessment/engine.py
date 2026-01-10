@@ -27,7 +27,7 @@ logger = get_logger(__name__)
 class AssessmentEngine:
     """
     Core assessment engine with explainable scoring.
-    
+
     Features:
     - Multi-path evaluation (technical, design, collaboration, etc.)
     - Evidence-based scoring with explanations
@@ -54,9 +54,7 @@ class AssessmentEngine:
             Complete assessment result with scores and explanations
         """
         start_time = time.time()
-        logger.info(
-            f"Starting assessment for candidate {assessment_input.candidate_id}"
-        )
+        logger.info(f"Starting assessment for candidate {assessment_input.candidate_id}")
 
         # Generate unique assessment ID
         assessment_id = f"assess_{int(time.time() * 1000)}"
@@ -72,7 +70,7 @@ class AssessmentEngine:
 
         # Calculate overall score
         overall_score = self._calculate_overall_score(path_scores)
-        
+
         # Determine dominant path
         dominant_path = self._determine_dominant_path(path_scores)
 
@@ -105,15 +103,13 @@ class AssessmentEngine:
 
         return result
 
-    async def _evaluate_path(
-        self, path: PathType, input_data: AssessmentInput
-    ) -> PathScore:
+    async def _evaluate_path(self, path: PathType, input_data: AssessmentInput) -> PathScore:
         """Evaluate a specific assessment path."""
         logger.debug(f"Evaluating path: {path}")
 
         # Generate metrics for this path
         metrics = self._generate_metrics_for_path(path, input_data)
-        
+
         # Identify micro-motives
         motives = self._identify_micro_motives(path, input_data)
 
@@ -141,94 +137,100 @@ class AssessmentEngine:
 
         # Example metrics based on path type
         if path == PathType.TECHNICAL:
-            metrics.extend([
-                ScoringMetric(
-                    name="Code Quality",
-                    category="technical",
-                    score=85.0,
-                    weight=0.3,
-                    evidence=[
-                        Evidence(
-                            type=EvidenceType.CODE_QUALITY,
-                            description="Clean, well-structured code with good naming",
-                            source="submission.py:1-50",
-                            weight=0.8,
-                        )
-                    ],
-                    explanation="Code demonstrates strong fundamentals with consistent style",
-                    confidence=0.9,
-                ),
-                ScoringMetric(
-                    name="Problem Solving",
-                    category="technical",
-                    score=78.0,
-                    weight=0.3,
-                    evidence=[
-                        Evidence(
-                            type=EvidenceType.CODE_QUALITY,
-                            description="Efficient algorithm with O(n) complexity",
-                            source="submission.py:25-40",
-                            weight=0.7,
-                        )
-                    ],
-                    explanation="Effective approach to problem solving",
-                    confidence=0.85,
-                ),
-                ScoringMetric(
-                    name="Testing",
-                    category="technical",
-                    score=70.0,
-                    weight=0.2,
-                    evidence=[
-                        Evidence(
-                            type=EvidenceType.TESTING,
-                            description="Basic test coverage present",
-                            source="test_submission.py",
-                            weight=0.6,
-                        )
-                    ],
-                    explanation="Tests cover main scenarios but could be more comprehensive",
-                    confidence=0.8,
-                ),
-            ])
+            metrics.extend(
+                [
+                    ScoringMetric(
+                        name="Code Quality",
+                        category="technical",
+                        score=85.0,
+                        weight=0.3,
+                        evidence=[
+                            Evidence(
+                                type=EvidenceType.CODE_QUALITY,
+                                description="Clean, well-structured code with good naming",
+                                source="submission.py:1-50",
+                                weight=0.8,
+                            )
+                        ],
+                        explanation="Code demonstrates strong fundamentals with consistent style",
+                        confidence=0.9,
+                    ),
+                    ScoringMetric(
+                        name="Problem Solving",
+                        category="technical",
+                        score=78.0,
+                        weight=0.3,
+                        evidence=[
+                            Evidence(
+                                type=EvidenceType.CODE_QUALITY,
+                                description="Efficient algorithm with O(n) complexity",
+                                source="submission.py:25-40",
+                                weight=0.7,
+                            )
+                        ],
+                        explanation="Effective approach to problem solving",
+                        confidence=0.85,
+                    ),
+                    ScoringMetric(
+                        name="Testing",
+                        category="technical",
+                        score=70.0,
+                        weight=0.2,
+                        evidence=[
+                            Evidence(
+                                type=EvidenceType.TESTING,
+                                description="Basic test coverage present",
+                                source="test_submission.py",
+                                weight=0.6,
+                            )
+                        ],
+                        explanation="Tests cover main scenarios but could be more comprehensive",
+                        confidence=0.8,
+                    ),
+                ]
+            )
         elif path == PathType.DESIGN:
-            metrics.extend([
-                ScoringMetric(
-                    name="Architecture",
-                    category="design",
-                    score=80.0,
-                    weight=0.4,
-                    evidence=[
-                        Evidence(
-                            type=EvidenceType.ARCHITECTURE,
-                            description="Modular design with clear separation of concerns",
-                            source="project_structure",
-                            weight=0.8,
-                        )
-                    ],
-                    explanation="Well-organized architecture",
-                    confidence=0.85,
-                ),
-            ])
+            metrics.extend(
+                [
+                    ScoringMetric(
+                        name="Architecture",
+                        category="design",
+                        score=80.0,
+                        weight=0.4,
+                        evidence=[
+                            Evidence(
+                                type=EvidenceType.ARCHITECTURE,
+                                description="Modular design with clear separation of concerns",
+                                source="project_structure",
+                                weight=0.8,
+                            )
+                        ],
+                        explanation="Well-organized architecture",
+                        confidence=0.85,
+                    ),
+                ]
+            )
         elif path == PathType.COLLABORATION:
-            metrics.extend([
-                ScoringMetric(
-                    name="Documentation",
-                    category="collaboration",
-                    score=75.0,
-                    weight=0.3,
-                    evidence=[
-                        Evidence(
-                            type=EvidenceType.DOCUMENTATION,
-                            description="README and inline comments present",
-                            source="README.md",
-                            weight=0.7,
-                        )
-                    ],
-                    explanation="Good documentation practices",
-                    confidence=0.8,
-                ),
-            ])
+            metrics.extend(
+                [
+                    ScoringMetric(
+                        name="Documentation",
+                        category="collaboration",
+                        score=75.0,
+                        weight=0.3,
+                        evidence=[
+                            Evidence(
+                                type=EvidenceType.DOCUMENTATION,
+                                description="README and inline comments present",
+                                source="README.md",
+                                weight=0.7,
+                            )
+                        ],
+                        explanation="Good documentation practices",
+                        confidence=0.8,
+                    ),
+                ]
+            )
 
         return metrics
 
@@ -284,9 +286,7 @@ class AssessmentEngine:
             return 0.0
         return sum(ps.overall_score for ps in path_scores) / len(path_scores)
 
-    def _determine_dominant_path(
-        self, path_scores: List[PathScore]
-    ) -> Optional[PathType]:
+    def _determine_dominant_path(self, path_scores: List[PathScore]) -> Optional[PathType]:
         """Determine the dominant assessment path."""
         if not path_scores:
             return None
@@ -294,11 +294,7 @@ class AssessmentEngine:
 
     def _identify_strengths(self, metrics: List[ScoringMetric]) -> List[str]:
         """Identify strengths from metrics."""
-        return [
-            f"{m.name}: {m.explanation}"
-            for m in metrics
-            if m.score >= 75.0
-        ]
+        return [f"{m.name}: {m.explanation}" for m in metrics if m.score >= 75.0]
 
     def _identify_improvements(self, metrics: List[ScoringMetric]) -> List[str]:
         """Identify areas for improvement."""
@@ -308,25 +304,23 @@ class AssessmentEngine:
             if m.score < 75.0
         ]
 
-    def _generate_summary(
-        self, path_scores: List[PathScore], motives: List[MicroMotive]
-    ) -> str:
+    def _generate_summary(self, path_scores: List[PathScore], motives: List[MicroMotive]) -> str:
         """Generate assessment summary."""
         avg_score = self._calculate_overall_score(path_scores)
         top_path = self._determine_dominant_path(path_scores)
-        
+
         summary = (
             f"Assessment shows an overall score of {avg_score:.1f}/100. "
             f"Strongest performance in {top_path.value if top_path else 'multiple areas'}. "
         )
-        
+
         if motives:
             dominant_motive = max(motives, key=lambda m: m.strength)
             summary += (
                 f"Primary micro-motive is {dominant_motive.motive_type.value} "
                 f"with strength {dominant_motive.strength:.2f}."
             )
-        
+
         return summary
 
     def _extract_key_findings(self, path_scores: List[PathScore]) -> List[str]:
@@ -348,7 +342,5 @@ class AssessmentEngine:
         recommendations = []
         for ps in path_scores:
             if ps.areas_for_improvement:
-                recommendations.append(
-                    f"Focus on {ps.path.value}: {ps.areas_for_improvement[0]}"
-                )
+                recommendations.append(f"Focus on {ps.path.value}: {ps.areas_for_improvement[0]}")
         return recommendations

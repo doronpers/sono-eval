@@ -23,10 +23,7 @@ class Config(BaseSettings):
     api_workers: int = Field(default=4, alias="API_WORKERS")
 
     # Database
-    database_url: str = Field(
-        default="sqlite:///./sono_eval.db",
-        alias="DATABASE_URL"
-    )
+    database_url: str = Field(default="sqlite:///./sono_eval.db", alias="DATABASE_URL")
 
     # Redis
     redis_host: str = Field(default="localhost", alias="REDIS_HOST")
@@ -64,29 +61,22 @@ class Config(BaseSettings):
     superset_host: str = Field(default="localhost", alias="SUPERSET_HOST")
     superset_port: int = Field(default=8088, alias="SUPERSET_PORT")
     superset_secret_key: str = Field(
-        default="change_this_secret_key_in_production",
-        alias="SUPERSET_SECRET_KEY"
+        default="change_this_secret_key_in_production", alias="SUPERSET_SECRET_KEY"
     )
 
     # Security
-    secret_key: str = Field(
-        default="your-secret-key-here-change-in-production",
-        alias="SECRET_KEY"
-    )
+    secret_key: str = Field(default="your-secret-key-here-change-in-production", alias="SECRET_KEY")
     allowed_hosts: str = Field(default="localhost,127.0.0.1", alias="ALLOWED_HOSTS")
 
     # File Upload
     max_upload_size: int = Field(default=10485760, alias="MAX_UPLOAD_SIZE")
     allowed_extensions: str = Field(
-        default="py,js,ts,java,cpp,c,go,rs,rb",
-        alias="ALLOWED_EXTENSIONS"
+        default="py,js,ts,java,cpp,c,go,rs,rb", alias="ALLOWED_EXTENSIONS"
     )
 
     # Batch Processing
     batch_size: int = Field(default=32, alias="BATCH_SIZE")
-    max_concurrent_assessments: int = Field(
-        default=4, alias="MAX_CONCURRENT_ASSESSMENTS"
-    )
+    max_concurrent_assessments: int = Field(default=4, alias="MAX_CONCURRENT_ASSESSMENTS")
 
     class Config:
         env_file = ".env"

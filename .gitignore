@@ -81,3 +81,9 @@ superset_config.py
 tmp/
 temp/
 *.tmp
+*.pyc
+.venv/
+.mypy_cache/
+*.bak.*
+.env.*.local
+coverage/
