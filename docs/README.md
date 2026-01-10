@@ -134,7 +134,7 @@ See **[Architecture Overview](concepts/architecture.md)** for detailed diagrams.
 - **Documentation**: You're reading it! Explore the sections above
 - **Issues**: [GitHub Issues](https://github.com/doronpers/sono-eval/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/doronpers/sono-eval/discussions)
-- **Email**: support@sono-eval.local
+- **Email**: support@sono-eval.example
 
 ---
 

@@ -290,7 +290,7 @@ You're free to use, modify, and distribute it. See the LICENSE file for details.
 - **❓ FAQ**: [docs/faq.md](docs/faq.md)
 - **🐛 Issues**: [GitHub Issues](https://github.com/doronpers/sono-eval/issues)
 - **💬 Discussions**: [GitHub Discussions](https://github.com/doronpers/sono-eval/discussions)
-- **📧 Email**: support@sono-eval.local
+- **📧 Email**: support@sono-eval.example
 
 ---
 

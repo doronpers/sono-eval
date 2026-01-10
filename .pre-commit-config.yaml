@@ -40,12 +40,15 @@ repos:
         args: [--max-line-length=100, --extend-ignore=E203]
         additional_dependencies: [flake8-docstrings]
 
-  # Python type checking (optional, may be slow)
+  # Python type checking
+  # Note: Disabled by default due to slow performance and need for stub packages
+  # Enable locally with: pre-commit run mypy --all-files
   # - repo: https://github.com/pre-commit/mirrors-mypy
   #   rev: v1.7.1
   #   hooks:
   #     - id: mypy
   #       additional_dependencies: [types-all]
+  #       args: [--ignore-missing-imports]
 
   # Markdown linting
   - repo: https://github.com/igorshubovych/markdownlint-cli

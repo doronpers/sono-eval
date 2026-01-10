@@ -358,7 +358,7 @@ Thank you for helping improve Sono-Eval!
 - **Documentation**: You're reading it!
 - **GitHub Issues**: Technical problems
 - **GitHub Discussions**: Questions and ideas
-- **Email**: support@sono-eval.local
+- **Email**: support@sono-eval.example
 
 ---
 
@@ -397,7 +397,7 @@ Can't find your answer? We're here to help!
 - **Documentation**: Browse the [docs](README.md)
 - **Examples**: Check [examples directory](resources/examples/)
 - **Issues**: [GitHub Issues](https://github.com/doronpers/sono-eval/issues)
-- **Email**: support@sono-eval.local
+- **Email**: support@sono-eval.example
 
 ---
 

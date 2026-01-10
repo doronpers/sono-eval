@@ -300,7 +300,7 @@ open -a Docker
 ### Windows
 
 **Using WSL2 (Recommended):**
-1. Install [WSL2](https://docs.microsoft.com/en-us/windows/wsl/install)
+1. Install [WSL2](https://learn.microsoft.com/en-us/windows/wsl/install)
 2. Install Ubuntu from Microsoft Store
 3. Follow Linux instructions inside WSL2
 

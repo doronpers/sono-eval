@@ -644,7 +644,7 @@ sono-eval config show > config.txt
    - Usage tips
    - Feature requests
 
-4. **Email**: support@sono-eval.local
+4. **Email**: support@sono-eval.example
    - Enterprise support
    - Security issues
    - Private concerns
