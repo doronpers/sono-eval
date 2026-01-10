@@ -461,6 +461,8 @@ mypy src/
 
 Additional documentation:
 
+- **[Glossary](GLOSSARY.md)** - Comprehensive definitions of all terms, tools, and technologies
+- **[Learning Resources](docs/learning-resources.md)** - Tutorials and educational content
 - **[API Reference](docs/api.md)** - Complete API documentation
 - **[Assessment Guide](docs/assessment.md)** - Assessment system details
 - **[Configuration](docs/configuration.md)** - Configuration options
