@@ -13,7 +13,7 @@ from typing import Any, Dict, List, Optional
 from fastapi import FastAPI, HTTPException, Response, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 
 from sono_eval.assessment.engine import AssessmentEngine
 from sono_eval.assessment.models import AssessmentInput, AssessmentResult
@@ -40,6 +40,10 @@ async def lifespan(app: FastAPI):
     global assessment_engine, memu_storage, tag_generator
 
     logger.info("Starting Sono-Eval API server")
+    
+    # Security: Validate configuration before starting
+    _validate_security_config()
+    
     assessment_engine = AssessmentEngine()
     memu_storage = MemUStorage()
     tag_generator = TagGenerator()
@@ -52,6 +56,49 @@ async def lifespan(app: FastAPI):
     logger.info("Shutting down Sono-Eval API server")
 
 
+def _validate_security_config():
+    """Validate security-critical configuration at startup."""
+    DEFAULT_SECRETS = [
+        "your-secret-key-here-change-in-production",
+        "change_this_secret_key_in_production",
+    ]
+    
+    # Check for default secret key
+    if config.secret_key in DEFAULT_SECRETS:
+        if config.app_env == "production":
+            raise ValueError(
+                "CRITICAL SECURITY ERROR: SECRET_KEY is set to default value. "
+                "You MUST change this in production. Generate a secure key with: "
+                "python -c 'import secrets; print(secrets.token_urlsafe(32))'"
+            )
+        else:
+            logger.warning(
+                "WARNING: Using default SECRET_KEY. This is only acceptable in development. "
+                "Generate a secure key for production with: "
+                "python -c 'import secrets; print(secrets.token_urlsafe(32))'"
+            )
+    
+    # Check Superset secret key
+    if config.superset_secret_key in DEFAULT_SECRETS:
+        if config.app_env == "production":
+            raise ValueError(
+                "CRITICAL SECURITY ERROR: SUPERSET_SECRET_KEY is set to default value. "
+                "Change this immediately in production."
+            )
+        else:
+            logger.warning("WARNING: Using default SUPERSET_SECRET_KEY (development only)")
+    
+    # Validate allowed hosts in production
+    if config.app_env == "production":
+        if not config.allowed_hosts or config.allowed_hosts == "*":
+            logger.warning(
+                "WARNING: ALLOWED_HOSTS not properly configured for production. "
+                "Set specific domains to prevent CORS attacks."
+            )
+    
+    logger.info("Security configuration validated")
+
+
 app = FastAPI(
     title="Sono-Eval API",
     description="Explainable Multi-Path Developer Assessment System",
@@ -61,8 +108,21 @@ app = FastAPI(
 
 # CORS middleware - configure via ALLOWED_HOSTS environment variable for production
 # In production, set ALLOWED_HOSTS to specific origins (comma-separated)
-# Default allows all origins for development
-cors_origins = [origin.strip() for origin in config.allowed_hosts.split(",")] if config.allowed_hosts else ["*"]
+# Default allows all origins for development ONLY
+# Security: Validate CORS configuration at startup
+if config.app_env == "production":
+    if not config.allowed_hosts or config.allowed_hosts == "*":
+        logger.error("CRITICAL: ALLOWED_HOSTS must be configured in production. Set specific domains.")
+        raise ValueError("ALLOWED_HOSTS must be set to specific origins in production environment")
+    cors_origins = [origin.strip() for origin in config.allowed_hosts.split(",")]
+    logger.info(f"Production CORS configured for origins: {cors_origins}")
+else:
+    # Development: allow all origins but log warning
+    cors_origins = ["*"]
+    if config.allowed_hosts and config.allowed_hosts != "*":
+        cors_origins = [origin.strip() for origin in config.allowed_hosts.split(",")]
+    logger.warning(f"Development mode: CORS origins = {cors_origins}")
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=cors_origins,
@@ -90,15 +150,34 @@ class HealthResponse(BaseModel):
 class CandidateCreateRequest(BaseModel):
     """Request to create a candidate."""
 
-    candidate_id: str
+    candidate_id: str = Field(..., min_length=1, max_length=100)
     initial_data: Optional[Dict] = None
+    
+    @validator('candidate_id')
+    def validate_candidate_id(cls, v):
+        """Validate candidate_id format to prevent injection attacks."""
+        import re
+        # Allow only alphanumeric, dash, underscore
+        if not re.match(r'^[a-zA-Z0-9_-]+$', v):
+            raise ValueError(
+                'candidate_id must contain only alphanumeric characters, dashes, and underscores'
+            )
+        return v
 
 
 class TagRequest(BaseModel):
     """Request to generate tags."""
 
-    text: str
-    max_tags: int = 5
+    text: str = Field(..., min_length=1, max_length=100000)
+    max_tags: int = Field(default=5, ge=1, le=20)
+    
+    @validator('text')
+    def validate_text(cls, v):
+        """Validate text content."""
+        # Basic sanitization - remove null bytes
+        if '\x00' in v:
+            raise ValueError('text contains invalid null bytes')
+        return v
 
 
 # Health check caching (5 second cache to avoid expensive operations on every call)
@@ -581,10 +660,47 @@ async def upload_file(file: UploadFile = File(...)):
 
     Returns:
         File information and initial tags
+        
+    Security:
+        - Validates file extension
+        - Checks file size limit
+        - Sanitizes filename
     """
     try:
+        # Security: Validate file extension
+        allowed_extensions = config.allowed_extensions.split(',')
+        file_ext = file.filename.split('.')[-1].lower() if '.' in file.filename else ''
+        
+        if file_ext not in allowed_extensions:
+            raise HTTPException(
+                status_code=400,
+                detail=f"File type '.{file_ext}' not allowed. Allowed types: {', '.join(allowed_extensions)}"
+            )
+        
+        # Security: Sanitize filename to prevent path traversal
+        import re
+        from pathlib import Path
+        safe_filename = re.sub(r'[^a-zA-Z0-9._-]', '_', file.filename)
+        safe_filename = Path(safe_filename).name  # Remove any path components
+        
+        # Read file content with size limit
         content = await file.read()
-        text_content = content.decode("utf-8")
+        
+        # Security: Check file size
+        if len(content) > config.max_upload_size:
+            raise HTTPException(
+                status_code=413,
+                detail=f"File too large. Maximum size: {config.max_upload_size / 1024 / 1024:.1f}MB"
+            )
+        
+        # Try to decode as text
+        try:
+            text_content = content.decode("utf-8")
+        except UnicodeDecodeError:
+            raise HTTPException(
+                status_code=400,
+                detail="File must be valid UTF-8 text"
+            )
 
         # Generate tags
         tags = []
@@ -592,10 +708,18 @@ async def upload_file(file: UploadFile = File(...)):
             semantic_tags = tag_generator.generate_tags(text_content)
             tags = [tag.model_dump() for tag in semantic_tags]
 
-        return {"filename": file.filename, "size": len(content), "tags": tags, "status": "uploaded"}
+        return {
+            "filename": safe_filename,
+            "original_filename": file.filename,
+            "size": len(content),
+            "tags": tags,
+            "status": "uploaded"
+        }
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Error uploading file: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail="Internal server error during file upload")
 
 
 def create_app() -> FastAPI:

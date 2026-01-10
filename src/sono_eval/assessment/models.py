@@ -4,7 +4,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, validator
 
 
 class MotiveType(str, Enum):
@@ -114,8 +114,39 @@ class AssessmentResult(BaseModel):
 class AssessmentInput(BaseModel):
     """Input for assessment."""
 
-    candidate_id: str
-    submission_type: str  # e.g., "code", "project", "interview"
+    candidate_id: str = Field(..., min_length=1, max_length=100)
+    submission_type: str = Field(..., min_length=1, max_length=50)  # e.g., "code", "project", "interview"
     content: Dict[str, Any]  # Flexible content structure
     paths_to_evaluate: List[PathType] = Field(default_factory=lambda: list(PathType))
     options: Dict[str, Any] = Field(default_factory=dict)
+    
+    @validator('candidate_id')
+    def validate_candidate_id(cls, v):
+        """Validate candidate_id to prevent injection attacks."""
+        import re
+        # Allow only alphanumeric, dash, underscore
+        if not re.match(r'^[a-zA-Z0-9_-]+$', v):
+            raise ValueError(
+                'candidate_id must contain only alphanumeric characters, dashes, and underscores'
+            )
+        return v
+    
+    @validator('submission_type')
+    def validate_submission_type(cls, v):
+        """Validate submission_type."""
+        allowed_types = ['code', 'project', 'interview', 'portfolio', 'test']
+        if v not in allowed_types:
+            raise ValueError(f'submission_type must be one of: {", ".join(allowed_types)}')
+        return v
+    
+    @validator('content')
+    def validate_content(cls, v):
+        """Validate content structure."""
+        if not v:
+            raise ValueError('content cannot be empty')
+        # Check for reasonable size (prevent DoS via large payloads)
+        import json
+        content_str = json.dumps(v)
+        if len(content_str) > 10_000_000:  # 10MB limit
+            raise ValueError('content size exceeds maximum allowed (10MB)')
+        return v
