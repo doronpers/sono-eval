@@ -1,0 +1,294 @@
+{% extends "base.html" %}
+
+{% set progress = 50 %}
+
+{% block content %}
+<div class="assess-screen">
+    <div class="section-header">
+        <span class="section-icon">📝</span>
+        <h2>Your Assessment</h2>
+        <p class="section-subtitle">
+            Complete the tasks below. You can skip and come back to any section.
+        </p>
+    </div>
+
+    <div class="path-navigation">
+        <div class="nav-tabs" id="path-tabs">
+            {% for path in selected_paths %}
+            <button 
+                class="nav-tab {% if loop.first %}active{% endif %}" 
+                data-path="{{ path }}"
+                onclick="switchPath('{{ path }}')"
+            >
+                {{ path|title }}
+            </button>
+            {% endfor %}
+        </div>
+    </div>
+
+    <form id="assessment-form" class="assessment-form">
+        <input type="hidden" name="candidate_id" value="{{ candidate_id }}">
+        
+        {% for path in selected_paths %}
+        <div class="path-section {% if not loop.first %}hidden{% endif %}" data-path="{{ path }}">
+            <div class="section-intro">
+                <h3>{{ path|replace('_', ' ')|title }} Assessment</h3>
+                <p class="intro-text">
+                    This section focuses on your {{ path|replace('_', ' ') }} capabilities. 
+                    Take your time and explain your thinking.
+                </p>
+            </div>
+
+            <!-- Code submission area -->
+            <div class="form-group">
+                <label class="form-label">
+                    <strong>Submit your code or solution</strong>
+                    <span class="help-text">
+                        Paste your code, describe your approach, or share a repository link
+                    </span>
+                </label>
+                <textarea 
+                    name="content_{{ path }}"
+                    class="form-textarea"
+                    rows="10"
+                    placeholder="// Paste your code here or describe your solution...
+// 
+// Example:
+// function calculateSum(numbers) {
+//     return numbers.reduce((sum, num) => sum + num, 0);
+// }"
+                    required
+                ></textarea>
+            </div>
+
+            <!-- Explanation area -->
+            <div class="form-group">
+                <label class="form-label">
+                    <strong>Explain your approach</strong>
+                    <span class="help-text">
+                        What was your thinking? What challenges did you face?
+                    </span>
+                </label>
+                <textarea 
+                    name="explanation_{{ path }}"
+                    class="form-textarea"
+                    rows="5"
+                    placeholder="I chose this approach because...
+
+Key decisions:
+- ...
+- ...
+
+Challenges:
+- ...
+"
+                ></textarea>
+            </div>
+
+            <!-- Path-specific questions -->
+            {% if path == 'technical' %}
+            <div class="expandable-section">
+                <button type="button" class="expand-button" onclick="toggleExpand(this)">
+                    <span>Additional questions (optional)</span>
+                    <span class="expand-icon">▼</span>
+                </button>
+                <div class="expandable-content">
+                    <div class="form-group">
+                        <label class="form-label">How did you handle errors?</label>
+                        <textarea name="errors_{{ path }}" class="form-textarea" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">How would you test this?</label>
+                        <textarea name="testing_{{ path }}" class="form-textarea" rows="3"></textarea>
+                    </div>
+                </div>
+            </div>
+            {% elif path == 'design' %}
+            <div class="expandable-section">
+                <button type="button" class="expand-button" onclick="toggleExpand(this)">
+                    <span>Additional questions (optional)</span>
+                    <span class="expand-icon">▼</span>
+                </button>
+                <div class="expandable-content">
+                    <div class="form-group">
+                        <label class="form-label">What alternative approaches did you consider?</label>
+                        <textarea name="alternatives_{{ path }}" class="form-textarea" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">How would this scale?</label>
+                        <textarea name="scaling_{{ path }}" class="form-textarea" rows="3"></textarea>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+
+        <div class="navigation-buttons">
+            <button type="button" class="secondary-button" id="prev-button" onclick="previousPath()">
+                ← Previous
+            </button>
+            <button type="button" class="secondary-button" id="skip-button" onclick="skipSection()">
+                Skip
+            </button>
+            <button type="button" class="primary-button" id="next-button" onclick="nextPath()">
+                Next →
+            </button>
+            <button type="submit" class="primary-button" id="submit-button" style="display: none;">
+                Submit Assessment
+            </button>
+        </div>
+    </form>
+
+    <div class="progress-indicator">
+        <p>Section <span id="current-section">1</span> of {{ selected_paths|length }}</p>
+    </div>
+</div>
+
+<!-- Loading overlay -->
+<div id="loading-overlay" class="loading-overlay" style="display: none;">
+    <div class="loading-content">
+        <div class="spinner"></div>
+        <p>Processing your assessment...</p>
+        <p class="loading-subtext">This may take a few moments</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const candidateId = '{{ candidate_id }}';
+const selectedPaths = {{ selected_paths|tojson }};
+let currentPathIndex = 0;
+
+function switchPath(pathId) {
+    // Hide all sections
+    document.querySelectorAll('.path-section').forEach(section => {
+        section.classList.add('hidden');
+    });
+    
+    // Show selected section
+    const section = document.querySelector(`.path-section[data-path="${pathId}"]`);
+    if (section) {
+        section.classList.remove('hidden');
+    }
+    
+    // Update active tab
+    document.querySelectorAll('.nav-tab').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    const tab = document.querySelector(`.nav-tab[data-path="${pathId}"]`);
+    if (tab) {
+        tab.classList.add('active');
+    }
+    
+    // Update current index
+    currentPathIndex = selectedPaths.indexOf(pathId);
+    updateNavigation();
+}
+
+function updateNavigation() {
+    const prevButton = document.getElementById('prev-button');
+    const nextButton = document.getElementById('next-button');
+    const submitButton = document.getElementById('submit-button');
+    const currentSection = document.getElementById('current-section');
+    
+    currentSection.textContent = currentPathIndex + 1;
+    
+    prevButton.style.display = currentPathIndex > 0 ? 'block' : 'none';
+    
+    if (currentPathIndex < selectedPaths.length - 1) {
+        nextButton.style.display = 'block';
+        submitButton.style.display = 'none';
+    } else {
+        nextButton.style.display = 'none';
+        submitButton.style.display = 'block';
+    }
+}
+
+function previousPath() {
+    if (currentPathIndex > 0) {
+        switchPath(selectedPaths[currentPathIndex - 1]);
+    }
+}
+
+function nextPath() {
+    if (currentPathIndex < selectedPaths.length - 1) {
+        switchPath(selectedPaths[currentPathIndex + 1]);
+    }
+}
+
+function skipSection() {
+    if (confirm('Skip this section? You can come back to it later.')) {
+        nextPath();
+    }
+}
+
+function toggleExpand(button) {
+    const content = button.nextElementSibling;
+    const icon = button.querySelector('.expand-icon');
+    
+    if (content.style.maxHeight) {
+        content.style.maxHeight = null;
+        icon.textContent = '▼';
+    } else {
+        content.style.maxHeight = content.scrollHeight + 'px';
+        icon.textContent = '▲';
+    }
+}
+
+// Form submission
+document.getElementById('assessment-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const content = {};
+    const personalization = {
+        experience: sessionStorage.getItem('experience') || 'intermediate',
+        goals: JSON.parse(sessionStorage.getItem('goals') || '[]')
+    };
+    
+    // Collect all form data
+    for (let [key, value] of formData.entries()) {
+        if (key.startsWith('content_') || key.startsWith('explanation_') || 
+            key.startsWith('errors_') || key.startsWith('testing_') ||
+            key.startsWith('alternatives_') || key.startsWith('scaling_')) {
+            content[key] = value;
+        }
+    }
+    
+    // Show loading
+    document.getElementById('loading-overlay').style.display = 'flex';
+    
+    try {
+        const response = await fetch('/api/mobile/assess', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                candidate_id: candidateId,
+                paths: selectedPaths,
+                content: content,
+                personalization: personalization
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            location.href = `/results?assessment_id=${result.assessment_id}`;
+        } else {
+            alert('Error processing assessment: ' + result.error);
+            document.getElementById('loading-overlay').style.display = 'none';
+        }
+    } catch (error) {
+        alert('Error submitting assessment. Please try again.');
+        document.getElementById('loading-overlay').style.display = 'none';
+    }
+});
+
+// Initialize
+updateNavigation();
+</script>
+{% endblock %}

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>{% block title %}{{ title }} - Sono-Eval{% endblock %}</title>
+    <link rel="stylesheet" href="/static/style.css">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="mobile-container">
+        <header class="mobile-header">
+            <div class="header-content">
+                <h1 class="logo">Sono-Eval</h1>
+                {% if show_back %}
+                <button class="back-button" onclick="history.back()">← Back</button>
+                {% endif %}
+            </div>
+            {% if progress is defined %}
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: {{ progress }}%"></div>
+            </div>
+            {% endif %}
+        </header>
+
+        <main class="mobile-content">
+            {% block content %}{% endblock %}
+        </main>
+
+        <footer class="mobile-footer">
+            <p class="footer-text">
+                <span class="footer-icon">💡</span>
+                This is a learning tool - take your time!
+            </p>
+        </footer>
+    </div>
+
+    <script src="/static/script.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

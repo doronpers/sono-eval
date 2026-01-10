@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="start-screen">
+    <div class="section-header">
+        <span class="section-icon">👋</span>
+        <h2>Let's Get to Know You</h2>
+    </div>
+
+    <form id="start-form" class="form-container">
+        <div class="form-group">
+            <label for="candidate-id" class="form-label">
+                What should we call you?
+                <span class="help-text">This helps us track your progress over time</span>
+            </label>
+            <input 
+                type="text" 
+                id="candidate-id" 
+                name="candidate_id" 
+                class="form-input"
+                placeholder="e.g., john_doe or john.doe@example.com"
+                required
+            >
+        </div>
+
+        <div class="info-box">
+            <p class="info-box-icon">💡</p>
+            <div class="info-box-content">
+                <strong>Tip:</strong> Use the same identifier each time to track your improvement over multiple assessments.
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">
+                What's your experience level? (optional)
+                <span class="help-text">This helps us provide more relevant feedback</span>
+            </label>
+            <div class="radio-group">
+                <label class="radio-label">
+                    <input type="radio" name="experience" value="beginner">
+                    <span class="radio-text">
+                        <strong>Beginner</strong> - Learning the basics
+                    </span>
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="experience" value="intermediate" checked>
+                    <span class="radio-text">
+                        <strong>Intermediate</strong> - Building projects
+                    </span>
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="experience" value="advanced">
+                    <span class="radio-text">
+                        <strong>Advanced</strong> - Professional experience
+                    </span>
+                </label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">
+                What are you hoping to learn? (optional)
+                <span class="help-text">Check all that apply</span>
+            </label>
+            <div class="checkbox-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" name="goals" value="strengths">
+                    <span class="checkbox-text">Identify my strengths</span>
+                </label>
+                <label class="checkbox-label">
+                    <input type="checkbox" name="goals" value="improve">
+                    <span class="checkbox-text">Find areas to improve</span>
+                </label>
+                <label class="checkbox-label">
+                    <input type="checkbox" name="goals" value="practice">
+                    <span class="checkbox-text">Practice for interviews</span>
+                </label>
+                <label class="checkbox-label">
+                    <input type="checkbox" name="goals" value="benchmark">
+                    <span class="checkbox-text">Benchmark my skills</span>
+                </label>
+            </div>
+        </div>
+
+        <button type="submit" class="primary-button">
+            Continue to Focus Areas
+            <span class="button-arrow">→</span>
+        </button>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('start-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const candidateId = document.getElementById('candidate-id').value;
+    const experience = document.querySelector('input[name="experience"]:checked')?.value || 'intermediate';
+    const goals = Array.from(document.querySelectorAll('input[name="goals"]:checked'))
+        .map(cb => cb.value);
+    
+    // Store in session storage for later use
+    sessionStorage.setItem('candidate_id', candidateId);
+    sessionStorage.setItem('experience', experience);
+    sessionStorage.setItem('goals', JSON.stringify(goals));
+    
+    // Navigate to path selection
+    location.href = `/paths?candidate_id=${encodeURIComponent(candidateId)}`;
+});
+</script>
+{% endblock %}

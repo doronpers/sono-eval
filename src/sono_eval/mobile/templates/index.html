@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="welcome-screen">
+    <div class="hero-section">
+        <div class="hero-icon">🎯</div>
+        <h2 class="hero-title">Welcome to Sono-Eval</h2>
+        <p class="hero-subtitle">Your personalized skill assessment companion</p>
+    </div>
+
+    <div class="info-card">
+        <div class="info-header">
+            <span class="info-icon">✨</span>
+            <h3>What Makes This Different?</h3>
+        </div>
+        <ul class="info-list">
+            <li>
+                <strong>Explanatory:</strong> Understand every score with clear evidence
+            </li>
+            <li>
+                <strong>Interactive:</strong> Engage with the content at your own pace
+            </li>
+            <li>
+                <strong>Personalized:</strong> Choose which areas you want to focus on
+            </li>
+            <li>
+                <strong>Growth-focused:</strong> Get actionable feedback to improve
+            </li>
+        </ul>
+    </div>
+
+    <div class="info-card">
+        <div class="info-header">
+            <span class="info-icon">⏱️</span>
+            <h3>How Long Does It Take?</h3>
+        </div>
+        <p class="info-text">
+            You're in control! Choose 1-4 focus areas, each taking 10-20 minutes.
+            You can complete them all at once or come back later.
+        </p>
+    </div>
+
+    <div class="info-card">
+        <div class="info-header">
+            <span class="info-icon">🔒</span>
+            <h3>Your Privacy Matters</h3>
+        </div>
+        <p class="info-text">
+            Your responses are used only for assessment. We explain our reasoning
+            and you can see exactly why you received each score.
+        </p>
+    </div>
+
+    <div class="cta-section">
+        <button class="primary-button" onclick="location.href='/start'">
+            Let's Get Started
+            <span class="button-arrow">→</span>
+        </button>
+        <p class="cta-subtext">
+            No account needed to try it out
+        </p>
+    </div>
+
+    <div class="expandable-section">
+        <button class="expand-button" onclick="toggleExpand(this)">
+            <span>Learn more about the process</span>
+            <span class="expand-icon">▼</span>
+        </button>
+        <div class="expandable-content">
+            <h4>The Assessment Process</h4>
+            <ol class="process-list">
+                <li>
+                    <strong>Choose Your Focus:</strong> Select 1-4 skill areas to assess
+                </li>
+                <li>
+                    <strong>Complete Tasks:</strong> Interactive exercises tailored to your selections
+                </li>
+                <li>
+                    <strong>Get Detailed Feedback:</strong> See your scores with clear explanations
+                </li>
+                <li>
+                    <strong>Grow Your Skills:</strong> Receive specific recommendations
+                </li>
+            </ol>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function toggleExpand(button) {
+    const content = button.nextElementSibling;
+    const icon = button.querySelector('.expand-icon');
+    
+    if (content.style.maxHeight) {
+        content.style.maxHeight = null;
+        icon.textContent = '▼';
+    } else {
+        content.style.maxHeight = content.scrollHeight + 'px';
+        icon.textContent = '▲';
+    }
+}
+</script>
+{% endblock %}
