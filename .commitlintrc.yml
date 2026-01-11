@@ -1,0 +1,79 @@
+# Commit message linting configuration
+# Based on Conventional Commits: https://www.conventionalcommits.org/
+
+rules:
+  # Subject must not be empty
+  subject-empty:
+    - 2
+    - never
+  
+  # Subject must not be longer than 72 characters
+  subject-max-length:
+    - 2
+    - always
+    - 72
+  
+  # Type must be provided
+  type-empty:
+    - 2
+    - never
+  
+  # Type must be one of the allowed values
+  type-enum:
+    - 2
+    - always
+    - - feat      # New feature
+      - fix       # Bug fix
+      - docs      # Documentation changes
+      - style     # Code style changes (formatting, etc.)
+      - refactor  # Code refactoring
+      - perf      # Performance improvements
+      - test      # Adding or updating tests
+      - build     # Build system or dependencies
+      - ci        # CI/CD changes
+      - chore     # Other changes (maintenance, etc.)
+      - revert    # Revert a previous commit
+      - security  # Security fixes
+      - deps      # Dependency updates
+  
+  # Type must be lowercase
+  type-case:
+    - 2
+    - always
+    - lower-case
+  
+  # Scope must be lowercase
+  scope-case:
+    - 2
+    - always
+    - lower-case
+  
+  # Subject must be lowercase
+  subject-case:
+    - 2
+    - always
+    - lower-case
+  
+  # Subject must not end with a period
+  subject-full-stop:
+    - 2
+    - never
+    - '.'
+  
+  # Body must have blank line after subject
+  body-leading-blank:
+    - 1
+    - always
+  
+  # Footer must have blank line before it
+  footer-leading-blank:
+    - 1
+    - always
+
+# Example valid commit messages:
+# feat: add user authentication
+# fix(api): resolve CORS issue in production
+# docs: update security documentation
+# test: add integration tests for assessment engine
+# security: fix SQL injection vulnerability
+# deps: update fastapi to 0.104.2
