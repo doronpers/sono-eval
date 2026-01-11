@@ -4,16 +4,19 @@ FastAPI backend for Sono-Eval system.
 Provides REST API for assessments, candidate management, and tagging.
 """
 
+import re
+import uuid
 from contextlib import asynccontextmanager
 from datetime import datetime
 from pathlib import Path
 from time import time
 from typing import Any, Dict, List, Optional
 
-from fastapi import FastAPI, HTTPException, Response, UploadFile, File
+from fastapi import FastAPI, HTTPException, Request, Response, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, validator
+from starlette.middleware.base import BaseHTTPMiddleware
 
 from sono_eval.assessment.engine import AssessmentEngine
 from sono_eval.assessment.models import AssessmentInput, AssessmentResult
@@ -31,6 +34,52 @@ assessment_engine: Optional[AssessmentEngine] = None
 memu_storage: Optional[MemUStorage] = None
 tag_generator: Optional[TagGenerator] = None
 config = get_config()
+
+
+class RequestIDMiddleware(BaseHTTPMiddleware):
+    """Middleware to add unique request ID to each request."""
+    
+    async def dispatch(self, request: Request, call_next):
+        """Add request ID and log request details."""
+        # Generate or extract request ID
+        request_id = request.headers.get("X-Request-ID", str(uuid.uuid4()))
+        
+        # Add to request state
+        request.state.request_id = request_id
+        
+        # Log request start
+        start_time = time()
+        logger.info(
+            f"Request started: {request.method} {request.url.path}",
+            extra={"request_id": request_id}
+        )
+        
+        try:
+            # Process request
+            response = await call_next(request)
+            
+            # Calculate duration
+            duration_ms = (time() - start_time) * 1000
+            
+            # Add request ID to response headers
+            response.headers["X-Request-ID"] = request_id
+            
+            # Log request completion
+            logger.info(
+                f"Request completed: {request.method} {request.url.path} - Status: {response.status_code}",
+                extra={"request_id": request_id, "duration_ms": duration_ms}
+            )
+            
+            return response
+        except Exception as e:
+            # Log error with request ID
+            duration_ms = (time() - start_time) * 1000
+            logger.error(
+                f"Request failed: {request.method} {request.url.path} - Error: {str(e)}",
+                extra={"request_id": request_id, "duration_ms": duration_ms},
+                exc_info=True
+            )
+            raise
 
 
 @asynccontextmanager
@@ -106,6 +155,9 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+# Add Request ID middleware (must be first to track all requests)
+app.add_middleware(RequestIDMiddleware)
+
 # CORS middleware - configure via ALLOWED_HOSTS environment variable for production
 # In production, set ALLOWED_HOSTS to specific origins (comma-separated)
 # Default allows all origins for development ONLY
@@ -136,6 +188,10 @@ mobile_app = create_mobile_app()
 app.mount("/mobile", mobile_app)
 
 
+# API Versioning - Define version prefix
+API_V1_PREFIX = "/api/v1"
+
+
 # Request/Response Models
 class HealthResponse(BaseModel):
     """Health check response."""
@@ -156,7 +212,6 @@ class CandidateCreateRequest(BaseModel):
     @validator('candidate_id')
     def validate_candidate_id(cls, v):
         """Validate candidate_id format to prevent injection attacks."""
-        import re
         # Allow only alphanumeric, dash, underscore
         if not re.match(r'^[a-zA-Z0-9_-]+$', v):
             raise ValueError(

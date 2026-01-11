@@ -1,5 +1,7 @@
 """Data models for the assessment system."""
 
+import json
+import re
 from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional
@@ -123,7 +125,6 @@ class AssessmentInput(BaseModel):
     @validator('candidate_id')
     def validate_candidate_id(cls, v):
         """Validate candidate_id to prevent injection attacks."""
-        import re
         # Allow only alphanumeric, dash, underscore
         if not re.match(r'^[a-zA-Z0-9_-]+$', v):
             raise ValueError(
@@ -145,7 +146,6 @@ class AssessmentInput(BaseModel):
         if not v:
             raise ValueError('content cannot be empty')
         # Check for reasonable size (prevent DoS via large payloads)
-        import json
         content_str = json.dumps(v)
         if len(content_str) > 10_000_000:  # 10MB limit
             raise ValueError('content size exceeds maximum allowed (10MB)')
