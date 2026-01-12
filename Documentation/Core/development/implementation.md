@@ -11,6 +11,7 @@ This document summarizes the complete implementation of the Sono-Eval explainabl
 **Location**: `src/sono_eval/assessment/`
 
 **Features**:
+
 - Explainable, evidence-based scoring with `Evidence` objects
 - Multi-path evaluation (Technical, Design, Collaboration, Problem-Solving, Communication)
 - Dark Horse micro-motive tracking (Mastery, Exploration, Collaboration, Innovation, Quality)
@@ -19,10 +20,12 @@ This document summarizes the complete implementation of the Sono-Eval explainabl
 - Flexible assessment input supporting various submission types
 
 **Key Files**:
+
 - `engine.py` - Core assessment logic
 - `models.py` - Data structures (AssessmentResult, ScoringMetric, Evidence, MicroMotive, etc.)
 
 **Usage Example**:
+
 ```python
 from sono_eval.assessment import AssessmentEngine, AssessmentInput, PathType
 
@@ -40,6 +43,7 @@ result = await engine.assess(AssessmentInput(
 **Location**: `src/sono_eval/memory/`
 
 **Features**:
+
 - Hierarchical memory structure with configurable depth (default: 5 levels)
 - JSON-based persistence for durability
 - Efficient LRU caching (configurable size, default: 1000 entries)
@@ -47,15 +51,17 @@ result = await engine.assess(AssessmentInput(
 - Batch candidate management
 
 **Key Files**:
+
 - `memu.py` - Memory storage implementation
 
 **Usage Example**:
+
 ```python
 from sono_eval.memory import MemUStorage
 
 storage = MemUStorage()
 memory = storage.create_candidate_memory("candidate_001", {"name": "John Doe"})
-storage.add_memory_node("candidate_001", memory.root_node.node_id, 
+storage.add_memory_node("candidate_001", memory.root_node.node_id,
                         data={"assessment": "result"})
 ```
 
@@ -64,6 +70,7 @@ storage.add_memory_node("candidate_001", memory.root_node.node_id,
 **Location**: `src/sono_eval/tagging/`
 
 **Features**:
+
 - T5 base model integration with lazy loading
 - PEFT LoRA configuration (rank=8, alpha=16, dropout=0.1)
 - Semantic tag generation with confidence scores
@@ -72,10 +79,12 @@ storage.add_memory_node("candidate_001", memory.root_node.node_id,
 - Fine-tuning infrastructure
 
 **Key Files**:
+
 - `generator.py` - T5-based tag generator
 - `tagstudio.py` - File management and tagging automation
 
 **Usage Example**:
+
 ```python
 from sono_eval.tagging import TagGenerator
 
@@ -88,6 +97,7 @@ tags = generator.generate_tags(code_text, max_tags=5)
 **Location**: `src/sono_eval/tagging/tagstudio.py`
 
 **Features**:
+
 - Automated file organization
 - Tag-based search and retrieval
 - Tag statistics and analytics
@@ -99,6 +109,7 @@ tags = generator.generate_tags(code_text, max_tags=5)
 **Location**: `src/sono_eval/api/`
 
 **Features**:
+
 - Complete REST API with OpenAPI/Swagger documentation
 - Assessment endpoints (POST /api/v1/assessments)
 - Candidate management endpoints (CRUD operations)
@@ -108,18 +119,21 @@ tags = generator.generate_tags(code_text, max_tags=5)
 - Async/await throughout
 
 **Key Files**:
+
 - `main.py` - FastAPI application
 
 **Access**:
-- API Server: http://localhost:8000
-- Interactive Docs: http://localhost:8000/docs
-- ReDoc: http://localhost:8000/redoc
+
+- API Server: <http://localhost:8000>
+- Interactive Docs: <http://localhost:8000/docs>
+- ReDoc: <http://localhost:8000/redoc>
 
 ### ✅ 6. Comprehensive CLI
 
 **Location**: `src/sono_eval/cli/`
 
 **Features**:
+
 - Assessment commands (`assess run`)
 - Candidate management (`candidate create/list/show/delete`)
 - Tag generation (`tag generate`)
@@ -128,9 +142,11 @@ tags = generator.generate_tags(code_text, max_tags=5)
 - Rich terminal UI with tables and colors
 
 **Key Files**:
+
 - `main.py` - Click-based CLI implementation
 
 **Usage**:
+
 ```bash
 sono-eval assess run --candidate-id user001 --file code.py
 sono-eval candidate list
@@ -143,6 +159,7 @@ sono-eval server start
 **Location**: `config/superset/`
 
 **Features**:
+
 - Dashboard configurations for:
   - Candidate Performance Dashboard
   - Cohort Analytics
@@ -153,6 +170,7 @@ sono-eval server start
 - Pre-configured database connections
 
 **Key Files**:
+
 - `superset_config.py` - Superset configuration
 - `README.md` - Setup and usage documentation
 
@@ -161,6 +179,7 @@ sono-eval server start
 **Location**: Root directory
 
 **Features**:
+
 - Multi-container setup with:
   - Sono-Eval application (port 8000)
   - PostgreSQL database (port 5432)
@@ -172,6 +191,7 @@ sono-eval server start
 - Production-ready configuration
 
 **Key Files**:
+
 - `Dockerfile` - Application container
 - `docker-compose.yml` - Multi-service orchestration
 - `.dockerignore` - Build optimization
@@ -181,6 +201,7 @@ sono-eval server start
 **Location**: `launcher.sh`
 
 **Features**:
+
 - Start/stop/restart all services
 - View service status and logs
 - Run CLI commands in containers
@@ -188,6 +209,7 @@ sono-eval server start
 - Automatic .env creation from .env.example
 
 **Usage**:
+
 ```bash
 ./launcher.sh start      # Start all services
 ./launcher.sh status     # Check status
@@ -199,6 +221,7 @@ sono-eval server start
 ### ✅ 10. Comprehensive Documentation
 
 **Files Created**:
+
 - `README.md` - Complete project documentation with:
   - Quick start guide
   - Feature descriptions
@@ -219,6 +242,7 @@ sono-eval server start
 ### ✅ 11. Configuration & Environment
 
 **Files**:
+
 - `.env.example` - Comprehensive environment template with:
   - Application settings
   - API configuration
@@ -241,6 +265,7 @@ sono-eval server start
 **Location**: `tests/`
 
 **Coverage**:
+
 - Assessment engine tests (`test_assessment.py`)
   - Engine initialization
   - Basic and multi-path assessments
@@ -265,6 +290,7 @@ sono-eval server start
   - Path creation
 
 **Run Tests**:
+
 ```bash
 pytest
 pytest --cov=src/sono_eval
@@ -307,12 +333,12 @@ Input → Assessment Engine → Evidence Collection → Scoring → Explanation 
 
 All core components have been tested and verified:
 
-✅ Assessment Engine - Generates scores with explanations  
-✅ MemU Storage - Persists hierarchical candidate data  
-✅ Tag Generator - Produces semantic tags (with fallback)  
-✅ CLI - All commands functional  
-✅ Configuration - Loads from environment  
-✅ Test Suite - 4 test modules with 20+ tests  
+✅ Assessment Engine - Generates scores with explanations
+✅ MemU Storage - Persists hierarchical candidate data
+✅ Tag Generator - Produces semantic tags (with fallback)
+✅ CLI - All commands functional
+✅ Configuration - Loads from environment
+✅ Test Suite - 4 test modules with 20+ tests
 
 ## Getting Started
 
@@ -347,6 +373,7 @@ sono-eval server start
 ## Future Enhancements
 
 The foundation is now in place for:
+
 - Batch assessment processing
 - Web-based review interface
 - Advanced onboarding analytics
@@ -368,6 +395,7 @@ The foundation is now in place for:
 ## Conclusion
 
 The Sono-Eval system is now fully implemented with all required features:
+
 - ✅ Modular assessment engine with explainable scoring
 - ✅ Multi-path micro-motive tracking (Dark Horse model)
 - ✅ MemU hierarchical memory storage

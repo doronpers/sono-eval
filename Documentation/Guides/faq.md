@@ -51,6 +51,7 @@ Micro-motives are your intrinsic motivations based on the "Dark Horse" model:
 - **Quality** - You care about craftsmanship and details
 
 Understanding your micro-motives helps you:
+
 - Play to your natural strengths
 - Find work that energizes you
 - Develop in ways that feel authentic
@@ -58,6 +59,7 @@ Understanding your micro-motives helps you:
 ### Can I see examples of what "good" looks like?
 
 Yes! Check out:
+
 - [Examples Directory](resources/examples/) - Sample submissions with explanations
 - [Learning Resources](resources/learning.md) - Tutorials and best practices
 - Your assessment feedback - It highlights what you did well
@@ -74,6 +76,7 @@ Yes! Check out:
 ### Is this system judging me?
 
 No! Sono-Eval is a **learning tool**, not a judge. Think of it as:
+
 - A mirror that helps you see your skills clearly
 - A coach that provides specific guidance
 - A tracker that shows your progress
@@ -94,6 +97,7 @@ The system isn't perfect, and human judgment always has a place.
 ### Can I retry or resubmit?
 
 Absolutely! We encourage it. Each submission is a learning opportunity:
+
 - Your history is saved (you can track progress)
 - There's no penalty for multiple attempts
 - Each attempt gets fresh, detailed feedback
@@ -113,12 +117,14 @@ Absolutely! We encourage it. Each submission is a learning opportunity:
 ### Why use Sono-Eval for candidate assessment?
 
 Traditional coding tests often:
+
 - Focus only on "right answers"
 - Provide little meaningful feedback
 - Miss important soft skills
 - Don't help candidates grow
 
 Sono-Eval provides:
+
 - **Multi-dimensional evaluation** - Technical + design + collaboration
 - **Explainable results** - Understand exactly why someone scored as they did
 - **Candidate development** - Feedback helps everyone improve
@@ -163,6 +169,7 @@ See the [Configuration Guide](user-guide/configuration.md) for details.
 ### How do I create effective challenges?
 
 Good challenges:
+
 1. **Have clear requirements** - Candidates know what's expected
 2. **Are appropriately scoped** - Completable in allocated time
 3. **Allow creativity** - Multiple valid approaches
@@ -196,6 +203,7 @@ The system generates feedback automatically, but you can:
 ### Can I use this for team development?
 
 Yes! Sono-Eval is great for:
+
 - **Onboarding** - Assess and guide new hires
 - **Growth planning** - Identify development areas
 - **Skills tracking** - Monitor team capabilities
@@ -204,12 +212,14 @@ Yes! Sono-Eval is great for:
 ### What data is stored and for how long?
 
 Stored data:
+
 - Assessment results and scores
 - Candidate submissions (anonymized option available)
 - Progress history
 - Configuration settings
 
 **Retention**: Configurable, default is:
+
 - Active candidates: Indefinitely
 - Inactive: 2 years
 - Deleted on request: 30 days
@@ -244,18 +254,21 @@ See [API Reference](user-guide/api-reference.md).
 ### What are the system requirements?
 
 **Minimum** (development):
+
 - CPU: 2 cores
 - RAM: 4GB
 - Disk: 5GB
 - OS: Linux, macOS, Windows
 
 **Recommended** (production):
+
 - CPU: 4+ cores
 - RAM: 8GB+
 - Disk: 20GB+
 - OS: Linux (Ubuntu/Debian)
 
 **For ML** (T5 model):
+
 - Additional RAM: +4GB
 - GPU: Optional but recommended for large models
 
@@ -279,6 +292,7 @@ Absolutely! Sono-Eval is designed for on-premises deployment:
 ### What about security?
 
 Security features:
+
 - Configurable authentication (API keys, OAuth2)
 - HTTPS/TLS support
 - Input validation and sanitization
@@ -312,11 +326,13 @@ See [Upgrade Guide](upgrade.md) (coming soon) for detailed instructions.
 ### The assessment is taking a long time
 
 Normal processing times:
+
 - Simple code: 5-10 seconds
 - Complex code: 15-30 seconds
 - First run (model download): 2-5 minutes
 
 If it's taking longer:
+
 1. Check server logs: `./launcher.sh logs`
 2. Verify system resources: `docker stats`
 3. Check for network issues (model download)
@@ -324,6 +340,7 @@ If it's taking longer:
 ### I'm getting low scores but don't know why
 
 The system should provide detailed explanations. Check:
+
 1. **Evidence section** - Specific examples from your code
 2. **Metrics breakdown** - Which areas scored low
 3. **Recommendations** - What to improve
@@ -334,6 +351,7 @@ If feedback is unclear, please report it as a bug!
 ### The ML model isn't working
 
 Common issues:
+
 1. **First-time download** - T5 model takes time to download
 2. **Insufficient disk space** - Model needs ~2GB
 3. **Network issues** - Can't download model
@@ -358,35 +376,37 @@ Thank you for helping improve Sono-Eval!
 - **Documentation**: You're reading it!
 - **GitHub Issues**: Technical problems
 - **GitHub Discussions**: Questions and ideas
-- **Email**: support@sono-eval.example
+- **Email**: <support@sono-eval.example>
 
 ---
 
 ## Best Practices
 
 ### For Candidates
-✅ Read feedback carefully  
-✅ Focus on learning, not just scores  
-✅ Ask questions if something is unclear  
-✅ Practice and resubmit  
-✅ Use learning resources  
-✅ Track your progress over time  
 
-❌ Don't game the system  
-❌ Don't ignore feedback  
-❌ Don't compare yourself to others (focus on your growth)  
+✅ Read feedback carefully
+✅ Focus on learning, not just scores
+✅ Ask questions if something is unclear
+✅ Practice and resubmit
+✅ Use learning resources
+✅ Track your progress over time
+
+❌ Don't game the system
+❌ Don't ignore feedback
+❌ Don't compare yourself to others (focus on your growth)
 
 ### For Evaluators
-✅ Review automated feedback  
-✅ Add human context  
-✅ Focus on growth potential  
-✅ Use multiple data points  
-✅ Provide clear next steps  
-✅ Create a supportive environment  
 
-❌ Don't rely solely on scores  
-❌ Don't ignore context  
-❌ Don't skip the debrief  
+✅ Review automated feedback
+✅ Add human context
+✅ Focus on growth potential
+✅ Use multiple data points
+✅ Provide clear next steps
+✅ Create a supportive environment
+
+❌ Don't rely solely on scores
+❌ Don't ignore context
+❌ Don't skip the debrief
 
 ---
 
@@ -397,9 +417,9 @@ Can't find your answer? We're here to help!
 - **Documentation**: Browse the [docs](README.md)
 - **Examples**: Check [examples directory](resources/examples/)
 - **Issues**: [GitHub Issues](https://github.com/doronpers/sono-eval/issues)
-- **Email**: support@sono-eval.example
+- **Email**: <support@sono-eval.example>
 
 ---
 
-**Last Updated**: January 10, 2026  
+**Last Updated**: January 10, 2026
 **Version**: 0.1.0

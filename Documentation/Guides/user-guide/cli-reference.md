@@ -13,6 +13,7 @@ sono-eval [OPTIONS] COMMAND [ARGS]...
 ```
 
 **Global Options:**
+
 - `--version` - Show version and exit
 - `--help` - Show help message and exit
 
@@ -23,27 +24,33 @@ sono-eval [OPTIONS] COMMAND [ARGS]...
 ### Assessment Commands
 
 #### `assess run`
+
 Run an assessment on code or content.
 
 **Usage:**
+
 ```bash
 sono-eval assess run [OPTIONS]
 ```
 
 **Required Options:**
+
 - `--candidate-id TEXT` - Unique candidate identifier
 
 **Input Options (choose one):**
+
 - `--file PATH` - Path to code file to assess
 - `--content TEXT` - Direct content to assess
 
 **Assessment Options:**
+
 - `--type TEXT` - Submission type (default: "code")
 - `--paths TEXT` - Assessment paths (can specify multiple)
   - Options: `technical`, `design`, `collaboration`, `problem_solving`, `communication`
 - `--output PATH` - Save results to JSON file
 
 **Examples:**
+
 ```bash
 # Assess a Python file
 sono-eval assess run \
@@ -67,6 +74,7 @@ sono-eval assess run \
 
 **Output:**
 Displays assessment results including:
+
 - Overall score and confidence
 - Summary
 - Path scores table
@@ -78,20 +86,25 @@ Displays assessment results including:
 ### Candidate Management Commands
 
 #### `candidate create`
+
 Create a new candidate profile.
 
 **Usage:**
+
 ```bash
 sono-eval candidate create [OPTIONS]
 ```
 
 **Required Options:**
+
 - `--id TEXT` - Candidate identifier
 
 **Optional Options:**
+
 - `--data JSON` - Initial data as JSON string
 
 **Examples:**
+
 ```bash
 # Create basic candidate
 sono-eval candidate create --id candidate_001
@@ -105,22 +118,27 @@ sono-eval candidate create \
 ---
 
 #### `candidate show`
+
 Display candidate information.
 
 **Usage:**
+
 ```bash
 sono-eval candidate show [OPTIONS]
 ```
 
 **Required Options:**
+
 - `--id TEXT` - Candidate identifier
 
 **Examples:**
+
 ```bash
 sono-eval candidate show --id candidate_001
 ```
 
 **Output:**
+
 - Candidate ID
 - Last updated timestamp
 - Number of memory nodes
@@ -130,14 +148,17 @@ sono-eval candidate show --id candidate_001
 ---
 
 #### `candidate list`
+
 List all candidates.
 
 **Usage:**
+
 ```bash
 sono-eval candidate list
 ```
 
 **Examples:**
+
 ```bash
 sono-eval candidate list
 ```
@@ -148,17 +169,21 @@ List of all candidate IDs with count.
 ---
 
 #### `candidate delete`
+
 Delete a candidate (with confirmation).
 
 **Usage:**
+
 ```bash
 sono-eval candidate delete [OPTIONS]
 ```
 
 **Required Options:**
+
 - `--id TEXT` - Candidate identifier
 
 **Examples:**
+
 ```bash
 sono-eval candidate delete --id candidate_001
 # Prompts for confirmation before deletion
@@ -169,21 +194,26 @@ sono-eval candidate delete --id candidate_001
 ### Tagging Commands
 
 #### `tag generate`
+
 Generate semantic tags for code or text.
 
 **Usage:**
+
 ```bash
 sono-eval tag generate [OPTIONS]
 ```
 
 **Input Options (choose one):**
+
 - `--file PATH` - Path to file to tag
 - `--text TEXT` - Direct text to tag
 
 **Optional Options:**
+
 - `--max-tags INTEGER` - Maximum number of tags (default: 5)
 
 **Examples:**
+
 ```bash
 # Tag a file
 sono-eval tag generate --file mycode.js
@@ -199,6 +229,7 @@ sono-eval tag generate \
 
 **Output:**
 List of tags with:
+
 - Tag text
 - Category
 - Confidence score
@@ -208,19 +239,23 @@ List of tags with:
 ### Server Commands
 
 #### `server start`
+
 Start the FastAPI server.
 
 **Usage:**
+
 ```bash
 sono-eval server start [OPTIONS]
 ```
 
 **Optional Options:**
+
 - `--host TEXT` - Host to bind to (default: from config)
 - `--port INTEGER` - Port to bind to (default: from config)
 - `--reload` - Enable auto-reload for development
 
 **Examples:**
+
 ```bash
 # Start with default settings
 sono-eval server start
@@ -233,6 +268,7 @@ sono-eval server start --reload
 ```
 
 **Access:**
+
 - API: `http://localhost:8000`
 - Interactive Docs: `http://localhost:8000/docs`
 - ReDoc: `http://localhost:8000/redoc`
@@ -242,20 +278,24 @@ sono-eval server start --reload
 ### Configuration Commands
 
 #### `config show`
+
 Display current configuration.
 
 **Usage:**
+
 ```bash
 sono-eval config show
 ```
 
 **Examples:**
+
 ```bash
 sono-eval config show
 ```
 
 **Output:**
 Displays configuration sections:
+
 - Application settings
 - API settings
 - Assessment settings
@@ -283,6 +323,7 @@ Assessment results and lists are displayed in formatted tables for easy reading.
 ### JSON Output
 
 Use `--output` flag to save structured results to JSON files:
+
 ```bash
 sono-eval assess run --candidate-id user001 --file code.py --output results.json
 cat results.json | jq .
@@ -323,6 +364,7 @@ See [Configuration Guide](configuration.md) for all variables.
 ## Common Workflows
 
 ### Basic Assessment Workflow
+
 ```bash
 # 1. Create candidate
 sono-eval candidate create --id new_candidate
@@ -342,6 +384,7 @@ sono-eval tag generate --file submission.py
 ```
 
 ### Batch Assessment Workflow
+
 ```bash
 # Assess multiple files for same candidate
 for file in submissions/*.py; do
@@ -354,6 +397,7 @@ done
 ```
 
 ### Development Workflow
+
 ```bash
 # 1. Check config
 sono-eval config show
@@ -373,6 +417,7 @@ open http://localhost:8000/docs
 ## Tips and Tricks
 
 ### Use Shell Aliases
+
 ```bash
 # Add to ~/.bashrc or ~/.zshrc
 alias se='sono-eval'
@@ -386,6 +431,7 @@ sec list
 ```
 
 ### Pipe Output
+
 ```bash
 # Format JSON output
 sono-eval candidate show --id user001 | jq .
@@ -398,6 +444,7 @@ sono-eval config show | grep -i debug
 ```
 
 ### Combine with Other Tools
+
 ```bash
 # Assess all Python files in directory
 find . -name "*.py" -exec sono-eval assess run \
@@ -410,6 +457,7 @@ watch -n 30 'sono-eval assess run --candidate-id watcher --file code.py'
 ```
 
 ### Docker Usage
+
 ```bash
 # Run CLI commands in Docker
 ./launcher.sh cli assess run --candidate-id docker_user --file /path/to/file
@@ -424,6 +472,7 @@ sono-eval --help
 ## Troubleshooting
 
 ### Command Not Found
+
 ```bash
 # Ensure sono-eval is installed
 pip install -e .
@@ -433,6 +482,7 @@ export PATH=$PATH:/path/to/sono-eval
 ```
 
 ### Import Errors
+
 ```bash
 # Activate virtual environment
 source venv/bin/activate
@@ -442,6 +492,7 @@ pip install -r requirements.txt
 ```
 
 ### Permission Errors
+
 ```bash
 # Ensure data directories exist and are writable
 mkdir -p data/memory data/tagstudio models/cache
@@ -449,6 +500,7 @@ chmod -R 755 data/
 ```
 
 ### Slow Performance
+
 ```bash
 # T5 model loads on first use (can be slow)
 # Subsequent runs use cached model
@@ -470,5 +522,5 @@ See the [Troubleshooting Guide](../troubleshooting.md) for more help.
 
 ---
 
-**Last Updated**: January 10, 2026  
+**Last Updated**: January 10, 2026
 **Version**: 0.1.0

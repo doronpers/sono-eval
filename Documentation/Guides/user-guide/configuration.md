@@ -13,12 +13,14 @@ Sono-Eval uses environment variables for configuration, managed through a `.env`
 ## Quick Configuration
 
 ### Step 1: Create Configuration File
+
 ```bash
 # Copy example configuration
 cp .env.example .env
 ```
 
 ### Step 2: Edit Settings
+
 ```bash
 # Edit with your preferred editor
 nano .env
@@ -29,6 +31,7 @@ code .env
 ```
 
 ### Step 3: Verify Configuration
+
 ```bash
 sono-eval config show
 ```
@@ -54,6 +57,7 @@ LOG_LEVEL=INFO
 ```
 
 **Recommendations:**
+
 - Use `development` for local work
 - Use `staging` for pre-production testing
 - Use `production` for live deployment
@@ -75,15 +79,18 @@ API_WORKERS=4
 ```
 
 **Host Options:**
+
 - `0.0.0.0` - Listen on all interfaces (accessible externally)
 - `127.0.0.1` - Localhost only (more secure for development)
 
 **Port Selection:**
+
 - Default `8000` - Standard for development
 - Choose available port if 8000 is in use
 - Use standard ports (80/443) in production with reverse proxy
 
 **Workers:**
+
 - `1` - Single process (easier debugging)
 - `4` - Good for development
 - `CPU_COUNT * 2 + 1` - Production recommendation
@@ -107,6 +114,7 @@ DB_MAX_OVERFLOW=20
 **Database Options:**
 
 **SQLite** (Default):
+
 - ✅ No setup required
 - ✅ Perfect for development
 - ✅ Self-contained file
@@ -114,12 +122,14 @@ DB_MAX_OVERFLOW=20
 - ⚠️ Not recommended for production
 
 **PostgreSQL** (Production):
+
 - ✅ Better performance
 - ✅ Better concurrency
 - ✅ Better for multi-user
 - ⚠️ Requires separate installation
 
 **Setup PostgreSQL:**
+
 ```bash
 # Install PostgreSQL
 # Ubuntu/Debian: sudo apt-get install postgresql
@@ -151,12 +161,14 @@ REDIS_PASSWORD=
 ```
 
 **Redis Usage:**
+
 - Caching assessment results
 - Session storage
 - Task queue backend
 - Superset caching
 
 **Setup Redis:**
+
 ```bash
 # Ubuntu/Debian
 sudo apt-get install redis-server
@@ -184,16 +196,19 @@ MEMU_CACHE_SIZE=1000
 ```
 
 **Storage Path:**
+
 - Use absolute path in production
 - Ensure directory is writable
 - Backup this directory regularly
 
 **Max Depth:**
+
 - `3` - Shallow hierarchy (simple use)
 - `5` - Default (balanced)
 - `7-10` - Deep hierarchy (complex tracking)
 
 **Cache Size:**
+
 - `100` - Small deployment
 - `1000` - Default (medium)
 - `10000` - Large deployment
@@ -216,17 +231,20 @@ T5_LORA_DROPOUT=0.1
 ```
 
 **Model Options:**
+
 - `t5-small` - Fast, less accurate (60MB)
 - `t5-base` - Balanced (220MB) ⭐ Recommended
 - `t5-large` - Better quality (850MB)
 - `t5-3b` - Best quality (11GB, requires GPU)
 
 **Cache Directory:**
+
 - Models download on first use (~220MB for t5-base)
 - Ensure sufficient disk space
 - Reused across runs
 
 **LoRA Settings:**
+
 - Default values work well
 - Higher rank = more parameters = better quality
 - Lower rank = faster fine-tuning
@@ -262,14 +280,17 @@ DARK_HORSE_MODE=enabled
 ```
 
 **Explanations:**
+
 - `true` - Include detailed explanations (recommended)
 - `false` - Scores only (faster)
 
 **Multi-Path Tracking:**
+
 - `true` - Evaluate across all paths
 - `false` - Single path only
 
 **Dark Horse Mode:**
+
 - `enabled` - Track micro-motives
 - `disabled` - Skip motive analysis
 
@@ -306,12 +327,14 @@ CORS_ORIGINS=*
 ```
 
 **Production Security:**
+
 - Generate strong random SECRET_KEY
 - Restrict ALLOWED_HOSTS to your domains
 - Limit CORS_ORIGINS to specific origins
 - Use HTTPS/TLS
 
 **Generate Secret Key:**
+
 ```bash
 python -c "import secrets; print(secrets.token_urlsafe(32))"
 ```
@@ -345,6 +368,7 @@ MAX_CONCURRENT_ASSESSMENTS=4
 ## Configuration Profiles
 
 ### Development Profile
+
 Optimized for local development:
 
 ```bash
@@ -361,6 +385,7 @@ ASSESSMENT_ENABLE_EXPLANATIONS=true
 ```
 
 ### Staging Profile
+
 For testing before production:
 
 ```bash
@@ -377,6 +402,7 @@ ASSESSMENT_ENABLE_EXPLANATIONS=true
 ```
 
 ### Production Profile
+
 Optimized for production use:
 
 ```bash
@@ -403,6 +429,7 @@ CORS_ORIGINS=https://yourdomain.com
 ### Using Multiple .env Files
 
 Create environment-specific files:
+
 ```bash
 .env.development
 .env.staging
@@ -410,6 +437,7 @@ Create environment-specific files:
 ```
 
 Load appropriate file:
+
 ```bash
 # Development
 cp .env.development .env
@@ -428,12 +456,14 @@ cp .env.production .env
 When using Docker, environment variables can be:
 
 1. **In .env file** (recommended):
+
 ```bash
 # .env is automatically loaded by docker-compose
 ./launcher.sh start
 ```
 
 2. **In docker-compose.yml**:
+
 ```yaml
 environment:
   - APP_ENV=production
@@ -441,6 +471,7 @@ environment:
 ```
 
 3. **At runtime**:
+
 ```bash
 docker-compose run -e APP_ENV=production sono-eval
 ```
@@ -450,11 +481,13 @@ docker-compose run -e APP_ENV=production sono-eval
 ## Configuration Validation
 
 ### Check Current Configuration
+
 ```bash
 sono-eval config show
 ```
 
 ### Validate Configuration
+
 ```bash
 # Start server in test mode
 sono-eval server start --reload
@@ -468,6 +501,7 @@ curl http://localhost:8000/api/v1/health
 ## Common Configuration Scenarios
 
 ### Scenario 1: Local Development
+
 ```bash
 APP_ENV=development
 DEBUG=true
@@ -476,6 +510,7 @@ API_WORKERS=1
 ```
 
 ### Scenario 2: Team Server
+
 ```bash
 APP_ENV=development
 API_HOST=0.0.0.0
@@ -485,6 +520,7 @@ API_WORKERS=4
 ```
 
 ### Scenario 3: Production Deployment
+
 ```bash
 APP_ENV=production
 DEBUG=false
@@ -500,6 +536,7 @@ ALLOWED_HOSTS=app.company.com
 ## Troubleshooting
 
 ### Configuration Not Loading
+
 ```bash
 # Verify .env exists
 ls -la .env
@@ -512,6 +549,7 @@ cat .env | grep -v '^#' | grep -v '^$'
 ```
 
 ### Database Connection Issues
+
 ```bash
 # Test PostgreSQL connection
 psql -h localhost -U username -d sono_eval
@@ -521,6 +559,7 @@ psql -h localhost -U username -d sono_eval
 ```
 
 ### Redis Connection Issues
+
 ```bash
 # Test Redis connection
 redis-cli ping
@@ -529,6 +568,7 @@ redis-cli ping
 ```
 
 ### Model Download Issues
+
 ```bash
 # Check internet connection
 # Check disk space
@@ -562,5 +602,5 @@ python -c "from transformers import T5ForConditionalGeneration; T5ForConditional
 
 ---
 
-**Last Updated**: January 10, 2026  
+**Last Updated**: January 10, 2026
 **Version**: 0.1.0

@@ -39,17 +39,25 @@ fi
 # Create backup
 cp "$HOOK_FILE" "${HOOK_FILE}.bak"
 
-# Apply the fix
-sed -i.bak2 '/^if \[ -x "\$INSTALL_PYTHON" \]; then$/a\
-    # Set SSL certificate path for Python 3.13 to fix certificate verification issues\
-    CERT_FILE=$("$INSTALL_PYTHON" -c "import certifi; print(certifi.where())" 2>/dev/null || echo "/opt/homebrew/etc/openssl@3/cert.pem")\
-    if [ -f "$CERT_FILE" ]; then\
-        export SSL_CERT_FILE="$CERT_FILE"\
-    fi
-' "$HOOK_FILE"
+# Apply the fix using a temporary file (works on both macOS and Linux)
+TEMP_FILE=$(mktemp)
 
-# Clean up extra backup
-rm -f "${HOOK_FILE}.bak2"
+while IFS= read -r line; do
+    echo "$line"
+    # Check if we're at the line that starts with "if [ -x "$INSTALL_PYTHON" ]; then"
+    if echo "$line" | grep -q '^if \[ -x "\$INSTALL_PYTHON" \]; then$' || \
+       echo "$line" | grep -q '^if \[ -x "$INSTALL_PYTHON" ]; then$'; then
+        # Add the SSL certificate fix
+        echo "    # Set SSL certificate path for Python 3.13 to fix certificate verification issues"
+        echo "    CERT_FILE=\$(\"$INSTALL_PYTHON\" -c \"import certifi; print(certifi.where())\" 2>/dev/null || echo \"/opt/homebrew/etc/openssl@3/cert.pem\")"
+        echo "    if [ -f \"\$CERT_FILE\" ]; then"
+        echo "        export SSL_CERT_FILE=\"\$CERT_FILE\""
+        echo "    fi"
+    fi
+done < "$HOOK_FILE" > "$TEMP_FILE"
+
+mv "$TEMP_FILE" "$HOOK_FILE"
+chmod +x "$HOOK_FILE"
 
 echo "SSL certificate fix applied successfully to pre-commit hook"
 echo "Certificate file: $CERT_FILE"

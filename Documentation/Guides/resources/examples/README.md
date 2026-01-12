@@ -7,6 +7,7 @@ Practical examples to help you understand what good submissions look like.
 ## Overview
 
 These examples show actual code submissions with Sono-Eval assessments. Each example includes:
+
 - The challenge/problem
 - The submitted solution
 - Assessment results and feedback
@@ -14,6 +15,7 @@ These examples show actual code submissions with Sono-Eval assessments. Each exa
 - What could be improved
 
 **Use these to**:
+
 - Understand expectations
 - See what "good" looks like
 - Learn from feedback patterns
@@ -24,14 +26,17 @@ These examples show actual code submissions with Sono-Eval assessments. Each exa
 ## Examples by Level
 
 ### Beginner Level
+
 - **[Example 1: String Manipulation](example-01-string-manipulation.md)** - Basic function with good documentation
 - **[Example 2: List Processing](example-02-list-processing.md)** - Simple algorithm with tests
 
 ### Intermediate Level
+
 - **[Example 3: API Design](example-03-api-design.md)** - RESTful endpoint with error handling
 - **[Example 4: Data Processing](example-04-data-processing.md)** - File parsing with validation
 
 ### Advanced Level
+
 - **[Example 5: System Design](example-05-system-design.md)** - Multi-component architecture
 - **[Example 6: Performance Optimization](example-06-optimization.md)** - Algorithm improvement
 
@@ -40,18 +45,21 @@ These examples show actual code submissions with Sono-Eval assessments. Each exa
 ## Examples by Path
 
 ### Technical Path
+
 - Strong code quality
 - Efficient algorithms
 - Comprehensive testing
 - Error handling
 
 ### Design Path
+
 - Clear architecture
 - Good abstractions
 - Maintainable structure
 - Design patterns
 
 ### Collaboration Path
+
 - Excellent documentation
 - Clear README
 - Helpful comments
@@ -98,6 +106,7 @@ def factorial(n):
 ```
 
 **Feedback**:
+
 - ✅ Correct algorithm
 - ❌ No input validation
 - ❌ No documentation
@@ -147,6 +156,7 @@ def test_factorial():
 ```
 
 **Feedback**:
+
 - ✅ Complete documentation
 - ✅ Type hints
 - ✅ Input validation
@@ -167,18 +177,21 @@ def test_factorial():
 ## How to Use These Examples
 
 ### 1. Before Your Assessment
+
 - Read through examples at your level
 - Note common patterns in good solutions
 - Understand what evaluators look for
 - Practice similar challenges
 
 ### 2. While Working
+
 - Remember: documentation, tests, error handling
 - Think about multiple paths (technical, design, collaboration)
 - Include a README if appropriate
 - Comment complex logic
 
 ### 3. After Receiving Feedback
+
 - Compare your solution to examples
 - Find similar patterns in feedback
 - Identify areas to practice
@@ -203,5 +216,5 @@ See [Contributing Guide](../../CONTRIBUTING.md) for details.
 
 ---
 
-**Last Updated**: January 10, 2026  
+**Last Updated**: January 10, 2026
 **Version**: 0.1.0

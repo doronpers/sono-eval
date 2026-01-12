@@ -7,6 +7,7 @@ Solutions to common issues when using Sono-Eval.
 ## Quick Diagnostics
 
 ### Check System Health
+
 ```bash
 # Check if services are running
 ./launcher.sh status
@@ -26,9 +27,11 @@ sono-eval config show
 ## Installation Issues
 
 ### Docker Not Found
+
 **Symptoms**: `docker: command not found`
 
 **Solution**:
+
 ```bash
 # Install Docker
 # Ubuntu/Debian
@@ -43,9 +46,11 @@ docker-compose --version
 ```
 
 ### Permission Denied (Docker)
+
 **Symptoms**: `Permission denied while trying to connect to Docker daemon`
 
 **Solution**:
+
 ```bash
 # Add user to docker group
 sudo usermod -aG docker $USER
@@ -58,11 +63,13 @@ docker ps
 ```
 
 ### Port Already in Use
+
 **Symptoms**: `Bind for 0.0.0.0:8000 failed: port is already allocated`
 
 **Solution**:
 
 **Option 1**: Stop the conflicting service
+
 ```bash
 # Find what's using the port
 sudo lsof -i :8000
@@ -74,6 +81,7 @@ sudo kill <PID>
 ```
 
 **Option 2**: Change Sono-Eval port
+
 ```bash
 # Edit .env
 API_PORT=9000
@@ -84,14 +92,16 @@ ports:
 ```
 
 ### Python Version Too Old
+
 **Symptoms**: `Python 3.9+ required`
 
 **Solution**:
+
 ```bash
 # Check current version
 python3 --version
 
-# Install Python 3.9+ 
+# Install Python 3.9+
 # Ubuntu/Debian
 sudo apt-get install python3.9 python3.9-venv
 
@@ -103,9 +113,11 @@ python3.9 -m venv venv
 ```
 
 ### Pip Install Fails
+
 **Symptoms**: `ERROR: Could not install packages`
 
 **Solution**:
+
 ```bash
 # Upgrade pip
 pip install --upgrade pip
@@ -126,11 +138,13 @@ pip install -r requirements.txt -v
 ## Runtime Issues
 
 ### Assessment Taking Forever
+
 **Symptoms**: Assessment hangs or takes >5 minutes
 
 **Causes & Solutions**:
 
 **1. First-time model download**:
+
 ```bash
 # T5 model downloads on first use (~2GB)
 # Check download progress in logs
@@ -141,6 +155,7 @@ python -c "from transformers import T5ForConditionalGeneration; T5ForConditional
 ```
 
 **2. Insufficient memory**:
+
 ```bash
 # Check available memory
 free -h
@@ -151,6 +166,7 @@ T5_MODEL_NAME=t5-small
 ```
 
 **3. CPU overload**:
+
 ```bash
 # Check CPU usage
 top
@@ -160,9 +176,11 @@ MAX_CONCURRENT_ASSESSMENTS=1
 ```
 
 ### API Returns 500 Error
+
 **Symptoms**: `{"detail": "Internal Server Error"}`
 
 **Diagnosis**:
+
 ```bash
 # Check server logs
 ./launcher.sh logs sono-eval
@@ -173,6 +191,7 @@ MAX_CONCURRENT_ASSESSMENTS=1
 **Common Causes**:
 
 **1. Database connection failed**:
+
 ```bash
 # Verify database is running
 docker-compose ps postgres
@@ -184,6 +203,7 @@ psql -h localhost -U <user> -d sono_eval
 ```
 
 **2. Redis connection failed**:
+
 ```bash
 # Verify Redis is running
 docker-compose ps redis
@@ -194,6 +214,7 @@ redis-cli ping
 ```
 
 **3. Model loading error**:
+
 ```bash
 # Check model cache
 ls -lh models/cache/
@@ -203,9 +224,11 @@ rm -rf models/cache/*
 ```
 
 ### Candidate Not Found
+
 **Symptoms**: `404: Candidate not found`
 
 **Solution**:
+
 ```bash
 # List all candidates
 sono-eval candidate list
@@ -218,9 +241,11 @@ sono-eval candidate create --id <NEW_ID>
 ```
 
 ### Import Errors
+
 **Symptoms**: `ModuleNotFoundError: No module named 'sono_eval'`
 
 **Solution**:
+
 ```bash
 # Ensure virtual environment is activated
 source venv/bin/activate
@@ -237,9 +262,11 @@ python -c "import sono_eval; print(sono_eval.__version__)"
 ## Configuration Issues
 
 ### .env Not Loading
+
 **Symptoms**: Default values used instead of .env values
 
 **Solution**:
+
 ```bash
 # Verify .env exists
 ls -la .env
@@ -255,9 +282,11 @@ grep -v '^#' .env | grep -v '^$'
 ```
 
 ### Database Migration Errors
+
 **Symptoms**: `alembic.util.exc.CommandError`
 
 **Solution**:
+
 ```bash
 # Check current version
 alembic current
@@ -274,9 +303,11 @@ alembic upgrade head
 ```
 
 ### Model Cache Issues
+
 **Symptoms**: `OSError: Can't load model`
 
 **Solution**:
+
 ```bash
 # Check cache directory exists and is writable
 ls -ld models/cache
@@ -294,9 +325,11 @@ rm -rf models/cache/*
 ## Performance Issues
 
 ### Slow Response Times
+
 **Symptoms**: API requests take >10 seconds
 
 **Diagnosis**:
+
 ```bash
 # Check system resources
 docker stats
@@ -311,22 +344,26 @@ python -m cProfile sono_eval/api/main.py
 **Solutions**:
 
 **1. Increase cache size**:
+
 ```bash
 MEMU_CACHE_SIZE=10000
 REDIS_DB=0
 ```
 
 **2. Use PostgreSQL instead of SQLite**:
+
 ```bash
 DATABASE_URL=postgresql://user:pass@localhost:5432/sono_eval
 ```
 
 **3. Add more workers**:
+
 ```bash
 API_WORKERS=8
 ```
 
 **4. Optimize Docker**:
+
 ```bash
 # Increase Docker resources (Desktop settings)
 # CPU: 4+ cores
@@ -334,26 +371,31 @@ API_WORKERS=8
 ```
 
 ### High Memory Usage
+
 **Symptoms**: Out of memory errors, system slowdown
 
 **Solutions**:
 
 **1. Use smaller model**:
+
 ```bash
 T5_MODEL_NAME=t5-small  # Instead of t5-base
 ```
 
 **2. Reduce cache**:
+
 ```bash
 MEMU_CACHE_SIZE=100
 ```
 
 **3. Limit concurrent assessments**:
+
 ```bash
 MAX_CONCURRENT_ASSESSMENTS=2
 ```
 
 **4. Monitor and restart**:
+
 ```bash
 # Check memory
 docker stats
@@ -367,9 +409,11 @@ docker stats
 ## Docker-Specific Issues
 
 ### Container Won't Start
+
 **Symptoms**: Container exits immediately
 
 **Diagnosis**:
+
 ```bash
 # View container logs
 docker-compose logs sono-eval
@@ -383,6 +427,7 @@ docker-compose ps
 **1. Port conflict**: See "Port Already in Use" above
 
 **2. Volume mount issues**:
+
 ```bash
 # Check volume permissions
 ls -la data/
@@ -392,15 +437,18 @@ chmod -R 755 data/
 ```
 
 **3. Missing dependencies**:
+
 ```bash
 # Rebuild image
 docker-compose build --no-cache sono-eval
 ```
 
 ### Docker Compose Not Found
+
 **Symptoms**: `docker-compose: command not found`
 
 **Solution**:
+
 ```bash
 # Try docker compose (newer version)
 docker compose version
@@ -410,9 +458,11 @@ pip install docker-compose
 ```
 
 ### Image Build Fails
+
 **Symptoms**: `ERROR: failed to solve`
 
 **Solution**:
+
 ```bash
 # Clear build cache
 docker system prune -a
@@ -429,9 +479,11 @@ cat Dockerfile
 ## API-Specific Issues
 
 ### CORS Errors (Browser)
+
 **Symptoms**: `Access to fetch blocked by CORS policy`
 
 **Solution**:
+
 ```bash
 # Enable CORS for your origin
 CORS_ORIGINS=https://yourdomain.com
@@ -444,9 +496,11 @@ CORS_ORIGINS=*
 ```
 
 ### Authentication Fails
+
 **Symptoms**: `401 Unauthorized`
 
 **Solution**:
+
 ```bash
 # Verify API key (if configured)
 # Check headers include: Authorization: Bearer <key>
@@ -456,9 +510,11 @@ CORS_ORIGINS=*
 ```
 
 ### Request Too Large
+
 **Symptoms**: `413: Request Entity Too Large`
 
 **Solution**:
+
 ```bash
 # Increase max upload size
 MAX_UPLOAD_SIZE=52428800  # 50MB
@@ -472,11 +528,13 @@ MAX_UPLOAD_SIZE=52428800  # 50MB
 ## ML Model Issues
 
 ### Tags Are Low Quality
+
 **Symptoms**: Generated tags are generic or irrelevant
 
 **Solutions**:
 
 **1. Fine-tune model**:
+
 ```python
 from sono_eval.tagging import TagGenerator
 
@@ -485,26 +543,31 @@ generator.fine_tune(your_training_data, epochs=3)
 ```
 
 **2. Provide more context**:
+
 ```bash
 # Include surrounding code, not just snippet
 sono-eval tag generate --file entire_module.py
 ```
 
 **3. Adjust max_tags**:
+
 ```bash
 # Request more tags, pick best ones
 sono-eval tag generate --file code.py --max-tags 10
 ```
 
 ### Model Fallback Mode
+
 **Symptoms**: `Using fallback tagging (model not available)`
 
 **Causes**:
+
 - Model not downloaded
 - Insufficient memory
 - Model file corrupted
 
 **Solution**:
+
 ```bash
 # Force model download
 python -c "from transformers import T5ForConditionalGeneration; T5ForConditionalGeneration.from_pretrained('t5-base')"
@@ -521,9 +584,11 @@ free -h
 ## Data Issues
 
 ### Candidate Data Lost
+
 **Symptoms**: Previously created candidate not found
 
 **Diagnosis**:
+
 ```bash
 # Check storage path exists
 ls -la data/memory/
@@ -536,6 +601,7 @@ ls -l data/memory/
 ```
 
 **Recovery**:
+
 ```bash
 # Restore from backup (if available)
 cp backup/memory/* data/memory/
@@ -545,9 +611,11 @@ cp backup/memory/* data/memory/
 ```
 
 ### Assessment Results Missing
+
 **Symptoms**: Assessment completed but results not saved
 
 **Solution**:
+
 ```bash
 # Check output file was specified
 sono-eval assess run --output results.json
@@ -564,7 +632,9 @@ df -h
 ## Common Error Messages
 
 ### `OSError: [Errno 28] No space left on device`
+
 **Solution**: Free up disk space
+
 ```bash
 # Check space
 df -h
@@ -577,7 +647,9 @@ find . -name "*.log" -mtime +7 -delete
 ```
 
 ### `ConnectionRefusedError: [Errno 111] Connection refused`
+
 **Solution**: Service not running
+
 ```bash
 # Check if service is up
 ./launcher.sh status
@@ -587,7 +659,9 @@ find . -name "*.log" -mtime +7 -delete
 ```
 
 ### `TimeoutError: Operation timed out`
+
 **Solution**: Increase timeout
+
 ```bash
 # For API requests
 requests.post(url, timeout=60)
@@ -597,7 +671,9 @@ ASSESSMENT_TIMEOUT=300  # seconds
 ```
 
 ### `ValidationError: Invalid input`
+
 **Solution**: Check input format
+
 ```bash
 # Verify JSON structure
 echo '{"key": "value"}' | jq .
@@ -608,9 +684,37 @@ open http://localhost:8000/docs
 
 ---
 
+## Development Issues
+
+### Pre-commit Hook SSL Certificate Errors
+
+**Symptoms**: When committing, you see:
+
+```
+ssl.SSLCertVerificationError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed
+```
+
+**Cause**: Python 3.13 installed from python.org doesn't have SSL certificates configured by default, causing pre-commit hooks (like `markdownlint-cli`) to fail when downloading dependencies.
+
+**Solution**:
+
+```bash
+# Run the SSL fix script
+./scripts/fix-pre-commit-ssl.sh
+
+# Or manually set certificate path
+export SSL_CERT_FILE=$(python3 -c "import certifi; print(certifi.where())")
+pre-commit install
+```
+
+**Prevention**: Always run `./scripts/fix-pre-commit-ssl.sh` after running `pre-commit install`. See [scripts/README.md](../../scripts/README.md) for details.
+
+---
+
 ## Getting More Help
 
 ### Gather Diagnostic Information
+
 ```bash
 # System info
 uname -a
@@ -644,7 +748,7 @@ sono-eval config show > config.txt
    - Usage tips
    - Feature requests
 
-4. **Email**: support@sono-eval.example
+4. **Email**: <support@sono-eval.example>
    - Enterprise support
    - Security issues
    - Private concerns
@@ -654,6 +758,7 @@ sono-eval config show > config.txt
 ## Prevention Tips
 
 ### Regular Maintenance
+
 ```bash
 # Weekly
 docker system prune -f
@@ -665,6 +770,7 @@ docker-compose pull
 ```
 
 ### Monitoring
+
 ```bash
 # Set up log rotation
 # Configure alerts for errors
@@ -673,6 +779,7 @@ docker-compose pull
 ```
 
 ### Backups
+
 ```bash
 # Backup data directory
 tar -czf backup-$(date +%Y%m%d).tar.gz data/
@@ -683,10 +790,11 @@ pg_dump sono_eval > backup.sql
 
 ---
 
-**Last Updated**: January 10, 2026  
+**Last Updated**: January 10, 2026
 **Version**: 0.1.0
 
 **Still having issues?** [Open an issue](https://github.com/doronpers/sono-eval/issues) with:
+
 - Clear description
 - Steps to reproduce
 - System information

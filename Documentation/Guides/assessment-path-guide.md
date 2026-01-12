@@ -59,6 +59,7 @@ The Technical path assesses your ability to write clean, efficient, and correct 
 ### Scoring Criteria
 
 **Excellent (80-100)**:
+
 - Clean, well-structured code following best practices
 - Efficient algorithms with appropriate complexity
 - Comprehensive test coverage
@@ -66,18 +67,21 @@ The Technical path assesses your ability to write clean, efficient, and correct 
 - No obvious bugs or security issues
 
 **Good (60-79)**:
+
 - Generally clean code with minor style issues
 - Functional algorithms, may not be optimal
 - Basic test coverage present
 - Most edge cases handled
 
 **Developing (40-59)**:
+
 - Code works but needs refactoring
 - Algorithms functional but inefficient
 - Limited or missing tests
 - Some edge cases not handled
 
 **Learning (0-39)**:
+
 - Code has significant structural issues
 - Algorithms may not work correctly
 - No tests or very basic tests
@@ -86,33 +90,35 @@ The Technical path assesses your ability to write clean, efficient, and correct 
 ### Examples
 
 **Strong Technical Example**:
+
 ```python
 def find_duplicates(arr):
     """
     Find duplicate elements in an array.
-    
+
     Time Complexity: O(n)
     Space Complexity: O(n)
-    
+
     Args:
         arr: List of integers
-        
+
     Returns:
         Set of duplicate values
     """
     seen = set()
     duplicates = set()
-    
+
     for item in arr:
         if item in seen:
             duplicates.add(item)
         else:
             seen.add(item)
-    
+
     return duplicates
 ```
 
 **What makes this strong**:
+
 - Clear documentation with complexity analysis
 - Efficient algorithm (O(n) time)
 - Good naming and structure
@@ -177,24 +183,28 @@ The Design path assesses your ability to think about software architecture, make
 ### Scoring Criteria
 
 **Excellent (80-100)**:
+
 - Well-architected solution with clear separation of concerns
 - Appropriate use of design patterns
 - Considers scalability and future needs
 - Clean, logical code organization
 
 **Good (60-79)**:
+
 - Generally good architecture with minor issues
 - Some design patterns used appropriately
 - Basic consideration of system interactions
 - Reasonable code organization
 
 **Developing (40-59)**:
+
 - Architecture works but could be improved
 - Limited use of design patterns
 - Minimal system thinking
 - Code organization needs work
 
 **Learning (0-39)**:
+
 - Poor architectural decisions
 - No clear design patterns
 - Little consideration of system design
@@ -203,6 +213,7 @@ The Design path assesses your ability to think about software architecture, make
 ### Examples
 
 **Strong Design Example**:
+
 ```
 project/
 ├── src/
@@ -222,6 +233,7 @@ project/
 ```
 
 **What makes this strong**:
+
 - Clear separation between domain, infrastructure, and API layers
 - Tests organized by type
 - Logical grouping of related functionality
@@ -290,34 +302,39 @@ The Collaboration path assesses how well your code and documentation enable othe
 ### Scoring Criteria
 
 **Excellent (80-100)**:
+
 - Comprehensive, clear documentation
 - Highly readable, self-documenting code
 - Excellent communication of decisions and reasoning
 - Code is easy for others to understand and modify
 
 **Good (60-79)**:
+
 - Good documentation with minor gaps
 - Generally readable code
 - Clear communication of most decisions
 - Code is mostly maintainable
 
 **Developing (40-59)**:
+
 - Basic documentation present
 - Code readable but needs improvement
 - Some decisions explained
 - Maintainability could be better
 
 **Learning (0-39)**:
+
 - Minimal or missing documentation
-   - Code is difficult to understand
-   - Little explanation of decisions
-   - Hard for others to work with
+  - Code is difficult to understand
+  - Little explanation of decisions
+  - Hard for others to work with
 
 ### Examples
 
 **Strong Collaboration Example**:
 
 **README.md**:
+
 ```markdown
 # Project Name
 
@@ -339,26 +356,27 @@ See CONTRIBUTING.md for guidelines.
 ```
 
 **Code with good documentation**:
+
 ```python
 def calculate_shipping_cost(weight: float, distance: float) -> float:
     """
     Calculate shipping cost based on weight and distance.
-    
+
     Uses a tiered pricing model:
     - Base rate: $5.00
     - Weight surcharge: $0.50 per pound over 10 lbs
     - Distance surcharge: $0.10 per mile over 50 miles
-    
+
     Args:
         weight: Package weight in pounds
         distance: Shipping distance in miles
-        
+
     Returns:
         Total shipping cost in dollars
-        
+
     Raises:
         ValueError: If weight or distance is negative
-        
+
     Example:
         >>> calculate_shipping_cost(5.0, 30.0)
         5.0
@@ -367,15 +385,16 @@ def calculate_shipping_cost(weight: float, distance: float) -> float:
     """
     if weight < 0 or distance < 0:
         raise ValueError("Weight and distance must be non-negative")
-    
+
     base_rate = 5.00
     weight_surcharge = max(0, (weight - 10) * 0.50)
     distance_surcharge = max(0, (distance - 50) * 0.10)
-    
+
     return base_rate + weight_surcharge + distance_surcharge
 ```
 
 **What makes this strong**:
+
 - Clear docstring explaining the algorithm
 - Type hints for parameters and return
 - Examples showing usage
@@ -447,28 +466,32 @@ The Problem Solving path assesses your approach to tackling challenges, breaking
 ### Scoring Criteria
 
 **Excellent (80-100)**:
+
 - Deep understanding of the problem
 - Systematic, logical approach
 - Creative solutions when appropriate
 - Excellent debugging skills
 
 **Good (60-79)**:
+
 - Good problem understanding
 - Generally logical approach
 - Some creative thinking
 - Solid debugging abilities
 
 **Developing (40-59)**:
+
 - Basic problem understanding
 - Approach works but could be improved
 - Limited creative solutions
 - Basic debugging skills
 
 **Learning (0-39)**:
+
 - Poor problem analysis
 - Unclear or inefficient approach
-   - Little creative thinking
-   - Struggles with debugging
+  - Little creative thinking
+  - Struggles with debugging
 
 ### Examples
 
@@ -477,6 +500,7 @@ The Problem Solving path assesses your approach to tackling challenges, breaking
 **Problem**: Find the longest substring without repeating characters
 
 **Approach Documentation**:
+
 ```
 1. Problem Analysis:
    - Need to find longest substring (not subsequence)
@@ -501,6 +525,7 @@ The Problem Solving path assesses your approach to tackling challenges, breaking
 ```
 
 **What makes this strong**:
+
 - Clear problem analysis
 - Systematic approach documented
 - Edge cases considered
@@ -573,24 +598,28 @@ The Communication path assesses how well you can explain technical concepts, doc
 ### Scoring Criteria
 
 **Excellent (80-100)**:
+
 - Exceptionally clear and well-structured communication
 - Comprehensive, high-quality documentation
 - Excellent technical writing
 - Makes complex topics accessible
 
 **Good (60-79)**:
+
 - Clear communication with minor issues
 - Good documentation quality
 - Solid technical writing
 - Generally helpful explanations
 
 **Developing (40-59)**:
+
 - Communication is understandable but could be clearer
 - Basic documentation present
 - Technical writing needs improvement
 - Some explanations are unclear
 
 **Learning (0-39)**:
+
 - Unclear or confusing communication
 - Poor or missing documentation
 - Weak technical writing
@@ -601,6 +630,7 @@ The Communication path assesses how well you can explain technical concepts, doc
 **Strong Communication Example**:
 
 **Technical Explanation**:
+
 ```markdown
 ## Why We Use Dependency Injection
 
@@ -618,6 +648,7 @@ class UserService:
 ```
 
 ### The Solution
+
 With DI, dependencies are provided from outside:
 
 ```python
@@ -627,11 +658,13 @@ class UserService:
 ```
 
 ### Benefits
+
 1. **Testability**: Can inject mock dependencies
 2. **Flexibility**: Easy to swap implementations
 3. **Maintainability**: Changes are isolated
 
 ### Example Usage
+
 ```python
 # Production
 db = PostgreSQLDatabase()
@@ -641,6 +674,7 @@ service = UserService(db)
 mock_db = MockDatabase()
 service = UserService(mock_db)
 ```
+
 ```
 
 **What makes this strong**:

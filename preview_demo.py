@@ -10,22 +10,21 @@ from pathlib import Path
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent / "src"))
 
+
 def show_cli_structure():
     """Show the CLI command structure."""
     print("=" * 70)
     print("SONO-EVAL CLI COMMAND STRUCTURE")
     print("=" * 70)
     print()
-    
+
     commands = {
         "sono-eval": {
             "description": "Main CLI entry point",
             "subcommands": {
                 "assess": {
                     "description": "Assessment commands",
-                    "commands": {
-                        "run": "Run an assessment with --candidate-id, --file, --paths"
-                    }
+                    "commands": {"run": "Run an assessment with --candidate-id, --file, --paths"},
                 },
                 "candidate": {
                     "description": "Candidate management",
@@ -33,31 +32,25 @@ def show_cli_structure():
                         "create": "Create a new candidate",
                         "show": "Show candidate information",
                         "list": "List all candidates",
-                        "delete": "Delete a candidate"
-                    }
+                        "delete": "Delete a candidate",
+                    },
                 },
                 "tag": {
                     "description": "Tagging commands",
-                    "commands": {
-                        "generate": "Generate semantic tags for code/text"
-                    }
+                    "commands": {"generate": "Generate semantic tags for code/text"},
                 },
                 "server": {
                     "description": "Server management",
-                    "commands": {
-                        "start": "Start the API server (--host, --port, --reload)"
-                    }
+                    "commands": {"start": "Start the API server (--host, --port, --reload)"},
                 },
                 "config": {
                     "description": "Configuration",
-                    "commands": {
-                        "show": "Show current configuration"
-                    }
-                }
-            }
+                    "commands": {"show": "Show current configuration"},
+                },
+            },
         }
     }
-    
+
     def print_commands(cmd_dict, indent=0):
         for key, value in cmd_dict.items():
             prefix = "  " * indent
@@ -70,7 +63,7 @@ def show_cli_structure():
                     print_commands(value["commands"], indent + 1)
             else:
                 print(f"{prefix}  {key}: {value}")
-    
+
     print_commands(commands)
     print()
     print("=" * 70)
@@ -100,7 +93,7 @@ def show_api_endpoints():
     print("SONO-EVAL REST API ENDPOINTS")
     print("=" * 70)
     print()
-    
+
     endpoints = {
         "Health & Status": [
             ("GET", "/", "Root endpoint with API information"),
@@ -131,7 +124,7 @@ def show_api_endpoints():
             ("GET", "/api/mobile/explain/{path}", "Get path explanation"),
         ],
     }
-    
+
     for category, items in endpoints.items():
         print(f"\n{category}:")
         for method, path, desc in items:
@@ -142,7 +135,7 @@ def show_api_endpoints():
             }.get(method, "")
             reset = "\033[0m"
             print(f"  {method_color}{method:6}{reset} {path:35} - {desc}")
-    
+
     print()
     print("=" * 70)
     print("API DOCUMENTATION")
@@ -188,7 +181,8 @@ def show_architecture():
     print("SYSTEM ARCHITECTURE")
     print("=" * 70)
     print()
-    print("""
+    print(
+        """
     ┌─────────────────────────────────────────────────────────────┐
     │                     Sono-Eval System                        │
     ├─────────────────────────────────────────────────────────────┤
@@ -204,7 +198,8 @@ def show_architecture():
     ├─────────────────────────────────────────────────────────────┤
     │  Analytics:  Apache Superset Dashboards                      │
     └─────────────────────────────────────────────────────────────┘
-    """)
+    """
+    )
 
 
 if __name__ == "__main__":
@@ -212,7 +207,7 @@ if __name__ == "__main__":
     print("SONO-EVAL PREVIEW")
     print("Explainable Multi-Path Developer Assessment System")
     print("=" * 70 + "\n")
-    
+
     show_cli_structure()
     print("\n")
     show_api_endpoints()
@@ -220,7 +215,7 @@ if __name__ == "__main__":
     show_mobile_features()
     print("\n")
     show_architecture()
-    
+
     print("\n" + "=" * 70)
     print("TO RUN THE SYSTEM:")
     print("=" * 70)

@@ -5,6 +5,7 @@ Common Docker build errors and their solutions for Sono-Eval.
 ## 🔍 Quick Diagnosis
 
 First, check the exact error:
+
 ```bash
 # View full build output
 docker-compose build --progress=plain 2>&1 | tee build.log
@@ -23,10 +24,11 @@ docker-compose build sono-eval --no-cache --progress=plain
 
 **Cause**: torch 2.8.0 doesn't exist (we fixed this in requirements.txt)
 
-**Solution**: 
+**Solution**:
 ✅ Already fixed - requirements.txt now uses `torch>=2.1.0`
 
 If you still see this error:
+
 ```bash
 # Rebuild without cache
 docker-compose build --no-cache sono-eval
@@ -48,6 +50,7 @@ grep torch requirements.txt
 ✅ Already fixed - jinja2>=3.1.0 added to requirements.txt
 
 If still failing:
+
 ```bash
 # Verify it's in requirements.txt
 grep jinja2 requirements.txt
@@ -65,6 +68,7 @@ docker-compose build --no-cache sono-eval
 **Cause**: Large download (~2GB), network issues
 
 **Solution**:
+
 ```bash
 # Option 1: Increase build timeout
 docker-compose build --build-arg BUILDKIT_INLINE_CACHE=1 sono-eval
@@ -77,6 +81,7 @@ docker-compose build --build-arg PIP_CACHE_DIR=/root/.cache/pip sono-eval
 ```
 
 **Temporary workaround** - Modify Dockerfile to install torch separately:
+
 ```dockerfile
 # Add after line 22
 RUN pip install --no-cache-dir torch>=2.1.0 --timeout=300 || \
@@ -92,6 +97,7 @@ RUN pip install --no-cache-dir torch>=2.1.0 --timeout=300 || \
 **Cause**: Insufficient Docker memory for PyTorch build
 
 **Solution**:
+
 ```bash
 # Increase Docker memory (Docker Desktop)
 # Settings > Resources > Memory > Increase to 4GB+
@@ -113,6 +119,7 @@ docker-compose build --build-arg PIP_NO_CACHE_DIR=1 sono-eval
 **Cause**: Missing files or wrong build context
 
 **Solution**:
+
 ```bash
 # Verify all files exist
 ls -la requirements.txt pyproject.toml src/ config/
@@ -133,6 +140,7 @@ docker-compose build --progress=plain sono-eval
 **Cause**: Dockerfile uses python:3.11 but code needs different version
 
 **Solution**:
+
 ```bash
 # Check what Python version is needed
 grep requires-python pyproject.toml
@@ -153,6 +161,7 @@ FROM python:3.9-slim  # or 3.10, 3.11
 
 **Solution**:
 The Dockerfile already includes build-essential, but if issues:
+
 ```dockerfile
 # Ensure these are in Dockerfile (lines 12-16):
 RUN apt-get update && apt-get install -y \
@@ -170,6 +179,7 @@ RUN apt-get update && apt-get install -y \
 **Error**: `ERROR: Could not install packages due to an OSError`
 
 **Solution**:
+
 ```bash
 # Try installing packages in smaller batches
 # Modify Dockerfile temporarily:
@@ -193,6 +203,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 **Cause**: Corporate proxy, firewall, or SSL issues
 
 **Solution**:
+
 ```bash
 # Add to Dockerfile before pip install:
 ENV PIP_TRUSTED_HOST=pypi.org files.pythonhosted.org
@@ -209,6 +220,7 @@ ENV PIP_INDEX_URL=https://your-custom-index.com/simple
 **Error**: Stale cache causing weird errors
 
 **Solution**:
+
 ```bash
 # Clear all Docker cache
 docker system prune -a
@@ -225,6 +237,7 @@ docker builder prune -a
 ## 🔧 Step-by-Step Debug Process
 
 ### Step 1: Check Error Location
+
 ```bash
 # Build with verbose output
 docker-compose build --progress=plain sono-eval 2>&1 | tee build.log
@@ -234,6 +247,7 @@ grep -i "error\|failed\|killed" build.log
 ```
 
 ### Step 2: Test Individual Steps
+
 ```bash
 # Build up to a specific point
 # Edit Dockerfile, add exit after problematic step
@@ -241,6 +255,7 @@ grep -i "error\|failed\|killed" build.log
 ```
 
 ### Step 3: Test in Interactive Container
+
 ```bash
 # Build base image
 docker build -t sono-eval-test -f Dockerfile .
@@ -254,6 +269,7 @@ pip install -r requirements.txt
 ```
 
 ### Step 4: Check Dependencies
+
 ```bash
 # Verify requirements.txt syntax
 pip install --dry-run -r requirements.txt
@@ -267,6 +283,7 @@ pip check
 ## 🚀 Quick Fixes
 
 ### Minimal Build (Skip ML Dependencies)
+
 If you just want to test the API without ML:
 
 ```dockerfile
@@ -291,6 +308,7 @@ CMD ["uvicorn", "sono_eval.api.main:app", "--host", "0.0.0.0", "--port", "8000"]
 ```
 
 Create `requirements-minimal.txt`:
+
 ```
 fastapi==0.104.1
 uvicorn[standard]==0.24.0
@@ -327,6 +345,7 @@ Before building, ensure:
 2. **Check Docker version**: `docker --version` and `docker-compose --version`
 3. **Check system resources**: `docker system df`
 4. **Try building manually**:
+
    ```bash
    docker build -t sono-eval-test .
    ```

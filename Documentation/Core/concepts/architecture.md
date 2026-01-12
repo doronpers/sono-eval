@@ -83,6 +83,7 @@ Understanding the Sono-Eval system design, components, and data flow.
 **Purpose**: Multi-path evaluation with explainable, evidence-based scoring.
 
 **Key Features**:
+
 - Evaluates submissions across multiple paths (Technical, Design, Collaboration, etc.)
 - Generates evidence for every score
 - Identifies micro-motives using Dark Horse model
@@ -90,11 +91,13 @@ Understanding the Sono-Eval system design, components, and data flow.
 - Calculates confidence scores
 
 **Data Flow**:
+
 ```
 Input → Path Evaluation → Evidence Collection → Scoring → Explanation → Result
 ```
 
 **Models** (`assessment/models.py`):
+
 - `AssessmentInput` - Submission data
 - `AssessmentResult` - Complete evaluation results
 - `PathScore` - Individual path evaluation
@@ -111,6 +114,7 @@ Input → Path Evaluation → Evidence Collection → Scoring → Explanation �
 **Purpose**: Persistent, hierarchical storage for candidate data.
 
 **Key Features**:
+
 - Multi-level tree structure (configurable depth)
 - JSON-based persistence
 - LRU caching for performance
@@ -118,6 +122,7 @@ Input → Path Evaluation → Evidence Collection → Scoring → Explanation �
 - Version tracking
 
 **Structure**:
+
 ```
 CandidateMemory
 └── Root Node (Level 0)
@@ -129,6 +134,7 @@ CandidateMemory
 ```
 
 **Use Cases**:
+
 - Store assessment history
 - Track candidate progress
 - Maintain contextual information
@@ -145,6 +151,7 @@ CandidateMemory
 **Components**:
 
 **Tag Generator** (`generator.py`):
+
 - T5-base model with PEFT/LoRA fine-tuning
 - Generates semantic tags from code
 - Confidence scoring
@@ -152,6 +159,7 @@ CandidateMemory
 - Fallback heuristics when model unavailable
 
 **TagStudio** (`tagstudio.py`):
+
 - File organization and management
 - Automated tagging on import
 - Tag-based search and retrieval
@@ -159,11 +167,13 @@ CandidateMemory
 - Reverse indexing
 
 **Model Architecture**:
+
 ```
 Input Text → T5 Encoder → LoRA Adapter → T5 Decoder → Generated Tags
 ```
 
 **Tag Categories**:
+
 - Language features
 - Design patterns
 - Code quality indicators
@@ -181,6 +191,7 @@ Input Text → T5 Encoder → LoRA Adapter → T5 Decoder → Generated Tags
 **Framework**: FastAPI (async Python web framework)
 
 **Key Features**:
+
 - Auto-generated OpenAPI documentation
 - Async request handling
 - Pydantic validation
@@ -188,6 +199,7 @@ Input Text → T5 Encoder → LoRA Adapter → T5 Decoder → Generated Tags
 - Health check endpoints
 
 **Endpoints**:
+
 - `/api/v1/assessments` - Assessment operations
 - `/api/v1/candidates` - Candidate management
 - `/api/v1/tags` - Tag generation
@@ -206,12 +218,14 @@ Input Text → T5 Encoder → LoRA Adapter → T5 Decoder → Generated Tags
 **Framework**: Click (Python CLI framework)
 
 **Key Features**:
+
 - Intuitive command structure
 - Rich terminal output (colors, tables)
 - Comprehensive help text
 - JSON output support
 
 **Command Groups**:
+
 - `assess` - Assessment operations
 - `candidate` - Candidate management
 - `tag` - Tagging operations
@@ -326,12 +340,14 @@ Input Text → T5 Encoder → LoRA Adapter → T5 Decoder → Generated Tags
 ```
 
 **Services**:
+
 1. **sono-eval**: Main application
 2. **postgres**: Database (optional, SQLite default)
 3. **redis**: Caching and task queue
 4. **superset**: Analytics dashboards
 
 **Volumes**:
+
 - Persistent data storage
 - Model cache
 - Configuration files
@@ -341,33 +357,39 @@ Input Text → T5 Encoder → LoRA Adapter → T5 Decoder → Generated Tags
 ## Technology Stack
 
 ### Backend
+
 - **Python 3.9+**: Core language
 - **FastAPI**: Web framework
 - **Uvicorn**: ASGI server
 - **Pydantic**: Data validation
 
 ### Machine Learning
+
 - **PyTorch**: Deep learning framework
 - **Transformers**: Hugging Face library
 - **T5**: Text-to-text model
 - **PEFT/LoRA**: Efficient fine-tuning
 
 ### Storage
+
 - **PostgreSQL**: Primary database (prod)
 - **SQLite**: Default database (dev)
 - **Redis**: Caching and sessions
 - **JSON Files**: MemU storage
 
 ### Analytics
+
 - **Apache Superset**: Visualization platform
 - **SQL**: Data queries
 
 ### CLI
+
 - **Click**: Command framework
 - **Rich**: Terminal formatting
 - **Tabulate**: Table display
 
 ### Deployment
+
 - **Docker**: Containerization
 - **Docker Compose**: Orchestration
 
@@ -376,16 +398,19 @@ Input Text → T5 Encoder → LoRA Adapter → T5 Decoder → Generated Tags
 ## Design Patterns
 
 ### Assessment Engine
+
 - **Strategy Pattern**: Different evaluation strategies per path
 - **Builder Pattern**: Evidence and result construction
 - **Template Method**: Standardized evaluation flow
 
 ### Memory System
+
 - **Composite Pattern**: Hierarchical node structure
 - **Repository Pattern**: Abstract storage access
 - **Memento Pattern**: Version tracking
 
 ### API Layer
+
 - **Dependency Injection**: FastAPI dependencies
 - **Factory Pattern**: Application creation
 - **Middleware Pattern**: Request/response processing
@@ -395,18 +420,21 @@ Input Text → T5 Encoder → LoRA Adapter → T5 Decoder → Generated Tags
 ## Scalability Considerations
 
 ### Horizontal Scaling
+
 - Stateless API (can run multiple instances)
 - Redis for shared session state
 - PostgreSQL for shared persistence
 - Load balancer for distribution
 
 ### Vertical Scaling
+
 - Async I/O for concurrency
 - LRU caching reduces database load
 - Lazy model loading saves memory
 - Configurable worker processes
 
 ### Performance Optimization
+
 - **Caching**:
   - Memory cache (MemU LRU)
   - Redis cache (assessment results)
@@ -425,11 +453,13 @@ Input Text → T5 Encoder → LoRA Adapter → T5 Decoder → Generated Tags
 ## Security Architecture
 
 ### Authentication & Authorization
+
 - API key authentication (configurable)
 - OAuth2 support (planned)
 - Role-based access control (planned)
 
 ### Data Protection
+
 - Input validation (Pydantic)
 - SQL injection prevention (ORM)
 - XSS prevention (FastAPI)
@@ -437,6 +467,7 @@ Input Text → T5 Encoder → LoRA Adapter → T5 Decoder → Generated Tags
 - HTTPS/TLS support
 
 ### Secret Management
+
 - Environment variables
 - Secure key storage
 - Secret rotation support
@@ -446,18 +477,21 @@ Input Text → T5 Encoder → LoRA Adapter → T5 Decoder → Generated Tags
 ## Monitoring & Observability
 
 ### Logging
+
 - Structured logging (JSON)
 - Log levels (DEBUG, INFO, WARNING, ERROR)
 - Request/response logging
 - Error tracking
 
 ### Metrics (Planned)
+
 - Assessment latency
 - API response times
 - Cache hit rates
 - Resource utilization
 
 ### Health Checks
+
 - API health endpoint
 - Database connectivity
 - Redis connectivity
@@ -468,7 +502,9 @@ Input Text → T5 Encoder → LoRA Adapter → T5 Decoder → Generated Tags
 ## Extension Points
 
 ### Custom Assessment Paths
+
 Add new evaluation dimensions:
+
 ```python
 class CustomPath(PathType):
     SECURITY = "security"
@@ -479,7 +515,9 @@ def evaluate_security_path(self, input_data):
 ```
 
 ### Custom Metrics
+
 Define new scoring metrics:
+
 ```python
 custom_metric = ScoringMetric(
     name="Custom Metric",
@@ -491,13 +529,16 @@ custom_metric = ScoringMetric(
 ```
 
 ### Model Fine-Tuning
+
 Adapt T5 model to your domain:
+
 ```python
 generator = TagGenerator()
 generator.fine_tune(training_data, epochs=3)
 ```
 
 ### Custom Dashboards
+
 Create Superset visualizations for your needs.
 
 ---
@@ -505,6 +546,7 @@ Create Superset visualizations for your needs.
 ## Future Architecture
 
 ### Planned Enhancements
+
 1. **Microservices**: Split into smaller services
 2. **Message Queue**: Async assessment processing
 3. **Real-time Updates**: WebSocket support
@@ -524,5 +566,5 @@ Create Superset visualizations for your needs.
 
 ---
 
-**Last Updated**: January 10, 2026  
+**Last Updated**: January 10, 2026
 **Version**: 0.1.0

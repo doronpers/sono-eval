@@ -13,10 +13,10 @@
                 What should we call you?
                 <span class="help-text">This helps us track your progress over time</span>
             </label>
-            <input 
-                type="text" 
-                id="candidate-id" 
-                name="candidate_id" 
+            <input
+                type="text"
+                id="candidate-id"
+                name="candidate_id"
                 class="form-input"
                 placeholder="e.g., john_doe or john.doe@example.com"
                 required
@@ -94,17 +94,17 @@
 <script>
 document.getElementById('start-form').addEventListener('submit', function(e) {
     e.preventDefault();
-    
+
     const candidateId = document.getElementById('candidate-id').value;
     const experience = document.querySelector('input[name="experience"]:checked')?.value || 'intermediate';
     const goals = Array.from(document.querySelectorAll('input[name="goals"]:checked'))
         .map(cb => cb.value);
-    
+
     // Store in session storage for later use
     sessionStorage.setItem('candidate_id', candidateId);
     sessionStorage.setItem('experience', experience);
     sessionStorage.setItem('goals', JSON.stringify(goals));
-    
+
     // Navigate to path selection
     location.href = `/mobile/paths?candidate_id=${encodeURIComponent(candidateId)}`;
 });

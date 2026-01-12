@@ -35,7 +35,7 @@ async function loadResults() {
         // In a real implementation, this would fetch from the API
         // For now, we'll show a demo result
         await new Promise(resolve => setTimeout(resolve, 2000));
-        
+
         displayResults();
     } catch (error) {
         document.getElementById('results-container').innerHTML = `
@@ -50,7 +50,7 @@ async function loadResults() {
 function displayResults() {
     const resultsContainer = document.getElementById('results-container');
     const actionButtons = document.getElementById('action-buttons');
-    
+
     // Sample results - in production, this would come from API
     const results = {
         overall_score: 78,
@@ -77,7 +77,7 @@ function displayResults() {
             'Explore advanced design patterns'
         ]
     };
-    
+
     resultsContainer.innerHTML = `
         <div class="overall-score-card">
             <div class="score-circle">
@@ -162,7 +162,7 @@ function displayResults() {
             </div>
         </div>
     `;
-    
+
     actionButtons.style.display = 'flex';
 }
 

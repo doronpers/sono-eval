@@ -13,6 +13,7 @@ This directory contains configuration files for Apache Superset dashboards and a
 Superset is automatically configured when using Docker Compose.
 
 Default credentials:
+
 - Username: `admin`
 - Password: `admin`
 
@@ -46,7 +47,7 @@ Example SQL queries for Superset datasets:
 
 ```sql
 -- Candidate scores over time
-SELECT 
+SELECT
     candidate_id,
     timestamp,
     overall_score,
@@ -55,7 +56,7 @@ FROM assessments
 ORDER BY timestamp DESC;
 
 -- Path performance comparison
-SELECT 
+SELECT
     path,
     AVG(score) as avg_score,
     COUNT(*) as count

@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
         element.addEventListener('touchstart', function() {
             this.style.opacity = '0.7';
         });
-        
+
         element.addEventListener('touchend', function() {
             this.style.opacity = '1';
         });
@@ -99,7 +99,7 @@ function showError(message) {
             <strong>Error:</strong> ${message}
         </div>
     `;
-    
+
     const container = document.querySelector('.mobile-content');
     if (container) {
         container.insertBefore(errorDiv, container.firstChild);
@@ -117,7 +117,7 @@ function showSuccess(message) {
             ${message}
         </div>
     `;
-    
+
     const container = document.querySelector('.mobile-content');
     if (container) {
         container.insertBefore(successDiv, container.firstChild);

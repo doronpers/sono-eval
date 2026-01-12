@@ -20,7 +20,7 @@ Sono-Eval is an assessment system designed to **help you understand and grow you
 - **Tracks your growth** over time with detailed history
 - **Provides actionable feedback** you can use immediately
 
-**For Candidates**: Think of it as a helpful coach, not just a grader!  
+**For Candidates**: Think of it as a helpful coach, not just a grader!
 **For Teams**: Get deep insights into skills and growth potential, not just pass/fail.
 
 ---
@@ -84,20 +84,24 @@ curl -X POST http://localhost:8000/api/v1/assessments \
 ## 📚 Documentation
 
 ### Getting Started
+
 - **[Quick Start](Documentation/Guides/quick-start.md)** - 5-minute setup guide
 - **[Installation](Documentation/Guides/user-guide/installation.md)** - Detailed installation for all platforms
 - **[For Candidates](Documentation/Guides/resources/candidate-guide.md)** - Welcome guide for candidates 👋
 
 ### User Guides
+
 - **[CLI Reference](Documentation/Guides/user-guide/cli-reference.md)** - Complete command-line guide
 - **[API Reference](Documentation/Guides/user-guide/api-reference.md)** - REST API documentation
 - **[Configuration](Documentation/Guides/user-guide/configuration.md)** - Configure for your needs
 
 ### Concepts
+
 - **[Architecture](Documentation/Core/concepts/architecture.md)** - System design and components
 - **[Glossary](Documentation/Core/concepts/glossary.md)** - Comprehensive terminology
 
 ### Help & Resources
+
 - **[Assessment Path Guide](Documentation/Guides/assessment-path-guide.md)** - Complete guide to all assessment paths
 - **[FAQ](Documentation/Guides/faq.md)** - Frequently asked questions
 - **[Troubleshooting](Documentation/Guides/troubleshooting.md)** - Solutions to common issues
@@ -134,6 +138,7 @@ See **[Architecture Overview](Documentation/Core/concepts/architecture.md)** for
 ## 💻 Usage Examples
 
 ### Command Line
+
 ```bash
 # Create a candidate
 sono-eval candidate create --id candidate_001
@@ -152,6 +157,7 @@ sono-eval server start --reload
 ```
 
 ### Python API
+
 ```python
 from sono_eval.assessment import AssessmentEngine, AssessmentInput, PathType
 
@@ -174,6 +180,7 @@ for finding in result.key_findings:
 ```
 
 ### REST API
+
 ```bash
 # Create assessment
 curl -X POST http://localhost:8000/api/v1/assessments \
@@ -191,6 +198,7 @@ curl -X POST http://localhost:8000/api/v1/assessments \
 ## 🚀 Deployment
 
 ### Docker (Recommended)
+
 ```bash
 # Start all services
 ./launcher.sh start
@@ -206,6 +214,7 @@ curl -X POST http://localhost:8000/api/v1/assessments \
 ```
 
 ### Local Development
+
 ```bash
 # Setup environment
 ./launcher.sh dev
@@ -224,6 +233,7 @@ See **[Installation Guide](Documentation/Guides/user-guide/installation.md)** fo
 ## 🧪 Development
 
 ### Setup
+
 ```bash
 # Clone repository
 git clone https://github.com/doronpers/sono-eval.git
@@ -238,6 +248,7 @@ pip install -e ".[dev]"
 ```
 
 ### Testing
+
 ```bash
 # Run tests
 pytest
@@ -250,6 +261,7 @@ pytest tests/test_assessment.py
 ```
 
 ### Code Quality
+
 ```bash
 # Format code
 black src/ tests/
@@ -268,6 +280,7 @@ See **[Contributing Guide](CONTRIBUTING.md)** for more details.
 ## 🤝 Contributing
 
 We welcome contributions! Whether you're:
+
 - 🐛 Reporting bugs
 - 💡 Suggesting features
 - 📝 Improving documentation
@@ -291,13 +304,14 @@ You're free to use, modify, and distribute it. See the LICENSE file for details.
 - **❓ FAQ**: [Documentation/Guides/faq.md](Documentation/Guides/faq.md)
 - **🐛 Issues**: [GitHub Issues](https://github.com/doronpers/sono-eval/issues)
 - **💬 Discussions**: [GitHub Discussions](https://github.com/doronpers/sono-eval/discussions)
-- **📧 Email**: support@sono-eval.example
+- **📧 Email**: <support@sono-eval.example>
 
 ---
 
 ## 🗺️ Roadmap
 
 ### Current (v0.1.0) ✅
+
 - Explainable assessment engine
 - Multi-path evaluation
 - CLI and REST API
@@ -305,6 +319,7 @@ You're free to use, modify, and distribute it. See the LICENSE file for details.
 - Comprehensive documentation
 
 ### Next Release (v0.2.0)
+
 - [ ] Real ML-based scoring (not placeholder)
 - [ ] Batch assessment processing
 - [ ] Authentication system
@@ -312,6 +327,7 @@ You're free to use, modify, and distribute it. See the LICENSE file for details.
 - [ ] Enhanced analytics
 
 ### Future
+
 - [ ] Multi-language support
 - [ ] Plugin system
 - [ ] Real-time collaboration
@@ -349,4 +365,9 @@ See **[CHANGELOG.md](CHANGELOG.md)** for version history.
 [⬆ Back to top](#sono-eval)
 
 ## Agent Instructions
-This repository follows [Agent Behavioral Standards](documentation/Governance/AGENT_BEHAVIORAL_STANDARDS.md). All AI agents MUST read these before performing any tasks.
+
+> **CRITICAL**: All AI agents MUST read [`AGENT_KNOWLEDGE_BASE.md`](AGENT_KNOWLEDGE_BASE.md) before performing any tasks. It contains non-negotiable Patent, Security, and Design rules.
+
+Additional resources:
+
+- [Agent Behavioral Standards](documentation/Governance/AGENT_BEHAVIORAL_STANDARDS.md)

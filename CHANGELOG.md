@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
 - Comprehensive documentation structure in `docs/` folder
 - Quick Start Guide for 5-minute setup
 - Complete API Reference with examples
@@ -21,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Design audit based on Dieter Rams' 10 principles
 
 ### Changed
+
 - Reorganized documentation from root to `docs/` folder
 - Moved GLOSSARY.md to `docs/concepts/glossary.md`
 - Moved learning-resources.md to `docs/resources/learning.md`
@@ -28,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhanced README.md with clearer structure
 
 ### Improved
+
 - Documentation is now production-ready for hiring/onboarding
 - Better onboarding experience for candidates
 - Clearer navigation and organization
@@ -38,6 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.0] - 2026-01-10
 
 ### Added
+
 - Initial release of Sono-Eval
 - Assessment engine with explainable scoring
 - Multi-path evaluation (Technical, Design, Collaboration, Problem-Solving, Communication)
@@ -55,6 +59,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Configuration via environment variables
 
 ### Features
+
 - Evidence-based assessment with explanations
 - Confidence scoring for all evaluations
 - LRU caching for performance
@@ -74,6 +79,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 This is the first alpha release of Sono-Eval, focusing on core functionality and developer experience.
 
 **Highlights**:
+
 - Complete assessment engine with explainable AI
 - Multi-path evaluation framework
 - Semantic tagging with transformer models
@@ -82,12 +88,14 @@ This is the first alpha release of Sono-Eval, focusing on core functionality and
 - Docker deployment support
 
 **Target Users**:
+
 - Development teams evaluating candidates
 - Companies hiring interns and junior developers
 - Technical assessors seeking explainable results
 - Candidates wanting growth-oriented feedback
 
 **Known Limitations**:
+
 - Assessment engine uses example/placeholder scoring (ML models need fine-tuning)
 - No authentication in default configuration
 - Single-server deployment only
@@ -95,6 +103,7 @@ This is the first alpha release of Sono-Eval, focusing on core functionality and
 - No web UI for reviews
 
 **Next Steps** (Planned for 0.2.0):
+
 - Real ML-based assessment scoring
 - Batch assessment processing
 - Authentication and authorization
@@ -103,24 +112,29 @@ This is the first alpha release of Sono-Eval, focusing on core functionality and
 - Performance optimizations
 
 **Upgrade Path**:
+
 - First release, no upgrades needed
 
 **Breaking Changes**:
+
 - None (initial release)
 
 **Dependencies**:
+
 - Python 3.9+
 - Docker & Docker Compose (for containerized deployment)
 - PostgreSQL or SQLite (database)
 - Redis (caching, optional)
 
 **Documentation**:
+
 - Comprehensive documentation in `docs/` folder
 - Quick Start Guide for rapid setup
 - Complete API and CLI references
 - Architecture and implementation details
 
 **Support**:
+
 - GitHub Issues for bugs and features
 - GitHub Discussions for questions
 - Email support available
@@ -130,6 +144,7 @@ This is the first alpha release of Sono-Eval, focusing on core functionality and
 ## Future Roadmap
 
 ### Version 0.2.0 (Planned)
+
 - Real ML-based scoring (not placeholder)
 - Batch assessment processing
 - Authentication system (API keys, OAuth2)
@@ -139,6 +154,7 @@ This is the first alpha release of Sono-Eval, focusing on core functionality and
 - Migration guides
 
 ### Version 0.3.0 (Planned)
+
 - Advanced analytics features
 - Multi-language support
 - Plugin system for extensibility
@@ -147,6 +163,7 @@ This is the first alpha release of Sono-Eval, focusing on core functionality and
 - Integration with GitHub, GitLab
 
 ### Version 1.0.0 (Planned)
+
 - Production-ready with extensive testing
 - Complete web interface
 - Enterprise features
@@ -161,6 +178,7 @@ This is the first alpha release of Sono-Eval, focusing on core functionality and
 Want to contribute? See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 Reporting issues? Please include:
+
 - Version number (check with `sono-eval --version`)
 - Environment details (OS, Python version, Docker version)
 - Steps to reproduce
@@ -171,22 +189,23 @@ Reporting issues? Please include:
 ## Versioning
 
 Sono-Eval follows [Semantic Versioning](https://semver.org/):
+
 - **MAJOR**: Incompatible API changes
 - **MINOR**: New functionality (backward-compatible)
 - **PATCH**: Bug fixes (backward-compatible)
 
-**Alpha** (0.x.x): API may change, not production-ready  
-**Beta** (0.9.x): Feature-complete, stabilizing API  
+**Alpha** (0.x.x): API may change, not production-ready
+**Beta** (0.9.x): Feature-complete, stabilizing API
 **Stable** (1.0.0+): Production-ready, stable API
 
 ---
 
 ## Links
 
-- **Repository**: https://github.com/doronpers/sono-eval
+- **Repository**: <https://github.com/doronpers/sono-eval>
 - **Documentation**: [docs/README.md](docs/README.md)
-- **Issues**: https://github.com/doronpers/sono-eval/issues
-- **Discussions**: https://github.com/doronpers/sono-eval/discussions
+- **Issues**: <https://github.com/doronpers/sono-eval/issues>
+- **Discussions**: <https://github.com/doronpers/sono-eval/discussions>
 
 ---
 

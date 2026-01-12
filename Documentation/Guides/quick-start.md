@@ -13,6 +13,7 @@ Before starting, ensure you have:
 - **Git** for cloning the repository
 
 Check your versions:
+
 ```bash
 python3 --version  # Should be 3.9 or higher
 docker --version
@@ -26,22 +27,26 @@ docker-compose --version
 The fastest way to get started:
 
 ### Step 1: Clone the Repository
+
 ```bash
 git clone https://github.com/doronpers/sono-eval.git
 cd sono-eval
 ```
 
 ### Step 2: Start All Services
+
 ```bash
 ./launcher.sh start
 ```
 
 That's it! The launcher will:
+
 - Create `.env` from `.env.example` if needed
 - Start all Docker containers
 - Display service URLs
 
 ### Step 3: Access Services
+
 ```bash
 # API Documentation (interactive)
 open http://localhost:8000/docs
@@ -56,6 +61,7 @@ open http://localhost:8088
 ### Step 4: Run Your First Assessment
 
 Using the CLI in Docker:
+
 ```bash
 ./launcher.sh cli assess run \
   --candidate-id demo_user \
@@ -64,6 +70,7 @@ Using the CLI in Docker:
 ```
 
 Using curl:
+
 ```bash
 curl -X POST http://localhost:8000/api/v1/assessments \
   -H "Content-Type: application/json" \
@@ -82,6 +89,7 @@ curl -X POST http://localhost:8000/api/v1/assessments \
 For development or if you prefer not to use Docker:
 
 ### Step 1: Clone and Setup
+
 ```bash
 # Clone repository
 git clone https://github.com/doronpers/sono-eval.git
@@ -97,6 +105,7 @@ pip install -e .
 ```
 
 ### Step 2: Configure Environment
+
 ```bash
 # Copy example configuration
 cp .env.example .env
@@ -106,12 +115,14 @@ nano .env
 ```
 
 ### Step 3: Initialize Storage
+
 ```bash
 # Create data directories
 mkdir -p data/memory data/tagstudio models/cache
 ```
 
 ### Step 4: Verify Installation
+
 ```bash
 # Check CLI is working
 sono-eval --version
@@ -121,6 +132,7 @@ sono-eval config show
 ```
 
 ### Step 5: Run Your First Assessment
+
 ```bash
 # Create a sample file
 cat > sample.py << 'EOF'
@@ -143,6 +155,7 @@ cat results.json | python -m json.tool
 ```
 
 ### Step 6: Start API Server (Optional)
+
 ```bash
 # Start in development mode
 sono-eval server start --reload
@@ -155,26 +168,31 @@ sono-eval server start --reload
 ## 📊 Common Operations
 
 ### Create a Candidate
+
 ```bash
 sono-eval candidate create --id candidate_001
 ```
 
 ### List All Candidates
+
 ```bash
 sono-eval candidate list
 ```
 
 ### View Candidate Details
+
 ```bash
 sono-eval candidate show --id candidate_001
 ```
 
 ### Generate Code Tags
+
 ```bash
 sono-eval tag generate --file mycode.js --max-tags 5
 ```
 
 ### Run Multi-Path Assessment
+
 ```bash
 sono-eval assess run \
   --candidate-id candidate_001 \
@@ -211,18 +229,21 @@ See the [Configuration Guide](user-guide/configuration.md) for all options.
 ## 📈 Next Steps
 
 ### Learn More
+
 - **[User Guide](user-guide/installation.md)** - Detailed installation and usage
 - **[API Reference](user-guide/api-reference.md)** - Complete API documentation
 - **[CLI Reference](user-guide/cli-reference.md)** - All CLI commands
 - **[Concepts](concepts/architecture.md)** - Understand the architecture
 
 ### Try Advanced Features
+
 - **Multi-Path Assessment** - Evaluate across all dimensions
 - **Semantic Tagging** - Auto-tag code with T5 model
 - **Memory Storage** - Track candidate progress over time
 - **Analytics** - Visualize results in Superset dashboards
 
 ### Customize
+
 - **[Configuration](user-guide/configuration.md)** - Tune settings for your needs
 - **[Examples](resources/examples/)** - Practical code examples
 - **[API Integration](user-guide/api-reference.md)** - Integrate with your systems
@@ -234,6 +255,7 @@ See the [Configuration Guide](user-guide/configuration.md) for all options.
 ### Docker Issues
 
 **Services won't start:**
+
 ```bash
 # Check Docker is running
 docker ps
@@ -246,6 +268,7 @@ docker ps
 ```
 
 **Port conflicts:**
+
 ```bash
 # Edit docker-compose.yml and change ports
 # Or stop conflicting services
@@ -254,6 +277,7 @@ docker ps
 ### Local Installation Issues
 
 **Import errors:**
+
 ```bash
 # Make sure you're in the virtual environment
 source venv/bin/activate
@@ -263,12 +287,14 @@ pip install -e .
 ```
 
 **Permission errors:**
+
 ```bash
 # Ensure data directories are writable
 chmod -R 755 data/
 ```
 
 **Model download issues:**
+
 ```bash
 # T5 model downloads on first use - requires internet
 # Check connection and disk space
@@ -283,6 +309,7 @@ See the full [Troubleshooting Guide](troubleshooting.md) for more help.
 To verify everything is working:
 
 ### Docker Deployment
+
 ```bash
 # Check all services are running
 ./launcher.sh status
@@ -295,6 +322,7 @@ curl http://localhost:8000/api/v1/health
 ```
 
 ### Local Installation
+
 ```bash
 # Run tests
 pytest
@@ -311,12 +339,12 @@ sono-eval assess run --candidate-id test --content "print('test')" --paths techn
 
 ---
 
-## 🎉 You're Ready!
+## 🎉 You're Ready
 
 Congratulations! You now have Sono-Eval running. Here are some things to try:
 
 1. **Assess some real code** from your projects
-2. **Explore the API docs** at http://localhost:8000/docs
+2. **Explore the API docs** at <http://localhost:8000/docs>
 3. **Create dashboards** in Superset for your assessments
 4. **Integrate with your CI/CD** pipeline
 
@@ -324,6 +352,6 @@ Need help? Check the [documentation](README.md) or [open an issue](https://githu
 
 ---
 
-**Estimated Time**: 5 minutes  
-**Difficulty**: Beginner  
+**Estimated Time**: 5 minutes
+**Difficulty**: Beginner
 **Next**: [User Guide](user-guide/installation.md) | [API Reference](user-guide/api-reference.md) | [Examples](resources/examples/)

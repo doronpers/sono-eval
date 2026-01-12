@@ -6,7 +6,7 @@ Complete REST API documentation for Sono-Eval.
 
 ## Base URL
 
-**Local Development**: `http://localhost:8000`  
+**Local Development**: `http://localhost:8000`
 **Production**: Configure via `API_HOST` and `API_PORT` in `.env`
 
 ---
@@ -22,7 +22,7 @@ Interactive API documentation is available at:
 
 ## Authentication
 
-**Version 0.1.0**: No authentication required (development mode)  
+**Version 0.1.0**: No authentication required (development mode)
 **Production**: Will require API keys (coming soon)
 
 ---
@@ -32,6 +32,7 @@ Interactive API documentation is available at:
 All responses follow this structure:
 
 **Success (200-299):**
+
 ```json
 {
   "data": { ... },
@@ -40,6 +41,7 @@ All responses follow this structure:
 ```
 
 **Error (400-599):**
+
 ```json
 {
   "detail": "Error message",
@@ -55,10 +57,12 @@ All responses follow this structure:
 ### Health & Status
 
 #### `GET /health`
+
 Basic health check endpoint. Returns component status without sensitive details.
 Suitable for load balancers and monitoring tools.
 
 **Response:**
+
 ```json
 {
   "status": "healthy",
@@ -77,19 +81,23 @@ Suitable for load balancers and monitoring tools.
 ```
 
 **Status Codes:**
+
 - `200 OK`: System is healthy
 - `503 Service Unavailable`: One or more components are unhealthy
 
 **Example:**
+
 ```bash
 curl http://localhost:8000/health
 ```
 
 #### `GET /api/v1/health`
+
 Detailed health check endpoint. Returns component status with detailed information.
 Suitable for monitoring and debugging. Sensitive paths are sanitized.
 
 **Response:**
+
 ```json
 {
   "status": "healthy",
@@ -133,10 +141,12 @@ Suitable for monitoring and debugging. Sensitive paths are sanitized.
 ```
 
 **Status Codes:**
+
 - `200 OK`: System is healthy
 - `503 Service Unavailable`: One or more components are unhealthy
 
 **Component Status Values:**
+
 - `operational`: Component is working correctly
 - `degraded`: Component has issues but may still function
 - `unavailable`: Component is not available (may be optional)
@@ -145,19 +155,23 @@ Suitable for monitoring and debugging. Sensitive paths are sanitized.
 **Note**: Health checks are cached for 5 seconds to avoid expensive operations on every request.
 
 **Example:**
+
 ```bash
 curl http://localhost:8000/api/v1/health
 ```
 
 #### `GET /`
+
 Root endpoint with API information. Returns health status with details.
 
 **Response:** Same format as `/api/v1/health`
 
 #### `GET /status`
+
 Detailed status information about the API configuration.
 
 **Response:**
+
 ```json
 {
   "api_version": "0.1.0",
@@ -175,9 +189,11 @@ Detailed status information about the API configuration.
 ### Assessment Endpoints
 
 #### `POST /api/v1/assessments`
+
 Create and run a new assessment.
 
 **Request Body:**
+
 ```json
 {
   "candidate_id": "string",
@@ -195,6 +211,7 @@ Create and run a new assessment.
 ```
 
 **Path Types:**
+
 - `TECHNICAL` - Code quality, algorithms, problem-solving
 - `DESIGN` - Architecture, patterns, system design
 - `COLLABORATION` - Documentation, communication
@@ -202,6 +219,7 @@ Create and run a new assessment.
 - `COMMUNICATION` - Clarity, explanation quality
 
 **Response:**
+
 ```json
 {
   "candidate_id": "string",
@@ -230,6 +248,7 @@ Create and run a new assessment.
 ```
 
 **Example:**
+
 ```bash
 curl -X POST http://localhost:8000/api/v1/assessments \
   -H "Content-Type: application/json" \
@@ -244,6 +263,7 @@ curl -X POST http://localhost:8000/api/v1/assessments \
 ```
 
 **Python Example:**
+
 ```python
 import requests
 
@@ -264,15 +284,18 @@ print(f"Score: {result['overall_score']}")
 ---
 
 #### `GET /api/v1/assessments/{assessment_id}`
+
 Get assessment by ID.
 
 **Parameters:**
+
 - `assessment_id` (path) - Assessment identifier
 
 **Response:**
 Same structure as POST response above.
 
 **Example:**
+
 ```bash
 curl http://localhost:8000/api/v1/assessments/assess_1234567890
 ```
@@ -282,9 +305,11 @@ curl http://localhost:8000/api/v1/assessments/assess_1234567890
 ### Candidate Endpoints
 
 #### `POST /api/v1/candidates`
+
 Create a new candidate profile.
 
 **Request Body:**
+
 ```json
 {
   "candidate_id": "string",
@@ -298,6 +323,7 @@ Create a new candidate profile.
 ```
 
 **Response:**
+
 ```json
 {
   "candidate_id": "string",
@@ -308,6 +334,7 @@ Create a new candidate profile.
 ```
 
 **Example:**
+
 ```bash
 curl -X POST http://localhost:8000/api/v1/candidates \
   -H "Content-Type: application/json" \
@@ -320,12 +347,15 @@ curl -X POST http://localhost:8000/api/v1/candidates \
 ---
 
 #### `GET /api/v1/candidates/{candidate_id}`
+
 Get candidate information.
 
 **Parameters:**
+
 - `candidate_id` (path) - Candidate identifier
 
 **Response:**
+
 ```json
 {
   "candidate_id": "string",
@@ -341,6 +371,7 @@ Get candidate information.
 ```
 
 **Example:**
+
 ```bash
 curl http://localhost:8000/api/v1/candidates/candidate_001
 ```
@@ -348,13 +379,16 @@ curl http://localhost:8000/api/v1/candidates/candidate_001
 ---
 
 #### `GET /api/v1/candidates`
+
 List all candidates.
 
 **Query Parameters:**
+
 - `limit` (optional) - Maximum results (default: 100)
 - `offset` (optional) - Pagination offset (default: 0)
 
 **Response:**
+
 ```json
 {
   "candidates": ["candidate_001", "candidate_002", ...],
@@ -365,6 +399,7 @@ List all candidates.
 ```
 
 **Example:**
+
 ```bash
 curl "http://localhost:8000/api/v1/candidates?limit=50&offset=0"
 ```
@@ -372,12 +407,15 @@ curl "http://localhost:8000/api/v1/candidates?limit=50&offset=0"
 ---
 
 #### `DELETE /api/v1/candidates/{candidate_id}`
+
 Delete a candidate.
 
 **Parameters:**
+
 - `candidate_id` (path) - Candidate identifier
 
 **Response:**
+
 ```json
 {
   "message": "Candidate deleted successfully",
@@ -386,6 +424,7 @@ Delete a candidate.
 ```
 
 **Example:**
+
 ```bash
 curl -X DELETE http://localhost:8000/api/v1/candidates/candidate_001
 ```
@@ -395,9 +434,11 @@ curl -X DELETE http://localhost:8000/api/v1/candidates/candidate_001
 ### Tagging Endpoints
 
 #### `POST /api/v1/tags/generate`
+
 Generate semantic tags for code or text.
 
 **Request Body:**
+
 ```json
 {
   "text": "string",
@@ -407,6 +448,7 @@ Generate semantic tags for code or text.
 ```
 
 **Response:**
+
 ```json
 {
   "tags": [
@@ -424,6 +466,7 @@ Generate semantic tags for code or text.
 ```
 
 **Example:**
+
 ```bash
 curl -X POST http://localhost:8000/api/v1/tags/generate \
   -H "Content-Type: application/json" \
@@ -450,7 +493,7 @@ curl -X POST http://localhost:8000/api/v1/tags/generate \
 
 ## Rate Limiting
 
-**Current**: No rate limiting (development)  
+**Current**: No rate limiting (development)
 **Production**: Will implement rate limiting (details TBD)
 
 ---
@@ -472,6 +515,7 @@ CORS is enabled for all origins in development mode.
 ## SDKs and Client Libraries
 
 ### Python
+
 ```python
 # Use requests library
 import requests
@@ -479,7 +523,7 @@ import requests
 class SonoEvalClient:
     def __init__(self, base_url="http://localhost:8000"):
         self.base_url = base_url
-    
+
     def assess(self, candidate_id, code, paths=None):
         response = requests.post(
             f"{self.base_url}/api/v1/assessments",
@@ -499,6 +543,7 @@ print(result['overall_score'])
 ```
 
 ### JavaScript/TypeScript
+
 ```javascript
 // Use fetch API
 class SonoEvalClient {
@@ -532,6 +577,7 @@ console.log(result.overall_score);
 ## Best Practices
 
 ### Error Handling
+
 Always check response status and handle errors gracefully:
 
 ```python
@@ -544,6 +590,7 @@ else:
 ```
 
 ### Timeouts
+
 Set reasonable timeouts for assessment requests:
 
 ```python
@@ -551,6 +598,7 @@ response = requests.post(url, json=data, timeout=30)
 ```
 
 ### Retry Logic
+
 Implement exponential backoff for retries:
 
 ```python
@@ -579,5 +627,5 @@ def assess_with_retry(data, max_retries=3):
 
 ---
 
-**Last Updated**: January 10, 2026  
+**Last Updated**: January 10, 2026
 **Version**: 0.1.0

@@ -7,22 +7,26 @@ This guide provides resources to help you understand and use the Sono-Eval syste
 ### 1. Explainable AI in Assessment
 
 **What is Explainable Scoring?**
+
 - Every assessment score is backed by concrete evidence
 - Transparent reasoning for all evaluations
 - Natural language explanations for findings
 
 **Why It Matters:**
+
 - Build trust in automated assessments
 - Help candidates understand their performance
 - Enable continuous improvement
 
 **Resources:**
+
 - [Explainable AI - A Review](https://arxiv.org/abs/2001.00234)
 - [LIME: Local Interpretable Model-Agnostic Explanations](https://arxiv.org/abs/1602.04938)
 
 ### 2. Multi-Path Assessment
 
 **Assessment Paths:**
+
 1. **Technical** - Code quality, algorithms, problem-solving
 2. **Design** - Architecture, patterns, system design
 3. **Collaboration** - Documentation, communication, teamwork
@@ -30,6 +34,7 @@ This guide provides resources to help you understand and use the Sono-Eval syste
 5. **Communication** - Clarity, documentation quality
 
 **Benefits:**
+
 - Comprehensive evaluation beyond just code
 - Recognition of diverse strengths
 - Personalized feedback
@@ -39,6 +44,7 @@ This guide provides resources to help you understand and use the Sono-Eval syste
 Based on the tex-assist-coding model, we track intrinsic motivations:
 
 **Micro-Motives:**
+
 - **Mastery** - Drive to deeply understand and perfect skills
 - **Exploration** - Willingness to try new approaches
 - **Collaboration** - Team-oriented mindset
@@ -46,22 +52,26 @@ Based on the tex-assist-coding model, we track intrinsic motivations:
 - **Quality** - Attention to detail and craftsmanship
 
 **Resources:**
+
 - [Dark Horse Theory](https://www.darkhorseinstitute.com/)
 - Research on individualized learning paths
 
 ### 4. Semantic Tagging with T5
 
 **What is T5?**
+
 - Text-to-Text Transfer Transformer from Google
 - Pre-trained language model for various NLP tasks
 - Frames all tasks as text generation
 
 **PEFT & LoRA:**
+
 - Parameter-Efficient Fine-Tuning
 - LoRA: Low-Rank Adaptation of Large Language Models
 - Efficient way to adapt large models to specific tasks
 
 **Resources:**
+
 - [T5 Paper: Exploring Transfer Learning](https://arxiv.org/abs/1910.10683)
 - [LoRA: Low-Rank Adaptation](https://arxiv.org/abs/2106.09685)
 - [Hugging Face PEFT Documentation](https://huggingface.co/docs/peft)
@@ -69,11 +79,13 @@ Based on the tex-assist-coding model, we track intrinsic motivations:
 ### 5. Hierarchical Memory (MemU)
 
 **Concept:**
+
 - Multi-level storage structure for candidate data
 - Efficient retrieval with caching
 - Version control for memory evolution
 
 **Use Cases:**
+
 - Track candidate progress over time
 - Store assessment history
 - Build comprehensive profiles
@@ -89,7 +101,7 @@ from sono_eval.assessment import AssessmentEngine, AssessmentInput, PathType
 async def main():
     # Create engine
     engine = AssessmentEngine()
-    
+
     # Sample code submission
     code = """
     def factorial(n):
@@ -97,7 +109,7 @@ async def main():
             return 1
         return n * factorial(n - 1)
     """
-    
+
     # Create assessment input
     assessment_input = AssessmentInput(
         candidate_id="tutorial_user",
@@ -105,14 +117,14 @@ async def main():
         content={"code": code},
         paths_to_evaluate=[PathType.TECHNICAL]
     )
-    
+
     # Run assessment
     result = await engine.assess(assessment_input)
-    
+
     # Display results
     print(f"Overall Score: {result.overall_score}/100")
     print(f"Summary: {result.summary}")
-    
+
     for path_score in result.path_scores:
         print(f"\n{path_score.path.value}:")
         for metric in path_score.metrics:
@@ -322,15 +334,18 @@ Create custom Superset dashboards for your needs:
 ### Common Issues
 
 **Issue: Low confidence scores**
+
 - Solution: Provide more context and evidence in submissions
 - Check assessment configuration
 
 **Issue: Model loading errors**
+
 - Solution: Verify model cache directory permissions
 - Ensure sufficient disk space
 - Check internet connection for downloads
 
 **Issue: Memory storage errors**
+
 - Solution: Check file permissions on storage path
 - Verify disk space
 - Review candidate ID format
@@ -338,16 +353,19 @@ Create custom Superset dashboards for your needs:
 ## Further Reading
 
 ### Books
+
 - "Explainable AI" by Leilani H. Gilpin
 - "Dark Horse: Achieving Success Through the Pursuit of Fulfillment" by Todd Rose
 - "Attention Is All You Need" (Transformer paper)
 
 ### Papers
+
 - T5: Text-to-Text Transfer Transformer
 - LoRA: Low-Rank Adaptation of Large Language Models
 - PEFT: Parameter-Efficient Fine-Tuning
 
 ### Online Resources
+
 - [Hugging Face Transformers](https://huggingface.co/docs/transformers)
 - [FastAPI Documentation](https://fastapi.tiangolo.com/)
 - [Apache Superset Documentation](https://superset.apache.org/docs/intro)

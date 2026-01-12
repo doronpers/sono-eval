@@ -15,8 +15,8 @@
     <div class="path-navigation">
         <div class="nav-tabs" id="path-tabs">
             {% for path in selected_paths %}
-            <button 
-                class="nav-tab {% if loop.first %}active{% endif %}" 
+            <button
+                class="nav-tab {% if loop.first %}active{% endif %}"
                 data-path="{{ path }}"
                 onclick="switchPath('{{ path }}')"
             >
@@ -28,13 +28,13 @@
 
     <form id="assessment-form" class="assessment-form">
         <input type="hidden" name="candidate_id" value="{{ candidate_id }}">
-        
+
         {% for path in selected_paths %}
         <div class="path-section {% if not loop.first %}hidden{% endif %}" data-path="{{ path }}">
             <div class="section-intro">
                 <h3>{{ path|replace('_', ' ')|title }} Assessment</h3>
                 <p class="intro-text">
-                    This section focuses on your {{ path|replace('_', ' ') }} capabilities. 
+                    This section focuses on your {{ path|replace('_', ' ') }} capabilities.
                     Take your time and explain your thinking.
                 </p>
             </div>
@@ -47,12 +47,12 @@
                         Paste your code, describe your approach, or share a repository link
                     </span>
                 </label>
-                <textarea 
+                <textarea
                     name="content_{{ path }}"
                     class="form-textarea"
                     rows="10"
                     placeholder="// Paste your code here or describe your solution...
-// 
+//
 // Example:
 // function calculateSum(numbers) {
 //     return numbers.reduce((sum, num) => sum + num, 0);
@@ -69,7 +69,7 @@
                         What was your thinking? What challenges did you face?
                     </span>
                 </label>
-                <textarea 
+                <textarea
                     name="explanation_{{ path }}"
                     class="form-textarea"
                     rows="5"
@@ -166,13 +166,13 @@ function switchPath(pathId) {
     document.querySelectorAll('.path-section').forEach(section => {
         section.classList.add('hidden');
     });
-    
+
     // Show selected section
     const section = document.querySelector(`.path-section[data-path="${pathId}"]`);
     if (section) {
         section.classList.remove('hidden');
     }
-    
+
     // Update active tab
     document.querySelectorAll('.nav-tab').forEach(tab => {
         tab.classList.remove('active');
@@ -181,7 +181,7 @@ function switchPath(pathId) {
     if (tab) {
         tab.classList.add('active');
     }
-    
+
     // Update current index
     currentPathIndex = selectedPaths.indexOf(pathId);
     updateNavigation();
@@ -192,11 +192,11 @@ function updateNavigation() {
     const nextButton = document.getElementById('next-button');
     const submitButton = document.getElementById('submit-button');
     const currentSection = document.getElementById('current-section');
-    
+
     currentSection.textContent = currentPathIndex + 1;
-    
+
     prevButton.style.display = currentPathIndex > 0 ? 'block' : 'none';
-    
+
     if (currentPathIndex < selectedPaths.length - 1) {
         nextButton.style.display = 'block';
         submitButton.style.display = 'none';
@@ -227,7 +227,7 @@ function skipSection() {
 function toggleExpand(button) {
     const content = button.nextElementSibling;
     const icon = button.querySelector('.expand-icon');
-    
+
     if (content.style.maxHeight) {
         content.style.maxHeight = null;
         icon.textContent = '▼';
@@ -240,26 +240,26 @@ function toggleExpand(button) {
 // Form submission
 document.getElementById('assessment-form').addEventListener('submit', async function(e) {
     e.preventDefault();
-    
+
     const formData = new FormData(this);
     const content = {};
     const personalization = {
         experience: sessionStorage.getItem('experience') || 'intermediate',
         goals: JSON.parse(sessionStorage.getItem('goals') || '[]')
     };
-    
+
     // Collect all form data
     for (let [key, value] of formData.entries()) {
-        if (key.startsWith('content_') || key.startsWith('explanation_') || 
+        if (key.startsWith('content_') || key.startsWith('explanation_') ||
             key.startsWith('errors_') || key.startsWith('testing_') ||
             key.startsWith('alternatives_') || key.startsWith('scaling_')) {
             content[key] = value;
         }
     }
-    
+
     // Show loading
     document.getElementById('loading-overlay').style.display = 'flex';
-    
+
     try {
         const response = await fetch('/mobile/api/assess', {
             method: 'POST',
@@ -273,9 +273,9 @@ document.getElementById('assessment-form').addEventListener('submit', async func
                 personalization: personalization
             })
         });
-        
+
         const result = await response.json();
-        
+
         if (result.success) {
             location.href = `/mobile/results?assessment_id=${result.assessment_id}`;
         } else {

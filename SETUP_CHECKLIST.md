@@ -5,15 +5,18 @@ This checklist covers everything needed to preview and use Sono-Eval as a real u
 ## ✅ Prerequisites
 
 ### 1. **Python Environment**
+
 - [ ] Python 3.9+ installed
 - [ ] Virtual environment created (or use Docker)
 
 ### 2. **Docker (Optional but Recommended)**
+
 - [ ] Docker installed
 - [ ] Docker Compose installed
 - [ ] Docker daemon running
 
 ### 3. **System Dependencies**
+
 - [ ] Git installed
 - [ ] curl installed (for health checks)
 
@@ -22,17 +25,21 @@ This checklist covers everything needed to preview and use Sono-Eval as a real u
 ## 🔧 Configuration Steps
 
 ### 1. **Fix Dependencies**
+
 - [x] ✅ Fixed torch version (was 2.8.0, now >=2.1.0)
 - [x] ✅ Added jinja2 to requirements.txt
 - [ ] Install dependencies: `pip install -r requirements.txt`
 
 ### 2. **Environment Configuration**
+
 - [x] ✅ Created .env.example template
 - [ ] Copy .env.example to .env: `cp .env.example .env`
 - [ ] Review and update .env if needed (defaults work for development)
 
 ### 3. **Data Directories**
+
 The system will auto-create these, but you can create them manually:
+
 - [ ] `./data/memory` - For MemU storage
 - [ ] `./data/tagstudio` - For TagStudio data
 - [ ] `./models/cache` - For ML model cache
@@ -58,6 +65,7 @@ cp .env.example .env
 ```
 
 **What Docker provides:**
+
 - ✅ PostgreSQL database
 - ✅ Redis cache
 - ✅ Apache Superset analytics
@@ -88,6 +96,7 @@ sono-eval server start --reload
 ```
 
 **Note:** Local development uses:
+
 - SQLite instead of PostgreSQL (default)
 - No Redis (optional, can run separately)
 - No Superset (optional)
@@ -97,12 +106,14 @@ sono-eval server start --reload
 ## 🧪 Testing the System
 
 ### 1. **Health Check**
+
 ```bash
 curl http://localhost:8000/health
 # Should return: {"status":"healthy","version":"0.1.0",...}
 ```
 
 ### 2. **CLI Test**
+
 ```bash
 # Show configuration
 sono-eval config show
@@ -115,6 +126,7 @@ sono-eval candidate list
 ```
 
 ### 3. **API Test**
+
 ```bash
 # Create candidate via API
 curl -X POST http://localhost:8000/api/v1/candidates \
@@ -126,7 +138,8 @@ curl http://localhost:8000/api/v1/candidates
 ```
 
 ### 4. **Web Interface Test**
-- Open browser: http://localhost:8000/mobile/
+
+- Open browser: <http://localhost:8000/mobile/>
 - Should see welcome page
 - Click "Let's Get Started"
 - Select assessment paths
@@ -137,30 +150,38 @@ curl http://localhost:8000/api/v1/candidates
 ## ⚠️ Known Issues & Solutions
 
 ### Issue 1: torch Installation Fails
-**Problem:** torch==2.8.0 doesn't exist  
+
+**Problem:** torch==2.8.0 doesn't exist
 **Solution:** ✅ Fixed - now uses torch>=2.1.0
 
 ### Issue 2: Missing jinja2
-**Problem:** Mobile templates need jinja2  
+
+**Problem:** Mobile templates need jinja2
 **Solution:** ✅ Fixed - added to requirements.txt
 
 ### Issue 3: ML Models Not Loading
-**Problem:** TagGenerator tries to load T5 model on first use  
-**Solution:** 
+
+**Problem:** TagGenerator tries to load T5 model on first use
+**Solution:**
+
 - Models download automatically on first use
 - Can take several minutes and ~500MB download
 - For basic testing, tagging can be skipped
 
 ### Issue 4: Redis Not Available
-**Problem:** Redis connection fails in local dev  
+
+**Problem:** Redis connection fails in local dev
 **Solution:**
+
 - Redis is optional for basic functionality
 - System will work without it (just no caching)
 - Or run: `docker run -d -p 6379:6379 redis:7-alpine`
 
 ### Issue 5: PostgreSQL Not Available
-**Problem:** Database connection fails  
+
+**Problem:** Database connection fails
 **Solution:**
+
 - Default uses SQLite (no setup needed)
 - For PostgreSQL, update DATABASE_URL in .env
 - Or use Docker which includes PostgreSQL
@@ -198,8 +219,8 @@ Before considering setup complete:
 
 - [ ] API server starts without errors
 - [ ] Health endpoint returns 200: `curl http://localhost:8000/health`
-- [ ] API docs accessible: http://localhost:8000/docs
-- [ ] Mobile UI loads: http://localhost:8000/mobile/
+- [ ] API docs accessible: <http://localhost:8000/docs>
+- [ ] Mobile UI loads: <http://localhost:8000/mobile/>
 - [ ] CLI commands work: `sono-eval config show`
 - [ ] Can create candidate via CLI
 - [ ] Can create candidate via API
@@ -210,7 +231,7 @@ Before considering setup complete:
 ## 🎯 Next Steps After Setup
 
 1. **Explore the Mobile Interface**
-   - Visit http://localhost:8000/mobile/
+   - Visit <http://localhost:8000/mobile/>
    - Complete a sample assessment
    - Review results
 
