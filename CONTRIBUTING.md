@@ -11,6 +11,7 @@ We are committed to providing a welcoming and inclusive environment. Please be r
 ### Reporting Bugs
 
 If you find a bug, please open an issue with:
+
 - Clear description of the problem
 - Steps to reproduce
 - Expected vs actual behavior
@@ -20,6 +21,7 @@ If you find a bug, please open an issue with:
 ### Suggesting Features
 
 We welcome feature suggestions! Please open an issue with:
+
 - Clear description of the feature
 - Use case and benefits
 - Potential implementation approach
@@ -28,12 +30,14 @@ We welcome feature suggestions! Please open an issue with:
 ### Pull Requests
 
 1. **Fork the repository**
+
    ```bash
    git clone https://github.com/doronpers/sono-eval.git
    cd sono-eval
    ```
 
 2. **Create a branch**
+
    ```bash
    git checkout -b feature/your-feature-name
    ```
@@ -44,30 +48,34 @@ We welcome feature suggestions! Please open an issue with:
    - Update documentation as needed
 
 4. **Test your changes**
+
    ```bash
    # Run tests
    pytest
-   
+
    # Check coverage
    pytest --cov=src/sono_eval
-   
+
    # Format code
    black src/ tests/
-   
+
    # Lint
    flake8 src/ tests/
    ```
 
 5. **Commit your changes**
+
    ```bash
    git add .
    git commit -m "Add feature: brief description"
    ```
 
 6. **Push and create PR**
+
    ```bash
    git push origin feature/your-feature-name
    ```
+
    Then open a Pull Request on GitHub.
 
 ## Development Setup
@@ -86,9 +94,19 @@ source venv/bin/activate
 # Install in development mode
 pip install -e ".[dev]"
 
+# Install pre-commit hooks
+pre-commit install
+
+# Fix SSL certificate issues (if using Python 3.13 from python.org)
+# See scripts/README.md for details
+./scripts/fix-pre-commit-ssl.sh
+
 # Copy environment config
 cp .env.example .env
 ```
+
+<｜tool▁calls▁begin｜><｜tool▁call▁begin｜>
+read_file
 
 ### Docker Development
 
@@ -113,6 +131,7 @@ docker-compose exec sono-eval pytest
 - Write docstrings for all public functions/classes
 
 Example:
+
 ```python
 def assess_candidate(
     candidate_id: str,
@@ -144,12 +163,13 @@ def assess_candidate(
 - Include docstrings in test functions
 
 Example:
+
 ```python
 def test_assessment_engine_technical_path():
     """Test that technical path assessment produces valid scores."""
     engine = AssessmentEngine()
     result = await engine.assess(test_input)
-    
+
     assert result.overall_score >= 0
     assert result.overall_score <= 100
     assert len(result.path_scores) > 0
@@ -186,18 +206,21 @@ sono-eval/
 We especially welcome contributions in:
 
 ### High Priority
+
 - Batch assessment processing
 - Additional assessment paths
 - ML model fine-tuning utilities
 - Performance optimizations
 
 ### Medium Priority
+
 - Web UI for reviews
 - Additional tagging strategies
 - Enhanced analytics dashboards
 - Integration with code platforms
 
 ### Documentation
+
 - Tutorials and guides
 - API examples
 - Architecture documentation

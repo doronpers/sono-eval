@@ -1,14 +1,17 @@
 """Data models for the assessment system."""
 
+import json
+import re
 from datetime import datetime
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, validator
 
 
 class MotiveType(str, Enum):
     """Types of micro-motives in the Dark Horse model."""
+
     EXPLORATION = "exploration"
     MASTERY = "mastery"
     COLLABORATION = "collaboration"
@@ -19,6 +22,7 @@ class MotiveType(str, Enum):
 
 class PathType(str, Enum):
     """Different assessment paths."""
+
     TECHNICAL = "technical"
     DESIGN = "design"
     COLLABORATION = "collaboration"
@@ -28,6 +32,7 @@ class PathType(str, Enum):
 
 class EvidenceType(str, Enum):
     """Types of evidence for scoring."""
+
     CODE_QUALITY = "code_quality"
     DOCUMENTATION = "documentation"
     TESTING = "testing"
@@ -38,6 +43,7 @@ class EvidenceType(str, Enum):
 
 class Evidence(BaseModel):
     """Evidence supporting a score."""
+
     type: EvidenceType
     description: str
     source: str  # File path, line number, or reference
@@ -47,6 +53,7 @@ class Evidence(BaseModel):
 
 class MicroMotive(BaseModel):
     """Micro-motive tracking for Dark Horse model."""
+
     motive_type: MotiveType
     strength: float = Field(ge=0.0, le=1.0)
     indicators: List[str] = Field(default_factory=list)
@@ -56,6 +63,7 @@ class MicroMotive(BaseModel):
 
 class ScoringMetric(BaseModel):
     """Individual scoring metric with explainability."""
+
     name: str
     category: str
     score: float = Field(ge=0.0, le=100.0)
@@ -67,6 +75,7 @@ class ScoringMetric(BaseModel):
 
 class PathScore(BaseModel):
     """Score for a specific assessment path."""
+
     path: PathType
     overall_score: float = Field(ge=0.0, le=100.0)
     metrics: List[ScoringMetric] = Field(default_factory=list)
@@ -77,26 +86,27 @@ class PathScore(BaseModel):
 
 class AssessmentResult(BaseModel):
     """Complete assessment result with explainability."""
+
     candidate_id: str
     assessment_id: str
     timestamp: datetime = Field(default_factory=datetime.utcnow)
-    
+
     # Overall scores
     overall_score: float = Field(ge=0.0, le=100.0)
     confidence: float = Field(ge=0.0, le=1.0)
-    
+
     # Multi-path scores
     path_scores: List[PathScore] = Field(default_factory=list)
-    
+
     # Dark Horse tracking
     micro_motives: List[MicroMotive] = Field(default_factory=list)
     dominant_path: Optional[PathType] = None
-    
+
     # Explainability
     summary: str
     key_findings: List[str] = Field(default_factory=list)
     recommendations: List[str] = Field(default_factory=list)
-    
+
     # Metadata
     engine_version: str = "1.0"
     processing_time_ms: Optional[float] = None
@@ -105,10 +115,38 @@ class AssessmentResult(BaseModel):
 
 class AssessmentInput(BaseModel):
     """Input for assessment."""
-    candidate_id: str
-    submission_type: str  # e.g., "code", "project", "interview"
+
+    candidate_id: str = Field(..., min_length=1, max_length=100)
+    submission_type: str = Field(..., min_length=1, max_length=50)  # e.g., "code", "project", "interview"
     content: Dict[str, Any]  # Flexible content structure
-    paths_to_evaluate: List[PathType] = Field(
-        default_factory=lambda: list(PathType)
-    )
+    paths_to_evaluate: List[PathType] = Field(default_factory=lambda: list(PathType))
     options: Dict[str, Any] = Field(default_factory=dict)
+    
+    @validator('candidate_id')
+    def validate_candidate_id(cls, v):
+        """Validate candidate_id to prevent injection attacks."""
+        # Allow only alphanumeric, dash, underscore
+        if not re.match(r'^[a-zA-Z0-9_-]+$', v):
+            raise ValueError(
+                'candidate_id must contain only alphanumeric characters, dashes, and underscores'
+            )
+        return v
+    
+    @validator('submission_type')
+    def validate_submission_type(cls, v):
+        """Validate submission_type."""
+        allowed_types = ['code', 'project', 'interview', 'portfolio', 'test']
+        if v not in allowed_types:
+            raise ValueError(f'submission_type must be one of: {", ".join(allowed_types)}')
+        return v
+    
+    @validator('content')
+    def validate_content(cls, v):
+        """Validate content structure."""
+        if not v:
+            raise ValueError('content cannot be empty')
+        # Check for reasonable size (prevent DoS via large payloads)
+        content_str = json.dumps(v)
+        if len(content_str) > 10_000_000:  # 10MB limit
+            raise ValueError('content size exceeds maximum allowed (10MB)')
+        return v

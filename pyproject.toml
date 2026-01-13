@@ -82,3 +82,7 @@ python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
 addopts = "-v --cov=src/sono_eval --cov-report=html --cov-report=term"
+
+[tool.isort]
+profile = "black"
+line_length = 88

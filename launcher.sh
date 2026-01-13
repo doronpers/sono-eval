@@ -45,7 +45,7 @@ check_env() {
 start_services() {
     echo -e "${BLUE}Starting Sono-Eval services...${NC}"
     docker-compose up -d
-    
+
     echo ""
     echo -e "${GREEN}Services started successfully!${NC}"
     echo ""
@@ -83,18 +83,18 @@ run_cli() {
 # Function to setup development environment
 setup_dev() {
     echo -e "${BLUE}Setting up development environment...${NC}"
-    
+
     # Create virtual environment
     if [ ! -d "venv" ]; then
         python3 -m venv venv
         echo -e "${GREEN}Virtual environment created${NC}"
     fi
-    
+
     # Activate and install dependencies
     source venv/bin/activate
     pip install -r requirements.txt
     pip install -e ".[dev]"
-    
+
     echo -e "${GREEN}Development environment ready${NC}"
     echo -e "${YELLOW}Activate with: source venv/bin/activate${NC}"
 }

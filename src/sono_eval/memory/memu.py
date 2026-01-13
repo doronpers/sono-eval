@@ -19,6 +19,7 @@ logger = get_logger(__name__)
 
 class MemoryNode(BaseModel):
     """Node in the hierarchical memory structure."""
+
     node_id: str
     parent_id: Optional[str] = None
     level: int = 0
@@ -30,6 +31,7 @@ class MemoryNode(BaseModel):
 
 class CandidateMemory(BaseModel):
     """Complete memory structure for a candidate."""
+
     candidate_id: str
     root_node: MemoryNode
     nodes: Dict[str, MemoryNode] = Field(default_factory=dict)
@@ -40,7 +42,7 @@ class CandidateMemory(BaseModel):
 class MemUStorage:
     """
     Persistent hierarchical memory storage.
-    
+
     Features:
     - Hierarchical structure with configurable depth
     - Efficient storage and retrieval
@@ -55,7 +57,7 @@ class MemUStorage:
         self.max_depth = self.config.memu_max_depth
         self.cache_size = self.config.memu_cache_size
         self._cache: Dict[str, CandidateMemory] = {}
-        
+
         # Ensure storage directory exists
         self.storage_path.mkdir(parents=True, exist_ok=True)
         logger.info(f"Initialized MemU storage at {self.storage_path}")
@@ -74,7 +76,7 @@ class MemUStorage:
             New CandidateMemory instance
         """
         logger.info(f"Creating memory for candidate {candidate_id}")
-        
+
         root_node = MemoryNode(
             node_id=f"{candidate_id}_root",
             level=0,
@@ -117,7 +119,7 @@ class MemUStorage:
                 # Remove oldest entry
                 oldest_key = next(iter(self._cache))
                 del self._cache[oldest_key]
-        
+
         return memory
 
     def add_memory_node(
@@ -179,9 +181,7 @@ class MemUStorage:
         logger.info(f"Added node {node_id} to {candidate_id}")
         return new_node
 
-    def update_memory_node(
-        self, candidate_id: str, node_id: str, data: Dict[str, Any]
-    ) -> bool:
+    def update_memory_node(self, candidate_id: str, node_id: str, data: Dict[str, Any]) -> bool:
         """
         Update data in an existing memory node.
 
@@ -205,9 +205,7 @@ class MemUStorage:
         logger.info(f"Updated node {node_id} for {candidate_id}")
         return True
 
-    def get_node_path(
-        self, candidate_id: str, node_id: str
-    ) -> List[MemoryNode]:
+    def get_node_path(self, candidate_id: str, node_id: str) -> List[MemoryNode]:
         """
         Get the path from root to specified node.
 
@@ -224,7 +222,7 @@ class MemUStorage:
 
         path = []
         current_id = node_id
-        
+
         while current_id:
             node = memory.nodes[current_id]
             path.insert(0, node)

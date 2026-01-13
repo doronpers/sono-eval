@@ -18,7 +18,7 @@ logger = get_logger(__name__)
 class TagStudioManager:
     """
     TagStudio integration for file management and tagging.
-    
+
     Features:
     - Automated file organization
     - Semantic tagging of code files
@@ -32,17 +32,17 @@ class TagStudioManager:
         self.root_path = root_path or self.config.get_tagstudio_root()
         self.auto_tag = self.config.tagstudio_auto_tag
         self.tag_generator = TagGenerator()
-        
+
         # Create directory structure
         self.files_dir = self.root_path / "files"
         self.tags_dir = self.root_path / "tags"
         self.index_file = self.root_path / "index.json"
-        
+
         self.files_dir.mkdir(parents=True, exist_ok=True)
         self.tags_dir.mkdir(parents=True, exist_ok=True)
-        
+
         self._index = self._load_index()
-        
+
         logger.info(f"Initialized TagStudio at {self.root_path}")
 
     def add_file(
@@ -66,27 +66,27 @@ class TagStudioManager:
         """
         if content is None and file_path.exists():
             content = file_path.read_text()
-        
+
         if content is None:
             logger.error(f"No content available for {file_path}")
             return ""
 
         # Generate file ID
         file_id = f"file_{len(self._index)}"
-        
+
         # Store file
         stored_path = self.files_dir / f"{file_id}_{file_path.name}"
         stored_path.write_text(content)
-        
+
         # Generate tags
         tags = []
         if auto_tag if auto_tag is not None else self.auto_tag:
             semantic_tags = self.tag_generator.generate_tags(content)
             tags.extend([t.tag for t in semantic_tags])
-        
+
         if custom_tags:
             tags.extend(custom_tags)
-        
+
         # Update index
         self._index[file_id] = {
             "file_id": file_id,
@@ -98,12 +98,12 @@ class TagStudioManager:
                 "extension": file_path.suffix,
             },
         }
-        
+
         self._save_index()
-        
+
         # Store tags
         self._update_tag_index(file_id, tags)
-        
+
         logger.info(f"Added file {file_path.name} with ID {file_id} and {len(tags)} tags")
         return file_id
 
@@ -132,7 +132,7 @@ class TagStudioManager:
         """Add tags to an existing file."""
         if file_id not in self._index:
             return False
-        
+
         self._index[file_id]["tags"].extend(new_tags)
         self._save_index()
         self._update_tag_index(file_id, new_tags)
@@ -142,11 +142,9 @@ class TagStudioManager:
         """Remove tags from a file."""
         if file_id not in self._index:
             return False
-        
+
         current_tags = self._index[file_id]["tags"]
-        self._index[file_id]["tags"] = [
-            t for t in current_tags if t not in tags_to_remove
-        ]
+        self._index[file_id]["tags"] = [t for t in current_tags if t not in tags_to_remove]
         self._save_index()
         return True
 
@@ -169,16 +167,16 @@ class TagStudioManager:
         """Update the reverse tag index."""
         for tag in tags:
             tag_file = self.tags_dir / f"{tag}.json"
-            
+
             if tag_file.exists():
                 with open(tag_file, "r") as f:
                     tag_data = json.load(f)
             else:
                 tag_data = {"tag": tag, "files": []}
-            
+
             if file_id not in tag_data["files"]:
                 tag_data["files"].append(file_id)
-            
+
             with open(tag_file, "w") as f:
                 json.dump(tag_data, f, indent=2)
 

@@ -16,6 +16,7 @@ logger = get_logger(__name__)
 
 class SemanticTag(BaseModel):
     """Semantic tag for code or assessment artifact."""
+
     tag: str
     category: str
     confidence: float = Field(ge=0.0, le=1.0)
@@ -26,7 +27,7 @@ class SemanticTag(BaseModel):
 class TagGenerator:
     """
     T5-based semantic tag generator with LoRA fine-tuning support.
-    
+
     Features:
     - T5 model for tag generation
     - PEFT LoRA for efficient fine-tuning
@@ -44,17 +45,17 @@ class TagGenerator:
             "lora_alpha": self.config.t5_lora_alpha,
             "lora_dropout": self.config.t5_lora_dropout,
         }
-        
+
         self.model = None
         self.tokenizer = None
         self._initialized = False
-        
+
         logger.info(f"Initializing TagGenerator with model: {self.model_name}")
 
     def initialize(self) -> None:
         """
         Lazy initialization of the model.
-        
+
         This allows the class to be instantiated without loading the model
         until it's actually needed.
         """
@@ -64,21 +65,21 @@ class TagGenerator:
         try:
             from transformers import T5ForConditionalGeneration, T5Tokenizer
             from peft import LoraConfig, get_peft_model
-            
+
             logger.info(f"Loading T5 model: {self.model_name}")
-            
+
             # Load tokenizer
             self.tokenizer = T5Tokenizer.from_pretrained(
                 self.model_name,
                 cache_dir=str(self.cache_dir),
             )
-            
+
             # Load base model
             base_model = T5ForConditionalGeneration.from_pretrained(
                 self.model_name,
                 cache_dir=str(self.cache_dir),
             )
-            
+
             # Apply LoRA
             lora_config = LoraConfig(
                 r=self.lora_config["r"],
@@ -87,17 +88,16 @@ class TagGenerator:
                 target_modules=["q", "v"],
                 task_type="SEQ_2_SEQ_LM",
             )
-            
+
             self.model = get_peft_model(base_model, lora_config)
             self.model.eval()
-            
+
             self._initialized = True
             logger.info("Model initialization complete")
-            
+
         except ImportError as e:
             logger.warning(
-                f"Model dependencies not available: {e}. "
-                "Tag generator will use fallback mode."
+                f"Model dependencies not available: {e}. " "Tag generator will use fallback mode."
             )
             self._initialized = False
         except Exception as e:
@@ -281,7 +281,7 @@ class TagGenerator:
             return
 
         logger.info(f"Starting fine-tuning with {len(training_data)} examples")
-        
+
         # This is a placeholder for fine-tuning logic
         # In production, would implement full training loop
         logger.warning("Fine-tuning not fully implemented in this version")
