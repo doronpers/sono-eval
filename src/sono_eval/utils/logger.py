@@ -3,7 +3,7 @@
 import json
 import logging
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict, Optional
 
 from sono_eval.utils.config import get_config
@@ -11,11 +11,11 @@ from sono_eval.utils.config import get_config
 
 class StructuredFormatter(logging.Formatter):
     """JSON structured logging formatter."""
-    
+
     def format(self, record: logging.LogRecord) -> str:
         """Format log record as structured JSON."""
         log_data: Dict[str, Any] = {
-            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "timestamp": datetime.now(timezone.utc).isoformat() + "Z",
             "level": record.levelname,
             "logger": record.name,
             "message": record.getMessage(),
@@ -23,11 +23,11 @@ class StructuredFormatter(logging.Formatter):
             "function": record.funcName,
             "line": record.lineno,
         }
-        
+
         # Add exception info if present
         if record.exc_info:
             log_data["exception"] = self.formatException(record.exc_info)
-        
+
         # Add extra fields if present
         if hasattr(record, "request_id"):
             log_data["request_id"] = record.request_id
@@ -35,7 +35,7 @@ class StructuredFormatter(logging.Formatter):
             log_data["user_id"] = record.user_id
         if hasattr(record, "duration_ms"):
             log_data["duration_ms"] = record.duration_ms
-        
+
         return json.dumps(log_data)
 
 
@@ -53,7 +53,7 @@ def get_logger(name: str, level: Optional[str] = None, structured: bool = False)
     """
     config = get_config()
     log_level = level or config.log_level
-    
+
     # Use structured logging in production by default
     if config.app_env == "production" and not structured:
         structured = True

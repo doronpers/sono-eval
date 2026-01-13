@@ -126,8 +126,8 @@ class AssessmentEngine:
         combined_evidence = heuristic_evidence.copy()
         if ml_insights:
             # Add ML insights as additional evidence
+            pattern = ml_insights.get("pattern", "additional pattern")
             combined_evidence.append(
-                pattern = ml_insights.get("pattern", "additional pattern")
                 Evidence(
                     type=EvidenceType.CODE_QUALITY,
                     description=f"ML model identified: {pattern}",

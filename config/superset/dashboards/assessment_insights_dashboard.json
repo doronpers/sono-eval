@@ -1,0 +1,166 @@
+{
+  "dashboard_title": "Assessment Insights Dashboard",
+  "description": "Path-specific metrics, evidence quality, and confidence analysis",
+  "metadata": {
+    "color_scheme": "supersetColors",
+    "default_filters": "{}",
+    "expanded_slices": {},
+    "filter_scopes": {},
+    "native_filter_configuration": [],
+    "refresh_frequency": 300,
+    "timed_refresh_immune_slices": []
+  },
+  "position_json": {
+    "DASHBOARD_VERSION_KEY": "v2",
+    "GRID_ID": {
+      "children": [
+        "ROW-header",
+        "ROW-path-overview",
+        "ROW-path-comparison",
+        "ROW-metrics-analysis"
+      ],
+      "id": "GRID_ID",
+      "type": "GRID"
+    },
+    "ROW-header": {
+      "children": [
+        "CHART-title",
+        "CHART-summary"
+      ],
+      "id": "ROW-header",
+      "meta": {
+        "background": "BACKGROUND_TRANSPARENT"
+      },
+      "type": "ROW"
+    },
+    "ROW-metrics-analysis": {
+      "children": [
+        "CHART-top-metrics",
+        "CHART-metric-scores"
+      ],
+      "id": "ROW-metrics-analysis",
+      "type": "ROW"
+    },
+    "ROW-path-comparison": {
+      "children": [
+        "CHART-path-comparison",
+        "CHART-dominant-paths"
+      ],
+      "id": "ROW-path-comparison",
+      "type": "ROW"
+    },
+    "ROW-path-overview": {
+      "children": [
+        "CHART-path-scores",
+        "CHART-path-distribution"
+      ],
+      "id": "ROW-path-overview",
+      "type": "ROW"
+    }
+  },
+  "slices": [
+    {
+      "description": "Average scores by assessment path",
+      "query_context": {
+        "datasource": "path_scores",
+        "groupby": [
+          "path_type"
+        ],
+        "metrics": [
+          "AVG(score)"
+        ],
+        "order_desc": true,
+        "viz_type": "dist_bar"
+      },
+      "slice_name": "Path Scores Overview",
+      "viz_type": "dist_bar"
+    },
+    {
+      "description": "Score distribution by path type",
+      "query_context": {
+        "datasource": "path_scores",
+        "groupby": [
+          "path_type"
+        ],
+        "metrics": [
+          "score"
+        ],
+        "order_desc": false,
+        "viz_type": "box_plot"
+      },
+      "slice_name": "Path Score Distribution",
+      "viz_type": "box_plot"
+    },
+    {
+      "description": "Path scores compared over time",
+      "query_context": {
+        "datasource": "path_scores",
+        "groupby": [
+          "path_type",
+          "timestamp"
+        ],
+        "metrics": [
+          "AVG(score)"
+        ],
+        "order_desc": false,
+        "time_grain_sqla": "P1D",
+        "time_range": "Last 30 days",
+        "viz_type": "line"
+      },
+      "slice_name": "Path Comparison Over Time",
+      "viz_type": "line"
+    },
+    {
+      "description": "Distribution of dominant paths across assessments",
+      "query_context": {
+        "datasource": "assessments",
+        "groupby": [
+          "dominant_path"
+        ],
+        "metrics": [
+          "COUNT(*)"
+        ],
+        "order_desc": true,
+        "viz_type": "pie"
+      },
+      "slice_name": "Dominant Path Distribution",
+      "viz_type": "pie"
+    },
+    {
+      "description": "Metrics with highest average scores",
+      "query_context": {
+        "datasource": "scoring_metrics",
+        "groupby": [
+          "metric_name",
+          "path_type"
+        ],
+        "metrics": [
+          "AVG(score)",
+          "COUNT(*)"
+        ],
+        "order_desc": true,
+        "row_limit": 20,
+        "viz_type": "table"
+      },
+      "slice_name": "Top Scoring Metrics",
+      "viz_type": "table"
+    },
+    {
+      "description": "Heatmap of metric scores across paths",
+      "query_context": {
+        "datasource": "scoring_metrics",
+        "groupby": [
+          "path_type",
+          "metric_name"
+        ],
+        "metrics": [
+          "AVG(score)"
+        ],
+        "order_desc": false,
+        "viz_type": "heatmap"
+      },
+      "slice_name": "Metric Scores by Path",
+      "viz_type": "heatmap"
+    }
+  ]
+}

@@ -177,7 +177,6 @@ API_V1_PREFIX = "/api/v1"
 
 
 # Request/Response Models
-# HealthResponse now imported from shared_ai_utils.api
 
 
 class CandidateCreateRequest(BaseModel):

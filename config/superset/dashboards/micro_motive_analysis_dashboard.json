@@ -1,0 +1,169 @@
+{
+  "dashboard_title": "Micro-Motive Analysis Dashboard",
+  "description": "Dark Horse model tracking, motive strength distributions, and path alignment patterns",
+  "metadata": {
+    "color_scheme": "supersetColors",
+    "default_filters": "{}",
+    "expanded_slices": {},
+    "filter_scopes": {},
+    "native_filter_configuration": [],
+    "refresh_frequency": 300,
+    "timed_refresh_immune_slices": []
+  },
+  "position_json": {
+    "DASHBOARD_VERSION_KEY": "v2",
+    "GRID_ID": {
+      "children": [
+        "ROW-header",
+        "ROW-motive-overview",
+        "ROW-motive-distribution",
+        "ROW-motive-trends"
+      ],
+      "id": "GRID_ID",
+      "type": "GRID"
+    },
+    "ROW-header": {
+      "children": [
+        "CHART-title",
+        "CHART-summary"
+      ],
+      "id": "ROW-header",
+      "meta": {
+        "background": "BACKGROUND_TRANSPARENT"
+      },
+      "type": "ROW"
+    },
+    "ROW-motive-distribution": {
+      "children": [
+        "CHART-motive-by-path",
+        "CHART-top-motives"
+      ],
+      "id": "ROW-motive-distribution",
+      "type": "ROW"
+    },
+    "ROW-motive-overview": {
+      "children": [
+        "CHART-motive-strengths",
+        "CHART-motive-distribution"
+      ],
+      "id": "ROW-motive-overview",
+      "type": "ROW"
+    },
+    "ROW-motive-trends": {
+      "children": [
+        "CHART-motive-trends",
+        "CHART-candidate-motives"
+      ],
+      "id": "ROW-motive-trends",
+      "type": "ROW"
+    }
+  },
+  "slices": [
+    {
+      "description": "Average strength by micro-motive type",
+      "query_context": {
+        "datasource": "micro_motives",
+        "groupby": [
+          "motive_type"
+        ],
+        "metrics": [
+          "AVG(strength)"
+        ],
+        "order_desc": true,
+        "viz_type": "dist_bar"
+      },
+      "slice_name": "Motive Strength by Type",
+      "viz_type": "dist_bar"
+    },
+    {
+      "description": "Distribution of micro-motive types",
+      "query_context": {
+        "datasource": "micro_motives",
+        "groupby": [
+          "motive_type"
+        ],
+        "metrics": [
+          "COUNT(*)"
+        ],
+        "order_desc": true,
+        "viz_type": "pie"
+      },
+      "slice_name": "Motive Distribution",
+      "viz_type": "pie"
+    },
+    {
+      "description": "Motive strength correlation with dominant assessment paths",
+      "query_context": {
+        "datasource": "micro_motives",
+        "groupby": [
+          "motive_type",
+          "dominant_path"
+        ],
+        "metrics": [
+          "AVG(strength)"
+        ],
+        "order_desc": false,
+        "viz_type": "heatmap"
+      },
+      "slice_name": "Motive Strength by Dominant Path",
+      "viz_type": "heatmap"
+    },
+    {
+      "description": "Most common micro-motive combinations",
+      "query_context": {
+        "datasource": "micro_motives",
+        "groupby": [
+          "motive_type",
+          "assessment_id"
+        ],
+        "metrics": [
+          "COUNT(*)",
+          "AVG(strength)"
+        ],
+        "order_desc": true,
+        "row_limit": 20,
+        "viz_type": "table"
+      },
+      "slice_name": "Top Motive Combinations",
+      "viz_type": "table"
+    },
+    {
+      "description": "Micro-motive strength trends over time",
+      "query_context": {
+        "datasource": "micro_motives",
+        "groupby": [
+          "motive_type",
+          "timestamp"
+        ],
+        "metrics": [
+          "AVG(strength)"
+        ],
+        "order_desc": false,
+        "time_grain_sqla": "P1D",
+        "time_range": "Last 30 days",
+        "viz_type": "line"
+      },
+      "slice_name": "Motive Trends Over Time",
+      "viz_type": "line"
+    },
+    {
+      "description": "Micro-motive profiles by candidate",
+      "query_context": {
+        "datasource": "micro_motives",
+        "groupby": [
+          "candidate_id",
+          "motive_type"
+        ],
+        "metrics": [
+          "AVG(strength)",
+          "COUNT(*)"
+        ],
+        "order_desc": true,
+        "row_limit": 30,
+        "viz_type": "table"
+      },
+      "slice_name": "Candidate Micro-Motive Profile",
+      "viz_type": "table"
+    }
+  ]
+}

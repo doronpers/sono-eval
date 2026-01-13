@@ -1,0 +1,189 @@
+{
+  "dashboard_title": "Candidate Performance Dashboard",
+  "description": "Overall assessment scores, trends, and candidate analytics",
+  "metadata": {
+    "color_scheme": "supersetColors",
+    "default_filters": "{}",
+    "expanded_slices": {},
+    "filter_scopes": {},
+    "native_filter_configuration": [],
+    "refresh_frequency": 300,
+    "timed_refresh_immune_slices": []
+  },
+  "position_json": {
+    "DASHBOARD_VERSION_KEY": "v2",
+    "GRID_ID": {
+      "children": [
+        "ROW-header",
+        "ROW-overview",
+        "ROW-trends",
+        "ROW-distribution"
+      ],
+      "id": "GRID_ID",
+      "type": "GRID"
+    },
+    "ROW-distribution": {
+      "children": [
+        "CHART-score-distribution",
+        "CHART-top-candidates"
+      ],
+      "id": "ROW-distribution",
+      "type": "ROW"
+    },
+    "ROW-header": {
+      "children": [
+        "CHART-title",
+        "CHART-summary"
+      ],
+      "id": "ROW-header",
+      "meta": {
+        "background": "BACKGROUND_TRANSPARENT"
+      },
+      "type": "ROW"
+    },
+    "ROW-overview": {
+      "children": [
+        "CHART-total-assessments",
+        "CHART-avg-score",
+        "CHART-avg-confidence",
+        "CHART-total-candidates"
+      ],
+      "id": "ROW-overview",
+      "type": "ROW"
+    },
+    "ROW-trends": {
+      "children": [
+        "CHART-score-trends",
+        "CHART-confidence-trends"
+      ],
+      "id": "ROW-trends",
+      "type": "ROW"
+    }
+  },
+  "slices": [
+    {
+      "description": "Total number of assessments conducted",
+      "query_context": {
+        "datasource": "assessments",
+        "filters": [],
+        "metrics": [
+          "COUNT(*)"
+        ],
+        "viz_type": "big_number_total"
+      },
+      "slice_name": "Total Assessments",
+      "viz_type": "big_number_total"
+    },
+    {
+      "description": "Average overall assessment score",
+      "query_context": {
+        "datasource": "assessments",
+        "filters": [],
+        "metrics": [
+          "AVG(overall_score)"
+        ],
+        "viz_type": "big_number"
+      },
+      "slice_name": "Average Score",
+      "viz_type": "big_number"
+    },
+    {
+      "description": "Average confidence score across assessments",
+      "query_context": {
+        "datasource": "assessments",
+        "filters": [],
+        "metrics": [
+          "AVG(confidence)"
+        ],
+        "viz_type": "big_number"
+      },
+      "slice_name": "Average Confidence",
+      "viz_type": "big_number"
+    },
+    {
+      "description": "Total number of unique candidates assessed",
+      "query_context": {
+        "datasource": "candidates",
+        "filters": [],
+        "metrics": [
+          "COUNT(*)"
+        ],
+        "viz_type": "big_number_total"
+      },
+      "slice_name": "Total Candidates",
+      "viz_type": "big_number_total"
+    },
+    {
+      "description": "Average assessment scores over time",
+      "query_context": {
+        "datasource": "assessments",
+        "groupby": [
+          "timestamp"
+        ],
+        "metrics": [
+          "AVG(overall_score)"
+        ],
+        "order_desc": false,
+        "time_grain_sqla": "P1D",
+        "time_range": "Last 30 days",
+        "viz_type": "line"
+      },
+      "slice_name": "Score Trends Over Time",
+      "viz_type": "line"
+    },
+    {
+      "description": "Average confidence scores over time",
+      "query_context": {
+        "datasource": "assessments",
+        "groupby": [
+          "timestamp"
+        ],
+        "metrics": [
+          "AVG(confidence)"
+        ],
+        "order_desc": false,
+        "time_grain_sqla": "P1D",
+        "time_range": "Last 30 days",
+        "viz_type": "line"
+      },
+      "slice_name": "Confidence Trends Over Time",
+      "viz_type": "line"
+    },
+    {
+      "description": "Distribution of assessment scores",
+      "query_context": {
+        "bins": 20,
+        "datasource": "assessments",
+        "groupby": [
+          "overall_score"
+        ],
+        "metrics": [
+          "COUNT(*)"
+        ],
+        "order_desc": false,
+        "viz_type": "histogram"
+      },
+      "slice_name": "Score Distribution",
+      "viz_type": "histogram"
+    },
+    {
+      "description": "Candidates with highest average scores",
+      "query_context": {
+        "datasource": "candidates",
+        "groupby": [
+          "candidate_id"
+        ],
+        "metrics": [
+          "average_score",
+          "total_assessments",
+          "highest_score"
+        ],
+        "order_desc": true,
+        "row_limit": 20,
+        "viz_type": "table"
+      },
+      "slice_name": "Top Performing Candidates",
+      "viz_type": "table"
+    }
+  ]
+}
