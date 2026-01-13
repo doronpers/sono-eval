@@ -1,6 +1,7 @@
 # Documentation Index
 
-**Complete catalog of all Sono-Eval documentation, organized by purpose and category.**
+**Complete catalog of all Sono-Eval documentation, organized by purpose and
+category.**
 
 **Last Updated**: 2026-01-10
 **Version**: 0.1.0
@@ -11,7 +12,8 @@
 
 - **[Documentation Hub](README.md)** - Start here for role-based navigation
 - **[Quick Start Guide](Guides/QUICK_START.md)** - Get running in 5 minutes
-- **[Architecture Overview](Core/concepts/architecture.md)** - System design and components
+- **[Architecture Overview](Core/concepts/architecture.md)** - System design and
+  components
 
 ---
 
@@ -21,12 +23,15 @@
 
 ### Concepts
 
-- **[Architecture](Core/concepts/architecture.md)** - System design, components, data flow
-- **[Glossary](Core/concepts/glossary.md)** - Comprehensive terminology reference
+- **[Architecture](Core/concepts/architecture.md)** - System design, components,
+  data flow
+- **[Glossary](Core/concepts/glossary.md)** - Comprehensive terminology
+  reference
 
 ### Development
 
-- **[Implementation Details](Core/development/implementation.md)** - Technical implementation overview
+- **[Implementation Details](Core/development/implementation.md)** - Technical
+  implementation overview
 
 **Total Core Files**: 3 files
 
@@ -39,14 +44,21 @@
 ### Getting Started
 
 - **[Quick Start](Guides/QUICK_START.md)** - 5-minute setup guide
-- **[Installation](Guides/user-guide/installation.md)** - Detailed installation for all platforms
-- **[Configuration](Guides/user-guide/configuration.md)** - Configure Sono-Eval for your needs
+- **[Installation](Guides/user-guide/installation.md)** - Detailed installation
+  for all platforms
+- **[Configuration](Guides/user-guide/configuration.md)** - Configure Sono-Eval
+  for your needs
+- **[Configuration Presets](Guides/user-guide/configuration-presets.md)** -
+  Optimized presets for different use cases
 
 ### User Guides
 
-- **[CLI Reference](Guides/user-guide/cli-reference.md)** - Complete command-line interface documentation
-- **[API Reference](Guides/user-guide/api-reference.md)** - REST API endpoints and usage
-- **[Assessment Path Guide](Guides/assessment-path-guide.md)** - Complete guide to all assessment paths
+- **[CLI Reference](Guides/user-guide/cli-reference.md)** - Complete
+  command-line interface documentation
+- **[API Reference](Guides/user-guide/api-reference.md)** - REST API endpoints
+  and usage
+- **[Assessment Path Guide](Guides/assessment-path-guide.md)** - Complete guide
+  to all assessment paths
 
 ### Help & Support
 
@@ -55,8 +67,10 @@
 
 ### Resources
 
-- **[Candidate Guide](Guides/resources/candidate-guide.md)** - Welcome guide for candidates
-- **[Learning Resources](Guides/resources/learning.md)** - Tutorials and educational content
+- **[Candidate Guide](Guides/resources/candidate-guide.md)** - Welcome guide for
+  candidates
+- **[Learning Resources](Guides/resources/learning.md)** - Tutorials and
+  educational content
 - **[Examples](Guides/resources/examples/README.md)** - Practical code examples
 
 **Total Guide Files**: 10 files
@@ -67,12 +81,17 @@
 
 **Location**: `Documentation/Reports/`
 
-- **[Design Audit](Reports/DESIGN_AUDIT.md)** - Dieter Rams design principles audit
-- **[Final Report](Reports/FINAL_REPORT.md)** - Summary of design improvements and changes
-- **[Code Review Report](Reports/CODE_REVIEW_REPORT.md)** - Detailed code quality analysis
-- **[Assessment Summary](Reports/ASSESSMENT_SUMMARY.md)** - Consolidated assessment findings
+- **[Design Audit](Reports/DESIGN_AUDIT.md)** - Dieter Rams design principles
+  audit
+- **[Final Report](Reports/FINAL_REPORT.md)** - Summary of design improvements
+  and changes
+- **[Code Review Report](Reports/CODE_REVIEW_REPORT.md)** - Detailed code
+  quality analysis
+- **[Assessment Summary](Reports/ASSESSMENT_SUMMARY.md)** - Consolidated
+  assessment findings
 - **[Fix Documentation](Reports/FIX_NOT_FOUND.md)** - Fix for not found issues
-- **[Port Allocation Fix](Reports/FIX_PORT_ALLOCATION.md)** - Port allocation troubleshooting and fix
+- **[Port Allocation Fix](Reports/FIX_PORT_ALLOCATION.md)** - Port allocation
+  troubleshooting and fix
 
 **Total Report Files**: 2 files
 
@@ -82,8 +101,10 @@
 
 **Location**: `Documentation/Governance/`
 
-- **[Documentation Organization Standards](Governance/DOCUMENTATION_ORGANIZATION_STANDARDS.md)** - Guidelines for maintaining documentation structure
-- **[Maintenance Notes](Governance/MAINTENANCE.md)** - Documentation maintenance procedures
+- **[Documentation Organization Standards](Governance/DOCUMENTATION_ORGANIZATION_STANDARDS.md)**
+  - Guidelines for maintaining documentation structure
+- **[Maintenance Notes](Governance/MAINTENANCE.md)** - Documentation maintenance
+  procedures
 
 **Total Governance Files**: 2 files
 
@@ -94,9 +115,11 @@
 **Location**: Repository root (`/`)
 
 - **[README.md](../README.md)** - Project overview, quick start, features
-- **[CONTRIBUTING.md](../CONTRIBUTING.md)** - Development setup, contribution guidelines
+- **[CONTRIBUTING.md](../CONTRIBUTING.md)** - Development setup, contribution
+  guidelines
 - **[CHANGELOG.md](../CHANGELOG.md)** - Version history and changes
-- **[AGENT_KNOWLEDGE_BASE.md](../AGENT_KNOWLEDGE_BASE.md)** - Prime directives for AI agents
+- **[AGENT_KNOWLEDGE_BASE.md](../AGENT_KNOWLEDGE_BASE.md)** - Prime directives
+  for AI agents
 
 **Total Root Files**: 4 files (within 10-file limit ✅)
 
@@ -130,7 +153,8 @@
 1. Start with [Quick Start](Guides/QUICK_START.md)
 2. Review [Installation](Guides/user-guide/installation.md)
 3. Configure with [Configuration Guide](Guides/user-guide/configuration.md)
-4. Use [CLI Reference](Guides/user-guide/cli-reference.md) or [API Reference](Guides/user-guide/api-reference.md)
+4. Use [CLI Reference](Guides/user-guide/cli-reference.md) or
+   [API Reference](Guides/user-guide/api-reference.md)
 
 **For Developers**:
 
@@ -154,7 +178,8 @@
 
 **Configuring**:
 
-- [Configuration Guide](Guides/user-guide/configuration.md) - All options explained
+- [Configuration Guide](Guides/user-guide/configuration.md) - All options
+  explained
 
 **Using the System**:
 
@@ -180,7 +205,9 @@
 
 ## Documentation Standards
 
-This repository follows the [Documentation Organization Standards](Governance/DOCUMENTATION_ORGANIZATION_STANDARDS.md) for maintaining clean, organized documentation structure.
+This repository follows the
+[Documentation Organization Standards](Governance/DOCUMENTATION_ORGANIZATION_STANDARDS.md)
+for maintaining clean, organized documentation structure.
 
 **Key Principles**:
 
@@ -194,7 +221,8 @@ This repository follows the [Documentation Organization Standards](Governance/DO
 
 ## Maintenance
 
-Documentation maintenance procedures are documented in [MAINTENANCE.md](Governance/MAINTENANCE.md).
+Documentation maintenance procedures are documented in
+[MAINTENANCE.md](Governance/MAINTENANCE.md).
 
 **When updating documentation**:
 

@@ -1,5 +1,7 @@
 # Changelog
 
+<!-- markdownlint-disable MD024 -->
+
 All notable changes to Sono-Eval will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
@@ -11,30 +13,123 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Comprehensive documentation structure in `docs/` folder
-- Quick Start Guide for 5-minute setup
-- Complete API Reference with examples
-- Detailed CLI Reference with tips and tricks
-- Configuration Guide with profiles and best practices
-- Candidate-focused FAQ for interns and new hires
-- Architecture overview with diagrams
-- Troubleshooting guide with solutions
-- Design audit based on Dieter Rams' 10 principles
+- **Hybrid Assessment Engine** (`src/sono_eval/assessment/engine.py`)
+  - Support for combining heuristics + ML models
+  - Enhanced explainability through hybrid approach
+  - ML insights integrated as additional evidence
+  - Structured for easy ML model integration
+  - Maintains heuristic dominance (60%) for explainability
+  - ML insights (40%) provide nuanced pattern recognition
+
+- **Enhanced Configuration Presets** (`src/sono_eval/utils/config.py`)
+  - Expanded from 3 to 8 presets:
+    - `quick_test`: Fast setup for quick testing
+    - `development`: Full-featured development environment
+    - `testing`: Optimized for running tests
+    - `staging`: Pre-production environment
+    - `production`: Production-ready configuration
+    - `high_performance`: Maximum performance settings
+    - `low_resource`: Minimal resource usage
+    - `ml_development`: ML model development and training
+  - Each preset optimized for specific use cases
+  - Comprehensive settings (workers, cache, concurrency, etc.)
+
+- **Configuration CLI Commands** (`src/sono_eval/cli/main.py`)
+  - `sono-eval config list-presets` - List all available presets
+  - `sono-eval config apply-preset` - Apply preset configuration
+  - Export preset to .env file format
 
 ### Changed
 
-- Reorganized documentation from root to `docs/` folder
-- Moved GLOSSARY.md to `docs/concepts/glossary.md`
-- Moved learning-resources.md to `docs/resources/learning.md`
-- Moved IMPLEMENTATION_SUMMARY.md to `docs/development/implementation.md`
-- Enhanced README.md with clearer structure
+- **Assessment Engine** (`src/sono_eval/assessment/engine.py`)
+  - Enhanced to support hybrid heuristics + ML approach
+  - Better confidence calculation from metrics
+  - ML insights integrated into evidence
+  - Enhanced explanations showing both analysis types
+  - Metadata includes assessment mode (hybrid/heuristic)
+
+### Added
+
+- **Standardized Error Handling System** (`src/sono_eval/utils/errors.py`)
+  - Consistent error response format
+  - Standard error codes
+  - Request ID tracking support
+  - Helper functions for common error types
+
+- **Configuration Presets** (`src/sono_eval/utils/config.py`)
+  - Minimal preset for quick testing
+  - Standard preset for development
+  - Production preset for deployment
+
+- **Architecture Diagrams** (`Documentation/Core/concepts/architecture.md`)
+  - Mermaid diagrams for system architecture
+  - Data flow diagrams
+  - Component relationship visualizations
+
+- **Comprehensive Design Audit Report** (`Documentation/Reports/DESIGN_AUDIT_2026.md`)
+  - Complete audit findings
+  - All changes documented
+  - Recommendations for future improvements
+
+### Changed
+
+- **Assessment Engine** (`src/sono_eval/assessment/engine.py`)
+  - Replaced placeholder scoring with real content analysis
+  - Added 20+ analysis methods for different assessment dimensions
+  - Enhanced micro-motive identification to analyze actual content
+  - Improved evidence generation based on code patterns
+
+- **API Error Handling** (`src/sono_eval/api/main.py`)
+  - Standardized all error responses
+  - Enhanced error messages with actionable guidance
+  - Improved validation and security checks
+  - Added request ID tracking
+  - Fixed missing `Field` import
+
+- **CLI Enhancements** (`src/sono_eval/cli/main.py`)
+  - Enhanced all commands with better help text and examples
+  - Added quiet and verbose modes
+  - Improved error messages with hints
+  - Better table formatting and colors
+  - Enhanced file handling with encoding support
+
+- **Mobile Companion** (`src/sono_eval/mobile/`)
+  - Enhanced error handling with better messages
+  - Added accessibility attributes (ARIA labels, roles)
+  - Improved error display with details
+  - Better success/error feedback
+
+- **README** (`README.md`)
+  - Enhanced visual hierarchy
+  - Improved badges and presentation
+  - Better quick start section
+  - More professional appearance
 
 ### Improved
 
-- Documentation is now production-ready for hiring/onboarding
-- Better onboarding experience for candidates
-- Clearer navigation and organization
-- More practical examples and guidance
+- **Code Quality**
+  - Removed all placeholder code
+  - Standardized error handling throughout
+  - Enhanced type hints and documentation
+  - Better code organization
+
+- **User Experience**
+  - Better error messages with actionable guidance
+  - Improved CLI help and examples
+  - Enhanced mobile accessibility
+  - Simplified configuration with presets
+
+- **Documentation**
+  - Added visual architecture diagrams
+  - Enhanced README structure
+  - Better code examples
+  - More comprehensive audit report
+
+- **Maintainability**
+  - Standardized patterns
+  - Better separation of concerns
+  - More maintainable code structure
+  - Consistent error handling
 
 ---
 
@@ -45,8 +140,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial release of Sono-Eval
 - Assessment engine with explainable scoring
 - Multi-path evaluation (Technical, Design, Collaboration, Problem-Solving, Communication)
-- Dark Horse micro-motive tracking
-- MemU hierarchical memory storage
+- **MemU**: Created `src/sono_eval/memory/memu.py` for hierarchical candidate
+  memory storage
 - T5 + PEFT/LoRA semantic tagging
 - TagStudio file management
 - FastAPI REST backend
@@ -76,7 +171,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 **Release Date**: January 10, 2026
 
-This is the first alpha release of Sono-Eval, focusing on core functionality and developer experience.
+This is the first alpha release of Sono-Eval, focusing on core functionality and
+developer experience.
 
 **Highlights**:
 

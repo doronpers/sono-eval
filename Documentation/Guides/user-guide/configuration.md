@@ -1,27 +1,45 @@
 # Configuration Guide
 
+> **Quick Start**: For common use cases, see
+> [Configuration Presets](configuration-presets.md) for optimized presets.
+
+---
+
 Complete guide to configuring Sono-Eval for your needs.
 
 ---
 
 ## Overview
 
-Sono-Eval uses environment variables for configuration, managed through a `.env` file. This approach follows the [Twelve-Factor App](https://12factor.net/) methodology for portable, secure configuration.
+Sono-Eval uses environment variables for configuration, managed through a `.env`
+file. This approach follows the [Twelve-Factor App](https://12factor.net/)
+methodology for portable, secure configuration.
 
 ---
 
 ## Quick Configuration
 
-### Step 1: Create Configuration File
+### Option 1: Use a Preset (Recommended)
+
+```bash
+# List available presets
+sono-eval config list-presets
+
+# Apply a preset (e.g., development)
+sono-eval config apply-preset --preset development --output .env
+
+# Review and customize if needed
+nano .env
+```
+
+See [Configuration Presets](configuration-presets.md) for details on all presets.
+
+### Option 2: Manual Configuration
 
 ```bash
 # Copy example configuration
 cp .env.example .env
-```
 
-### Step 2: Edit Settings
-
-```bash
 # Edit with your preferred editor
 nano .env
 # or
@@ -30,7 +48,7 @@ vim .env
 code .env
 ```
 
-### Step 3: Verify Configuration
+### Verify Configuration
 
 ```bash
 sono-eval config show
@@ -462,7 +480,7 @@ When using Docker, environment variables can be:
 ./launcher.sh start
 ```
 
-2. **In docker-compose.yml**:
+1. **In docker-compose.yml**:
 
 ```yaml
 environment:
@@ -470,7 +488,7 @@ environment:
   - DEBUG=false
 ```
 
-3. **At runtime**:
+1. **At runtime**:
 
 ```bash
 docker-compose run -e APP_ENV=production sono-eval

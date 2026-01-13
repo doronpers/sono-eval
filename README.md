@@ -1,65 +1,83 @@
 # Sono-Eval
 
-**Explainable Multi-Path Developer Assessment System**
+## Explainable Multi-Path Developer Assessment System
 
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Version](https://img.shields.io/badge/version-0.1.0-green.svg)](CHANGELOG.md)
 [![Security Audit](https://img.shields.io/badge/security-audited-green.svg)](SECRETS_AUDIT.md)
+[![Documentation](https://img.shields.io/badge/docs-complete-brightgreen.svg)](Documentation/README.md)
 
-> A growth-oriented assessment platform that explains its reasoning, tracks your progress, and helps you improve.
+> A growth-oriented assessment platform that explains its reasoning, tracks your
+> progress, and helps you improve.
+
+**[Quick Start](#-quick-start)** • **[Documentation](#-documentation)** •
+**[Features](#-key-features)** • **[Examples](#-usage-examples)**
 
 ---
 
 ## 🎯 What is Sono-Eval?
 
-Sono-Eval is an assessment system designed to **help you understand and grow your skills**. Unlike traditional tests that just give you a score, Sono-Eval:
+Sono-Eval is an assessment system designed to **help you understand and grow your
+skills**. Unlike traditional tests that just give you a score, Sono-Eval:
 
 - **Explains every score** with concrete evidence from your work
-- **Evaluates multiple dimensions** - not just code, but design thinking, collaboration, and problem-solving
+- **Evaluates multiple dimensions** - not just code, but design thinking,
+  collaboration, and problem-solving
 - **Identifies your strengths** and shows you exactly where to improve
 - **Tracks your growth** over time with detailed history
 - **Provides actionable feedback** you can use immediately
 
 **For Candidates**: Think of it as a helpful coach, not just a grader!
-**For Teams**: Get deep insights into skills and growth potential, not just pass/fail.
+**For Teams**: Get deep insights into skills and growth potential, not just
+pass/fail.
 
 ---
 
 ## ⚡ Quick Start
 
-### 5-Minute Setup (Docker)
+Get Sono-Eval running in **5 minutes**:
+
+### 🐳 Docker (Recommended)
 
 ```bash
-# 1. Clone and enter directory
+# Clone and start
 git clone https://github.com/doronpers/sono-eval.git
 cd sono-eval
-
-# 2. Start everything
 ./launcher.sh start
 
-# 3. Access services
-# API Docs: http://localhost:8000/docs
-# Dashboard: http://localhost:8088 (admin/admin)
-# Mobile Companion: http://localhost:8000/mobile
+# Access services
+# 📚 API Docs: http://localhost:8000/docs
+# 📊 Dashboard: http://localhost:8088 (admin/admin)
+# 📱 Mobile: http://localhost:8000/mobile
 ```
 
-### Run Your First Assessment
+### 🐍 Python Installation
 
 ```bash
-# Using the CLI
-sono-eval assess run \
-  --candidate-id your_name \
-  --file your_code.py \
-  --paths technical design
+# Setup
+git clone https://github.com/doronpers/sono-eval.git
+cd sono-eval
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+pip install -e .
 
-# Using the API
-curl -X POST http://localhost:8000/api/v1/assessments \
-  -H "Content-Type: application/json" \
-  -d '{"candidate_id": "your_name", "submission_type": "code", ...}'
+# Run your first assessment
+sono-eval assess run \
+  --candidate-id demo_user \
+  --content "def hello(): return 'world'" \
+  --paths technical
 ```
 
-**New to Sono-Eval?** Start with the **[Quick Start Guide](Documentation/Guides/QUICK_START.md)** →
+### 📖 Next Steps
+
+- **[Quick Start Guide](Documentation/Guides/QUICK_START.md)** - Detailed
+  5-minute setup
+- **[Installation Guide](Documentation/Guides/user-guide/installation.md)** - All
+  installation options
+- **[API Reference](Documentation/Guides/user-guide/api-reference.md)** -
+  Complete API docs
 
 ---
 
@@ -68,11 +86,13 @@ curl -X POST http://localhost:8000/api/v1/assessments \
 ### For Candidates
 
 - **📖 Clear Explanations** - Understand exactly why you received each score
-- **🎯 Multiple Paths** - Evaluated on technical skills, design thinking, collaboration, and more
+- **🎯 Multiple Paths** - Evaluated on technical skills, design thinking,
+  collaboration, and more
 - **📈 Track Progress** - See how you improve over time
 - **💡 Actionable Feedback** - Specific recommendations for growth
 - **🏆 Identify Strengths** - Understand what you're naturally good at
-- **📱 Mobile Companion** - Complete assessments on any device with guided, interactive experience
+- **📱 Mobile Companion** - Complete assessments on any device with guided,
+  interactive experience
 
 ### For Evaluators
 
@@ -90,34 +110,46 @@ curl -X POST http://localhost:8000/api/v1/assessments \
 ### Getting Started
 
 - **[Quick Start](Documentation/Guides/QUICK_START.md)** - 5-minute setup guide
-- **[Installation](Documentation/Guides/user-guide/installation.md)** - Detailed installation for all platforms
-- **[For Candidates](Documentation/Guides/resources/candidate-guide.md)** - Welcome guide for candidates 👋
+- **[Installation](Documentation/Guides/user-guide/installation.md)** -
+  Detailed installation for all platforms
+- **[For Candidates](Documentation/Guides/resources/candidate-guide.md)** -
+  Welcome guide for candidates 👋
 
 ### User Guides
 
-- **[CLI Reference](Documentation/Guides/user-guide/cli-reference.md)** - Complete command-line guide
-- **[API Reference](Documentation/Guides/user-guide/api-reference.md)** - REST API documentation
-- **[Configuration](Documentation/Guides/user-guide/configuration.md)** - Configure for your needs
+- **[CLI Reference](Documentation/Guides/user-guide/cli-reference.md)** -
+  Complete command-line guide
+- **[API Reference](Documentation/Guides/user-guide/api-reference.md)** - REST
+  API documentation
+- **[Configuration](Documentation/Guides/user-guide/configuration.md)** -
+  Configure for your needs
+- **[Configuration Presets](Documentation/Guides/user-guide/configuration-presets.md)**
+  - Optimized presets for quick setup
 
 ### Concepts
 
-- **[Architecture](Documentation/Core/concepts/architecture.md)** - System design and components
-- **[Glossary](Documentation/Core/concepts/glossary.md)** - Comprehensive terminology
+- **[Architecture](Documentation/Core/concepts/architecture.md)** - System design
+  and components
+- **[Glossary](Documentation/Core/concepts/glossary.md)** - Comprehensive
+  terminology
 
 ### Help & Resources
 
-- **[Assessment Path Guide](Documentation/Guides/assessment-path-guide.md)** - Complete guide to all assessment paths
+- **[Assessment Path Guide](Documentation/Guides/assessment-path-guide.md)** -
+  Complete guide to all assessment paths
 - **[FAQ](Documentation/Guides/faq.md)** - Frequently asked questions
-- **[Troubleshooting](Documentation/Guides/troubleshooting.md)** - Solutions to common issues
-- **[Learning Resources](Documentation/Guides/resources/learning.md)** - Tutorials and guides
+- **[Troubleshooting](Documentation/Guides/troubleshooting.md)** - Solutions to
+  common issues
+- **[Learning Resources](Documentation/Guides/resources/learning.md)** -
+  Tutorials and guides
 
-📖 **[Browse All Documentation](Documentation/README.md)** →
+📖 **[Browse All Documentation](Documentation/README.md)**
 
 ---
 
 ## 🏗️ Architecture
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │                     Sono-Eval System                        │
 ├─────────────────────────────────────────────────────────────┤
@@ -135,7 +167,8 @@ curl -X POST http://localhost:8000/api/v1/assessments \
 └─────────────────────────────────────────────────────────────┘
 ```
 
-See **[Architecture Overview](Documentation/Core/concepts/architecture.md)** for details.
+See **[Architecture Overview](Documentation/Core/concepts/architecture.md)** for
+details.
 
 ---
 
@@ -230,7 +263,8 @@ source venv/bin/activate
 sono-eval assess run --candidate-id test --file test.py
 ```
 
-See **[Installation Guide](Documentation/Guides/user-guide/installation.md)** for detailed instructions.
+See **[Installation Guide](Documentation/Guides/user-guide/installation.md)** for
+detailed instructions.
 
 ---
 
@@ -307,7 +341,8 @@ You're free to use, modify, and distribute it. See the LICENSE file for details.
 - **📚 Documentation**: [Documentation/README.md](Documentation/README.md)
 - **❓ FAQ**: [Documentation/Guides/faq.md](Documentation/Guides/faq.md)
 - **🐛 Issues**: [GitHub Issues](https://github.com/doronpers/sono-eval/issues)
-- **💬 Discussions**: [GitHub Discussions](https://github.com/doronpers/sono-eval/discussions)
+- **💬 Discussions**:
+  [GitHub Discussions](https://github.com/doronpers/sono-eval/discussions)
 - **📧 Email**: <support@sono-eval.example>
 
 ---
@@ -362,7 +397,7 @@ See **[CHANGELOG.md](CHANGELOG.md)** for version history.
 
 ---
 
-**Built with ❤️ by the Sono-Eval Team**
+Built with ❤️ by the Sono-Eval Team
 
 **Version**: 0.1.0 | **Last Updated**: January 10, 2026
 
@@ -370,7 +405,9 @@ See **[CHANGELOG.md](CHANGELOG.md)** for version history.
 
 ## Agent Instructions
 
-> **CRITICAL**: All AI agents MUST read [`AGENT_KNOWLEDGE_BASE.md`](AGENT_KNOWLEDGE_BASE.md) before performing any tasks. It contains non-negotiable Patent, Security, and Design rules.
+> **CRITICAL**: All AI agents MUST read
+> [`AGENT_KNOWLEDGE_BASE.md`](AGENT_KNOWLEDGE_BASE.md) before performing any
+> tasks. It contains non-negotiable Patent, Security, and Design rules.
 
 Additional resources:
 

@@ -6,7 +6,53 @@ Understanding the Sono-Eval system design, components, and data flow.
 
 ## System Architecture
 
+### High-Level Overview
+
+```mermaid
+graph TB
+    subgraph Interfaces["User Interfaces"]
+        CLI[CLI<br/>Click]
+        API[REST API<br/>FastAPI]
+        SDK[Python SDK<br/>Direct Import]
+        Mobile[Mobile Companion<br/>Web Interface]
+    end
+
+    subgraph Core["Core Engine Layer"]
+        Engine[Assessment Engine<br/>Multi-Path Evaluation]
+        Tagger[Semantic Tagger<br/>T5 + LoRA]
+        MemU[MemU Storage<br/>Hierarchical Memory]
+    end
+
+    subgraph Storage["Storage Layer"]
+        DB[(PostgreSQL<br/>or SQLite)]
+        Redis[(Redis<br/>Cache)]
+        FS[File System<br/>JSON Files]
+    end
+
+    subgraph Analytics["Analytics Layer"]
+        Superset[Apache Superset<br/>Dashboards]
+    end
+
+    CLI --> Engine
+    API --> Engine
+    SDK --> Engine
+    Mobile --> API
+
+    Engine --> Tagger
+    Engine --> MemU
+    Tagger --> MemU
+
+    MemU --> DB
+    MemU --> FS
+    Engine --> Redis
+
+    Engine --> Superset
+    DB --> Superset
 ```
+
+### Component Diagram
+
+```text
 ┌──────────────────────────────────────────────────────────────────┐
 │                        User Interfaces                           │
 ├──────────────────────────────────────────────────────────────────┤
@@ -84,7 +130,8 @@ Understanding the Sono-Eval system design, components, and data flow.
 
 **Key Features**:
 
-- Evaluates submissions across multiple paths (Technical, Design, Collaboration, etc.)
+- Evaluates submissions across multiple paths (Technical, Design,
+  Collaboration, etc.)
 - Generates evidence for every score
 - Identifies micro-motives using Dark Horse model
 - Provides natural language explanations
@@ -92,7 +139,7 @@ Understanding the Sono-Eval system design, components, and data flow.
 
 **Data Flow**:
 
-```
+```text
 Input → Path Evaluation → Evidence Collection → Scoring → Explanation → Result
 ```
 
@@ -123,7 +170,7 @@ Input → Path Evaluation → Evidence Collection → Scoring → Explanation �
 
 **Structure**:
 
-```
+```text
 CandidateMemory
 └── Root Node (Level 0)
     ├── Child Node (Level 1)
@@ -168,7 +215,7 @@ CandidateMemory
 
 **Model Architecture**:
 
-```
+```text
 Input Text → T5 Encoder → LoRA Adapter → T5 Decoder → Generated Tags
 ```
 
@@ -238,7 +285,44 @@ Input Text → T5 Encoder → LoRA Adapter → T5 Decoder → Generated Tags
 
 ### Assessment Flow
 
+```mermaid
+flowchart TD
+    Start([User Submits Code]) --> Validate[Input Validation<br/>Pydantic]
+    Validate -->|Valid| Engine[Assessment Engine]
+    Validate -->|Invalid| Error[Return Error]
+
+    Engine --> Path1[Path 1: Technical]
+    Engine --> Path2[Path 2: Design]
+    Engine --> Path3[Path 3: Collaboration]
+    Engine --> PathN[Path N: ...]
+
+    Path1 --> Metrics1[Generate Metrics]
+    Metrics1 --> Evidence1[Collect Evidence]
+    Evidence1 --> Motives1[Identify Motives]
+    Motives1 --> Score1[Calculate Score]
+
+    Path2 --> Metrics2[Generate Metrics]
+    Metrics2 --> Evidence2[Collect Evidence]
+    Evidence2 --> Motives2[Identify Motives]
+    Motives2 --> Score2[Calculate Score]
+
+    Score1 --> Aggregate[Aggregate Results]
+    Score2 --> Aggregate
+    Score3[Score 3] --> Aggregate
+    ScoreN[Score N] --> Aggregate
+
+    Aggregate --> Explain[Generate Explanations]
+    Explain --> Store[Store in MemU]
+    Store --> Return([Return to User])
+
+    style Start fill:#e1f5ff
+    style Return fill:#c8e6c9
+    style Error fill:#ffcdd2
 ```
+
+### Assessment Text Flow
+
+```text
 1. User submits code
    ↓
 2. Input validation (Pydantic)
@@ -267,7 +351,33 @@ Input Text → T5 Encoder → LoRA Adapter → T5 Decoder → Generated Tags
 
 ### Tag Generation Flow
 
+```mermaid
+flowchart TD
+    Start([User Provides Code/Text]) --> Check{Model<br/>Available?}
+
+    Check -->|Yes| Tokenize[Tokenize Input]
+    Check -->|No| Fallback[Use Fallback<br/>Heuristics]
+
+    Tokenize --> T5[T5 + LoRA<br/>Inference]
+    T5 --> Generate[Generate Tags]
+    Generate --> Confidence[Calculate<br/>Confidence]
+
+    Fallback --> Pattern[Pattern<br/>Matching]
+    Pattern --> Confidence
+
+    Confidence --> Infer[Infer Categories]
+    Infer --> Sort[Sort by Confidence]
+    Sort --> Filter[Filter Top N Tags]
+    Filter --> Return([Return Tags])
+
+    style Start fill:#e1f5ff
+    style Return fill:#c8e6c9
+    style Check fill:#fff9c4
 ```
+
+### Tagging Text Flow
+
+```text
 1. User provides code/text
    ↓
 2. Check model availability
@@ -287,7 +397,7 @@ Input Text → T5 Encoder → LoRA Adapter → T5 Decoder → Generated Tags
 
 ### Memory Storage Flow
 
-```
+```text
 1. Create/Retrieve candidate memory
    ↓
 2. Check LRU cache
@@ -311,7 +421,7 @@ Input Text → T5 Encoder → LoRA Adapter → T5 Decoder → Generated Tags
 
 ### Docker Compose Deployment
 
-```
+```text
 ┌─────────────────────────────────────────┐
 │          Docker Network                 │
 │                                         │
