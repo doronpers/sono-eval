@@ -40,7 +40,6 @@ cd sono-eval
 # 3. Access services
 # API Docs: http://localhost:8000/docs
 # Dashboard: http://localhost:8088 (admin/admin)
-# Mobile Companion: http://localhost:8000/mobile
 ```
 
 ### Run Your First Assessment
@@ -71,7 +70,6 @@ curl -X POST http://localhost:8000/api/v1/assessments \
 - **📈 Track Progress** - See how you improve over time
 - **💡 Actionable Feedback** - Specific recommendations for growth
 - **🏆 Identify Strengths** - Understand what you're naturally good at
-- **📱 Mobile Companion** - Complete assessments on any device with guided, interactive experience
 
 ### For Evaluators
 
@@ -80,7 +78,6 @@ curl -X POST http://localhost:8000/api/v1/assessments \
 - **⚖️ Fair Assessment** - Consistent, evidence-based evaluation
 - **🤝 Better Experience** - Candidates learn even if not hired
 - **🚀 Easy Setup** - Docker deployment in minutes
-- **📱 Mobile-Friendly** - Candidates can complete assessments anywhere
 
 ---
 
