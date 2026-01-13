@@ -12,19 +12,11 @@ from pathlib import Path
 from time import time
 from typing import Any, Dict, List, Optional
 
-from fastapi import FastAPI, HTTPException, Request, Response, UploadFile, File
+from fastapi import FastAPI, File, HTTPException, Request, Response, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field, validator
-from starlette.middleware.base import BaseHTTPMiddleware
 
-from sono_eval.assessment.engine import AssessmentEngine
-from sono_eval.assessment.models import AssessmentInput, AssessmentResult
-from sono_eval.memory.memu import MemUStorage
-from sono_eval.tagging.generator import TagGenerator
-from sono_eval.mobile.app import create_mobile_app
-from sono_eval.utils.config import get_config
-from sono_eval.utils.logger import get_logger
 # Use shared API utilities
 from shared_ai_utils.api import (
     ErrorCode,
@@ -39,6 +31,15 @@ from shared_ai_utils.api import (
     service_unavailable_error,
     validation_error,
 )
+from starlette.middleware.base import BaseHTTPMiddleware
+
+from sono_eval.assessment.engine import AssessmentEngine
+from sono_eval.assessment.models import AssessmentInput, AssessmentResult
+from sono_eval.memory.memu import MemUStorage
+from sono_eval.mobile.app import create_mobile_app
+from sono_eval.tagging.generator import TagGenerator
+from sono_eval.utils.config import get_config
+from sono_eval.utils.logger import get_logger
 
 logger = get_logger(__name__)
 
@@ -60,10 +61,10 @@ async def lifespan(app: FastAPI):
     global assessment_engine, memu_storage, tag_generator
 
     logger.info("Starting Sono-Eval API server")
-    
+
     # Security: Validate configuration before starting
     _validate_security_config()
-    
+
     assessment_engine = AssessmentEngine()
     memu_storage = MemUStorage()
     tag_generator = TagGenerator()
@@ -82,7 +83,7 @@ def _validate_security_config():
         "your-secret-key-here-change-in-production",
         "change_this_secret_key_in_production",
     ]
-    
+
     # Check for default secret key
     if config.secret_key in DEFAULT_SECRETS:
         if config.app_env == "production":
@@ -97,7 +98,7 @@ def _validate_security_config():
                 "Generate a secure key for production with: "
                 "python -c 'import secrets; print(secrets.token_urlsafe(32))'"
             )
-    
+
     # Check Superset secret key
     if config.superset_secret_key in DEFAULT_SECRETS:
         if config.app_env == "production":
@@ -107,7 +108,7 @@ def _validate_security_config():
             )
         else:
             logger.warning("WARNING: Using default SUPERSET_SECRET_KEY (development only)")
-    
+
     # Validate allowed hosts in production
     if config.app_env == "production":
         if not config.allowed_hosts or config.allowed_hosts == "*":
@@ -115,7 +116,7 @@ def _validate_security_config():
                 "WARNING: ALLOWED_HOSTS not properly configured for production. "
                 "Set specific domains to prevent CORS attacks."
             )
-    
+
     logger.info("Security configuration validated")
 
 
@@ -158,14 +159,14 @@ class CandidateCreateRequest(BaseModel):
 
     candidate_id: str = Field(..., min_length=1, max_length=100)
     initial_data: Optional[Dict] = None
-    
-    @validator('candidate_id')
+
+    @validator("candidate_id")
     def validate_candidate_id(cls, v):
         """Validate candidate_id format to prevent injection attacks."""
         # Allow only alphanumeric, dash, underscore
-        if not re.match(r'^[a-zA-Z0-9_-]+$', v):
+        if not re.match(r"^[a-zA-Z0-9_-]+$", v):
             raise ValueError(
-                'candidate_id must contain only alphanumeric characters, dashes, and underscores'
+                "candidate_id must contain only alphanumeric characters, dashes, and underscores"
             )
         return v
 
@@ -175,13 +176,13 @@ class TagRequest(BaseModel):
 
     text: str = Field(..., min_length=1, max_length=100000)
     max_tags: int = Field(default=5, ge=1, le=20)
-    
-    @validator('text')
+
+    @validator("text")
     def validate_text(cls, v):
         """Validate text content."""
         # Basic sanitization - remove null bytes
-        if '\x00' in v:
-            raise ValueError('text contains invalid null bytes')
+        if "\x00" in v:
+            raise ValueError("text contains invalid null bytes")
         return v
 
 
@@ -194,31 +195,28 @@ _HEALTH_CHECK_CACHE_TTL: float = 5.0  # 5 seconds
 async def check_component_health(include_details: bool = True) -> Dict[str, Any]:
     """
     Check the health of all system components.
-    
+
     Args:
         include_details: Whether to include detailed information (may expose paths)
-    
+
     Returns:
         Dictionary with component statuses and details
     """
     global _health_check_cache, _health_check_cache_time
-    
+
     # Check cache first
     current_time = time()
-    if (
-        _health_check_cache
-        and (current_time - _health_check_cache_time) < _HEALTH_CHECK_CACHE_TTL
-    ):
+    if _health_check_cache and (current_time - _health_check_cache_time) < _HEALTH_CHECK_CACHE_TTL:
         cached_result = _health_check_cache.copy()
         # If cached result has details but we don't want them, remove them
         if not include_details and "details" in cached_result:
             cached_result["details"] = None
         return cached_result
-    
+
     components = {}
     details: Dict[str, Any] = {} if include_details else {}
     overall_healthy = True
-    
+
     # Check Assessment Engine
     try:
         if assessment_engine is None:
@@ -232,7 +230,7 @@ async def check_component_health(include_details: bool = True) -> Dict[str, Any]
             if include_details:
                 details["assessment"] = {
                     "version": getattr(assessment_engine, "version", "unknown"),
-                    "initialized": True
+                    "initialized": True,
                 }
     except Exception as e:
         components["assessment"] = "degraded"
@@ -240,7 +238,7 @@ async def check_component_health(include_details: bool = True) -> Dict[str, Any]
             details["assessment"] = {"error": "Initialization error"}
         logger.error(f"Assessment engine health check failed: {e}")
         overall_healthy = False
-    
+
     # Check Memory Storage (MemU)
     try:
         if memu_storage is None:
@@ -259,7 +257,7 @@ async def check_component_health(include_details: bool = True) -> Dict[str, Any]
                     if include_details:
                         details["memory"] = {
                             "candidates_count": len(candidates),
-                            "accessible": True
+                            "accessible": True,
                         }
                 except Exception as e:
                     components["memory"] = "degraded"
@@ -278,7 +276,7 @@ async def check_component_health(include_details: bool = True) -> Dict[str, Any]
             details["memory"] = {"error": "Storage check failed"}
         logger.error(f"Memory storage health check error: {e}")
         overall_healthy = False
-    
+
     # Check Tag Generator
     try:
         if tag_generator is None:
@@ -292,16 +290,13 @@ async def check_component_health(include_details: bool = True) -> Dict[str, Any]
             if cache_dir.exists():
                 components["tagging"] = "operational"
                 if include_details:
-                    details["tagging"] = {
-                        "model_name": config.t5_model_name,
-                        "initialized": True
-                    }
+                    details["tagging"] = {"model_name": config.t5_model_name, "initialized": True}
             else:
                 components["tagging"] = "degraded"
                 if include_details:
                     details["tagging"] = {
                         "model_name": config.t5_model_name,
-                        "warning": "Cache directory not found (models may download on first use)"
+                        "warning": "Cache directory not found (models may download on first use)",
                     }
     except Exception as e:
         components["tagging"] = "degraded"
@@ -309,7 +304,7 @@ async def check_component_health(include_details: bool = True) -> Dict[str, Any]
             details["tagging"] = {"error": "Tagging check failed"}
         logger.error(f"Tag generator health check error: {e}")
         overall_healthy = False
-    
+
     # Check Database (if configured)
     try:
         database_url = config.database_url
@@ -322,10 +317,7 @@ async def check_component_health(include_details: bool = True) -> Dict[str, Any]
                 if db_file.parent.exists():
                     components["database"] = "operational"
                     if include_details:
-                        details["database"] = {
-                            "type": "sqlite",
-                            "exists": db_file.exists()
-                        }
+                        details["database"] = {"type": "sqlite", "exists": db_file.exists()}
                 else:
                     components["database"] = "degraded"
                     if include_details:
@@ -342,7 +334,7 @@ async def check_component_health(include_details: bool = True) -> Dict[str, Any]
                 details["database"] = {
                     "type": "postgresql",
                     "configured": True,
-                    "note": "Connection not tested"
+                    "note": "Connection not tested",
                 }
     except Exception as e:
         components["database"] = "degraded"
@@ -350,19 +342,20 @@ async def check_component_health(include_details: bool = True) -> Dict[str, Any]
             details["database"] = {"error": "Database check failed"}
         logger.error(f"Database health check error: {e}")
         overall_healthy = False
-    
+
     # Check Redis (optional)
     try:
         # Try to connect to Redis (non-blocking check)
         try:
             import redis
+
             r = redis.Redis(
                 host=config.redis_host,
                 port=config.redis_port,
                 db=config.redis_db,
                 password=config.redis_password,
                 socket_connect_timeout=1,
-                socket_timeout=1
+                socket_timeout=1,
             )
             r.ping()
             components["redis"] = "operational"
@@ -378,7 +371,7 @@ async def check_component_health(include_details: bool = True) -> Dict[str, Any]
             if include_details:
                 details["redis"] = {
                     "note": "Redis is optional - system works without it",
-                    "status": "unavailable"
+                    "status": "unavailable",
                 }
             logger.debug(f"Redis health check: {type(e).__name__}")
     except Exception as e:
@@ -386,17 +379,21 @@ async def check_component_health(include_details: bool = True) -> Dict[str, Any]
         if include_details:
             details["redis"] = {"error": "Redis check failed"}
         logger.error(f"Redis health check error: {e}")
-    
+
     # Check File System
     try:
         storage_path = config.get_storage_path()
         cache_dir = config.get_cache_dir()
         tagstudio_root = config.get_tagstudio_root()
-        
+
         all_paths_ok = True
         path_details = {}
-        
-        for name, path in [("storage", storage_path), ("cache", cache_dir), ("tagstudio", tagstudio_root)]:
+
+        for name, path in [
+            ("storage", storage_path),
+            ("cache", cache_dir),
+            ("tagstudio", tagstudio_root),
+        ]:
             if path.exists() and path.is_dir():
                 # Check if writable
                 try:
@@ -410,7 +407,7 @@ async def check_component_health(include_details: bool = True) -> Dict[str, Any]
             else:
                 path_details[name] = {"exists": False}
                 all_paths_ok = False
-        
+
         if all_paths_ok:
             components["filesystem"] = "operational"
             if include_details:
@@ -426,22 +423,19 @@ async def check_component_health(include_details: bool = True) -> Dict[str, Any]
             details["filesystem"] = {"error": "Filesystem check failed"}
         logger.error(f"Filesystem health check error: {e}")
         overall_healthy = False
-    
-    result: Dict[str, Any] = {
-        "components": components,
-        "healthy": overall_healthy
-    }
+
+    result: Dict[str, Any] = {"components": components, "healthy": overall_healthy}
     if include_details:
         result["details"] = details
-    
+
     # Cache the result (always cache with details for efficiency)
     _health_check_cache = {
         "components": components,
         "healthy": overall_healthy,
-        "details": details if include_details else {}
+        "details": details if include_details else {},
     }
     _health_check_cache_time = current_time
-    
+
     return result
 
 
@@ -463,16 +457,16 @@ async def root():
 async def health_check(response: Response):
     """
     Health check endpoint.
-    
+
     Returns basic health status without sensitive details.
     Suitable for load balancers and monitoring tools.
     """
     health_data = await check_component_health(include_details=False)
-    
+
     # Set appropriate status code
     if not health_data["healthy"]:
         response.status_code = 503  # Service Unavailable
-    
+
     return HealthResponse(
         status="healthy" if health_data["healthy"] else "unhealthy",
         version="0.1.0",
@@ -486,17 +480,17 @@ async def health_check(response: Response):
 async def health_check_v1(response: Response):
     """
     Health check endpoint (v1 API path).
-    
+
     Returns detailed health status of all system components.
     Includes component details but sanitizes sensitive information.
     Suitable for monitoring and debugging.
     """
     health_data = await check_component_health(include_details=True)
-    
+
     # Set appropriate status code
     if not health_data["healthy"]:
         response.status_code = 503  # Service Unavailable
-    
+
     return HealthResponse(
         status="healthy" if health_data["healthy"] else "unhealthy",
         version="0.1.0",
@@ -534,7 +528,7 @@ async def create_assessment(request: Request, assessment_input: AssessmentInput)
         Complete assessment result with scores and explanations
     """
     request_id = getattr(request.state, "request_id", None)
-    
+
     if not assessment_engine:
         raise service_unavailable_error("Assessment engine", request_id=request_id)
 
@@ -569,7 +563,7 @@ async def create_assessment(request: Request, assessment_input: AssessmentInput)
 async def get_assessment(request: Request, assessment_id: str):
     """
     Get assessment by ID.
-    
+
     Note: This endpoint requires persistent storage to be implemented.
     Currently returns a not implemented error.
     """
@@ -585,9 +579,7 @@ async def get_assessment(request: Request, assessment_id: str):
 
 # Candidate Management Endpoints
 @app.post("/api/v1/candidates")
-async def create_candidate(
-    http_request: Request, request: CandidateCreateRequest
-):
+async def create_candidate(http_request: Request, request: CandidateCreateRequest):
     """
     Create a new candidate in memory storage.
 
@@ -599,7 +591,7 @@ async def create_candidate(
         Created candidate memory
     """
     request_id = getattr(http_request.state, "request_id", None)
-    
+
     if not memu_storage:
         raise service_unavailable_error("Memory storage", request_id=request_id)
 
@@ -614,7 +606,7 @@ async def create_candidate(
                 details={"candidate_id": request.candidate_id},
                 request_id=request_id,
             )
-        
+
         memory = memu_storage.create_candidate_memory(request.candidate_id, request.initial_data)
         return {
             "candidate_id": memory.candidate_id,
@@ -645,7 +637,7 @@ async def get_candidate(request: Request, candidate_id: str):
         Candidate memory structure
     """
     request_id = getattr(request.state, "request_id", None)
-    
+
     if not memu_storage:
         raise service_unavailable_error("Memory storage", request_id=request_id)
 
@@ -660,7 +652,7 @@ async def get_candidate(request: Request, candidate_id: str):
 async def list_candidates(request: Request):
     """List all candidates."""
     request_id = getattr(request.state, "request_id", None)
-    
+
     if not memu_storage:
         raise service_unavailable_error("Memory storage", request_id=request_id)
 
@@ -679,7 +671,7 @@ async def list_candidates(request: Request):
 async def delete_candidate(request: Request, candidate_id: str):
     """Delete a candidate."""
     request_id = getattr(request.state, "request_id", None)
-    
+
     if not memu_storage:
         raise service_unavailable_error("Memory storage", request_id=request_id)
 
@@ -704,7 +696,7 @@ async def generate_tags(http_request: Request, request: TagRequest):
         List of generated tags
     """
     request_id = getattr(http_request.state, "request_id", None)
-    
+
     if not tag_generator:
         raise service_unavailable_error("Tag generator", request_id=request_id)
 
@@ -734,19 +726,19 @@ async def upload_file(request: Request, file: UploadFile = File(...)):
 
     Returns:
         File information and initial tags
-        
+
     Security:
         - Validates file extension
         - Checks file size limit
         - Sanitizes filename
     """
     request_id = getattr(request.state, "request_id", None)
-    
+
     try:
         # Security: Validate file extension
-        allowed_extensions = config.allowed_extensions.split(',')
-        file_ext = file.filename.split('.')[-1].lower() if '.' in file.filename else ''
-        
+        allowed_extensions = config.allowed_extensions.split(",")
+        file_ext = file.filename.split(".")[-1].lower() if "." in file.filename else ""
+
         if file_ext not in allowed_extensions:
             raise file_upload_error(
                 message=f"File type '.{file_ext}' not allowed. Allowed types: {', '.join(allowed_extensions)}",
@@ -754,16 +746,17 @@ async def upload_file(request: Request, file: UploadFile = File(...)):
                 details={"file_extension": file_ext, "allowed_extensions": allowed_extensions},
                 request_id=request_id,
             )
-        
+
         # Security: Sanitize filename to prevent path traversal
         import re
         from pathlib import Path
-        safe_filename = re.sub(r'[^a-zA-Z0-9._-]', '_', file.filename)
+
+        safe_filename = re.sub(r"[^a-zA-Z0-9._-]", "_", file.filename)
         safe_filename = Path(safe_filename).name  # Remove any path components
-        
+
         # Read file content with size limit
         content = await file.read()
-        
+
         # Security: Check file size
         if len(content) > config.max_upload_size:
             raise file_upload_error(
@@ -776,7 +769,7 @@ async def upload_file(request: Request, file: UploadFile = File(...)):
                 },
                 request_id=request_id,
             )
-        
+
         # Try to decode as text
         try:
             text_content = content.decode("utf-8")
@@ -803,7 +796,7 @@ async def upload_file(request: Request, file: UploadFile = File(...)):
             "original_filename": file.filename,
             "size": len(content),
             "tags": tags,
-            "status": "uploaded"
+            "status": "uploaded",
         }
     except HTTPException:
         raise

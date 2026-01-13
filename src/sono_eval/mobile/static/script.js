@@ -95,7 +95,7 @@ function showError(message, details = null) {
     errorDiv.setAttribute('aria-live', 'assertive');
     errorDiv.style.background = '#FFEBEE';
     errorDiv.style.borderLeftColor = 'var(--error-color)';
-    
+
     let detailsHtml = '';
     if (details) {
         if (typeof details === 'string') {
@@ -104,7 +104,7 @@ function showError(message, details = null) {
             detailsHtml = `<p style="margin-top: 0.5rem; font-size: 0.875rem; color: var(--text-secondary);">${JSON.stringify(details, null, 2)}</p>`;
         }
     }
-    
+
     errorDiv.innerHTML = `
         <p class="info-box-icon" aria-hidden="true">⚠️</p>
         <div class="info-box-content">

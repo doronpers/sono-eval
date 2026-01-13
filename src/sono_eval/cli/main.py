@@ -41,8 +41,14 @@ def assess():
 @click.option("--candidate-id", required=True, help="Candidate identifier")
 @click.option("--file", type=click.Path(exists=True), help="Code file to assess")
 @click.option("--content", help="Content to assess")
-@click.option("--type", default="code", help="Submission type (code, project, interview, portfolio, test)")
-@click.option("--paths", multiple=True, help="Paths to evaluate (technical, design, collaboration, problem_solving, communication)")
+@click.option(
+    "--type", default="code", help="Submission type (code, project, interview, portfolio, test)"
+)
+@click.option(
+    "--paths",
+    multiple=True,
+    help="Paths to evaluate (technical, design, collaboration, problem_solving, communication)",
+)
 @click.option("--output", type=click.Path(), help="Output file for results (JSON format)")
 @click.option("--quiet", is_flag=True, help="Quiet mode - minimal output")
 @click.option("--verbose", is_flag=True, help="Verbose mode - detailed output")
@@ -58,18 +64,18 @@ def run(
 ):
     """
     Run an assessment for a candidate.
-    
+
     Examples:
-    
+
         # Assess a code file with all paths
         sono-eval assess run --candidate-id john_doe --file solution.py
-        
+
         # Assess specific paths only
         sono-eval assess run --candidate-id john_doe --file solution.py --paths technical design
-        
+
         # Assess inline content
         sono-eval assess run --candidate-id john_doe --content "def hello(): return 'world'" --paths technical
-        
+
         # Save results to file
         sono-eval assess run --candidate-id john_doe --file solution.py --output results.json
     """
@@ -88,7 +94,9 @@ def run(
                 raise click.Abort()
         elif not content:
             console.print("[red]Error: Must provide either --file or --content[/red]")
-            console.print("[yellow]Hint: Use --file path/to/file.py or --content 'your code here'[/yellow]")
+            console.print(
+                "[yellow]Hint: Use --file path/to/file.py or --content 'your code here'[/yellow]"
+            )
             raise click.Abort()
     except FileNotFoundError:
         console.print(f"[red]Error: File not found: {file}[/red]")
@@ -108,14 +116,18 @@ def run(
                 try:
                     path_list.append(PathType[p.upper()])
                 except KeyError:
-                    console.print(f"[yellow]Warning: Invalid path '{p}'. Valid paths: {', '.join(p.value for p in PathType)}[/yellow]")
+                    console.print(
+                        f"[yellow]Warning: Invalid path '{p}'. Valid paths: {', '.join(p.value for p in PathType)}[/yellow]"
+                    )
             if not path_list:
                 console.print("[red]Error: No valid paths specified[/red]")
                 raise click.Abort()
         else:
             path_list = list(PathType)
             if not quiet:
-                console.print(f"[dim]No paths specified, evaluating all: {', '.join(p.value for p in path_list)}[/dim]")
+                console.print(
+                    f"[dim]No paths specified, evaluating all: {', '.join(p.value for p in path_list)}[/dim]"
+                )
     except Exception as e:
         console.print(f"[red]Error parsing paths: {e}[/red]")
         raise click.Abort()
@@ -135,7 +147,7 @@ def run(
     # Run assessment
     if not quiet:
         console.print("[dim]Processing assessment...[/dim]")
-    
+
     try:
         engine = AssessmentEngine()
         result = asyncio.run(engine.assess(assessment_input))
@@ -143,6 +155,7 @@ def run(
         console.print(f"[red]Error running assessment: {e}[/red]")
         if verbose:
             import traceback
+
             console.print(f"[dim]{traceback.format_exc()}[/dim]")
         raise click.Abort()
 
@@ -152,7 +165,11 @@ def run(
         console.print(f"Overall Score: [bold cyan]{result.overall_score:.2f}/100[/bold cyan]")
         console.print(f"Confidence: [cyan]{result.confidence:.2%}[/cyan]")
         if verbose:
-            console.print(f"Processing Time: {result.processing_time_ms:.2f}ms" if result.processing_time_ms else "")
+            console.print(
+                f"Processing Time: {result.processing_time_ms:.2f}ms"
+                if result.processing_time_ms
+                else ""
+            )
         console.print(f"\n[bold]Summary:[/bold] {result.summary}")
 
         # Path scores table
@@ -165,7 +182,13 @@ def run(
             table.add_column("Strengths", justify="right", style="dim")
 
             for ps in result.path_scores:
-                score_color = "green" if ps.overall_score >= 75 else "yellow" if ps.overall_score >= 60 else "red"
+                score_color = (
+                    "green"
+                    if ps.overall_score >= 75
+                    else "yellow"
+                    if ps.overall_score >= 60
+                    else "red"
+                )
                 table.add_row(
                     ps.path.value.replace("_", " ").title(),
                     f"[{score_color}]{ps.overall_score:.1f}[/{score_color}]",
@@ -185,7 +208,7 @@ def run(
             console.print("\n[bold]Recommendations:[/bold]")
             for rec in result.recommendations:
                 console.print(f"  • [yellow]{rec}[/yellow]")
-        
+
         if verbose and result.micro_motives:
             console.print("\n[bold]Micro-Motives:[/bold]")
             for motive in result.micro_motives:
@@ -201,7 +224,7 @@ def run(
         except Exception as e:
             console.print(f"[red]Error saving results: {e}[/red]")
             raise click.Abort()
-    
+
     if quiet:
         # In quiet mode, just print the score
         console.print(f"{result.overall_score:.2f}")
@@ -215,18 +238,23 @@ def candidate():
 
 
 @candidate.command()
-@click.option("--id", "candidate_id", required=True, help="Candidate ID (alphanumeric, dashes, underscores only)")
+@click.option(
+    "--id",
+    "candidate_id",
+    required=True,
+    help="Candidate ID (alphanumeric, dashes, underscores only)",
+)
 @click.option("--data", help="Initial data (JSON string)")
 @click.option("--quiet", is_flag=True, help="Quiet mode - minimal output")
 def create(candidate_id: str, data: Optional[str], quiet: bool):
     """
     Create a new candidate in memory storage.
-    
+
     Examples:
-    
+
         # Create a candidate
         sono-eval candidate create --id john_doe
-        
+
         # Create with initial data
         sono-eval candidate create --id john_doe --data '{"email": "john@example.com"}'
     """
@@ -266,12 +294,12 @@ def create(candidate_id: str, data: Optional[str], quiet: bool):
 def show(candidate_id: str, verbose: bool):
     """
     Show candidate information and memory structure.
-    
+
     Examples:
-    
+
         # Show basic info
         sono-eval candidate show --id john_doe
-        
+
         # Show detailed info
         sono-eval candidate show --id john_doe --verbose
     """
@@ -281,7 +309,9 @@ def show(candidate_id: str, verbose: bool):
 
         if not memory:
             console.print(f"[red]Error: Candidate not found: {candidate_id}[/red]")
-            console.print("[yellow]Hint: Use 'sono-eval candidate create' to create a new candidate[/yellow]")
+            console.print(
+                "[yellow]Hint: Use 'sono-eval candidate create' to create a new candidate[/yellow]"
+            )
             raise click.Abort()
 
         console.print(f"\n[bold cyan]Candidate: {memory.candidate_id}[/bold cyan]")
@@ -293,7 +323,7 @@ def show(candidate_id: str, verbose: bool):
         if memory.root_node.data:
             console.print("\n[bold]Initial Data:[/bold]")
             console.print(json.dumps(memory.root_node.data, indent=2))
-        
+
         if verbose:
             console.print(f"\n[bold]Memory Structure:[/bold]")
             console.print(f"Root Node ID: {memory.root_node.node_id}")
@@ -309,12 +339,12 @@ def show(candidate_id: str, verbose: bool):
 def list(quiet: bool):
     """
     List all candidates in memory storage.
-    
+
     Examples:
-    
+
         # List all candidates
         sono-eval candidate list
-        
+
         # Quiet mode (just IDs)
         sono-eval candidate list --quiet
     """
@@ -334,7 +364,7 @@ def list(quiet: bool):
             console.print(f"\n[bold cyan]Candidates ({len(candidates)}):[/bold cyan]")
             table = Table(show_header=True, header_style="bold cyan")
             table.add_column("Candidate ID", style="cyan")
-            
+
             for candidate_id in candidates:
                 memory = storage.get_candidate_memory(candidate_id)
                 if memory:
@@ -377,22 +407,22 @@ def tag():
 def generate(file: Optional[str], text: Optional[str], max_tags: int, quiet: bool, verbose: bool):
     """
     Generate semantic tags for code or text.
-    
+
     Examples:
-    
+
         # Tag a file
         sono-eval tag generate --file solution.py
-        
+
         # Tag inline text
         sono-eval tag generate --text "def hello(): return 'world'"
-        
+
         # Generate more tags
         sono-eval tag generate --file solution.py --max-tags 10
     """
     if max_tags < 1 or max_tags > 20:
         console.print("[red]Error: --max-tags must be between 1 and 20[/red]")
         raise click.Abort()
-    
+
     try:
         if file:
             if verbose:
@@ -404,7 +434,9 @@ def generate(file: Optional[str], text: Optional[str], max_tags: int, quiet: boo
                 raise click.Abort()
         elif not text:
             console.print("[red]Error: Must provide either --file or --text[/red]")
-            console.print("[yellow]Hint: Use --file path/to/file.py or --text 'your code here'[/yellow]")
+            console.print(
+                "[yellow]Hint: Use --file path/to/file.py or --text 'your code here'[/yellow]"
+            )
             raise click.Abort()
     except FileNotFoundError:
         console.print(f"[red]Error: File not found: {file}[/red]")
@@ -429,10 +461,10 @@ def generate(file: Optional[str], text: Optional[str], max_tags: int, quiet: boo
             table.add_column("Tag", style="cyan")
             table.add_column("Category", style="yellow")
             table.add_column("Confidence", justify="right", style="green")
-            
+
             if verbose:
                 table.add_column("Context", style="dim", max_width=40)
-            
+
             for tag in tags:
                 row = [
                     tag.tag,
@@ -440,7 +472,11 @@ def generate(file: Optional[str], text: Optional[str], max_tags: int, quiet: boo
                     f"{tag.confidence:.2%}",
                 ]
                 if verbose:
-                    context = tag.context[:40] + "..." if tag.context and len(tag.context) > 40 else (tag.context or "")
+                    context = (
+                        tag.context[:40] + "..."
+                        if tag.context and len(tag.context) > 40
+                        else (tag.context or "")
+                    )
                     row.append(context)
                 table.add_row(*row)
             console.print(table)
@@ -463,6 +499,7 @@ def server():
 def start(host: Optional[str], port: Optional[int], reload: bool):
     """Start the API server"""
     import uvicorn
+
     from sono_eval.utils.config import get_config
 
     config = get_config()
@@ -537,18 +574,18 @@ def show():
 def list_presets():
     """List all available configuration presets"""
     from sono_eval.utils.config import Config
-    
+
     presets = Config.list_presets()
-    
+
     console.print("\n[bold]Available Configuration Presets[/bold]\n")
-    
+
     table = Table(show_header=True, header_style="bold cyan")
     table.add_column("Preset Name", style="cyan")
     table.add_column("Description", style="dim")
-    
+
     for name, description in presets.items():
         table.add_row(name, description)
-    
+
     console.print(table)
     console.print("\n[yellow]Usage:[/yellow] Set environment variables from preset values")
     console.print("[dim]Example:[/dim]")
@@ -565,27 +602,27 @@ def list_presets():
 def apply_preset(preset: str, output: Optional[str]):
     """
     Apply a configuration preset.
-    
+
     Examples:
-    
+
         # List available presets
         sono-eval config apply-preset --preset list
-        
+
         # Show preset values
         sono-eval config apply-preset --preset development
-        
+
         # Save preset to .env file
         sono-eval config apply-preset --preset production --output .env
     """
     from sono_eval.utils.config import Config
-    
+
     if preset == "list":
         list_presets()
         return
-    
+
     try:
         preset_values = Config.get_preset(preset)
-        
+
         if output:
             # Write to .env file
             with open(output, "w") as f:
@@ -595,23 +632,27 @@ def apply_preset(preset: str, output: Optional[str]):
                     if value:  # Only write non-empty values
                         f.write(f"{key}={value}\n")
             console.print(f"[green]✓ Preset '{preset}' saved to {output}[/green]")
-            console.print(f"[yellow]⚠ Remember to set required values (SECRET_KEY, ALLOWED_HOSTS, etc.)[/yellow]")
+            console.print(
+                f"[yellow]⚠ Remember to set required values (SECRET_KEY, ALLOWED_HOSTS, etc.)[/yellow]"
+            )
         else:
             # Display preset values
             console.print(f"\n[bold]Configuration Preset: {preset}[/bold]\n")
             console.print("[yellow]Set these environment variables:[/yellow]\n")
-            
+
             table = Table(show_header=True, header_style="bold cyan")
             table.add_column("Variable", style="cyan")
             table.add_column("Value", style="green")
-            
+
             for key, value in preset_values.items():
                 display_value = str(value) if value else "[dim](empty - must be set)[/dim]"
                 table.add_row(key, display_value)
-            
+
             console.print(table)
             console.print(f"\n[yellow]To apply:[/yellow]")
-            console.print(f"  export $(sono-eval config apply-preset --preset {preset} --output - | grep -v '^#' | xargs)")
+            console.print(
+                f"  export $(sono-eval config apply-preset --preset {preset} --output - | grep -v '^#' | xargs)"
+            )
     except ValueError as e:
         console.print(f"[red]Error: {e}[/red]")
         raise click.Abort()

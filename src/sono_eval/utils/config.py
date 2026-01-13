@@ -99,12 +99,12 @@ class Config(BaseSettings):
         path = Path(self.tagstudio_root)
         path.mkdir(parents=True, exist_ok=True)
         return path
-    
+
     @classmethod
     def get_preset(cls, preset_name: str) -> Dict[str, Any]:
         """
         Get configuration preset values with optimized settings for different use cases.
-        
+
         Presets:
         - quick_test: Fast setup for quick testing (minimal features, fast startup)
         - development: Full-featured development environment (all features enabled)
@@ -114,13 +114,13 @@ class Config(BaseSettings):
         - high_performance: Maximum performance (more workers, aggressive caching)
         - low_resource: Minimal resource usage (single worker, no ML models)
         - ml_development: ML model development and training (ML features enabled)
-        
+
         Args:
             preset_name: Name of the preset
-        
+
         Returns:
             Dictionary of configuration values to set as environment variables
-        
+
         Example:
             ```python
             preset = Config.get_preset("development")
@@ -258,7 +258,7 @@ class Config(BaseSettings):
                 "T5_LORA_ALPHA": 32,
             },
         }
-        
+
         if preset_name not in presets:
             available = ", ".join(presets.keys())
             raise ValueError(
@@ -274,14 +274,14 @@ class Config(BaseSettings):
                 f"  - low_resource: Minimal resource usage\n"
                 f"  - ml_development: ML model development and training"
             )
-        
+
         return presets[preset_name]
-    
+
     @classmethod
     def list_presets(cls) -> Dict[str, str]:
         """
         List all available configuration presets with descriptions.
-        
+
         Returns:
             Dictionary mapping preset names to descriptions
         """
