@@ -2,7 +2,7 @@
 
 import os
 from pathlib import Path
-from typing import Optional
+from typing import Any, Dict, Optional
 
 from pydantic import Field
 from pydantic_settings import BaseSettings
@@ -99,6 +99,202 @@ class Config(BaseSettings):
         path = Path(self.tagstudio_root)
         path.mkdir(parents=True, exist_ok=True)
         return path
+    
+    @classmethod
+    def get_preset(cls, preset_name: str) -> Dict[str, Any]:
+        """
+        Get configuration preset values with optimized settings for different use cases.
+        
+        Presets:
+        - quick_test: Fast setup for quick testing (minimal features, fast startup)
+        - development: Full-featured development environment (all features enabled)
+        - testing: Optimized for running tests (fast, minimal resources)
+        - staging: Pre-production environment (production-like but with debugging)
+        - production: Production-ready configuration (optimized, secure)
+        - high_performance: Maximum performance (more workers, aggressive caching)
+        - low_resource: Minimal resource usage (single worker, no ML models)
+        - ml_development: ML model development and training (ML features enabled)
+        
+        Args:
+            preset_name: Name of the preset
+        
+        Returns:
+            Dictionary of configuration values to set as environment variables
+        
+        Example:
+            ```python
+            preset = Config.get_preset("development")
+            # Set environment variables from preset
+            for key, value in preset.items():
+                os.environ[key] = str(value)
+            ```
+        """
+        presets = {
+            "quick_test": {
+                "APP_ENV": "development",
+                "DEBUG": True,
+                "LOG_LEVEL": "ERROR",  # Minimal logging
+                "API_WORKERS": 1,
+                "API_PORT": 8000,
+                "ASSESSMENT_ENABLE_EXPLANATIONS": False,  # Faster
+                "ASSESSMENT_MULTI_PATH_TRACKING": False,  # Single path only
+                "DARK_HORSE_MODE": "disabled",
+                "TAGSTUDIO_AUTO_TAG": False,
+                "MEMU_CACHE_SIZE": 100,  # Small cache
+                "MAX_CONCURRENT_ASSESSMENTS": 1,
+                "BATCH_SIZE": 8,
+            },
+            "development": {
+                "APP_ENV": "development",
+                "DEBUG": True,
+                "LOG_LEVEL": "INFO",
+                "API_WORKERS": 2,
+                "API_PORT": 8000,
+                "ASSESSMENT_ENABLE_EXPLANATIONS": True,
+                "ASSESSMENT_MULTI_PATH_TRACKING": True,
+                "DARK_HORSE_MODE": "enabled",
+                "TAGSTUDIO_AUTO_TAG": True,
+                "MEMU_CACHE_SIZE": 500,
+                "MAX_CONCURRENT_ASSESSMENTS": 2,
+                "BATCH_SIZE": 16,
+                "T5_MODEL_NAME": "t5-base",  # Standard model
+            },
+            "testing": {
+                "APP_ENV": "testing",
+                "DEBUG": False,
+                "LOG_LEVEL": "WARNING",  # Less verbose in tests
+                "API_WORKERS": 1,
+                "API_PORT": 8001,  # Different port to avoid conflicts
+                "ASSESSMENT_ENABLE_EXPLANATIONS": True,
+                "ASSESSMENT_MULTI_PATH_TRACKING": True,
+                "DARK_HORSE_MODE": "enabled",
+                "TAGSTUDIO_AUTO_TAG": False,  # Skip auto-tagging in tests
+                "MEMU_CACHE_SIZE": 50,
+                "MAX_CONCURRENT_ASSESSMENTS": 1,
+                "BATCH_SIZE": 4,
+                "DATABASE_URL": "sqlite:///:memory:",  # In-memory DB for tests
+            },
+            "staging": {
+                "APP_ENV": "staging",
+                "DEBUG": False,
+                "LOG_LEVEL": "INFO",
+                "API_WORKERS": 3,
+                "API_PORT": 8000,
+                "ASSESSMENT_ENABLE_EXPLANATIONS": True,
+                "ASSESSMENT_MULTI_PATH_TRACKING": True,
+                "DARK_HORSE_MODE": "enabled",
+                "TAGSTUDIO_AUTO_TAG": True,
+                "MEMU_CACHE_SIZE": 2000,
+                "MAX_CONCURRENT_ASSESSMENTS": 4,
+                "BATCH_SIZE": 32,
+                # Security: Must be set explicitly
+                "ALLOWED_HOSTS": "",  # Must configure
+                "SECRET_KEY": "",  # Must set strong key
+            },
+            "production": {
+                "APP_ENV": "production",
+                "DEBUG": False,
+                "LOG_LEVEL": "INFO",
+                "API_WORKERS": 4,
+                "API_PORT": 8000,
+                "ASSESSMENT_ENABLE_EXPLANATIONS": True,
+                "ASSESSMENT_MULTI_PATH_TRACKING": True,
+                "DARK_HORSE_MODE": "enabled",
+                "TAGSTUDIO_AUTO_TAG": True,
+                "MEMU_CACHE_SIZE": 5000,
+                "MAX_CONCURRENT_ASSESSMENTS": 8,
+                "BATCH_SIZE": 64,
+                # Security: Must be set explicitly
+                "ALLOWED_HOSTS": "",  # Must configure specific domains
+                "SECRET_KEY": "",  # Must set strong key
+                "SUPERSET_SECRET_KEY": "",  # Must set strong key
+                "DATABASE_URL": "",  # Must use PostgreSQL
+            },
+            "high_performance": {
+                "APP_ENV": "production",
+                "DEBUG": False,
+                "LOG_LEVEL": "WARNING",  # Less logging overhead
+                "API_WORKERS": 8,  # More workers
+                "API_PORT": 8000,
+                "ASSESSMENT_ENABLE_EXPLANATIONS": True,
+                "ASSESSMENT_MULTI_PATH_TRACKING": True,
+                "DARK_HORSE_MODE": "enabled",
+                "TAGSTUDIO_AUTO_TAG": True,
+                "MEMU_CACHE_SIZE": 10000,  # Large cache
+                "MAX_CONCURRENT_ASSESSMENTS": 16,  # High concurrency
+                "BATCH_SIZE": 128,  # Large batches
+                "BATCH_SIZE": 128,
+            },
+            "low_resource": {
+                "APP_ENV": "development",
+                "DEBUG": True,
+                "LOG_LEVEL": "ERROR",
+                "API_WORKERS": 1,
+                "API_PORT": 8000,
+                "ASSESSMENT_ENABLE_EXPLANATIONS": True,
+                "ASSESSMENT_MULTI_PATH_TRACKING": False,  # Single path
+                "DARK_HORSE_MODE": "disabled",
+                "TAGSTUDIO_AUTO_TAG": False,
+                "MEMU_CACHE_SIZE": 50,  # Minimal cache
+                "MAX_CONCURRENT_ASSESSMENTS": 1,
+                "BATCH_SIZE": 4,
+                "T5_MODEL_NAME": "t5-small",  # Smaller model
+            },
+            "ml_development": {
+                "APP_ENV": "development",
+                "DEBUG": True,
+                "LOG_LEVEL": "DEBUG",  # Verbose for ML debugging
+                "API_WORKERS": 2,
+                "API_PORT": 8000,
+                "ASSESSMENT_ENABLE_EXPLANATIONS": True,
+                "ASSESSMENT_MULTI_PATH_TRACKING": True,
+                "DARK_HORSE_MODE": "enabled",
+                "TAGSTUDIO_AUTO_TAG": True,
+                "MEMU_CACHE_SIZE": 1000,
+                "MAX_CONCURRENT_ASSESSMENTS": 2,
+                "BATCH_SIZE": 16,
+                "T5_MODEL_NAME": "t5-base",
+                "T5_LORA_RANK": 16,  # Higher rank for training
+                "T5_LORA_ALPHA": 32,
+            },
+        }
+        
+        if preset_name not in presets:
+            available = ", ".join(presets.keys())
+            raise ValueError(
+                f"Unknown preset: '{preset_name}'. "
+                f"Available presets: {available}\n\n"
+                f"Preset descriptions:\n"
+                f"  - quick_test: Fast setup for quick testing\n"
+                f"  - development: Full-featured development environment\n"
+                f"  - testing: Optimized for running tests\n"
+                f"  - staging: Pre-production environment\n"
+                f"  - production: Production-ready configuration\n"
+                f"  - high_performance: Maximum performance settings\n"
+                f"  - low_resource: Minimal resource usage\n"
+                f"  - ml_development: ML model development and training"
+            )
+        
+        return presets[preset_name]
+    
+    @classmethod
+    def list_presets(cls) -> Dict[str, str]:
+        """
+        List all available configuration presets with descriptions.
+        
+        Returns:
+            Dictionary mapping preset names to descriptions
+        """
+        return {
+            "quick_test": "Fast setup for quick testing (minimal features, fast startup)",
+            "development": "Full-featured development environment (all features enabled)",
+            "testing": "Optimized for running tests (fast, minimal resources)",
+            "staging": "Pre-production environment (production-like but with debugging)",
+            "production": "Production-ready configuration (optimized, secure)",
+            "high_performance": "Maximum performance (more workers, aggressive caching)",
+            "low_resource": "Minimal resource usage (single worker, no ML models)",
+            "ml_development": "ML model development and training (ML features enabled)",
+        }
 
 
 # Global config instance

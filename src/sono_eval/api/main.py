@@ -15,7 +15,7 @@ from typing import Any, Dict, List, Optional
 from fastapi import FastAPI, HTTPException, Request, Response, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, Field, validator
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from sono_eval.assessment.engine import AssessmentEngine
@@ -25,6 +25,20 @@ from sono_eval.tagging.generator import TagGenerator
 from sono_eval.mobile.app import create_mobile_app
 from sono_eval.utils.config import get_config
 from sono_eval.utils.logger import get_logger
+# Use shared API utilities
+from shared_ai_utils.api import (
+    ErrorCode,
+    HealthResponse,
+    RequestIDMiddleware,
+    create_cors_middleware,
+    create_error_response,
+    create_health_router,
+    file_upload_error,
+    internal_error,
+    not_found_error,
+    service_unavailable_error,
+    validation_error,
+)
 
 logger = get_logger(__name__)
 
@@ -36,50 +50,7 @@ tag_generator: Optional[TagGenerator] = None
 config = get_config()
 
 
-class RequestIDMiddleware(BaseHTTPMiddleware):
-    """Middleware to add unique request ID to each request."""
-    
-    async def dispatch(self, request: Request, call_next):
-        """Add request ID and log request details."""
-        # Generate or extract request ID
-        request_id = request.headers.get("X-Request-ID", str(uuid.uuid4()))
-        
-        # Add to request state
-        request.state.request_id = request_id
-        
-        # Log request start
-        start_time = time()
-        logger.info(
-            f"Request started: {request.method} {request.url.path}",
-            extra={"request_id": request_id}
-        )
-        
-        try:
-            # Process request
-            response = await call_next(request)
-            
-            # Calculate duration
-            duration_ms = (time() - start_time) * 1000
-            
-            # Add request ID to response headers
-            response.headers["X-Request-ID"] = request_id
-            
-            # Log request completion
-            logger.info(
-                f"Request completed: {request.method} {request.url.path} - Status: {response.status_code}",
-                extra={"request_id": request_id, "duration_ms": duration_ms}
-            )
-            
-            return response
-        except Exception as e:
-            # Log error with request ID
-            duration_ms = (time() - start_time) * 1000
-            logger.error(
-                f"Request failed: {request.method} {request.url.path} - Error: {str(e)}",
-                extra={"request_id": request_id, "duration_ms": duration_ms},
-                exc_info=True
-            )
-            raise
+# RequestIDMiddleware now imported from shared_ai_utils.api
 
 
 @asynccontextmanager
@@ -158,30 +129,16 @@ app = FastAPI(
 # Add Request ID middleware (must be first to track all requests)
 app.add_middleware(RequestIDMiddleware)
 
-# CORS middleware - configure via ALLOWED_HOSTS environment variable for production
-# In production, set ALLOWED_HOSTS to specific origins (comma-separated)
-# Default allows all origins for development ONLY
-# Security: Validate CORS configuration at startup
-if config.app_env == "production":
-    if not config.allowed_hosts or config.allowed_hosts == "*":
-        logger.error("CRITICAL: ALLOWED_HOSTS must be configured in production. Set specific domains.")
-        raise ValueError("ALLOWED_HOSTS must be set to specific origins in production environment")
-    cors_origins = [origin.strip() for origin in config.allowed_hosts.split(",")]
-    logger.info(f"Production CORS configured for origins: {cors_origins}")
-else:
-    # Development: allow all origins but log warning
-    cors_origins = ["*"]
-    if config.allowed_hosts and config.allowed_hosts != "*":
-        cors_origins = [origin.strip() for origin in config.allowed_hosts.split(",")]
-    logger.warning(f"Development mode: CORS origins = {cors_origins}")
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=cors_origins,
-    allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allow_headers=["*"],
+# CORS middleware using shared utility
+cors_config = create_cors_middleware(
+    allowed_origins=(
+        [origin.strip() for origin in config.allowed_hosts.split(",")]
+        if config.allowed_hosts and config.allowed_hosts != "*"
+        else None
+    ),
+    app_env=config.app_env,
 )
+app.add_middleware(CORSMiddleware, **cors_config)
 
 # Mount mobile companion app
 mobile_app = create_mobile_app()
@@ -193,14 +150,7 @@ API_V1_PREFIX = "/api/v1"
 
 
 # Request/Response Models
-class HealthResponse(BaseModel):
-    """Health check response."""
-
-    status: str
-    version: str
-    timestamp: str
-    components: Dict[str, str]
-    details: Optional[Dict[str, Any]] = None
+# HealthResponse now imported from shared_ai_utils.api
 
 
 class CandidateCreateRequest(BaseModel):
@@ -572,18 +522,21 @@ async def status():
 
 # Assessment Endpoints
 @app.post("/api/v1/assessments", response_model=AssessmentResult)
-async def create_assessment(assessment_input: AssessmentInput):
+async def create_assessment(request: Request, assessment_input: AssessmentInput):
     """
     Create a new assessment.
 
     Args:
+        request: FastAPI request object (for request ID)
         assessment_input: Assessment input data
 
     Returns:
         Complete assessment result with scores and explanations
     """
+    request_id = getattr(request.state, "request_id", None)
+    
     if not assessment_engine:
-        raise HTTPException(status_code=503, detail="Assessment engine not initialized")
+        raise service_unavailable_error("Assessment engine", request_id=request_id)
 
     try:
         result = await assessment_engine.assess(assessment_input)
@@ -600,117 +553,183 @@ async def create_assessment(assessment_input: AssessmentInput):
                 )
 
         return result
+    except ValueError as e:
+        logger.warning(f"Validation error in assessment: {e}")
+        raise validation_error(str(e), request_id=request_id)
     except Exception as e:
-        logger.error(f"Error creating assessment: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Error creating assessment: {e}", exc_info=True)
+        raise internal_error(
+            "Failed to create assessment. Please try again or contact support.",
+            details={"error_type": type(e).__name__},
+            request_id=request_id,
+        )
 
 
 @app.get("/api/v1/assessments/{assessment_id}")
-async def get_assessment(assessment_id: str):
-    """Get assessment by ID (placeholder - would need persistent storage)."""
-    raise HTTPException(status_code=501, detail="Not implemented - requires persistent storage")
+async def get_assessment(request: Request, assessment_id: str):
+    """
+    Get assessment by ID.
+    
+    Note: This endpoint requires persistent storage to be implemented.
+    Currently returns a not implemented error.
+    """
+    request_id = getattr(request.state, "request_id", None)
+    raise create_error_response(
+        error_code="NOT_IMPLEMENTED",
+        message="Assessment retrieval requires persistent storage. This feature is planned for a future release.",
+        status_code=501,
+        details={"assessment_id": assessment_id, "feature": "persistent_storage"},
+        request_id=request_id,
+    )
 
 
 # Candidate Management Endpoints
 @app.post("/api/v1/candidates")
-async def create_candidate(request: CandidateCreateRequest):
+async def create_candidate(
+    http_request: Request, request: CandidateCreateRequest
+):
     """
     Create a new candidate in memory storage.
 
     Args:
+        http_request: FastAPI request object (for request ID)
         request: Candidate creation request
 
     Returns:
         Created candidate memory
     """
+    request_id = getattr(http_request.state, "request_id", None)
+    
     if not memu_storage:
-        raise HTTPException(status_code=503, detail="Memory storage not initialized")
+        raise service_unavailable_error("Memory storage", request_id=request_id)
 
     try:
+        # Check if candidate already exists
+        existing = memu_storage.get_candidate_memory(request.candidate_id)
+        if existing:
+            raise create_error_response(
+                error_code=ErrorCode.DUPLICATE_RESOURCE,
+                message=f"Candidate '{request.candidate_id}' already exists",
+                status_code=409,
+                details={"candidate_id": request.candidate_id},
+                request_id=request_id,
+            )
+        
         memory = memu_storage.create_candidate_memory(request.candidate_id, request.initial_data)
         return {
             "candidate_id": memory.candidate_id,
             "created": memory.last_updated,
             "status": "created",
         }
+    except HTTPException:
+        raise
     except Exception as e:
-        logger.error(f"Error creating candidate: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Error creating candidate: {e}", exc_info=True)
+        raise internal_error(
+            "Failed to create candidate. Please try again.",
+            details={"error_type": type(e).__name__},
+            request_id=request_id,
+        )
 
 
 @app.get("/api/v1/candidates/{candidate_id}")
-async def get_candidate(candidate_id: str):
+async def get_candidate(request: Request, candidate_id: str):
     """
     Get candidate memory.
 
     Args:
+        request: FastAPI request object (for request ID)
         candidate_id: Candidate identifier
 
     Returns:
         Candidate memory structure
     """
+    request_id = getattr(request.state, "request_id", None)
+    
     if not memu_storage:
-        raise HTTPException(status_code=503, detail="Memory storage not initialized")
+        raise service_unavailable_error("Memory storage", request_id=request_id)
 
     memory = memu_storage.get_candidate_memory(candidate_id)
     if not memory:
-        raise HTTPException(status_code=404, detail="Candidate not found")
+        raise not_found_error("Candidate", candidate_id, request_id=request_id)
 
     return memory.model_dump(mode="json")
 
 
 @app.get("/api/v1/candidates")
-async def list_candidates():
+async def list_candidates(request: Request):
     """List all candidates."""
+    request_id = getattr(request.state, "request_id", None)
+    
     if not memu_storage:
-        raise HTTPException(status_code=503, detail="Memory storage not initialized")
+        raise service_unavailable_error("Memory storage", request_id=request_id)
 
-    candidates = memu_storage.list_candidates()
-    return {"candidates": candidates, "count": len(candidates)}
+    try:
+        candidates = memu_storage.list_candidates()
+        return {"candidates": candidates, "count": len(candidates)}
+    except Exception as e:
+        logger.error(f"Error listing candidates: {e}", exc_info=True)
+        raise internal_error(
+            "Failed to list candidates. Please try again.",
+            request_id=request_id,
+        )
 
 
 @app.delete("/api/v1/candidates/{candidate_id}")
-async def delete_candidate(candidate_id: str):
+async def delete_candidate(request: Request, candidate_id: str):
     """Delete a candidate."""
+    request_id = getattr(request.state, "request_id", None)
+    
     if not memu_storage:
-        raise HTTPException(status_code=503, detail="Memory storage not initialized")
+        raise service_unavailable_error("Memory storage", request_id=request_id)
 
     success = memu_storage.delete_candidate_memory(candidate_id)
     if not success:
-        raise HTTPException(status_code=404, detail="Candidate not found")
+        raise not_found_error("Candidate", candidate_id, request_id=request_id)
 
     return {"status": "deleted", "candidate_id": candidate_id}
 
 
 # Tagging Endpoints
 @app.post("/api/v1/tags/generate")
-async def generate_tags(request: TagRequest):
+async def generate_tags(http_request: Request, request: TagRequest):
     """
     Generate semantic tags for text.
 
     Args:
+        http_request: FastAPI request object (for request ID)
         request: Tag generation request
 
     Returns:
         List of generated tags
     """
+    request_id = getattr(http_request.state, "request_id", None)
+    
     if not tag_generator:
-        raise HTTPException(status_code=503, detail="Tag generator not initialized")
+        raise service_unavailable_error("Tag generator", request_id=request_id)
 
     try:
         tags = tag_generator.generate_tags(request.text, max_tags=request.max_tags)
         return {"tags": [tag.model_dump() for tag in tags], "count": len(tags)}
+    except ValueError as e:
+        logger.warning(f"Validation error in tag generation: {e}")
+        raise validation_error(str(e), request_id=request_id)
     except Exception as e:
-        logger.error(f"Error generating tags: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Error generating tags: {e}", exc_info=True)
+        raise internal_error(
+            "Failed to generate tags. Please try again.",
+            details={"error_type": type(e).__name__},
+            request_id=request_id,
+        )
 
 
 @app.post("/api/v1/files/upload")
-async def upload_file(file: UploadFile = File(...)):
+async def upload_file(request: Request, file: UploadFile = File(...)):
     """
     Upload a file for assessment.
 
     Args:
+        request: FastAPI request object (for request ID)
         file: Uploaded file
 
     Returns:
@@ -721,15 +740,19 @@ async def upload_file(file: UploadFile = File(...)):
         - Checks file size limit
         - Sanitizes filename
     """
+    request_id = getattr(request.state, "request_id", None)
+    
     try:
         # Security: Validate file extension
         allowed_extensions = config.allowed_extensions.split(',')
         file_ext = file.filename.split('.')[-1].lower() if '.' in file.filename else ''
         
         if file_ext not in allowed_extensions:
-            raise HTTPException(
-                status_code=400,
-                detail=f"File type '.{file_ext}' not allowed. Allowed types: {', '.join(allowed_extensions)}"
+            raise file_upload_error(
+                message=f"File type '.{file_ext}' not allowed. Allowed types: {', '.join(allowed_extensions)}",
+                error_type=ErrorCode.INVALID_FILE_TYPE,
+                details={"file_extension": file_ext, "allowed_extensions": allowed_extensions},
+                request_id=request_id,
             )
         
         # Security: Sanitize filename to prevent path traversal
@@ -743,25 +766,37 @@ async def upload_file(file: UploadFile = File(...)):
         
         # Security: Check file size
         if len(content) > config.max_upload_size:
-            raise HTTPException(
-                status_code=413,
-                detail=f"File too large. Maximum size: {config.max_upload_size / 1024 / 1024:.1f}MB"
+            raise file_upload_error(
+                message=f"File too large. Maximum size: {config.max_upload_size / 1024 / 1024:.1f}MB",
+                error_type=ErrorCode.FILE_TOO_LARGE,
+                details={
+                    "file_size": len(content),
+                    "max_size": config.max_upload_size,
+                    "max_size_mb": config.max_upload_size / 1024 / 1024,
+                },
+                request_id=request_id,
             )
         
         # Try to decode as text
         try:
             text_content = content.decode("utf-8")
         except UnicodeDecodeError:
-            raise HTTPException(
-                status_code=400,
-                detail="File must be valid UTF-8 text"
+            raise file_upload_error(
+                message="File must be valid UTF-8 text",
+                error_type=ErrorCode.INVALID_FORMAT,
+                details={"encoding": "utf-8"},
+                request_id=request_id,
             )
 
         # Generate tags
         tags = []
         if tag_generator:
-            semantic_tags = tag_generator.generate_tags(text_content)
-            tags = [tag.model_dump() for tag in semantic_tags]
+            try:
+                semantic_tags = tag_generator.generate_tags(text_content)
+                tags = [tag.model_dump() for tag in semantic_tags]
+            except Exception as e:
+                logger.warning(f"Tag generation failed for uploaded file: {e}")
+                # Don't fail the upload if tagging fails
 
         return {
             "filename": safe_filename,
@@ -773,8 +808,12 @@ async def upload_file(file: UploadFile = File(...)):
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"Error uploading file: {e}")
-        raise HTTPException(status_code=500, detail="Internal server error during file upload")
+        logger.error(f"Error uploading file: {e}", exc_info=True)
+        raise internal_error(
+            "Failed to upload file. Please try again.",
+            details={"error_type": type(e).__name__},
+            request_id=request_id,
+        )
 
 
 def create_app() -> FastAPI:

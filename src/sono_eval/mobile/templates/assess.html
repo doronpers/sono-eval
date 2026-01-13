@@ -279,12 +279,24 @@ document.getElementById('assessment-form').addEventListener('submit', async func
         if (result.success) {
             location.href = `/mobile/results?assessment_id=${result.assessment_id}`;
         } else {
-            alert('Error processing assessment: ' + result.error);
             document.getElementById('loading-overlay').style.display = 'none';
+            const errorMsg = result.error || 'Unknown error occurred';
+            const errorDetails = result.details || null;
+            if (window.sonoEval && window.sonoEval.showError) {
+                window.sonoEval.showError('Failed to process assessment: ' + errorMsg, errorDetails);
+            } else {
+                alert('Error processing assessment: ' + errorMsg);
+            }
         }
     } catch (error) {
-        alert('Error submitting assessment. Please try again.');
         document.getElementById('loading-overlay').style.display = 'none';
+        const errorMsg = error.message || 'Network error. Please check your connection and try again.';
+        if (window.sonoEval && window.sonoEval.showError) {
+            window.sonoEval.showError('Error submitting assessment', errorMsg);
+        } else {
+            alert('Error submitting assessment: ' + errorMsg);
+        }
+        console.error('Assessment submission error:', error);
     }
 });
 

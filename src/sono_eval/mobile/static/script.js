@@ -88,22 +88,42 @@ function trackEvent(category, action, label = null) {
 }
 
 // Error handling
-function showError(message) {
+function showError(message, details = null) {
     const errorDiv = document.createElement('div');
     errorDiv.className = 'info-box';
+    errorDiv.setAttribute('role', 'alert');
+    errorDiv.setAttribute('aria-live', 'assertive');
     errorDiv.style.background = '#FFEBEE';
     errorDiv.style.borderLeftColor = 'var(--error-color)';
+    
+    let detailsHtml = '';
+    if (details) {
+        if (typeof details === 'string') {
+            detailsHtml = `<p style="margin-top: 0.5rem; font-size: 0.875rem; color: var(--text-secondary);">${details}</p>`;
+        } else if (typeof details === 'object') {
+            detailsHtml = `<p style="margin-top: 0.5rem; font-size: 0.875rem; color: var(--text-secondary);">${JSON.stringify(details, null, 2)}</p>`;
+        }
+    }
+    
     errorDiv.innerHTML = `
-        <p class="info-box-icon">⚠️</p>
+        <p class="info-box-icon" aria-hidden="true">⚠️</p>
         <div class="info-box-content">
             <strong>Error:</strong> ${message}
+            ${detailsHtml}
         </div>
     `;
 
     const container = document.querySelector('.mobile-content');
     if (container) {
         container.insertBefore(errorDiv, container.firstChild);
-        setTimeout(() => errorDiv.remove(), 5000);
+        // Scroll to error
+        errorDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        // Remove after 8 seconds (longer for accessibility)
+        setTimeout(() => {
+            errorDiv.style.transition = 'opacity 0.3s';
+            errorDiv.style.opacity = '0';
+            setTimeout(() => errorDiv.remove(), 300);
+        }, 8000);
     }
 }
 
@@ -111,8 +131,10 @@ function showError(message) {
 function showSuccess(message) {
     const successDiv = document.createElement('div');
     successDiv.className = 'info-box info-box-success';
+    successDiv.setAttribute('role', 'status');
+    successDiv.setAttribute('aria-live', 'polite');
     successDiv.innerHTML = `
-        <p class="info-box-icon">✓</p>
+        <p class="info-box-icon" aria-hidden="true">✓</p>
         <div class="info-box-content">
             ${message}
         </div>
@@ -121,7 +143,13 @@ function showSuccess(message) {
     const container = document.querySelector('.mobile-content');
     if (container) {
         container.insertBefore(successDiv, container.firstChild);
-        setTimeout(() => successDiv.remove(), 3000);
+        // Scroll to success message
+        successDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        setTimeout(() => {
+            successDiv.style.transition = 'opacity 0.3s';
+            successDiv.style.opacity = '0';
+            setTimeout(() => successDiv.remove(), 300);
+        }, 3000);
     }
 }
 

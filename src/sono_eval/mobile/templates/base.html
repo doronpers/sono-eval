@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
+    <meta name="description" content="Sono-Eval: Explainable Multi-Path Developer Assessment System">
     <title>{% block title %}{{ title }} - Sono-Eval{% endblock %}</title>
     <link rel="stylesheet" href="{{ request.base_url }}static/style.css">
     {% block extra_css %}{% endblock %}
@@ -13,9 +14,9 @@
     <div class="mobile-container">
         <header class="mobile-header">
             <div class="header-content">
-                <h1 class="logo">Sono-Eval</h1>
+                <h1 class="logo" aria-label="Sono-Eval">Sono-Eval</h1>
                 {% if show_back %}
-                <button class="back-button" onclick="history.back()">← Back</button>
+                <button class="back-button" onclick="history.back()" aria-label="Go back">← Back</button>
                 {% endif %}
             </div>
             {% if progress is defined %}
