@@ -10,7 +10,7 @@ This documentation is organized following our [Documentation Organization Standa
 
 ### 🚀 Getting Started (Guides)
 
-- **[Quick Start Guide](Guides/quick-start.md)** - Get up and running in 5 minutes
+- **[Quick Start Guide](Guides/QUICK_START.md)** - Get up and running in 5 minutes
 - **[Installation Guide](Guides/user-guide/installation.md)** - Detailed installation instructions
 - **[Configuration Guide](Guides/user-guide/configuration.md)** - Configure Sono-Eval for your needs
 
@@ -42,6 +42,8 @@ This documentation is organized following our [Documentation Organization Standa
 
 - **[Design Audit](Reports/DESIGN_AUDIT.md)** - Comprehensive design review and improvements
 - **[Final Report](Reports/FINAL_REPORT.md)** - Summary of design improvements
+- **[Code Review Report](Reports/CODE_REVIEW_REPORT.md)** - Detailed code quality analysis
+- **[Assessment Summary](Reports/ASSESSMENT_SUMMARY.md)** - Consolidated assessment findings
 
 ### 📋 Reference
 
@@ -54,7 +56,7 @@ This documentation is organized following our [Documentation Organization Standa
 
 ### For Users
 
-- New to Sono-Eval? Start with the **[Quick Start Guide](Guides/quick-start.md)**
+- New to Sono-Eval? Start with the **[Quick Start Guide](Guides/QUICK_START.md)**
 - Need to configure? Check the **[Configuration Guide](Guides/user-guide/configuration.md)**
 - Having issues? See **[Troubleshooting](Guides/troubleshooting.md)**
 

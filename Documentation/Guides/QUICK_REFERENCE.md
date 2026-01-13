@@ -3,6 +3,7 @@
 **For Developers Working on Sono-Eval**
 
 This is a quick reference guide. For comprehensive information, see:
+
 - 📘 [SECURITY.md](SECURITY.md) - Full security documentation
 - 📊 [CODE_REVIEW_REPORT.md](CODE_REVIEW_REPORT.md) - Detailed code analysis
 - 🗺️ [IMPROVEMENT_ROADMAP.md](IMPROVEMENT_ROADMAP.md) - Development roadmap
@@ -26,6 +27,7 @@ This is a quick reference guide. For comprehensive information, see:
 - [ ] Review firewall rules
 
 **Commands to generate secure keys**:
+
 ```bash
 # SECRET_KEY
 python -c "import secrets; print(secrets.token_urlsafe(32))"
@@ -48,7 +50,7 @@ import re
 
 class MyRequest(BaseModel):
     user_id: str = Field(..., min_length=1, max_length=100)
-    
+
     @validator('user_id')
     def validate_user_id(cls, v):
         # Only allow alphanumeric, dash, underscore
@@ -60,12 +62,14 @@ class MyRequest(BaseModel):
 ### SQL Injection Prevention
 
 **DO**: Use SQLAlchemy ORM
+
 ```python
 # GOOD
 candidate = session.query(Candidate).filter_by(id=candidate_id).first()
 ```
 
 **DON'T**: String concatenation
+
 ```python
 # BAD - Vulnerable to SQL injection
 query = f"SELECT * FROM candidates WHERE id = '{candidate_id}'"
@@ -107,7 +111,7 @@ from sono_eval.assessment.engine import AssessmentEngine
 async def test_assessment_validates_input():
     """Test that invalid input is rejected."""
     engine = AssessmentEngine()
-    
+
     # Test invalid candidate_id
     with pytest.raises(ValueError):
         await engine.assess(AssessmentInput(
@@ -142,13 +146,13 @@ def test_api_endpoint():
 async def assess(self, assessment_input: AssessmentInput) -> AssessmentResult:
     """
     Perform comprehensive assessment.
-    
+
     Args:
         assessment_input: Assessment input data with candidate info
-        
+
     Returns:
         Complete assessment result with scores and explanations
-        
+
     Raises:
         ValueError: If input validation fails
         RuntimeError: If assessment engine not initialized
@@ -220,7 +224,7 @@ class TagGenerator:
     def __init__(self):
         self.model = None
         self._initialized = False
-    
+
     def initialize(self):
         """Lazy load model only when needed."""
         if not self._initialized:
@@ -271,10 +275,10 @@ from pydantic import BaseModel, Field
 
 class MyModel(BaseModel):
     """Use Pydantic for validation."""
-    
+
     name: str = Field(..., min_length=1, max_length=100)
     score: float = Field(ge=0.0, le=100.0)
-    
+
     class Config:
         # Enable ORM mode if needed
         from_attributes = True
@@ -289,9 +293,9 @@ from fastapi import HTTPException
 async def create_resource(data: MyRequest) -> MyResponse:
     """
     Create a new resource.
-    
+
     - **data**: Resource data
-    
+
     Returns resource with generated ID.
     """
     if not service.is_initialized():
@@ -299,7 +303,7 @@ async def create_resource(data: MyRequest) -> MyResponse:
             status_code=503,
             detail="Service not initialized"
         )
-    
+
     try:
         result = await service.create(data)
         return result
@@ -334,6 +338,7 @@ if not config.secret_key:
 ### Adding New Dependencies
 
 1. Add to `pyproject.toml`:
+
    ```toml
    dependencies = [
        "newpackage>=1.0.0",
@@ -341,19 +346,21 @@ if not config.secret_key:
    ```
 
 2. **Security Check** (REQUIRED):
+
    ```bash
    # Install safety
    pip install safety
-   
+
    # Check for vulnerabilities
    safety check
-   
+
    # Or use pip-audit
    pip install pip-audit
    pip-audit
    ```
 
 3. Update requirements:
+
    ```bash
    pip install -e ".[dev]"
    pip freeze > requirements.txt

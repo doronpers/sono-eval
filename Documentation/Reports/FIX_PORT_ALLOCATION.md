@@ -3,6 +3,7 @@
 ## Quick Diagnosis
 
 Check which ports are in use:
+
 ```bash
 # Check all Sono-Eval ports
 lsof -i :8000  # API server
@@ -22,6 +23,7 @@ docker ps | grep -E '8000|5432|6379|8088'
 ## Solution 1: Stop Conflicting Services
 
 ### Stop Sono-Eval if Already Running
+
 ```bash
 # Stop all Sono-Eval containers
 ./launcher.sh stop
@@ -36,6 +38,7 @@ lsof -i :8000
 ### Stop Other Services Using Ports
 
 **Port 8000 (API):**
+
 ```bash
 # Find what's using port 8000
 lsof -i :8000
@@ -51,6 +54,7 @@ docker stop <container-name>
 ```
 
 **Port 5432 (PostgreSQL):**
+
 ```bash
 # Check if local PostgreSQL is running
 ps aux | grep postgres
@@ -67,6 +71,7 @@ kill -9 <PID>
 ```
 
 **Port 6379 (Redis):**
+
 ```bash
 # Check if local Redis is running
 ps aux | grep redis
@@ -83,6 +88,7 @@ kill -9 <PID>
 ```
 
 **Port 8088 (Superset):**
+
 ```bash
 # Usually only Sono-Eval uses this, but check:
 lsof -i :8088
@@ -116,15 +122,17 @@ services:
 ```
 
 Then update your `.env` file:
+
 ```bash
 API_PORT=9000
 ```
 
 **New access points:**
-- API: http://localhost:9000
-- API Docs: http://localhost:9000/docs
-- Mobile UI: http://localhost:9000/mobile/
-- Superset: http://localhost:8089
+
+- API: <http://localhost:9000>
+- API Docs: <http://localhost:9000/docs>
+- Mobile UI: <http://localhost:9000/mobile/>
+- Superset: <http://localhost:8089>
 
 ---
 
@@ -146,6 +154,7 @@ services:
 ```
 
 This way:
+
 - Containers still communicate on standard ports internally
 - You access from host on different ports
 - No code changes needed
@@ -168,6 +177,7 @@ services:
 ```
 
 Keep ports for:
+
 - `sono-eval` (you need API access)
 - `superset` (you need dashboard access)
 
@@ -217,6 +227,7 @@ fi
 ## Verify Ports Are Free
 
 After fixing, verify:
+
 ```bash
 # Check all ports
 for port in 8000 5432 6379 8088; do
@@ -233,6 +244,7 @@ done
 ## Common Scenarios
 
 ### Scenario 1: Previous Sono-Eval Still Running
+
 ```bash
 # Stop all Sono-Eval containers
 docker-compose down
@@ -245,6 +257,7 @@ docker ps -a | grep sono-eval
 ```
 
 ### Scenario 2: Local PostgreSQL Running
+
 ```bash
 # macOS
 brew services list | grep postgresql
@@ -258,6 +271,7 @@ sudo systemctl stop postgresql
 ```
 
 ### Scenario 3: Local Redis Running
+
 ```bash
 # macOS
 brew services list | grep redis
@@ -271,6 +285,7 @@ sudo systemctl stop redis
 ```
 
 ### Scenario 4: Another Application Using Ports
+
 ```bash
 # Find what's using the port
 sudo lsof -i :8000
@@ -287,22 +302,26 @@ kill -9 <PID>
 ## After Fixing Ports
 
 1. **Verify ports are free:**
+
    ```bash
    lsof -i :8000 -i :5432 -i :6379 -i :8088
    ```
 
 2. **Start services:**
+
    ```bash
    ./launcher.sh start
    ```
 
 3. **Check status:**
+
    ```bash
    ./launcher.sh status
    docker-compose ps
    ```
 
 4. **Test access:**
+
    ```bash
    curl http://localhost:8000/health
    ```
@@ -314,6 +333,7 @@ kill -9 <PID>
 To avoid port conflicts in the future:
 
 1. **Always stop Sono-Eval properly:**
+
    ```bash
    ./launcher.sh stop
    # or
@@ -321,6 +341,7 @@ To avoid port conflicts in the future:
    ```
 
 2. **Check before starting:**
+
    ```bash
    # Quick check
    lsof -i :8000 || echo "Port 8000 is free"
@@ -337,18 +358,21 @@ To avoid port conflicts in the future:
 If ports are still showing as in use after stopping everything:
 
 1. **Check Docker containers:**
+
    ```bash
    docker ps -a
    docker rm -f $(docker ps -a -q)  # Remove all containers (careful!)
    ```
 
 2. **Check Docker networks:**
+
    ```bash
    docker network ls
    docker network prune
    ```
 
 3. **Restart Docker daemon:**
+
    ```bash
    # macOS (Docker Desktop)
    # Quit and restart Docker Desktop
@@ -358,6 +382,7 @@ If ports are still showing as in use after stopping everything:
    ```
 
 4. **Nuclear option (removes everything):**
+
    ```bash
    docker-compose down -v  # Removes volumes too
    docker system prune -a  # Removes all unused Docker resources
@@ -366,6 +391,7 @@ If ports are still showing as in use after stopping everything:
 ---
 
 **Quick Command Reference:**
+
 ```bash
 # Check ports
 lsof -i :8000

@@ -57,7 +57,7 @@ curl -X POST http://localhost:8000/api/v1/assessments \
   -d '{"candidate_id": "your_name", "submission_type": "code", ...}'
 ```
 
-**New to Sono-Eval?** Start with the **[Quick Start Guide](Documentation/Guides/quick-start.md)** →
+**New to Sono-Eval?** Start with the **[Quick Start Guide](Documentation/Guides/QUICK_START.md)** →
 
 ---
 
@@ -85,7 +85,7 @@ curl -X POST http://localhost:8000/api/v1/assessments \
 
 ### Getting Started
 
-- **[Quick Start](Documentation/Guides/quick-start.md)** - 5-minute setup guide
+- **[Quick Start](Documentation/Guides/QUICK_START.md)** - 5-minute setup guide
 - **[Installation](Documentation/Guides/user-guide/installation.md)** - Detailed installation for all platforms
 - **[For Candidates](Documentation/Guides/resources/candidate-guide.md)** - Welcome guide for candidates 👋
 
@@ -370,4 +370,4 @@ See **[CHANGELOG.md](CHANGELOG.md)** for version history.
 
 Additional resources:
 
-- [Agent Behavioral Standards](documentation/Governance/AGENT_BEHAVIORAL_STANDARDS.md)
+- [Agent Behavioral Standards](Documentation/Governance/AGENT_BEHAVIORAL_STANDARDS.md)

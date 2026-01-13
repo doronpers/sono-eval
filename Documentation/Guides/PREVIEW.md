@@ -3,6 +3,7 @@
 ## 🎯 What is Sono-Eval?
 
 **Sono-Eval** is an explainable multi-path developer assessment system that:
+
 - Provides detailed explanations for every score
 - Evaluates multiple skill dimensions (technical, design, collaboration, problem-solving)
 - Tracks candidate progress over time
@@ -17,6 +18,7 @@
 A mobile-optimized, interactive assessment experience with:
 
 #### **Home Page** (`/mobile/`)
+
 - Welcome screen with hero section
 - Explanation of what makes Sono-Eval different
 - Privacy information
@@ -24,10 +26,12 @@ A mobile-optimized, interactive assessment experience with:
 - Expandable "Learn more" section
 
 #### **Start Page** (`/mobile/start`)
+
 - Candidate information collection
 - Simple, friendly onboarding
 
 #### **Path Selection** (`/mobile/paths`)
+
 - Interactive cards for each assessment path:
   - ⚙️ **Technical Skills** (15-20 min) - Code quality, architecture, testing
   - 🎨 **Design Thinking** (10-15 min) - Problem analysis, solution design
@@ -38,11 +42,13 @@ A mobile-optimized, interactive assessment experience with:
 - Visual checkmarks for selected paths
 
 #### **Assessment Page** (`/mobile/assess`)
+
 - Interactive assessment interface
 - Progress tracking
 - Personalized based on selected paths
 
 #### **Results Page** (`/mobile/results`)
+
 - Overall score display
 - Path-by-path breakdown
 - Strengths and improvement areas
@@ -50,6 +56,7 @@ A mobile-optimized, interactive assessment experience with:
 - Share functionality
 
 **Design Features:**
+
 - Modern, clean mobile-first design
 - Smooth animations and transitions
 - Progress bars and visual feedback
@@ -63,6 +70,7 @@ A mobile-optimized, interactive assessment experience with:
 FastAPI-based REST API with:
 
 #### **Interactive Documentation**
+
 - Swagger UI at `/docs`
 - ReDoc at `/redoc`
 - Auto-generated from code
@@ -70,25 +78,30 @@ FastAPI-based REST API with:
 #### **Key Endpoints:**
 
 **Health & Status:**
+
 - `GET /` - API information
 - `GET /health` - Health check
 - `GET /status` - Detailed status
 
 **Assessments:**
+
 - `POST /api/v1/assessments` - Create assessment
 - `GET /api/v1/assessments/{id}` - Get assessment
 
 **Candidates:**
+
 - `POST /api/v1/candidates` - Create candidate
 - `GET /api/v1/candidates` - List candidates
 - `GET /api/v1/candidates/{id}` - Get candidate
 - `DELETE /api/v1/candidates/{id}` - Delete candidate
 
 **Tagging:**
+
 - `POST /api/v1/tags/generate` - Generate semantic tags
 - `POST /api/v1/files/upload` - Upload file
 
 **Mobile API:**
+
 - `POST /api/mobile/assess` - Submit mobile assessment
 - `GET /api/mobile/explain/{path}` - Get path explanation
 
@@ -137,6 +150,7 @@ sono-eval server start --reload
 ```
 
 **CLI Features:**
+
 - Rich formatted tables for results
 - Color-coded output (green for success, red for errors)
 - Progress indicators
@@ -170,17 +184,20 @@ sono-eval server start --reload
 ## 🚀 How to Run
 
 ### Option 1: Docker (Recommended)
+
 ```bash
 ./launcher.sh start
 ```
 
 **Access Points:**
-- API Server: http://localhost:8000
-- API Docs: http://localhost:8000/docs
-- Mobile UI: http://localhost:8000/mobile/
-- Superset: http://localhost:8088 (admin/admin)
+
+- API Server: <http://localhost:8000>
+- API Docs: <http://localhost:8000/docs>
+- Mobile UI: <http://localhost:8000/mobile/>
+- Superset: <http://localhost:8088> (admin/admin)
 
 ### Option 2: Development Mode
+
 ```bash
 ./launcher.sh dev
 source venv/bin/activate
@@ -191,7 +208,8 @@ sono-eval server start
 
 ## 🎨 UI/UX Highlights
 
-### Mobile Interface Design:
+### Mobile Interface Design
+
 - **Color Scheme:**
   - Primary: #2196F3 (Blue)
   - Secondary: #FF9800 (Orange)
@@ -219,13 +237,15 @@ sono-eval server start
 
 ## 📊 Assessment Features
 
-### Multi-Path Evaluation:
+### Multi-Path Evaluation
+
 1. **Technical Skills** - Code quality, architecture, best practices
 2. **Design Thinking** - Problem analysis, solution design
 3. **Collaboration** - Communication, teamwork
 4. **Problem Solving** - Analytical thinking, debugging
 
-### Assessment Output:
+### Assessment Output
+
 - Overall score (0-100)
 - Confidence level
 - Path-specific scores

@@ -29,13 +29,14 @@ This roadmap outlines the path from the current alpha release (v0.1.0) to a prod
    - [ ] Add JWT token generation and validation
    - [ ] Implement session management
    - [ ] Add password hashing (bcrypt/argon2)
-   
+
    **Implementation Guide**:
+
    ```python
    # Use fastapi-users or implement custom
    from fastapi_users import FastAPIUsers
    from fastapi_users.authentication import JWTAuthentication
-   
+
    # Add to api/main.py
    jwt_authentication = JWTAuthentication(
        secret=settings.SECRET_KEY,
@@ -49,17 +50,18 @@ This roadmap outlines the path from the current alpha release (v0.1.0) to a prod
    - [ ] Configure limits per endpoint
    - [ ] Add Redis backend for distributed rate limiting
    - [ ] Document rate limits in API docs
-   
+
    **Implementation**:
+
    ```python
    from slowapi import Limiter, _rate_limit_exceeded_handler
    from slowapi.util import get_remote_address
    from slowapi.errors import RateLimitExceeded
-   
+
    limiter = Limiter(key_func=get_remote_address)
    app.state.limiter = limiter
    app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
-   
+
    @limiter.limit("10/minute")
    @app.post("/api/v1/assessments")
    async def create_assessment(...):
@@ -73,15 +75,16 @@ This roadmap outlines the path from the current alpha release (v0.1.0) to a prod
    - [ ] Validate all string inputs for injection attacks
    - [ ] Add content-type validation
    - [ ] Implement file size limits strictly
-   
+
    **Example**:
+
    ```python
    from pydantic import validator, Field
    import re
-   
+
    class CandidateCreateRequest(BaseModel):
        candidate_id: str = Field(..., min_length=1, max_length=100)
-       
+
        @validator('candidate_id')
        def validate_id(cls, v):
            if not re.match(r'^[a-zA-Z0-9_-]+$', v):
@@ -95,8 +98,9 @@ This roadmap outlines the path from the current alpha release (v0.1.0) to a prod
    - [ ] Add startup check for default values
    - [ ] Document CORS configuration
    - [ ] Add CORS preflight caching
-   
+
    **Implementation**:
+
    ```python
    # In api/main.py startup
    if config.app_env == "production" and config.allowed_hosts == "*":
@@ -108,14 +112,15 @@ This roadmap outlines the path from the current alpha release (v0.1.0) to a prod
    - [ ] Generate secure defaults with warnings
    - [ ] Document secret generation
    - [ ] Add secret rotation guide
-   
+
    **Implementation**:
+
    ```python
    DEFAULT_SECRETS = [
        "your-secret-key-here-change-in-production",
        "change_this_secret_key_in_production"
    ]
-   
+
    if config.secret_key in DEFAULT_SECRETS:
        if config.app_env == "production":
            raise ValueError("Must change SECRET_KEY in production")
@@ -129,12 +134,13 @@ This roadmap outlines the path from the current alpha release (v0.1.0) to a prod
    - [ ] Add X-Frame-Options
    - [ ] Add CSP header
    - [ ] Add X-XSS-Protection
-   
+
    **Implementation**:
+
    ```python
    from fastapi.middleware.trustedhost import TrustedHostMiddleware
    from starlette.middleware.httpsredirect import HTTPSRedirectMiddleware
-   
+
    if config.app_env == "production":
        app.add_middleware(HTTPSRedirectMiddleware)
        app.add_middleware(
@@ -149,12 +155,13 @@ This roadmap outlines the path from the current alpha release (v0.1.0) to a prod
    - [ ] Log all data modifications
    - [ ] Log all administrative actions
    - [ ] Add log aggregation (ELK/Splunk)
-   
+
    **Implementation**:
+
    ```python
    # Add audit logger
    audit_logger = logging.getLogger('audit')
-   
+
    @app.post("/api/v1/assessments")
    async def create_assessment(
        assessment_input: AssessmentInput,
@@ -172,28 +179,31 @@ This roadmap outlines the path from the current alpha release (v0.1.0) to a prod
    - [ ] Perform penetration testing
    - [ ] Review all findings
    - [ ] Fix critical/high severity issues
-   
+
    **Commands**:
+
    ```bash
    # Install security tools
    pip install bandit safety
-   
+
    # Run scans
    bandit -r src/
    safety check
-   
+
    # Run OWASP ZAP
    docker run -t owasp/zap2docker-stable zap-baseline.py \
        -t http://localhost:8000
    ```
 
 **Deliverables**:
+
 - ✅ Security features implemented
 - ✅ Security audit report
 - ✅ Security documentation updated
 - ✅ Security test suite added
 
 **Success Criteria**:
+
 - All critical security issues resolved
 - Security audit passed with no critical findings
 - Authentication and authorization working
@@ -211,7 +221,7 @@ This roadmap outlines the path from the current alpha release (v0.1.0) to a prod
 **Owner**: ML Team  
 **Priority**: CRITICAL
 
-#### Tasks
+#### ML Training Tasks
 
 1. **Model Selection & Training** (Week 1-2)
    - [ ] Select appropriate ML model architecture
@@ -220,7 +230,7 @@ This roadmap outlines the path from the current alpha release (v0.1.0) to a prod
    - [ ] Train baseline model
    - [ ] Validate model performance
    - [ ] Document model architecture
-   
+
    **Considerations**:
    - Use transfer learning from CodeBERT/GraphCodeBERT
    - Consider fine-tuning BERT for code understanding
@@ -233,21 +243,22 @@ This roadmap outlines the path from the current alpha release (v0.1.0) to a prod
    - [ ] Implement caching for common patterns
    - [ ] Add model versioning
    - [ ] Create model update mechanism
-   
+
    **Example Structure**:
+
    ```python
    class MLAssessmentEngine(AssessmentEngine):
        def __init__(self):
            super().__init__()
            self.model = self._load_model()
-       
+
        def _load_model(self):
            """Load trained ML model."""
            from transformers import AutoModelForSequenceClassification
            return AutoModelForSequenceClassification.from_pretrained(
                self.config.assessment_model_path
            )
-       
+
        async def _evaluate_path(self, path: PathType, input_data: AssessmentInput):
            """Real ML-based evaluation."""
            features = self._extract_features(input_data)
@@ -263,6 +274,7 @@ This roadmap outlines the path from the current alpha release (v0.1.0) to a prod
    - [ ] Document model performance
 
 **Deliverables**:
+
 - ✅ Trained ML model
 - ✅ Model documentation
 - ✅ Performance benchmarks
@@ -273,7 +285,7 @@ This roadmap outlines the path from the current alpha release (v0.1.0) to a prod
 **Owner**: QA Team  
 **Priority**: HIGH
 
-#### Tasks
+#### Testing Tasks
 
 1. **API Integration Tests** (Week 5)
    - [ ] Test all endpoints with various inputs
@@ -282,12 +294,13 @@ This roadmap outlines the path from the current alpha release (v0.1.0) to a prod
    - [ ] Test rate limiting
    - [ ] Test file uploads
    - [ ] Test concurrent requests
-   
+
    **Implementation**:
+
    ```python
    # tests/integration/test_api.py
    from fastapi.testclient import TestClient
-   
+
    def test_create_assessment_authenticated():
        """Test assessment creation with authentication."""
        client = TestClient(app)
@@ -306,13 +319,14 @@ This roadmap outlines the path from the current alpha release (v0.1.0) to a prod
    - [ ] Test error messages
    - [ ] Test output formatting
    - [ ] Test configuration loading
-   
+
    **Implementation**:
+
    ```python
    # tests/test_cli.py
    from click.testing import CliRunner
    from sono_eval.cli.main import cli
-   
+
    def test_assess_command():
        """Test assess command."""
        runner = CliRunner()
@@ -331,8 +345,9 @@ This roadmap outlines the path from the current alpha release (v0.1.0) to a prod
    - [ ] Test path traversal
    - [ ] Test authentication bypass
    - [ ] Test authorization bypass
-   
+
    **Implementation**:
+
    ```python
    # tests/security/test_injection.py
    def test_sql_injection_prevention():
@@ -351,21 +366,23 @@ This roadmap outlines the path from the current alpha release (v0.1.0) to a prod
    - [ ] Endurance testing
    - [ ] Spike testing
    - [ ] Document performance baselines
-   
+
    **Implementation**:
+
    ```python
    # tests/performance/locustfile.py
    from locust import HttpUser, task, between
-   
+
    class AssessmentUser(HttpUser):
        wait_time = between(1, 3)
-       
+
        @task
        def create_assessment(self):
            self.client.post("/api/v1/assessments", json=test_data)
    ```
 
 **Deliverables**:
+
 - ✅ Test coverage >80%
 - ✅ All tests passing
 - ✅ Performance benchmarks
@@ -376,7 +393,7 @@ This roadmap outlines the path from the current alpha release (v0.1.0) to a prod
 **Owner**: DevOps Team  
 **Priority**: HIGH
 
-#### Tasks
+#### Deployment Tasks
 
 1. **Production Docker Configuration** (Week 7)
    - [ ] Add health checks to docker-compose
@@ -385,8 +402,9 @@ This roadmap outlines the path from the current alpha release (v0.1.0) to a prod
    - [ ] Configure logging drivers
    - [ ] Add secrets management
    - [ ] Document production setup
-   
+
    **Example**:
+
    ```yaml
    services:
      sono-eval:
@@ -414,8 +432,9 @@ This roadmap outlines the path from the current alpha release (v0.1.0) to a prod
    - [ ] Add Docker image building
    - [ ] Add deployment automation
    - [ ] Document CI/CD process
-   
+
    **Example**:
+
    ```yaml
    # .github/workflows/ci.yml
    name: CI
@@ -442,12 +461,13 @@ This roadmap outlines the path from the current alpha release (v0.1.0) to a prod
    - [ ] Set up log aggregation (ELK)
    - [ ] Configure alerts
    - [ ] Document monitoring setup
-   
+
    **Implementation**:
+
    ```python
    # Add to api/main.py
    from prometheus_fastapi_instrumentator import Instrumentator
-   
+
    Instrumentator().instrument(app).expose(app)
    ```
 
@@ -459,6 +479,7 @@ This roadmap outlines the path from the current alpha release (v0.1.0) to a prod
    - [ ] Test disaster recovery
 
 **Deliverables**:
+
 - ✅ Production deployment guide
 - ✅ CI/CD pipeline working
 - ✅ Monitoring dashboards
@@ -492,7 +513,7 @@ This roadmap outlines the path from the current alpha release (v0.1.0) to a prod
 **Owner**: Backend Team  
 **Priority**: HIGH
 
-#### Tasks
+#### Performance Tasks
 
 - [ ] Database query optimization
 - [ ] Response caching
@@ -506,7 +527,7 @@ This roadmap outlines the path from the current alpha release (v0.1.0) to a prod
 **Owner**: Product Team  
 **Priority**: MEDIUM
 
-#### Features
+#### Advanced Feature Tasks
 
 - [ ] Batch assessment processing
 - [ ] Advanced filtering and search
@@ -522,7 +543,7 @@ This roadmap outlines the path from the current alpha release (v0.1.0) to a prod
 **Timeline**: 6-8 weeks  
 **Focus**: Horizontal scaling, high availability
 
-### Tasks
+### Scalability Tasks
 
 - [ ] Load balancer setup (nginx/HAProxy)
 - [ ] Database replication
@@ -538,7 +559,7 @@ This roadmap outlines the path from the current alpha release (v0.1.0) to a prod
 **Timeline**: 4-6 weeks  
 **Focus**: Polish, documentation, final testing
 
-### Tasks
+### Final Tasks
 
 - [ ] Complete documentation review
 - [ ] Final security audit
@@ -552,24 +573,28 @@ This roadmap outlines the path from the current alpha release (v0.1.0) to a prod
 ## Metrics & Success Criteria
 
 ### Code Quality
+
 - [ ] Test coverage >80%
 - [ ] No critical security vulnerabilities
 - [ ] All tests passing
 - [ ] Code review approval for all PRs
 
 ### Performance
+
 - [ ] API response time <200ms (p95)
 - [ ] Assessment processing <30s
 - [ ] Support 100 concurrent users
 - [ ] 99.9% uptime
 
 ### Security
+
 - [ ] No critical/high vulnerabilities
 - [ ] Security audit passed
 - [ ] Penetration testing passed
 - [ ] Compliance requirements met
 
 ### Documentation
+
 - [ ] All features documented
 - [ ] API reference complete
 - [ ] Deployment guide complete
@@ -580,6 +605,7 @@ This roadmap outlines the path from the current alpha release (v0.1.0) to a prod
 ## Resource Requirements
 
 ### Team
+
 - 1 Security Engineer (4 weeks)
 - 2 Backend Engineers (16 weeks)
 - 1 ML Engineer (8 weeks)
@@ -588,11 +614,13 @@ This roadmap outlines the path from the current alpha release (v0.1.0) to a prod
 - 1 QA Engineer (12 weeks)
 
 ### Infrastructure
+
 - Development: AWS/GCP small instances
 - Staging: Production-like environment
 - Production: HA setup with load balancing
 
 ### Budget (Estimated)
+
 - Development: $50K-75K
 - Infrastructure: $500-1000/month
 - Security audit: $5K-10K
@@ -603,9 +631,10 @@ This roadmap outlines the path from the current alpha release (v0.1.0) to a prod
 ## Risk Assessment
 
 ### High Risk
+
 1. **ML Model Performance**: Model may not meet accuracy requirements
    - Mitigation: Start training early, iterate quickly
-   
+
 2. **Security Vulnerabilities**: May discover critical issues during audit
    - Mitigation: Continuous security testing, early audits
 
@@ -613,6 +642,7 @@ This roadmap outlines the path from the current alpha release (v0.1.0) to a prod
    - Mitigation: Early load testing, architecture review
 
 ### Medium Risk
+
 1. **Timeline Delays**: Development may take longer than estimated
    - Mitigation: Regular sprint reviews, adjust scope
 
@@ -620,6 +650,7 @@ This roadmap outlines the path from the current alpha release (v0.1.0) to a prod
    - Mitigation: Pin versions, monitor changelogs
 
 ### Low Risk
+
 1. **Documentation**: May lag behind development
    - Mitigation: Document as you go, dedicated tech writer
 
@@ -628,6 +659,7 @@ This roadmap outlines the path from the current alpha release (v0.1.0) to a prod
 ## Review & Adjustment
 
 This roadmap should be reviewed:
+
 - **Weekly**: Sprint progress review
 - **Monthly**: Milestone progress review
 - **Quarterly**: Strategic direction review
@@ -643,6 +675,7 @@ This roadmap should be reviewed:
 These can be done immediately without impacting the main roadmap:
 
 ### Week 1 Quick Wins
+
 - [ ] Add .gitattributes for consistent line endings
 - [ ] Add PR template
 - [ ] Add issue templates
@@ -652,6 +685,7 @@ These can be done immediately without impacting the main roadmap:
 - [ ] Set up project board
 
 ### Week 2 Quick Wins
+
 - [ ] Add docstring coverage check
 - [ ] Add commit message linting
 - [ ] Add changelog automation
@@ -660,6 +694,7 @@ These can be done immediately without impacting the main roadmap:
 - [ ] Add editor config
 
 ### Week 3 Quick Wins
+
 - [ ] Optimize Docker image size
 - [ ] Add Docker health checks
 - [ ] Add database migrations (Alembic)
@@ -669,6 +704,6 @@ These can be done immediately without impacting the main roadmap:
 
 ---
 
-**END OF ROADMAP**
+## End of Roadmap
 
-Questions or suggestions? Contact: team@sono-eval.example
+Questions or suggestions? Contact: <team@sono-eval.example>

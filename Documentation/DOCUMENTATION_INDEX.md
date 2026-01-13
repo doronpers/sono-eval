@@ -10,7 +10,7 @@
 ## 📚 Navigation
 
 - **[Documentation Hub](README.md)** - Start here for role-based navigation
-- **[Quick Start Guide](Guides/quick-start.md)** - Get running in 5 minutes
+- **[Quick Start Guide](Guides/QUICK_START.md)** - Get running in 5 minutes
 - **[Architecture Overview](Core/concepts/architecture.md)** - System design and components
 
 ---
@@ -38,7 +38,7 @@
 
 ### Getting Started
 
-- **[Quick Start](Guides/quick-start.md)** - 5-minute setup guide
+- **[Quick Start](Guides/QUICK_START.md)** - 5-minute setup guide
 - **[Installation](Guides/user-guide/installation.md)** - Detailed installation for all platforms
 - **[Configuration](Guides/user-guide/configuration.md)** - Configure Sono-Eval for your needs
 
@@ -69,6 +69,10 @@
 
 - **[Design Audit](Reports/DESIGN_AUDIT.md)** - Dieter Rams design principles audit
 - **[Final Report](Reports/FINAL_REPORT.md)** - Summary of design improvements and changes
+- **[Code Review Report](Reports/CODE_REVIEW_REPORT.md)** - Detailed code quality analysis
+- **[Assessment Summary](Reports/ASSESSMENT_SUMMARY.md)** - Consolidated assessment findings
+- **[Fix Documentation](Reports/FIX_NOT_FOUND.md)** - Fix for not found issues
+- **[Port Allocation Fix](Reports/FIX_PORT_ALLOCATION.md)** - Port allocation troubleshooting and fix
 
 **Total Report Files**: 2 files
 
@@ -118,12 +122,12 @@
 **For Candidates**:
 
 1. Start with [Candidate Guide](Guides/resources/candidate-guide.md)
-2. Read [Quick Start](Guides/quick-start.md)
+2. Read [Quick Start](Guides/QUICK_START.md)
 3. Check [FAQ](Guides/faq.md) for questions
 
 **For Users**:
 
-1. Start with [Quick Start](Guides/quick-start.md)
+1. Start with [Quick Start](Guides/QUICK_START.md)
 2. Review [Installation](Guides/user-guide/installation.md)
 3. Configure with [Configuration Guide](Guides/user-guide/configuration.md)
 4. Use [CLI Reference](Guides/user-guide/cli-reference.md) or [API Reference](Guides/user-guide/api-reference.md)
@@ -145,7 +149,7 @@
 
 **Setting Up**:
 
-- [Quick Start](Guides/quick-start.md) - Fastest path
+- [Quick Start](Guides/QUICK_START.md) - Fastest path
 - [Installation](Guides/user-guide/installation.md) - Detailed instructions
 
 **Configuring**:
