@@ -10,6 +10,10 @@
 
 > A growth-oriented assessment platform for candidates. Understand your strengths,
 > track your progress, and get actionable feedback.
+>
+> ⚠️ **Active Development**: Sono-Eval is in **active development**.
+> Features are being added and refined, APIs may change, and the system
+> is not yet production-ready. Use at your own risk.
 
 **[Quick Start](#-quick-start)** • **[Documentation](Documentation/README.md)** •
 **[Key Features](#-key-features)** • **[Usage Examples](#-usage-examples)**
@@ -174,12 +178,20 @@ details.
 
 ## ⚠️ System Limits (Honesty Statement)
 
-**Current State (v0.1.1):**
+**Current State (v0.1.0 - Active Development):**
 
-- **ML Integration**: Current "Hybrid" mode is primarily heuristic-driven. ML insights (T5/LoRA) are secondary and require high-compute environments (GPU) to be performant. The heuristic-first approach is currently the most reliable.
-- **Concurrency**: `MemUStorage` is currently filesystem-based. While thread-safe for reads, concurrent writes to the same candidate profile may result in data race conditions. Use Redis for high-concurrency needs.
-- **Assessment Retrieval**: The `GET /api/v1/assessments/{id}` endpoint now retrieves assessments from hierarchical memory storage (repaired in v0.1.1).
-- **Dark Horse Mode**: The ML-based "Dark Horse" tracking and T5 tagging are primarily heuristic fallbacks. The documentation accurately reflects current capabilities.
+- **ML Integration**: Current "Hybrid" mode is primarily heuristic-driven.
+  ML insights (T5/LoRA) are secondary and require high-compute
+  environments (GPU) to be performant. The heuristic-first approach is
+  currently the most reliable.
+- **Concurrency**: `MemUStorage` is currently filesystem-based. While
+  thread-safe for reads, concurrent writes to the same candidate profile
+  may result in data race conditions. Use Redis for high-concurrency needs.
+- **Assessment Retrieval**: The `GET /api/v1/assessments/{id}` endpoint
+  retrieves assessments from hierarchical memory storage.
+- **Dark Horse Mode**: The ML-based "Dark Horse" tracking and T5 tagging
+  are primarily heuristic fallbacks. The documentation accurately reflects
+  current capabilities.
 
 **Security Requirements:**
 
@@ -189,8 +201,11 @@ details.
 
 **Recommended Configuration:**
 
-- Maintain `DARK_HORSE_MODE` as "enabled" to track micro-motives (Mastery vs. Efficiency), which reveal more about character than raw scores.
-- The **Heuristic-First** approach is currently the most reliable for production use.
+- Maintain `DARK_HORSE_MODE` as "enabled" to track micro-motives
+  (Mastery vs. Efficiency), which reveal more about character than raw
+  scores.
+- The **Heuristic-First** approach is currently the most reliable for
+  production use.
 
 ---
 
@@ -371,7 +386,7 @@ You're free to use, modify, and distribute it. See the LICENSE file for details.
 
 ## 🗺️ Roadmap
 
-### Current (v0.1.1) ✅
+### Current (v0.1.0 - Active Development)
 
 - Explainable assessment engine (heuristic-first)
 - Multi-path evaluation
@@ -426,7 +441,7 @@ See **[CHANGELOG.md](CHANGELOG.md)** for version history.
 
 Built with ❤️ by the Sono-Eval Team
 
-**Version**: 0.1.1 | **Last Updated**: January 2026
+**Version**: 0.1.0 | **Last Updated**: January 2026 | **Status**: Active Development
 
 [⬆ Back to top](#sono-eval)
 
