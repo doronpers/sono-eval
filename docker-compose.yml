@@ -25,7 +25,7 @@ services:
     ports:
       - "8001:8000"  # Changed external port to 8001 to avoid conflict
     environment:
-      - APP_ENV=production
+      - APP_ENV=development  # Development setup with default credentials
       - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/sono_eval
       - REDIS_HOST=redis
       - REDIS_PORT=6379
