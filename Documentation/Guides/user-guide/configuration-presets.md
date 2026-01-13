@@ -277,16 +277,16 @@ config = get_config()
 
 ## Preset Comparison
 
-| Preset | Workers | Cache | Concurrency | Logging | Use Case |
-|--------|---------|-------|-------------|---------|----------|
-| quick_test | 1 | 100 | 1 | ERROR | Quick demos |
-| development | 2 | 500 | 2 | INFO | Local dev |
-| testing | 1 | 50 | 1 | WARNING | Tests |
-| staging | 3 | 2000 | 4 | INFO | Pre-prod |
-| production | 4 | 5000 | 8 | INFO | Production |
-| high_performance | 8 | 10000 | 16 | WARNING | High traffic |
-| low_resource | 1 | 50 | 1 | ERROR | Low resources |
-| ml_development | 2 | 1000 | 2 | DEBUG | ML training |
+Preset | Workers | Cache | Concurrency | Logging | Use Case
+--------|---------|-------|-------------|---------|----------
+quick_test | 1 | 100 | 1 | ERROR | Quick demos
+development | 2 | 500 | 2 | INFO | Local dev
+testing | 1 | 50 | 1 | WARNING | Tests
+staging | 3 | 2000 | 4 | INFO | Pre-prod
+production | 4 | 5000 | 8 | INFO | Production
+high_performance | 8 | 10000 | 16 | WARNING | High traffic
+low_resource | 1 | 50 | 1 | ERROR | Low resources
+ml_development | 2 | 1000 | 2 | DEBUG | ML training
 
 ---
 
