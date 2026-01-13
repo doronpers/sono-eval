@@ -5,14 +5,14 @@
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Version](https://img.shields.io/badge/version-0.1.0-green.svg)](CHANGELOG.md)
-[![Security Audit](https://img.shields.io/badge/security-audited-green.svg)](SECRETS_AUDIT.md)
+[![Security Audit](https://img.shields.io/badge/security-audited-green.svg)](Documentation/Reports/SECRETS_AUDIT.md)
 [![Documentation](https://img.shields.io/badge/docs-complete-brightgreen.svg)](Documentation/README.md)
 
-> A growth-oriented assessment platform that explains its reasoning, tracks your
-> progress, and helps you improve.
+> A growth-oriented assessment platform for candidates. Understand your strengths,
+> track your progress, and get actionable feedback.
 
-**[Quick Start](#-quick-start)** • **[Documentation](#-documentation)** •
-**[Features](#-key-features)** • **[Examples](#-usage-examples)**
+**[Quick Start](#-quick-start)** • **[Documentation](Documentation/README.md)** •
+**[Key Features](#-key-features)** • **[Usage Examples](#-usage-examples)**
 
 ---
 
@@ -169,6 +169,28 @@ sono-eval assess run \
 
 See **[Architecture Overview](Documentation/Core/concepts/architecture.md)** for
 details.
+
+---
+
+## ⚠️ System Limits (Honesty Statement)
+
+**Current State (v0.1.1):**
+
+- **ML Integration**: Current "Hybrid" mode is primarily heuristic-driven. ML insights (T5/LoRA) are secondary and require high-compute environments (GPU) to be performant. The heuristic-first approach is currently the most reliable.
+- **Concurrency**: `MemUStorage` is currently filesystem-based. While thread-safe for reads, concurrent writes to the same candidate profile may result in data race conditions. Use Redis for high-concurrency needs.
+- **Assessment Retrieval**: The `GET /api/v1/assessments/{id}` endpoint now retrieves assessments from hierarchical memory storage (repaired in v0.1.1).
+- **Dark Horse Mode**: The ML-based "Dark Horse" tracking and T5 tagging are primarily heuristic fallbacks. The documentation accurately reflects current capabilities.
+
+**Security Requirements:**
+
+- `SECRET_KEY` must be a 32-byte secure token (validated at startup).
+- Candidate IDs are strictly sanitized (alphanumeric/dash/underscore only).
+- File uploads enforce path traversal protection and content-type verification.
+
+**Recommended Configuration:**
+
+- Maintain `DARK_HORSE_MODE` as "enabled" to track micro-motives (Mastery vs. Efficiency), which reveal more about character than raw scores.
+- The **Heuristic-First** approach is currently the most reliable for production use.
 
 ---
 
@@ -349,13 +371,17 @@ You're free to use, modify, and distribute it. See the LICENSE file for details.
 
 ## 🗺️ Roadmap
 
-### Current (v0.1.0) ✅
+### Current (v0.1.1) ✅
 
-- Explainable assessment engine
+- Explainable assessment engine (heuristic-first)
 - Multi-path evaluation
 - CLI and REST API
 - Docker deployment
 - Comprehensive documentation
+- Repaired assessment retrieval endpoint
+- Timezone-aware datetime handling
+- LRU cache eviction for memory storage
+- Enhanced security validation
 
 ### Next Release (v0.2.0)
 
@@ -364,6 +390,7 @@ You're free to use, modify, and distribute it. See the LICENSE file for details.
 - [ ] Authentication system
 - [ ] Web UI for reviews
 - [ ] Enhanced analytics
+- [ ] Redis-backed memory storage for high concurrency
 
 ### Future
 
@@ -399,7 +426,7 @@ See **[CHANGELOG.md](CHANGELOG.md)** for version history.
 
 Built with ❤️ by the Sono-Eval Team
 
-**Version**: 0.1.0 | **Last Updated**: January 10, 2026
+**Version**: 0.1.1 | **Last Updated**: January 2026
 
 [⬆ Back to top](#sono-eval)
 

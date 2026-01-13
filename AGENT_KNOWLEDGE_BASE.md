@@ -102,3 +102,44 @@ async def process(request: Request, body: MyModel, api_key: str = Depends(verify
 ## Documentation Standards
 
 Follow [Documentation Organization Standards](documentation/governance/DOCUMENTATION_ORGANIZATION_STANDARDS.md)
+
+---
+
+## Sono-Eval Specific Guidelines
+
+### Project State: Beta (0.1.1)
+
+**Core Philosophy**: Precision-first, evidence-based assessment. We value the "show, don't tell" approach in developer submissions.
+
+### System Limits (Honesty Statement)
+
+* **ML Integration**: Current "Hybrid" mode is primarily heuristic-driven. ML insights (T5/LoRA) are secondary and require high-compute environments (GPU) to be performant. The heuristic-first approach is currently the most reliable.
+* **Concurrency**: `MemUStorage` is currently filesystem-based. While thread-safe for reads, concurrent writes to the same candidate profile may result in data race conditions. Use Redis for high-concurrency needs.
+* **Assessment Retrieval**: The `GET /api/v1/assessments/{id}` endpoint retrieves assessments from hierarchical memory storage (repaired in v0.1.1).
+* **Dark Horse Mode**: The ML-based "Dark Horse" tracking and T5 tagging are primarily heuristic fallbacks. The documentation accurately reflects current capabilities.
+
+### Security Requirements
+
+* `SECRET_KEY` must be a 32-byte secure token (validated at startup).
+* Candidate IDs are strictly sanitized (alphanumeric/dash/underscore only).
+* File uploads enforce path traversal protection and content-type verification.
+* `DATABASE_URL` validation prevents default SQLite paths in production.
+
+### Recommended Configuration
+
+* Maintain `DARK_HORSE_MODE` as "enabled" to track micro-motives (Mastery vs. Efficiency), which reveal more about character than raw scores.
+* The **Heuristic-First** approach is currently the most reliable for production use.
+
+### Code Quality Analysis
+
+The `_analyze_code_quality` method prioritizes "Density of Logic" over "Substantial Code" to align with minimalism and subtext preference. It evaluates:
+* Logic density (meaningful code vs. whitespace/comments)
+* Abstraction ratio (functions/classes relative to code size)
+* Structure and error handling
+* Testing awareness
+
+### Dependencies
+
+* **Removed**: `shared_ai_utils` dependency (replaced with local implementations)
+* **Timezone Handling**: All datetime operations use `datetime.now(timezone.utc)` instead of deprecated `datetime.utcnow()`
+* **Cache Management**: `MemUStorage` uses LRU-based eviction to prevent memory bloat

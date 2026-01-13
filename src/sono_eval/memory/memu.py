@@ -5,7 +5,7 @@ Implements hierarchical memory with efficient storage and retrieval.
 """
 
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -17,13 +17,18 @@ from sono_eval.utils.logger import get_logger
 logger = get_logger(__name__)
 
 
+def _get_utc_now():
+    """Get timezone-aware UTC datetime."""
+    return datetime.now(timezone.utc)
+
+
 class MemoryNode(BaseModel):
     """Node in the hierarchical memory structure."""
 
     node_id: str
     parent_id: Optional[str] = None
     level: int = 0
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    timestamp: datetime = Field(default_factory=_get_utc_now)
     data: Dict[str, Any] = Field(default_factory=dict)
     children: List[str] = Field(default_factory=list)
     metadata: Dict[str, Any] = Field(default_factory=dict)
@@ -35,7 +40,7 @@ class CandidateMemory(BaseModel):
     candidate_id: str
     root_node: MemoryNode
     nodes: Dict[str, MemoryNode] = Field(default_factory=dict)
-    last_updated: datetime = Field(default_factory=datetime.utcnow)
+    last_updated: datetime = Field(default_factory=_get_utc_now)
     version: str = "1.0"
 
 
@@ -55,7 +60,7 @@ class MemUStorage:
         self.config = get_config()
         self.storage_path = storage_path or self.config.get_storage_path()
         self.max_depth = self.config.memu_max_depth
-        self.cache_size = self.config.memu_cache_size
+        self.cache_limit = self.config.memu_cache_size
         self._cache: Dict[str, CandidateMemory] = {}
 
         # Ensure storage directory exists
@@ -96,7 +101,7 @@ class MemUStorage:
 
     def get_candidate_memory(self, candidate_id: str) -> Optional[CandidateMemory]:
         """
-        Retrieve candidate memory from storage or cache.
+        Retrieve candidate memory from storage or cache with LRU eviction.
 
         Args:
             candidate_id: Candidate identifier
@@ -104,21 +109,24 @@ class MemUStorage:
         Returns:
             CandidateMemory if found, None otherwise
         """
-        # Check cache first
+        # Optimization: Move accessed item to end of dict (LRU behavior)
         if candidate_id in self._cache:
-            logger.debug(f"Retrieved {candidate_id} from cache")
-            return self._cache[candidate_id]
+            memory = self._cache.pop(candidate_id)
+            self._cache[candidate_id] = memory
+            logger.debug(f"Retrieved {candidate_id} from cache (LRU)")
+            return memory
 
         # Load from disk
         memory = self._load_memory(candidate_id)
         if memory:
-            # Add to cache
-            self._cache[candidate_id] = memory
-            # Manage cache size
-            if len(self._cache) > self.cache_size:
-                # Remove oldest entry
-                oldest_key = next(iter(self._cache))
+            # Evict oldest (first) item if cache is full
+            if len(self._cache) >= self.cache_limit:
+                iter_cache = iter(self._cache)
+                oldest_key = next(iter_cache)
                 del self._cache[oldest_key]
+                logger.debug(f"Evicted {oldest_key} from cache (LRU limit: {self.cache_limit})")
+            # Add to cache (at end, making it most recently used)
+            self._cache[candidate_id] = memory
 
         return memory
 
@@ -173,7 +181,7 @@ class MemUStorage:
 
         # Add to memory
         memory.nodes[node_id] = new_node
-        memory.last_updated = datetime.utcnow()
+        memory.last_updated = _get_utc_now()
 
         # Save
         self._save_memory(memory)
@@ -198,8 +206,8 @@ class MemUStorage:
             return False
 
         memory.nodes[node_id].data.update(data)
-        memory.nodes[node_id].timestamp = datetime.utcnow()
-        memory.last_updated = datetime.utcnow()
+        memory.nodes[node_id].timestamp = _get_utc_now()
+        memory.last_updated = _get_utc_now()
 
         self._save_memory(memory)
         logger.info(f"Updated node {node_id} for {candidate_id}")

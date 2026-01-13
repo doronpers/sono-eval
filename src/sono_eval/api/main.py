@@ -1,36 +1,20 @@
 """
-FastAPI backend for Sono-Eval system.
+Repaired FastAPI backend for Sono-Eval.
 
-Provides REST API for assessments, candidate management, and tagging.
+Optimized for zero-dependency operability and security.
 """
 
 import re
 import uuid
 from contextlib import asynccontextmanager
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from time import time
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
 from fastapi import FastAPI, File, HTTPException, Request, Response, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field, validator
-
-# Use shared API utilities
-from shared_ai_utils.api import (
-    ErrorCode,
-    HealthResponse,
-    RequestIDMiddleware,
-    create_cors_middleware,
-    create_error_response,
-    create_health_router,
-    file_upload_error,
-    internal_error,
-    not_found_error,
-    service_unavailable_error,
-    validation_error,
-)
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from sono_eval.assessment.engine import AssessmentEngine
@@ -39,9 +23,42 @@ from sono_eval.memory.memu import MemUStorage
 from sono_eval.mobile.app import create_mobile_app
 from sono_eval.tagging.generator import TagGenerator
 from sono_eval.utils.config import get_config
+from sono_eval.utils.errors import (
+    ErrorCode,
+    create_error_response,
+    file_upload_error,
+    internal_error,
+    not_found_error,
+    service_unavailable_error,
+    validation_error,
+)
 from sono_eval.utils.logger import get_logger
 
 logger = get_logger(__name__)
+
+
+# Local Request ID Middleware to replace shared_ai_utils
+class RequestIDMiddleware(BaseHTTPMiddleware):
+    """Middleware to add unique request ID to each request."""
+
+    async def dispatch(self, request: Request, call_next):
+        """Add request ID and process request."""
+        request_id = request.headers.get("X-Request-ID", str(uuid.uuid4()))
+        request.state.request_id = request_id
+        response = await call_next(request)
+        response.headers["X-Request-ID"] = request_id
+        return response
+
+
+# Health Response Model
+class HealthResponse(BaseModel):
+    """Health check response."""
+
+    status: str
+    version: str
+    timestamp: str
+    components: Dict[str, str]
+    details: Optional[Dict[str, Any]] = None
 
 
 # Global instances
@@ -49,9 +66,6 @@ assessment_engine: Optional[AssessmentEngine] = None
 memu_storage: Optional[MemUStorage] = None
 tag_generator: Optional[TagGenerator] = None
 config = get_config()
-
-
-# RequestIDMiddleware now imported from shared_ai_utils.api
 
 
 @asynccontextmanager
@@ -64,6 +78,7 @@ async def lifespan(app: FastAPI):
 
     # Security: Validate configuration before starting
     _validate_security_config()
+    config.validate_production_config()
 
     assessment_engine = AssessmentEngine()
     memu_storage = MemUStorage()
@@ -123,23 +138,34 @@ def _validate_security_config():
 app = FastAPI(
     title="Sono-Eval API",
     description="Explainable Multi-Path Developer Assessment System",
-    version="0.1.0",
+    version="0.1.1",
     lifespan=lifespan,
 )
 
 # Add Request ID middleware (must be first to track all requests)
 app.add_middleware(RequestIDMiddleware)
 
-# CORS middleware using shared utility
-cors_config = create_cors_middleware(
-    allowed_origins=(
-        [origin.strip() for origin in config.allowed_hosts.split(",")]
-        if config.allowed_hosts and config.allowed_hosts != "*"
-        else None
-    ),
-    app_env=config.app_env,
+# CORS middleware - local implementation
+allowed_origins = (
+    [origin.strip() for origin in config.allowed_hosts.split(",")]
+    if config.allowed_hosts and config.allowed_hosts != "*"
+    else ["*"]
 )
-app.add_middleware(CORSMiddleware, **cors_config)
+
+if config.app_env == "production":
+    if not allowed_origins or "*" in allowed_origins:
+        logger.warning(
+            "WARNING: ALLOWED_HOSTS not properly configured for production. "
+            "Set specific domains to prevent CORS attacks."
+        )
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=allowed_origins,
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["*"],
+)
 
 # Mount mobile companion app
 mobile_app = create_mobile_app()
@@ -446,8 +472,8 @@ async def root():
     health_data = await check_component_health(include_details=True)
     return HealthResponse(
         status="healthy" if health_data["healthy"] else "degraded",
-        version="0.1.0",
-        timestamp=datetime.utcnow().isoformat() + "Z",
+        version="0.1.1",
+        timestamp=datetime.now(timezone.utc).isoformat(),
         components=health_data["components"],
         details=health_data.get("details"),
     )
@@ -469,8 +495,8 @@ async def health_check(response: Response):
 
     return HealthResponse(
         status="healthy" if health_data["healthy"] else "unhealthy",
-        version="0.1.0",
-        timestamp=datetime.utcnow().isoformat() + "Z",
+        version="0.1.1",
+        timestamp=datetime.now(timezone.utc).isoformat(),
         components=health_data["components"],
         details=None,  # No sensitive details in basic health check
     )
@@ -493,8 +519,8 @@ async def health_check_v1(response: Response):
 
     return HealthResponse(
         status="healthy" if health_data["healthy"] else "unhealthy",
-        version="0.1.0",
-        timestamp=datetime.utcnow().isoformat() + "Z",
+        version="0.1.1",
+        timestamp=datetime.now(timezone.utc).isoformat(),
         components=health_data["components"],
         details=health_data.get("details"),
     )
@@ -559,22 +585,37 @@ async def create_assessment(request: Request, assessment_input: AssessmentInput)
         )
 
 
-@app.get("/api/v1/assessments/{assessment_id}")
-async def get_assessment(request: Request, assessment_id: str):
+@app.get("/api/v1/assessments/{assessment_id}", response_model=AssessmentResult)
+async def get_assessment(request: Request, assessment_id: str, candidate_id: str):
     """
-    Get assessment by ID.
+    REPAIRED: Now retrieves assessments from hierarchical memory.
 
-    Note: This endpoint requires persistent storage to be implemented.
-    Currently returns a not implemented error.
+    Args:
+        request: FastAPI request object (for request ID)
+        assessment_id: Assessment identifier
+        candidate_id: Candidate identifier (required query parameter)
+
+    Returns:
+        Complete assessment result with scores and explanations
     """
     request_id = getattr(request.state, "request_id", None)
-    raise create_error_response(
-        error_code="NOT_IMPLEMENTED",
-        message="Assessment retrieval requires persistent storage. This feature is planned for a future release.",
-        status_code=501,
-        details={"assessment_id": assessment_id, "feature": "persistent_storage"},
-        request_id=request_id,
-    )
+
+    if not memu_storage:
+        raise service_unavailable_error("Memory storage", request_id=request_id)
+
+    memory = memu_storage.get_candidate_memory(candidate_id)
+    if not memory:
+        raise not_found_error("Candidate", candidate_id, request_id=request_id)
+
+    # Search nodes for assessment data
+    for node in memory.nodes.values():
+        if node.metadata.get("type") == "assessment":
+            # Check if this node contains the assessment result
+            assessment_result = node.data.get("assessment_result")
+            if assessment_result and assessment_result.get("assessment_id") == assessment_id:
+                return AssessmentResult.model_validate(assessment_result)
+
+    raise not_found_error("Assessment", assessment_id, request_id=request_id)
 
 
 # Candidate Management Endpoints
@@ -716,7 +757,7 @@ async def generate_tags(http_request: Request, request: TagRequest):
 
 
 @app.post("/api/v1/files/upload")
-async def upload_file(request: Request, file: UploadFile = File(...)):
+async def upload_file(request: Request, file: UploadFile = File(...)):  # noqa: B008
     """
     Upload a file for assessment.
 
@@ -740,27 +781,29 @@ async def upload_file(request: Request, file: UploadFile = File(...)):
         file_ext = file.filename.split(".")[-1].lower() if "." in file.filename else ""
 
         if file_ext not in allowed_extensions:
+            allowed_str = ", ".join(allowed_extensions)
             raise file_upload_error(
-                message=f"File type '.{file_ext}' not allowed. Allowed types: {', '.join(allowed_extensions)}",
+                message=f"File type '.{file_ext}' not allowed. Allowed types: {allowed_str}",
                 error_type=ErrorCode.INVALID_FILE_TYPE,
                 details={"file_extension": file_ext, "allowed_extensions": allowed_extensions},
                 request_id=request_id,
             )
 
         # Security: Sanitize filename to prevent path traversal
-        import re
-        from pathlib import Path
-
+        # Strictly enforce Path().name to prevent directory traversal attacks
         safe_filename = re.sub(r"[^a-zA-Z0-9._-]", "_", file.filename)
-        safe_filename = Path(safe_filename).name  # Remove any path components
+        safe_filename = Path(
+            safe_filename
+        ).name  # Remove any path components (prevents ../ attacks)
 
         # Read file content with size limit
         content = await file.read()
 
         # Security: Check file size
         if len(content) > config.max_upload_size:
+            max_size_mb = config.max_upload_size / 1024 / 1024
             raise file_upload_error(
-                message=f"File too large. Maximum size: {config.max_upload_size / 1024 / 1024:.1f}MB",
+                message=f"File too large. Maximum size: {max_size_mb:.1f}MB",
                 error_type=ErrorCode.FILE_TOO_LARGE,
                 details={
                     "file_size": len(content),
@@ -810,7 +853,7 @@ async def upload_file(request: Request, file: UploadFile = File(...)):
 
 
 def create_app() -> FastAPI:
-    """Factory function to create the FastAPI app."""
+    """Create the FastAPI app."""
     return app
 
 

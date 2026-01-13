@@ -127,9 +127,10 @@ class AssessmentEngine:
         if ml_insights:
             # Add ML insights as additional evidence
             combined_evidence.append(
+                pattern = ml_insights.get("pattern", "additional pattern")
                 Evidence(
                     type=EvidenceType.CODE_QUALITY,
-                    description=f"ML model identified: {ml_insights.get('pattern', 'additional pattern')}",
+                    description=f"ML model identified: {pattern}",
                     source="ml_analysis",
                     weight=ml_weight,
                     metadata={"source": "ml_model", "insights": ml_insights},
@@ -137,11 +138,17 @@ class AssessmentEngine:
             )
 
         # Enhanced explanation
+        heuristic_str = f"{heuristic_score:.1f}"
+        ml_str = f"{ml_score:.1f}"
+        evidence_count = len(heuristic_evidence)
+        confidence_str = f"{combined_confidence:.1%}"
         explanation = (
-            f"Score combines heuristic analysis ({heuristic_score:.1f}) with ML insights ({ml_score:.1f}). "
-            f"Heuristic analysis provides explainable evidence: {len(heuristic_evidence)} indicators identified. "
+            f"Score combines heuristic analysis ({heuristic_str}) "
+            f"with ML insights ({ml_str}). "
+            f"Heuristic analysis provides explainable evidence: "
+            f"{evidence_count} indicators identified. "
             f"ML model contributes nuanced pattern recognition. "
-            f"Combined confidence: {combined_confidence:.1%}."
+            f"Combined confidence: {confidence_str}."
         )
 
         return combined_score, combined_confidence, combined_evidence, explanation
@@ -887,34 +894,58 @@ class AssessmentEngine:
         return "\n".join(text_parts)
 
     def _analyze_code_quality(self, text: str) -> float:
-        """Analyze code quality using heuristics."""
+        """
+        Analyze code quality using heuristics.
+
+        Refined to prioritize "Density of Logic" over "Substantial Code"
+        to align with minimalism and subtext preference.
+        """
         score = 50.0  # Base score
         text_lower = text.lower()
+        lines = text.split("\n")
+        non_empty_lines = [
+            line.strip() for line in lines if line.strip() and not line.strip().startswith("#")
+        ]
 
-        # Positive indicators
+        # Positive indicators - prioritize logic density
         if "def " in text or "function " in text or "class " in text:
             score += 10  # Structured code
         if "import " in text or "from " in text:
             score += 5  # Uses libraries
+
+        # Density of Logic: Calculate meaningful code density
+        logic_density = len(non_empty_lines) / max(len(lines), 1)
+        if logic_density > 0.7:  # High density of meaningful code
+            score += 8  # Prefer concise, logic-dense code
+        elif logic_density > 0.5:
+            score += 5
+
         if "try:" in text or "except" in text or "error" in text_lower:
             score += 10  # Error handling
         if "test" in text_lower or "assert" in text_lower:
             score += 10  # Testing awareness
-        if len(text.split("\n")) > 10:
-            score += 5  # Substantial code
+
+        # Check for meaningful abstractions (functions, classes) relative to code size
+        function_count = text.count("def ") + text.count("function ")
+        class_count = text.count("class ")
+        if len(non_empty_lines) > 0:
+            abstraction_ratio = (function_count + class_count) / len(non_empty_lines)
+            if abstraction_ratio > 0.1:  # Good abstraction density
+                score += 7
 
         # Negative indicators
         if text.count("print(") > 5:
             score -= 5  # Too many prints (debugging code)
         if "todo" in text_lower or "fixme" in text_lower:
             score -= 3  # Incomplete code
+        if len(non_empty_lines) > 0 and logic_density < 0.3:
+            score -= 5  # Low logic density (too much whitespace/comments)
 
         return min(100.0, max(0.0, score))
 
     def _generate_code_quality_evidence(self, text: str) -> List[Evidence]:
         """Generate evidence for code quality."""
         evidence = []
-        text_lower = text.lower()
 
         if "def " in text or "function " in text:
             evidence.append(
@@ -1092,7 +1123,6 @@ class AssessmentEngine:
     def _generate_architecture_evidence(self, text: str) -> List[Evidence]:
         """Generate evidence for architecture."""
         evidence = []
-        text_lower = text.lower()
 
         if "class " in text:
             evidence.append(

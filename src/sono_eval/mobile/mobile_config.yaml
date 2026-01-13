@@ -1,0 +1,70 @@
+# Mobile Assessment Configuration
+
+paths:
+  technical:
+    title: "Technical Skills Assessment"
+    icon: "⚙️"
+    time: "15-20 min"
+    overview: "We'll evaluate your code quality, architecture decisions, and technical practices."
+    what_we_look_for:
+      - "Clean, readable code structure"
+      - "Appropriate use of design patterns"
+      - "Error handling and edge cases"
+      - "Testing approach and coverage"
+      - "Performance considerations"
+    tips:
+      - "Write code as if others will maintain it"
+      - "Add comments only where needed"
+      - "Consider edge cases and errors"
+      - "Think about scalability"
+
+  design:
+    title: "Design Thinking Assessment"
+    icon: "🎨"
+    time: "10-15 min"
+    overview: "We'll examine how you approach problems and design solutions."
+    what_we_look_for:
+      - "Clear problem understanding"
+      - "Systematic approach to solutions"
+      - "Trade-off considerations"
+      - "Architecture and component design"
+      - "Scalability thinking"
+    tips:
+      - "Start with understanding the problem"
+      - "Consider multiple approaches"
+      - "Think about future changes"
+      - "Document your reasoning"
+
+  collaboration:
+    title: "Collaboration Assessment"
+    icon: "🤝"
+    time: "10-15 min"
+    overview: "We'll look at how you communicate and work with others."
+    what_we_look_for:
+      - "Clear communication style"
+      - "Documentation quality"
+      - "Code review practices"
+      - "Teamwork indicators"
+      - "Knowledge sharing"
+    tips:
+      - "Write clear commit messages"
+      - "Document non-obvious decisions"
+      - "Consider the team perspective"
+      - "Make code reviewable"
+
+  problem_solving:
+    title: "Problem Solving Assessment"
+    icon: "🧩"
+    time: "15-20 min"
+    overview: "We'll assess your analytical and debugging capabilities."
+    what_we_look_for:
+      - "Logical thinking process"
+      - "Debugging methodology"
+      - "Optimization approach"
+      - "Handling complexity"
+      - "Creative solutions"
+    tips:
+      - "Break down complex problems"
+      - "Think step by step"
+      - "Consider efficiency"
+      - "Test your assumptions"

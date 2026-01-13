@@ -99,6 +99,35 @@ setup_dev() {
     echo -e "${YELLOW}Activate with: source venv/bin/activate${NC}"
 }
 
+# Function to check environment readiness
+check_readiness() {
+    echo -e "${BLUE}Checking environment readiness...${NC}"
+
+    # Check Docker
+    if command -v docker &> /dev/null; then
+        echo -e "  [${GREEN}✓${NC}] Docker installed"
+    else
+        echo -e "  [${RED}✗${NC}] Docker not found"
+    fi
+
+    # Check Python
+    if command -v python3 &> /dev/null; then
+        python_version=$(python3 --version)
+        echo -e "  [${GREEN}✓${NC}] Python 3 installed ($python_version)"
+    else
+        echo -e "  [${RED}✗${NC}] Python 3 not found"
+    fi
+
+    # Check .env
+    if [ -f .env ]; then
+        echo -e "  [${GREEN}✓${NC}] .env file exists"
+    else
+        echo -e "  [${YELLOW}!${NC}] .env file missing (will be created on start)"
+    fi
+
+    echo -e "${GREEN}Readiness check complete.${NC}"
+}
+
 # Main menu
 case "${1:-}" in
     start)
@@ -126,22 +155,26 @@ case "${1:-}" in
     dev)
         setup_dev
         ;;
+    check)
+        check_readiness
+        ;;
     *)
-        echo "Usage: $0 {start|stop|restart|status|logs|cli|dev}"
+        echo "Usage: $0 {start|stop|restart|status|logs|cli|dev|check}"
         echo ""
         echo "Commands:"
-        echo "  start    - Start all services"
-        echo "  stop     - Stop all services"
-        echo "  restart  - Restart all services"
+        echo "  start    - Start all services (Docker)"
+        echo "  stop     - Stop all services (Docker)"
+        echo "  restart  - Restart all services (Docker)"
         echo "  status   - Show service status"
         echo "  logs     - Show logs (optionally specify service)"
-        echo "  cli      - Run CLI commands (e.g., $0 cli assess --help)"
-        echo "  dev      - Setup development environment"
+        echo "  cli      - Run CLI commands in container"
+        echo "  dev      - Setup local development environment (venv)"
+        echo "  check    - Verify environment readiness"
         echo ""
         echo "Examples:"
         echo "  $0 start"
-        echo "  $0 logs sono-eval"
-        echo "  $0 cli config show"
+        echo "  $0 check"
+        echo "  $0 cli assess run --candidate-id test --file main.py"
         exit 1
         ;;
 esac

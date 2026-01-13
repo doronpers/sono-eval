@@ -64,9 +64,7 @@ def test_mobile_explain_path(mobile_client):
 def test_mobile_explain_invalid_path(mobile_client):
     """Test path explanation with invalid path."""
     response = mobile_client.get("/api/mobile/explain/invalid")
-    assert response.status_code == 200
-    data = response.json()
-    assert data["success"] is False
+    assert response.status_code == 404
 
 
 @pytest.mark.asyncio
@@ -77,14 +75,11 @@ async def test_mobile_submit_assessment(mobile_client):
         "paths": ["technical"],
         "content": {
             "content_technical": "def hello(): return 'world'",
-            "explanation_technical": "Simple function that returns a string"
+            "explanation_technical": "Simple function that returns a string",
         },
-        "personalization": {
-            "experience": "intermediate",
-            "goals": ["improve"]
-        }
+        "personalization": {"experience": "intermediate", "goals": ["improve"]},
     }
-    
+
     response = mobile_client.post("/api/mobile/assess", json=submission)
     assert response.status_code == 200
     data = response.json()
@@ -100,7 +95,7 @@ def test_mobile_static_files(mobile_client):
     response = mobile_client.get("/static/style.css")
     assert response.status_code == 200
     assert "mobile-container" in response.text
-    
+
     # Test JS
     response = mobile_client.get("/static/script.js")
     assert response.status_code == 200

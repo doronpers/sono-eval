@@ -1,6 +1,5 @@
 """Configuration management for Sono-Eval."""
 
-import os
 from pathlib import Path
 from typing import Any, Dict, Optional
 
@@ -78,7 +77,9 @@ class Config(BaseSettings):
     batch_size: int = Field(default=32, alias="BATCH_SIZE")
     max_concurrent_assessments: int = Field(default=4, alias="MAX_CONCURRENT_ASSESSMENTS")
 
-    class Config:
+    class Config:  # noqa: D106
+        """Pydantic configuration."""
+
         env_file = ".env"
         case_sensitive = False
 
@@ -99,6 +100,25 @@ class Config(BaseSettings):
         path = Path(self.tagstudio_root)
         path.mkdir(parents=True, exist_ok=True)
         return path
+
+    def validate_production_config(self) -> None:
+        """
+        Validate configuration for production environment.
+
+        Raises:
+            ValueError: If production configuration is invalid
+        """
+        if self.app_env == "production":
+            # Validate DATABASE_URL is not using default SQLite path
+            if (
+                self.database_url.startswith("sqlite:///./")
+                or self.database_url == "sqlite:///./sono_eval.db"
+            ):
+                raise ValueError(
+                    "CRITICAL: DATABASE_URL must not use default SQLite path in production. "
+                    "Use PostgreSQL or a properly configured database. "
+                    "Set DATABASE_URL to a production database connection string."
+                )
 
     @classmethod
     def get_preset(cls, preset_name: str) -> Dict[str, Any]:
@@ -223,7 +243,6 @@ class Config(BaseSettings):
                 "MEMU_CACHE_SIZE": 10000,  # Large cache
                 "MAX_CONCURRENT_ASSESSMENTS": 16,  # High concurrency
                 "BATCH_SIZE": 128,  # Large batches
-                "BATCH_SIZE": 128,
             },
             "low_resource": {
                 "APP_ENV": "development",

@@ -6,10 +6,11 @@ optimized for mobile devices.
 """
 
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
-from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse
+import yaml
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
@@ -24,6 +25,7 @@ logger = get_logger(__name__)
 MOBILE_DIR = Path(__file__).parent
 STATIC_DIR = MOBILE_DIR / "static"
 TEMPLATES_DIR = MOBILE_DIR / "templates"
+CONFIG_PATH = MOBILE_DIR / "mobile_config.yaml"
 
 
 class MobileAssessmentState(BaseModel):
@@ -52,6 +54,20 @@ class MobileSubmission(BaseModel):
     personalization: Dict[str, str] = {}
 
 
+def load_mobile_config() -> Dict[str, Any]:
+    """Load mobile configuration from YAML."""
+    if not CONFIG_PATH.exists():
+        logger.warning(f"Mobile config not found at {CONFIG_PATH}, using defaults")
+        return {"paths": {}}
+
+    try:
+        with open(CONFIG_PATH, "r") as f:
+            return yaml.safe_load(f)
+    except Exception as e:
+        logger.error(f"Error loading mobile config: {e}")
+        return {"paths": {}}
+
+
 def create_mobile_app() -> FastAPI:
     """
     Create mobile companion FastAPI application.
@@ -62,7 +78,7 @@ def create_mobile_app() -> FastAPI:
     app = FastAPI(
         title="Sono-Eval Mobile Companion",
         description="Mobile-optimized interactive assessment experience",
-        version="0.1.0",
+        version="0.1.1",
     )
 
     # Mount static files
@@ -73,6 +89,9 @@ def create_mobile_app() -> FastAPI:
 
     # Initialize assessment engine
     assessment_engine = AssessmentEngine()
+
+    # Load config
+    config = load_mobile_config()
 
     @app.get("/", response_class=HTMLResponse)
     async def mobile_home(request: Request):
@@ -99,42 +118,25 @@ def create_mobile_app() -> FastAPI:
     @app.get("/paths", response_class=HTMLResponse)
     async def mobile_paths(request: Request, candidate_id: Optional[str] = None):
         """Path selection with explanations."""
+        path_list = []
+        for path_id, path_info in config.get("paths", {}).items():
+            path_list.append(
+                {
+                    "id": path_id,
+                    "name": path_info.get("title", path_id.title()),
+                    "icon": path_info.get("icon", "📝"),
+                    "description": path_info.get("overview", ""),
+                    "time": path_info.get("time", ""),
+                }
+            )
+
         return templates.TemplateResponse(
             "paths.html",
             {
                 "request": request,
                 "title": "Choose Your Focus Areas",
                 "candidate_id": candidate_id or "guest",
-                "paths": [
-                    {
-                        "id": "technical",
-                        "name": "Technical Skills",
-                        "icon": "⚙️",
-                        "description": "Code quality, architecture, testing, and best practices",
-                        "time": "15-20 min",
-                    },
-                    {
-                        "id": "design",
-                        "name": "Design Thinking",
-                        "icon": "🎨",
-                        "description": "Problem analysis, solution design, and system architecture",
-                        "time": "10-15 min",
-                    },
-                    {
-                        "id": "collaboration",
-                        "name": "Collaboration",
-                        "icon": "🤝",
-                        "description": "Communication, teamwork, and code review practices",
-                        "time": "10-15 min",
-                    },
-                    {
-                        "id": "problem_solving",
-                        "name": "Problem Solving",
-                        "icon": "🧩",
-                        "description": "Analytical thinking, debugging, and optimization",
-                        "time": "15-20 min",
-                    },
-                ],
+                "paths": path_list,
             },
         )
 
@@ -166,17 +168,11 @@ def create_mobile_app() -> FastAPI:
             },
         )
 
-    @app.post("/api/assess")
+    # --- API Endpoints ---
+
+    @app.post("/api/mobile/assess")
     async def mobile_submit_assessment(submission: MobileSubmission):
-        """
-        Submit mobile assessment for evaluation.
-
-        Args:
-            submission: Mobile assessment submission data
-
-        Returns:
-            Assessment result with detailed feedback
-        """
+        """Submit mobile assessment for evaluation."""
         try:
             # Convert string paths to PathType enum
             path_types = []
@@ -208,95 +204,21 @@ def create_mobile_app() -> FastAPI:
             }
         except Exception as e:
             logger.error(f"Error processing mobile assessment: {e}")
-            return {"success": False, "error": str(e)}
+            return JSONResponse(
+                status_code=500,
+                content={"success": False, "error": f"Assessment processing failed: {str(e)}"},
+            )
 
-    @app.get("/api/explain/{path}")
+    @app.get("/api/mobile/explain/{path}")
     async def mobile_explain_path(path: str):
-        """
-        Get detailed explanation for a specific path.
-
-        Args:
-            path: Path type to explain
-
-        Returns:
-            Detailed explanation and guidance
-        """
-        explanations = {
-            "technical": {
-                "title": "Technical Skills Assessment",
-                "overview": "We'll evaluate your code quality, architecture decisions, and technical practices.",
-                "what_we_look_for": [
-                    "Clean, readable code structure",
-                    "Appropriate use of design patterns",
-                    "Error handling and edge cases",
-                    "Testing approach and coverage",
-                    "Performance considerations",
-                ],
-                "tips": [
-                    "Write code as if others will maintain it",
-                    "Add comments only where needed",
-                    "Consider edge cases and errors",
-                    "Think about scalability",
-                ],
-            },
-            "design": {
-                "title": "Design Thinking Assessment",
-                "overview": "We'll examine how you approach problems and design solutions.",
-                "what_we_look_for": [
-                    "Clear problem understanding",
-                    "Systematic approach to solutions",
-                    "Trade-off considerations",
-                    "Architecture and component design",
-                    "Scalability thinking",
-                ],
-                "tips": [
-                    "Start with understanding the problem",
-                    "Consider multiple approaches",
-                    "Think about future changes",
-                    "Document your reasoning",
-                ],
-            },
-            "collaboration": {
-                "title": "Collaboration Assessment",
-                "overview": "We'll look at how you communicate and work with others.",
-                "what_we_look_for": [
-                    "Clear communication style",
-                    "Documentation quality",
-                    "Code review practices",
-                    "Teamwork indicators",
-                    "Knowledge sharing",
-                ],
-                "tips": [
-                    "Write clear commit messages",
-                    "Document non-obvious decisions",
-                    "Consider the team perspective",
-                    "Make code reviewable",
-                ],
-            },
-            "problem_solving": {
-                "title": "Problem Solving Assessment",
-                "overview": "We'll assess your analytical and debugging capabilities.",
-                "what_we_look_for": [
-                    "Logical thinking process",
-                    "Debugging methodology",
-                    "Optimization approach",
-                    "Handling complexity",
-                    "Creative solutions",
-                ],
-                "tips": [
-                    "Break down complex problems",
-                    "Think step by step",
-                    "Consider efficiency",
-                    "Test your assumptions",
-                ],
-            },
-        }
-
+        """Get detailed explanation for a specific path."""
         path_lower = path.lower()
-        if path_lower in explanations:
-            return {"success": True, "explanation": explanations[path_lower]}
-        else:
-            return {"success": False, "error": "Path not found"}
+        paths_config = config.get("paths", {})
+
+        if path_lower in paths_config:
+            return {"success": True, "explanation": paths_config[path_lower]}
+
+        raise HTTPException(status_code=404, detail=f"Path '{path}' not found")
 
     return app
 
