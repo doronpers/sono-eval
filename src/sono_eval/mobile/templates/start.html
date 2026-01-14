@@ -105,6 +105,19 @@ document.getElementById('start-form').addEventListener('submit', function(e) {
     sessionStorage.setItem('experience', experience);
     sessionStorage.setItem('goals', JSON.stringify(goals));
 
+    // Link candidate_id to tracking system
+    if (window.sonoEvalTracking && window.sonoEvalTracking.updateCandidateId) {
+        window.sonoEvalTracking.updateCandidateId(candidateId);
+    }
+
+    // Track milestone
+    if (window.sonoEval && window.sonoEval.trackMilestone) {
+        window.sonoEval.trackMilestone('candidate_registered', {
+            experience: experience,
+            goals: goals,
+        });
+    }
+
     // Navigate to path selection
     location.href = `/mobile/paths?candidate_id=${encodeURIComponent(candidateId)}`;
 });

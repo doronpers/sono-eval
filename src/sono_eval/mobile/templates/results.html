@@ -3,9 +3,9 @@
 {% block content %}
 <div class="results-screen">
     <div class="hero-section results-hero">
-        <div class="hero-icon">🎉</div>
-        <h2 class="hero-title">Assessment Complete!</h2>
-        <p class="hero-subtitle">Here's your detailed feedback</p>
+        <div class="hero-icon">🎯</div>
+        <h2 class="hero-title">Your Insights</h2>
+        <p class="hero-subtitle">Discover what your assessment reveals about your skills</p>
     </div>
 
     <div class="results-container" id="results-container">
@@ -95,6 +95,10 @@ function displayResults() {
             <p class="confidence-text">
                 Confidence: ${Math.round(results.confidence * 100)}%
             </p>
+            <div class="score-meaning">
+                <strong>What this means:</strong>
+                <span class="meaning-text">${getScoreMeaning(results.overall_score)}</span>
+            </div>
         </div>
 
         <div class="info-box info-box-success">
@@ -109,6 +113,10 @@ function displayResults() {
                 <div class="path-result-header">
                     <h3>${pathScore.path}</h3>
                     <span class="path-score-badge">${pathScore.score}/100</span>
+                </div>
+                <div class="path-score-meaning">
+                    <strong>What this score tells you:</strong>
+                    <p>${getPathScoreMeaning(pathScore.score)}</p>
                 </div>
 
                 <div class="strengths-section">
@@ -146,13 +154,43 @@ function displayResults() {
         <div class="recommendations-card">
             <h3>
                 <span class="section-icon">💡</span>
-                Recommended Next Steps
+                Your Learning Path
             </h3>
+            <p class="learning-path-intro">
+                Based on your assessment, here's a personalized path to continue growing:
+            </p>
             <ol class="recommendations-list">
-                ${results.recommendations.map(rec => `
-                    <li class="recommendation-item">${rec}</li>
+                ${results.recommendations.map((rec, index) => `
+                    <li class="recommendation-item">
+                        <span class="step-number">${index + 1}</span>
+                        <div class="recommendation-content">
+                            <strong>${rec}</strong>
+                            <span class="recommendation-hint">${getRecommendationHint(rec)}</span>
+                        </div>
+                    </li>
                 `).join('')}
             </ol>
+        </div>
+        
+        <div class="insights-summary-card">
+            <h3>
+                <span class="section-icon">📊</span>
+                Key Insights
+            </h3>
+            <div class="insights-grid">
+                <div class="insight-item">
+                    <span class="insight-label">Strongest Area</span>
+                    <span class="insight-value">${getStrongestArea(results.path_scores)}</span>
+                </div>
+                <div class="insight-item">
+                    <span class="insight-label">Growth Opportunity</span>
+                    <span class="insight-value">${getGrowthArea(results.path_scores)}</span>
+                </div>
+                <div class="insight-item">
+                    <span class="insight-label">Next Assessment</span>
+                    <span class="insight-value">${getNextAssessmentSuggestion(results.path_scores)}</span>
+                </div>
+            </div>
         </div>
 
         <div class="info-box">
@@ -166,6 +204,64 @@ function displayResults() {
     actionButtons.style.display = 'flex';
 }
 
+function getScoreMeaning(score) {
+    if (score >= 80) return "Excellent! You're demonstrating strong skills across the board.";
+    if (score >= 60) return "Good progress! You're on the right track with room to grow.";
+    if (score >= 40) return "Developing! You're building skills - focus on the recommendations.";
+    return "Learning! This is an area where focused study will help most.";
+}
+
+function getPathScoreMeaning(score) {
+    if (score >= 80) return "You're excelling in this area. Keep doing what you're doing!";
+    if (score >= 60) return "You have a solid foundation. Build on your strengths.";
+    if (score >= 40) return "You're developing in this area. The recommendations will help.";
+    return "This is a growth opportunity. Focused practice will make a big difference.";
+}
+
+function getRecommendationHint(recommendation) {
+    const hints = {
+        'documenting': 'Try adding comments to complex functions',
+        'edge cases': 'Think about null inputs, empty arrays, and boundary conditions',
+        'design patterns': 'Explore Strategy, Observer, and Factory patterns',
+        'testing': 'Start with unit tests for your core functions',
+        'communication': 'Write clear commit messages and README files',
+    };
+    
+    for (const [key, hint] of Object.entries(hints)) {
+        if (recommendation.toLowerCase().includes(key)) {
+            return hint;
+        }
+    }
+    return 'Focus on this area in your next project';
+}
+
+function getStrongestArea(pathScores) {
+    if (!pathScores || pathScores.length === 0) return 'N/A';
+    const strongest = pathScores.reduce((max, path) => 
+        path.score > max.score ? path : max
+    );
+    return strongest.path;
+}
+
+function getGrowthArea(pathScores) {
+    if (!pathScores || pathScores.length === 0) return 'N/A';
+    const weakest = pathScores.reduce((min, path) => 
+        path.score < min.score ? path : min
+    );
+    return weakest.path;
+}
+
+function getNextAssessmentSuggestion(pathScores) {
+    if (!pathScores || pathScores.length === 0) return 'Try all paths';
+    const completed = pathScores.map(p => p.path.toLowerCase());
+    const allPaths = ['technical', 'design', 'collaboration', 'problem_solving'];
+    const remaining = allPaths.filter(p => !completed.includes(p.toLowerCase()));
+    if (remaining.length > 0) {
+        return `Try ${remaining[0].charAt(0).toUpperCase() + remaining[0].slice(1)} path`;
+    }
+    return 'Reassess to track progress';
+}
+
 function shareResults() {
     if (navigator.share) {
         navigator.share({
@@ -176,10 +272,31 @@ function shareResults() {
     } else {
         // Fallback: copy link
         navigator.clipboard.writeText(window.location.href)
-            .then(() => alert('Link copied to clipboard!'))
+            .then(() => {
+                if (window.sonoEval && window.sonoEval.showSuccess) {
+                    window.sonoEval.showSuccess('Results link copied to clipboard!');
+                } else {
+                    alert('Link copied to clipboard!');
+                }
+            })
             .catch(() => alert('Unable to share. Copy this URL: ' + window.location.href));
     }
 }
+
+// Track results view
+document.addEventListener('DOMContentLoaded', function() {
+    if (window.sonoEvalTracking && window.sonoEvalTracking.trackEvent) {
+        window.sonoEvalTracking.trackEvent('results_viewed', {
+            assessment_id: assessmentId || 'unknown',
+        });
+    }
+    
+    if (window.sonoEval && window.sonoEval.trackMilestone) {
+        window.sonoEval.trackMilestone('results_viewed', {
+            assessment_id: assessmentId || 'unknown',
+        });
+    }
+});
 
 // Load results on page load
 loadResults();

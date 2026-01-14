@@ -13,9 +13,11 @@ def check_python_version():
     version = sys.version_info
     if version.major == 3 and version.minor >= 9:
         print(f"✅ Python {version.major}.{version.minor}.{version.micro} (required: 3.9+)")
+        print(f"   💡 This version supports all Sono-Eval features")
         return True
     else:
         print(f"❌ Python {version.major}.{version.minor}.{version.micro} (required: 3.9+)")
+        print(f"   💡 Update Python to access all features: https://www.python.org/downloads/")
         return False
 
 
@@ -36,6 +38,7 @@ def check_dependencies():
             print(f"✅ {module} - {desc}")
         except ImportError:
             print(f"❌ {module} - {desc} (MISSING)")
+            print(f"   💡 Install with: pip install {module}")
             missing.append(module)
 
     return len(missing) == 0
@@ -156,16 +159,25 @@ def main():
     if not failed:
         print("✅ ALL CRITICAL CHECKS PASSED")
         print()
-        print("You can now run Sono-Eval:")
-        print("  • CLI: sono-eval server start")
-        print("  • Docker: ./launcher.sh start")
+        print("🎉 You're ready to start using Sono-Eval!")
+        print()
+        print("Next steps:")
+        print("  • Start the server: [cyan]sono-eval server start[/cyan]")
+        print("  • Or use Docker: [cyan]./launcher.sh start[/cyan]")
+        print("  • Then visit: [cyan]http://localhost:8000/mobile[/cyan]")
+        print()
+        print("💡 Tip: Use [cyan]sono-eval setup init --interactive[/cyan] for guided setup")
         return 0
     else:
         print(f"❌ {len(failed)} CRITICAL CHECK(S) FAILED:")
         for name in failed:
             print(f"   - {name}")
         print()
-        print("Please fix the issues above before running Sono-Eval.")
+        print("💡 What this means:")
+        print("   These checks ensure Sono-Eval can run properly on your system.")
+        print("   Fix the issues above, then run this script again.")
+        print()
+        print("Need help? See: Documentation/Guides/resources/first-time-setup.md")
         return 1
 
 

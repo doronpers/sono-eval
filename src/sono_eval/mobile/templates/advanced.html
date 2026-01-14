@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="advanced-screen">
+    <div class="hero-section">
+        <div class="hero-icon">🔓</div>
+        <h2 class="hero-title">Advanced Features</h2>
+        <p class="hero-subtitle">Expert-level tools for deeper insights</p>
+    </div>
+
+    <div class="info-box info-box-success">
+        <p class="info-box-icon">🎉</p>
+        <div class="info-box-content">
+            <strong>Congratulations!</strong> You've discovered the advanced features page.
+            These tools provide deeper analysis and insights.
+        </div>
+    </div>
+
+    <div class="info-card">
+        <div class="info-header">
+            <span class="info-icon">📊</span>
+            <h3>Expert Analysis</h3>
+        </div>
+        <ul class="info-list">
+            <li>
+                <strong>Raw Data Access:</strong> View underlying metrics and calculations
+                <span class="value-hint">Understand exactly how scores are calculated</span>
+            </li>
+            <li>
+                <strong>Cross-Path Comparison:</strong> Compare performance across different assessment paths
+                <span class="value-hint">See how your skills relate to each other</span>
+            </li>
+            <li>
+                <strong>Trend Analysis:</strong> Track your progress over time
+                <span class="value-hint">Visualize your growth journey</span>
+            </li>
+        </ul>
+    </div>
+
+    <div class="info-card">
+        <div class="info-header">
+            <span class="info-icon">🔍</span>
+            <h3>Pattern Recognition</h3>
+        </div>
+        <ul class="info-list">
+            <li>
+                <strong>Design Patterns:</strong> Identify patterns in your code
+                <span class="value-hint">Learn which patterns you naturally use</span>
+            </li>
+            <li>
+                <strong>Anti-Pattern Detection:</strong> Find areas for improvement
+                <span class="value-hint">Spot common pitfalls before they become problems</span>
+            </li>
+            <li>
+                <strong>Best Practice Analysis:</strong> Compare against industry standards
+                <span class="value-hint">See how your approach aligns with best practices</span>
+            </li>
+        </ul>
+    </div>
+
+    <div class="info-card">
+        <div class="info-header">
+            <span class="info-icon">📤</span>
+            <h3>Export & Integration</h3>
+        </div>
+        <ul class="info-list">
+            <li>
+                <strong>JSON Export:</strong> Download detailed results as JSON
+                <span class="value-hint">Add ?export=json to any results URL</span>
+            </li>
+            <li>
+                <strong>API Access:</strong> Use REST API for programmatic access
+                <span class="value-hint">Integrate with your own tools</span>
+            </li>
+            <li>
+                <strong>Batch Analysis:</strong> Process multiple assessments at once
+                <span class="value-hint">Efficient for large-scale evaluations</span>
+            </li>
+        </ul>
+    </div>
+
+    <div class="cta-section">
+        <button class="primary-button" onclick="location.href='/mobile/'">
+            Back to Home
+            <span class="button-arrow">←</span>
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Track advanced page view
+document.addEventListener('DOMContentLoaded', function() {
+    if (window.sonoEvalTracking && window.sonoEvalTracking.trackEvent) {
+        window.sonoEvalTracking.trackEvent('advanced_features_viewed', {
+            page: 'advanced',
+        });
+    }
+    
+    if (window.sonoEval && window.sonoEval.trackMilestone) {
+        window.sonoEval.trackMilestone('advanced_features_discovered');
+    }
+});
+</script>
+{% endblock %}

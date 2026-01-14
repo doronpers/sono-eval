@@ -51,12 +51,83 @@ function getFromSession(key, defaultValue = null) {
     }
 }
 
-// Progress tracking
-function updateProgress(current, total) {
+// Progress tracking with value-driven messages
+const progressMessages = {
+    'welcome': [
+        { percent: 0, message: 'Welcome! Let\'s discover your strengths' },
+        { percent: 25, message: 'Exploring what makes Sono-Eval different' },
+        { percent: 50, message: 'Understanding your assessment options' },
+        { percent: 75, message: 'Almost ready to begin' },
+        { percent: 100, message: 'Ready to start your journey' }
+    ],
+    'paths': [
+        { percent: 0, message: 'Choosing your focus areas' },
+        { percent: 33, message: 'Discovering which paths match your goals' },
+        { percent: 66, message: 'Selecting areas to assess' },
+        { percent: 100, message: 'Paths selected - ready to assess' }
+    ],
+    'assess': [
+        { percent: 0, message: 'Starting your assessment' },
+        { percent: 25, message: 'Sharing your work and thinking' },
+        { percent: 50, message: 'Halfway through - you\'re doing great!' },
+        { percent: 75, message: 'Almost done - finishing strong' },
+        { percent: 100, message: 'Assessment complete - analyzing results' }
+    ],
+    'results': [
+        { percent: 0, message: 'Analyzing your assessment' },
+        { percent: 50, message: 'Identifying your strengths and growth areas' },
+        { percent: 100, message: 'Your insights are ready!' }
+    ]
+};
+
+function updateProgress(current, total, page = null) {
     const progressBar = document.querySelector('.progress-fill');
+    const progressContainer = document.querySelector('.progress-bar');
+    
     if (progressBar) {
         const percentage = (current / total) * 100;
         progressBar.style.width = `${percentage}%`;
+        
+        // Update progress message if container exists
+        if (page && progressMessages[page]) {
+            const messages = progressMessages[page];
+            const currentMessage = messages.find(m => percentage >= m.percent) || messages[messages.length - 1];
+            
+            let messageElement = document.querySelector('.progress-message');
+            if (!messageElement && progressContainer) {
+                messageElement = document.createElement('div');
+                messageElement.className = 'progress-message';
+                progressContainer.parentElement.insertBefore(messageElement, progressContainer.nextSibling);
+            }
+            
+            if (messageElement) {
+                messageElement.textContent = currentMessage.message;
+            }
+        }
+    }
+}
+
+// Track learning milestones
+function trackLearningMilestone(milestoneName, data = {}) {
+    if (window.sonoEvalTracking && window.sonoEvalTracking.trackMilestone) {
+        window.sonoEvalTracking.trackMilestone(milestoneName, data);
+    }
+    
+    // Show contextual achievement
+    showContextualAchievement(milestoneName, data);
+}
+
+function showContextualAchievement(milestoneName, data) {
+    const achievements = {
+        'discovery_explored': 'You\'re exploring! This helps us personalize your experience.',
+        'paths_selected': `Great choice! You've selected ${data.count || 0} focus area(s).`,
+        'candidate_registered': 'Welcome! Your progress will be tracked.',
+        'results_viewed': 'You\'ve completed an assessment! Check out your insights.',
+    };
+    
+    const message = achievements[milestoneName];
+    if (message && window.sonoEval && window.sonoEval.showSuccess) {
+        window.sonoEval.showSuccess(message);
     }
 }
 
@@ -80,11 +151,19 @@ function validateRequired(fields) {
     return isValid;
 }
 
-// Analytics tracking (placeholder)
+// Analytics tracking - integrated with tracking system
 function trackEvent(category, action, label = null) {
-    console.log('Track:', category, action, label);
-    // In production, integrate with analytics service
-    // e.g., gtag('event', action, { category, label });
+    // Use the tracking system if available
+    if (window.sonoEvalTracking && window.sonoEvalTracking.trackEvent) {
+        window.sonoEvalTracking.trackEvent('custom', {
+            category: category,
+            action: action,
+            label: label,
+        });
+    } else {
+        // Fallback for compatibility
+        console.log('Track:', category, action, label);
+    }
 }
 
 // Error handling
@@ -239,6 +318,20 @@ window.addEventListener('online', () => {
 });
 window.addEventListener('offline', checkNetworkStatus);
 
+// Track learning milestones
+function trackMilestone(milestoneName, data = {}) {
+    if (window.sonoEvalTracking && window.sonoEvalTracking.trackMilestone) {
+        window.sonoEvalTracking.trackMilestone(milestoneName, data);
+    }
+}
+
+// Track easter egg discoveries
+function trackEasterEgg(eggName, discoveryMethod) {
+    if (window.sonoEvalTracking && window.sonoEvalTracking.trackEasterEgg) {
+        window.sonoEvalTracking.trackEasterEgg(eggName, discoveryMethod);
+    }
+}
+
 // Export functions for use in other scripts
 window.sonoEval = {
     saveToSession,
@@ -247,6 +340,8 @@ window.sonoEval = {
     validateEmail,
     validateRequired,
     trackEvent,
+    trackMilestone,
+    trackEasterEgg,
     showError,
     showSuccess,
     debounce,

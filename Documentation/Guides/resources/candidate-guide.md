@@ -114,10 +114,11 @@ Understanding your micro-motives helps you:
 
 ### Before You Start
 
-1. **Read the instructions carefully** - Make sure you understand what's being asked
-2. **Check the time limit** - Plan accordingly
-3. **Set up your environment** - Make sure everything works
-4. **Take a deep breath** - This is a learning opportunity, not life-or-death
+1. **Set up Sono-Eval** - See [First-Time Setup Guide](first-time-setup.md) if you're installing on your personal machine
+2. **Read the instructions carefully** - Make sure you understand what's being asked
+3. **Check the time limit** - Plan accordingly
+4. **Enable Guided Mode** - If this is your first assessment, use guided mode for helpful tips
+5. **Take a deep breath** - This is a learning opportunity, not life-or-death
 
 ### While Working
 
@@ -256,8 +257,10 @@ Sono-Eval helps with all three!
 ## 📚 Resources
 
 ### Learning Resources
+- **[First-Time Setup Guide](first-time-setup.md)** - Step-by-step setup for remote candidates
 - **[Learning Guide](learning.md)** - Tutorials and best practices
 - **[Examples](examples/)** - Sample submissions with explanations
+- **[Discoveries Guide](discoveries.md)** - Hidden features and easter eggs (for the curious!)
 - **[FAQ](../faq.md)** - Common questions answered
 
 ### Technical Help

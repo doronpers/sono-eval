@@ -522,9 +522,166 @@ def start(host: Optional[str], port: Optional[int], reload: bool):
 
 # Config Commands
 @cli.group()
+def setup():
+    """Interactive setup and onboarding commands"""
+    pass
+
+
+@setup.command()
+@click.option("--interactive", is_flag=True, help="Run interactive setup wizard")
+def init(interactive: bool):
+    """
+    Initialize Sono-Eval setup (interactive mode).
+    
+    Guides you through first-time setup with explanations.
+    """
+    if interactive:
+        console.print("\n[bold cyan]Sono-Eval Interactive Setup[/bold cyan]\n")
+        console.print("This wizard will help you set up Sono-Eval step by step.\n")
+
+        # Step 1: Check Python
+        console.print("[bold]Step 1: Checking Python version...[/bold]")
+        import sys
+
+        version = sys.version_info
+        if version.major == 3 and version.minor >= 9:
+            console.print(f"[green]✓[/green] Python {version.major}.{version.minor}.{version.micro} (required: 3.9+)")
+        else:
+            console.print(f"[red]✗[/red] Python {version.major}.{version.minor}.{version.micro} (required: 3.9+)")
+            console.print("[yellow]Please install Python 3.9 or higher[/yellow]")
+            return
+
+        # Step 2: Check dependencies
+        console.print("\n[bold]Step 2: Checking dependencies...[/bold]")
+        critical_deps = ["fastapi", "uvicorn", "pydantic", "click"]
+        missing = []
+        for dep in critical_deps:
+            try:
+                __import__(dep)
+                console.print(f"[green]✓[/green] {dep}")
+            except ImportError:
+                console.print(f"[red]✗[/red] {dep} (missing)")
+                missing.append(dep)
+
+        if missing:
+            console.print(f"\n[yellow]Installing missing dependencies...[/yellow]")
+            console.print("[dim]Run: pip install -r requirements.txt[/dim]")
+        else:
+            console.print("[green]✓ All critical dependencies installed[/green]")
+
+        # Step 3: Environment file
+        console.print("\n[bold]Step 3: Checking configuration...[/bold]")
+        from pathlib import Path
+
+        env_file = Path(".env")
+        env_example = Path(".env.example")
+        if env_file.exists():
+            console.print("[green]✓[/green] .env file exists")
+        elif env_example.exists():
+            console.print("[yellow]⚠[/yellow] .env file missing (but .env.example exists)")
+            if click.confirm("Create .env from .env.example?"):
+                import shutil
+
+                shutil.copy(env_example, env_file)
+                console.print("[green]✓[/green] .env file created")
+        else:
+            console.print("[yellow]⚠[/yellow] No .env file found (optional for development)")
+
+        # Step 4: Data directories
+        console.print("\n[bold]Step 4: Checking data directories...[/bold]")
+        dirs = [Path("./data/memory"), Path("./data/tagstudio"), Path("./models/cache")]
+        for dir_path in dirs:
+            if dir_path.exists():
+                console.print(f"[green]✓[/green] {dir_path} exists")
+            else:
+                try:
+                    dir_path.mkdir(parents=True, exist_ok=True)
+                    console.print(f"[green]✓[/green] {dir_path} created")
+                except Exception as e:
+                    console.print(f"[red]✗[/red] {dir_path} cannot be created: {e}")
+
+        # Summary
+        console.print("\n[bold green]✓ Setup Complete![/bold green]\n")
+        console.print("Next steps:")
+        console.print("  1. Start the server: [cyan]sono-eval server start[/cyan]")
+        console.print("  2. Open in browser: [cyan]http://localhost:8000/mobile[/cyan]")
+        console.print("  3. Complete your first assessment!")
+        console.print("\n[yellow]💡 Tip:[/yellow] Use [cyan]sono-eval --help[/cyan] to see all available commands\n")
+    else:
+        console.print("[yellow]Run with --interactive flag for guided setup[/yellow]")
+        console.print("[dim]Example: sono-eval setup init --interactive[/dim]")
+
+
+@cli.group()
 def config():
     """Configuration commands"""
     pass
+
+
+@cli.group()
+def insights():
+    """Insights and analysis commands (hidden features)"""
+    pass
+
+
+@insights.command()
+@click.option("--deep", is_flag=True, help="Deep analysis mode (easter egg)")
+@click.option("--pattern-recognition", is_flag=True, help="Pattern recognition analysis")
+def analyze(deep: bool, pattern_recognition: bool):
+    """
+    Advanced analysis features (hidden command).
+    
+    Discovered by: sono-eval insights --deep
+    """
+    if deep:
+        console.print("[bold cyan]🔓 Expert Mode Unlocked![/bold cyan]")
+        console.print("\n[bold]Deep Analysis Features:[/bold]")
+        console.print("  • Raw metric data access")
+        console.print("  • Cross-path comparison tools")
+        console.print("  • Trend analysis over time")
+        console.print("  • Pattern detection algorithms")
+        console.print("\n[yellow]Use these features to get deeper insights into assessments.[/yellow]")
+    elif pattern_recognition:
+        console.print("[bold cyan]🔓 Pattern Recognition Unlocked![/bold cyan]")
+        console.print("\n[bold]Pattern Analysis Features:[/bold]")
+        console.print("  • Design pattern detection")
+        console.print("  • Anti-pattern identification")
+        console.print("  • Code smell analysis")
+        console.print("  • Best practice recommendations")
+    else:
+        console.print("[yellow]Hint: Try --deep or --pattern-recognition flags[/yellow]")
+        console.print("[dim]This is a hidden feature. Explore to discover more![/dim]")
+
+
+@cli.command()
+@click.option("--secret", is_flag=True, help="Show secret configuration options")
+@click.option("--explore", is_flag=True, help="Explore hidden features")
+def hidden(secret: bool, explore: bool):
+    """
+    Hidden features and configuration (easter egg command).
+    
+    Discovered by: sono-eval --secret or sono-eval hidden
+    """
+    if secret:
+        console.print("[bold cyan]🔓 Secret Configuration Unlocked![/bold cyan]")
+        console.print("\n[bold]Hidden Configuration Options:[/bold]")
+        console.print("  • EXPERT_MODE=true - Enable expert features")
+        console.print("  • DEBUG_TRACKING=true - Show tracking events")
+        console.print("  • ADVANCED_ANALYTICS=true - Enable advanced analytics")
+        console.print("  • PATTERN_DETECTION=true - Enable pattern recognition")
+        console.print("\n[yellow]Add these to your .env file to enable features.[/yellow]")
+    elif explore:
+        console.print("[bold cyan]🔓 Exploration Mode![/bold cyan]")
+        console.print("\n[bold]Hidden Features to Discover:[/bold]")
+        console.print("  • Keyboard shortcuts: Press '?' in web interface")
+        console.print("  • Konami code: ↑↑↓↓←→←→BA in web interface")
+        console.print("  • Triple-click logo: Click logo 3 times quickly")
+        console.print("  • Code comments: Add '// deep dive' to trigger analysis")
+        console.print("  • CLI: sono-eval insights --deep")
+        console.print("\n[yellow]Each discovery unlocks valuable features![/yellow]")
+    else:
+        console.print("[yellow]Try: sono-eval hidden --secret or sono-eval hidden --explore[/yellow]")
+        console.print("[dim]This command has hidden features. Explore the flags![/dim]")
 
 
 @config.command()

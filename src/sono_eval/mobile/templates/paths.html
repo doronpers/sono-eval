@@ -10,10 +10,18 @@
         </p>
     </div>
 
+    <div class="info-box info-box-tip" id="personalized-tip" style="display: none;">
+        <p class="info-box-icon">💡</p>
+        <div class="info-box-content">
+            <strong>Recommended for you:</strong> <span id="recommendation-text"></span>
+        </div>
+    </div>
+
     <div class="info-box info-box-tip">
         <p class="info-box-icon">💡</p>
         <div class="info-box-content">
             <strong>Tip:</strong> Tap each card to learn more before selecting. You can choose multiple paths.
+            <span class="value-hint">Each path takes 10-20 minutes and gives you specific insights</span>
         </div>
     </div>
 
@@ -31,6 +39,15 @@
                         </div>
                     </div>
                     <p class="path-description">{{ path.description }}</p>
+                    <div class="path-value" style="display: none;">
+                        <p class="value-explanation">
+                            <strong>Why this matters:</strong> 
+                            <span class="value-text" data-path="{{ path.id }}"></span>
+                        </p>
+                    </div>
+                    <div class="path-recommended" data-path="{{ path.id }}" style="display: none;">
+                        <span class="recommended-badge">⭐ Recommended for you</span>
+                    </div>
                     <button type="button" class="learn-more-button" onclick="showPathDetails(event, '{{ path.id }}')">
                         Learn more
                     </button>
@@ -82,8 +99,114 @@ const pathTimes = {
     'problem_solving': 17.5
 };
 
+// Value explanations for each path
+const pathValues = {
+    'technical': 'Understand your code quality, architecture decisions, and technical practices. Perfect if you want to improve your coding skills.',
+    'design': 'Learn how you approach problems and design solutions. Great for understanding your system thinking.',
+    'collaboration': 'See how well you communicate and work with others. Essential for team-based development.',
+    'problem_solving': 'Discover your analytical and debugging capabilities. Valuable for complex problem-solving.'
+};
+
 // Track selected paths
 let selectedPaths = new Set();
+
+// Get user preferences from session
+const experience = sessionStorage.getItem('experience') || 'intermediate';
+const goals = JSON.parse(sessionStorage.getItem('goals') || '[]');
+
+// Personalized recommendations based on goals and experience
+function getRecommendations() {
+    const recommendations = [];
+    
+    if (goals.includes('strengths') || goals.includes('benchmark')) {
+        recommendations.push('technical', 'design');
+    }
+    if (goals.includes('improve')) {
+        recommendations.push('problem_solving');
+    }
+    if (goals.includes('practice')) {
+        recommendations.push('technical', 'collaboration');
+    }
+    
+    // Experience-based recommendations
+    if (experience === 'beginner') {
+        recommendations.push('technical', 'problem_solving');
+    } else if (experience === 'advanced') {
+        recommendations.push('design', 'collaboration');
+    }
+    
+    return [...new Set(recommendations)]; // Remove duplicates
+}
+
+// Show personalized recommendations
+function showRecommendations() {
+    const recommended = getRecommendations();
+    
+    if (recommended.length > 0 && (goals.length > 0 || experience !== 'intermediate')) {
+        const tipBox = document.getElementById('personalized-tip');
+        const recText = document.getElementById('recommendation-text');
+        
+        const pathNames = recommended.map(p => {
+            const pathCard = document.querySelector(`[data-path="${p}"]`);
+            return pathCard ? pathCard.querySelector('.path-title').textContent : p;
+        }).join(', ');
+        
+        recText.textContent = `Based on your goals, consider: ${pathNames}`;
+        tipBox.style.display = 'flex';
+        
+        // Show recommended badges
+        recommended.forEach(pathId => {
+            const badge = document.querySelector(`.path-recommended[data-path="${pathId}"]`);
+            if (badge) badge.style.display = 'block';
+        });
+        
+        // Show value explanations for recommended paths
+        recommended.forEach(pathId => {
+            const valueDiv = document.querySelector(`[data-path="${pathId}"] .path-value`);
+            const valueText = document.querySelector(`[data-path="${pathId}"] .value-text`);
+            if (valueDiv && valueText) {
+                valueText.textContent = pathValues[pathId] || '';
+                valueDiv.style.display = 'block';
+            }
+        });
+    }
+    
+    // Show value explanations for all paths on hover/click
+    document.querySelectorAll('.path-card').forEach(card => {
+        const pathId = card.dataset.path;
+        const valueDiv = card.querySelector('.path-value');
+        const valueText = card.querySelector('.value-text');
+        
+        if (valueText && pathValues[pathId]) {
+            valueText.textContent = pathValues[pathId];
+        }
+        
+        // Show value on card interaction
+        card.addEventListener('mouseenter', function() {
+            if (valueDiv && !valueDiv.style.display || valueDiv.style.display === 'none') {
+                valueDiv.style.display = 'block';
+            }
+        });
+    });
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    showRecommendations();
+    
+    // Track path exploration
+    document.querySelectorAll('.learn-more-button').forEach(button => {
+        button.addEventListener('click', function(e) {
+            const pathId = e.target.closest('.path-card').dataset.path;
+            if (window.sonoEvalTracking && window.sonoEvalTracking.trackEvent) {
+                window.sonoEvalTracking.trackEvent('path_exploration', {
+                    path_id: pathId,
+                    action: 'learn_more_clicked',
+                });
+            }
+        });
+    });
+});
 
 // Setup checkboxes
 document.querySelectorAll('.path-checkbox').forEach(checkbox => {
@@ -94,9 +217,27 @@ document.querySelectorAll('.path-checkbox').forEach(checkbox => {
         if (this.checked) {
             selectedPaths.add(pathId);
             pathCard.classList.add('selected');
+            
+            // Track path selection
+            if (window.sonoEvalTracking && window.sonoEvalTracking.trackEvent) {
+                window.sonoEvalTracking.trackEvent('path_selection', {
+                    path_id: pathId,
+                    action: 'selected',
+                    total_selected: selectedPaths.size,
+                });
+            }
         } else {
             selectedPaths.delete(pathId);
             pathCard.classList.remove('selected');
+            
+            // Track path deselection
+            if (window.sonoEvalTracking && window.sonoEvalTracking.trackEvent) {
+                window.sonoEvalTracking.trackEvent('path_selection', {
+                    path_id: pathId,
+                    action: 'deselected',
+                    total_selected: selectedPaths.size,
+                });
+            }
         }
 
         updateSelectionSummary();
@@ -133,6 +274,14 @@ function continueToPaths() {
         return;
     }
 
+    // Track milestone
+    if (window.sonoEval && window.sonoEval.trackMilestone) {
+        window.sonoEval.trackMilestone('paths_selected', {
+            paths: Array.from(selectedPaths),
+            count: selectedPaths.size,
+        });
+    }
+
     const pathsParam = Array.from(selectedPaths).join(',');
     location.href = `/mobile/assess?candidate_id=${encodeURIComponent(candidateId)}&paths=${pathsParam}`;
 }
@@ -147,15 +296,29 @@ async function showPathDetails(event, pathId) {
     modal.style.display = 'flex';
     modalBody.innerHTML = '<div class="loading">Loading...</div>';
 
+    // Track path detail view
+    if (window.sonoEvalTracking && window.sonoEvalTracking.trackEvent) {
+        window.sonoEvalTracking.trackEvent('path_exploration', {
+            path_id: pathId,
+            action: 'details_viewed',
+        });
+    }
+
     try {
         const response = await fetch(`/mobile/api/explain/${pathId}`);
         const data = await response.json();
 
         if (data.success) {
             const exp = data.explanation;
+            const valueText = pathValues[pathId] || '';
+            
             modalBody.innerHTML = `
                 <h3>${exp.title}</h3>
                 <p class="modal-overview">${exp.overview}</p>
+                
+                ${valueText ? `<div class="modal-value-box">
+                    <strong>Why this matters:</strong> ${valueText}
+                </div>` : ''}
 
                 <h4>What We Look For:</h4>
                 <ul class="modal-list">

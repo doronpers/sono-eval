@@ -8,47 +8,95 @@
         <p class="hero-subtitle">Your personalized skill assessment companion</p>
     </div>
 
-    <div class="info-card">
+    <div class="info-card discovery-card" data-discovery="what-makes-different">
         <div class="info-header">
             <span class="info-icon">✨</span>
             <h3>What Makes This Different?</h3>
         </div>
-        <ul class="info-list">
-            <li>
-                <strong>Explanatory:</strong> Understand every score with clear evidence
-            </li>
-            <li>
-                <strong>Interactive:</strong> Engage with the content at your own pace
-            </li>
-            <li>
-                <strong>Personalized:</strong> Choose which areas you want to focus on
-            </li>
-            <li>
-                <strong>Growth-focused:</strong> Get actionable feedback to improve
-            </li>
-        </ul>
+        <div class="discovery-preview">
+            <p class="discovery-teaser">Unlike traditional tests, Sono-Eval helps you understand and grow.</p>
+            <button class="explore-button" onclick="exploreDiscovery(this, 'what-makes-different')">
+                Explore <span class="button-arrow">→</span>
+            </button>
+        </div>
+        <div class="discovery-content" style="display: none;">
+            <ul class="info-list">
+                <li>
+                    <strong>Explanatory:</strong> Understand every score with clear evidence
+                    <span class="value-hint">💡 You'll see exactly why you received each score</span>
+                </li>
+                <li>
+                    <strong>Interactive:</strong> Engage with the content at your own pace
+                    <span class="value-hint">💡 No time pressure - learn as you go</span>
+                </li>
+                <li>
+                    <strong>Personalized:</strong> Choose which areas you want to focus on
+                    <span class="value-hint">💡 Focus on what matters most to you</span>
+                </li>
+                <li>
+                    <strong>Growth-focused:</strong> Get actionable feedback to improve
+                    <span class="value-hint">💡 Specific recommendations you can use immediately</span>
+                </li>
+            </ul>
+        </div>
     </div>
 
-    <div class="info-card">
+    <div class="info-card discovery-card" data-discovery="time-commitment">
         <div class="info-header">
             <span class="info-icon">⏱️</span>
             <h3>How Long Does It Take?</h3>
         </div>
-        <p class="info-text">
-            You're in control! Choose 1-4 focus areas, each taking 10-20 minutes.
-            You can complete them all at once or come back later.
-        </p>
+        <div class="discovery-preview">
+            <p class="discovery-teaser">You're in control of your time investment.</p>
+            <button class="explore-button" onclick="exploreDiscovery(this, 'time-commitment')">
+                Explore <span class="button-arrow">→</span>
+            </button>
+        </div>
+        <div class="discovery-content" style="display: none;">
+            <p class="info-text">
+                You're in control! Choose 1-4 focus areas, each taking 10-20 minutes.
+                You can complete them all at once or come back later.
+            </p>
+            <div class="time-breakdown">
+                <div class="time-item">
+                    <strong>1 area:</strong> 10-20 minutes
+                    <span class="value-hint">Quick insight into one skill dimension</span>
+                </div>
+                <div class="time-item">
+                    <strong>2-3 areas:</strong> 30-60 minutes
+                    <span class="value-hint">Comprehensive view of your strengths</span>
+                </div>
+                <div class="time-item">
+                    <strong>All areas:</strong> 60-90 minutes
+                    <span class="value-hint">Complete profile with full insights</span>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="info-card">
+    <div class="info-card discovery-card" data-discovery="privacy">
         <div class="info-header">
             <span class="info-icon">🔒</span>
             <h3>Your Privacy Matters</h3>
         </div>
-        <p class="info-text">
-            Your responses are used only for assessment. We explain our reasoning
-            and you can see exactly why you received each score.
-        </p>
+        <div class="discovery-preview">
+            <p class="discovery-teaser">Your data is yours. We're transparent about how we use it.</p>
+            <button class="explore-button" onclick="exploreDiscovery(this, 'privacy')">
+                Explore <span class="button-arrow">→</span>
+            </button>
+        </div>
+        <div class="discovery-content" style="display: none;">
+            <p class="info-text">
+                Your responses are used only for assessment. We explain our reasoning
+                and you can see exactly why you received each score.
+            </p>
+            <ul class="privacy-list">
+                <li>✅ No account required to try it out</li>
+                <li>✅ Your code and responses stay private</li>
+                <li>✅ We explain every score with evidence</li>
+                <li>✅ You control what you share</li>
+            </ul>
+        </div>
     </div>
 
     <div class="cta-section">
@@ -99,7 +147,58 @@ function toggleExpand(button) {
     } else {
         content.style.maxHeight = content.scrollHeight + 'px';
         icon.textContent = '▲';
+        
+        // Track discovery interaction
+        if (window.sonoEvalTracking && window.sonoEvalTracking.trackEvent) {
+            window.sonoEvalTracking.trackEvent('discovery', {
+                action: 'expanded',
+                section: 'process',
+            });
+        }
     }
 }
+
+function exploreDiscovery(button, discoveryId) {
+    const card = button.closest('.discovery-card');
+    const preview = card.querySelector('.discovery-preview');
+    const content = card.querySelector('.discovery-content');
+    
+    // Hide preview, show content
+    preview.style.display = 'none';
+    content.style.display = 'block';
+    
+    // Smooth scroll to content
+    content.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    
+    // Track discovery
+    if (window.sonoEvalTracking && window.sonoEvalTracking.trackEvent) {
+        window.sonoEvalTracking.trackEvent('discovery', {
+            action: 'explored',
+            discovery_id: discoveryId,
+        });
+    }
+    
+    // Track milestone
+    if (window.sonoEval && window.sonoEval.trackMilestone) {
+        window.sonoEval.trackMilestone('discovery_explored', {
+            discovery: discoveryId,
+        });
+    }
+}
+
+// Track button clicks
+document.addEventListener('DOMContentLoaded', function() {
+    const startButton = document.querySelector('.primary-button');
+    if (startButton) {
+        startButton.addEventListener('click', function() {
+            if (window.sonoEvalTracking && window.sonoEvalTracking.trackEvent) {
+                window.sonoEvalTracking.trackEvent('navigation', {
+                    action: 'start_assessment',
+                    source: 'welcome_page',
+                });
+            }
+        });
+    }
+});
 </script>
 {% endblock %}

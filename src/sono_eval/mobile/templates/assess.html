@@ -10,6 +10,21 @@
         <p class="section-subtitle">
             Complete the tasks below. You can skip and come back to any section.
         </p>
+        <div class="guided-mode-toggle" id="guided-mode-toggle" style="display: none;">
+            <label class="toggle-label">
+                <input type="checkbox" id="guided-mode-checkbox" onchange="toggleGuidedMode(this.checked)">
+                <span>Guided Mode</span>
+                <span class="toggle-hint">Get helpful tips as you work</span>
+            </label>
+        </div>
+    </div>
+    
+    <div class="guided-tip" id="guided-tip" style="display: none;">
+        <p class="tip-icon">💡</p>
+        <div class="tip-content">
+            <strong>Tip:</strong> <span id="tip-text"></span>
+        </div>
+        <button class="tip-close" onclick="closeTip()">×</button>
     </div>
 
     <div class="path-navigation">
@@ -37,6 +52,11 @@
                     This section focuses on your {{ path|replace('_', ' ') }} capabilities.
                     Take your time and explain your thinking.
                 </p>
+                <div class="why-we-ask" data-path="{{ path }}">
+                    <button class="why-button" onclick="showWhyWeAsk('{{ path }}')">
+                        Why do we ask this?
+                    </button>
+                </div>
             </div>
 
             <!-- Code submission area -->
@@ -290,6 +310,150 @@ document.getElementById('assessment-form').addEventListener('submit', async func
         }
     } catch (error) {
         document.getElementById('loading-overlay').style.display = 'none';
+        if (window.sonoEval && window.sonoEval.showError) {
+            window.sonoEval.showError('Network error: ' + error.message);
+        } else {
+            alert('Error: ' + error.message);
+        }
+    }
+}
+
+// Guided mode functionality
+let guidedModeEnabled = false;
+const guidedTips = {
+    'technical': [
+        'Write code as if others will maintain it',
+        'Add comments only where logic is complex',
+        'Consider edge cases and error handling',
+        'Think about performance and scalability'
+    ],
+    'design': [
+        'Start by understanding the problem clearly',
+        'Consider multiple approaches before choosing',
+        'Think about how the system might evolve',
+        'Document your design decisions'
+    ],
+    'collaboration': [
+        'Write clear, self-documenting code',
+        'Include a README explaining your approach',
+        'Make your code reviewable by others',
+        'Consider how teammates would understand this'
+    ],
+    'problem_solving': [
+        'Break down complex problems into smaller parts',
+        'Think step by step through your approach',
+        'Consider efficiency and optimization',
+        'Test your assumptions and edge cases'
+    ]
+};
+
+function toggleGuidedMode(enabled) {
+    guidedModeEnabled = enabled;
+    localStorage.setItem('sono_eval_guided_mode', enabled.toString());
+    
+    if (enabled) {
+        showNextTip();
+    } else {
+        document.getElementById('guided-tip').style.display = 'none';
+    }
+    
+    // Track guided mode usage
+    if (window.sonoEvalTracking && window.sonoEvalTracking.trackEvent) {
+        window.sonoEvalTracking.trackEvent('guided_mode', {
+            action: enabled ? 'enabled' : 'disabled',
+        });
+    }
+}
+
+function showNextTip() {
+    if (!guidedModeEnabled) return;
+    
+    const currentPath = document.querySelector('.path-section:not(.hidden)')?.dataset.path;
+    if (!currentPath || !guidedTips[currentPath]) return;
+    
+    const tips = guidedTips[currentPath];
+    const tipIndex = Math.floor(Math.random() * tips.length);
+    const tip = tips[tipIndex];
+    
+    const tipElement = document.getElementById('guided-tip');
+    const tipText = document.getElementById('tip-text');
+    
+    if (tipElement && tipText) {
+        tipText.textContent = tip;
+        tipElement.style.display = 'flex';
+        
+        // Auto-hide after 8 seconds
+        setTimeout(() => {
+            if (guidedModeEnabled) {
+                tipElement.style.display = 'none';
+            }
+        }, 8000);
+    }
+}
+
+function closeTip() {
+    document.getElementById('guided-tip').style.display = 'none';
+    // Show next tip after a delay
+    setTimeout(showNextTip, 5000);
+}
+
+function showWhyWeAsk(path) {
+    const explanations = {
+        'technical': 'We assess technical skills to understand your coding abilities, problem-solving approach, and technical best practices. This helps identify your strengths and areas for growth.',
+        'design': 'Design thinking reveals how you approach problems, make architectural decisions, and consider system scalability. This shows your ability to think beyond just code.',
+        'collaboration': 'Collaboration skills are essential in team environments. We look at how well you communicate, document, and write code that others can understand and maintain.',
+        'problem_solving': 'Problem-solving shows your analytical thinking, debugging methodology, and approach to complex challenges. This reveals your thought process and creativity.'
+    };
+    
+    const explanation = explanations[path] || 'This assessment helps us understand your skills and provide personalized feedback.';
+    
+    if (window.sonoEval && window.sonoEval.showSuccess) {
+        window.sonoEval.showSuccess(`<strong>Why we ask this:</strong><br>${explanation}`);
+    } else {
+        alert(`Why we ask this:\n\n${explanation}`);
+    }
+}
+
+// Initialize guided mode on page load
+document.addEventListener('DOMContentLoaded', function() {
+    const isFirstTime = !localStorage.getItem('sono_eval_assessment_completed');
+    const guidedModeToggle = document.getElementById('guided-mode-toggle');
+    
+    if (isFirstTime && guidedModeToggle) {
+        guidedModeToggle.style.display = 'block';
+        // Enable by default for first-time users
+        document.getElementById('guided-mode-checkbox').checked = true;
+        toggleGuidedMode(true);
+    } else if (guidedModeToggle) {
+        const saved = localStorage.getItem('sono_eval_guided_mode') === 'true';
+        document.getElementById('guided-mode-checkbox').checked = saved;
+        if (saved) {
+            toggleGuidedMode(true);
+        }
+    }
+    
+    // Show tips when user focuses on text areas
+    document.querySelectorAll('textarea').forEach(textarea => {
+        textarea.addEventListener('focus', function() {
+            if (guidedModeEnabled) {
+                setTimeout(showNextTip, 1000);
+            }
+        });
+    });
+    
+    // Track assessment start
+    if (window.sonoEvalTracking && window.sonoEvalTracking.trackEvent) {
+        window.sonoEvalTracking.trackEvent('assessment_started', {
+            paths: selectedPaths,
+        });
+    }
+    
+    if (window.sonoEval && window.sonoEval.trackMilestone) {
+        window.sonoEval.trackMilestone('assessment_started', {
+            paths: selectedPaths,
+        });
+    }
+});document.getElementById('loading-overlay').style.display = 'none';
         const errorMsg = error.message || 'Network error. Please check your connection and try again.';
         if (window.sonoEval && window.sonoEval.showError) {
             window.sonoEval.showError('Error submitting assessment', errorMsg);
