@@ -369,6 +369,19 @@ def create_mobile_app() -> FastAPI:
             "message": "Easter eggs are discoverable features that unlock valuable functionality",
         }
 
+    @app.post("/api/mobile/session/store")
+    async def store_session_data(data: Dict[str, Any]):
+        """
+        Store assessment result in server-side session for retrieval.
+        
+        This allows sharing results between pages without URL params.
+        In production, use Redis or database for session storage.
+        For now, return success and rely on client-side sessionStorage.
+        """
+        # In production, use Redis or database for session storage
+        # For now, return success and rely on client-side sessionStorage
+        return {"success": True, "message": "Data acknowledged"}
+
     @app.get("/advanced")
     async def advanced_features(request: Request):
         """Hidden advanced features page."""
