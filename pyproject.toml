@@ -7,7 +7,7 @@ name = "sono-eval"
 version = "0.1.1"
 description = "Explainable multi-path developer assessment system with semantic tagging and analytics"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.13"
 license = {text = "MIT"}
 authors = [
     {name = "Sono-Eval Team"}
@@ -18,9 +18,7 @@ classifiers = [
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.13",
 ]
 
 dependencies = [
@@ -55,6 +53,18 @@ dev = [
     "flake8>=6.1.0",
     "mypy>=1.7.1",
 ]
+memu = [
+    "memu-py>=1.0.0",
+]
+all = [
+    "memu-py>=1.0.0",
+    "pytest>=7.4.3",
+    "pytest-asyncio>=0.21.1",
+    "pytest-cov>=4.1.0",
+    "black>=23.11.0",
+    "flake8>=6.1.0",
+    "mypy>=1.7.1",
+]
 
 [project.scripts]
 sono-eval = "sono_eval.cli.main:cli"
@@ -68,10 +78,10 @@ where = ["src"]
 
 [tool.black]
 line-length = 100
-target-version = ['py39']
+target-version = ['py313']
 
 [tool.mypy]
-python_version = "3.9"
+python_version = "3.13"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = false
