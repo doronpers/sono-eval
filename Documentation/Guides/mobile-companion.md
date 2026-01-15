@@ -43,6 +43,7 @@ The Mobile Companion is a web-based interface designed for mobile devices that:
 ### Access the Mobile Companion (Optional)
 
 1. Start the Sono-Eval API server:
+
    ```bash
    ./launcher.sh start
    # OR
@@ -50,6 +51,7 @@ The Mobile Companion is a web-based interface designed for mobile devices that:
    ```
 
 2. Open your mobile browser and navigate to:
+
    ```
    http://localhost:8000/mobile
    ```
@@ -63,12 +65,14 @@ The Mobile Companion is a web-based interface designed for mobile devices that:
 ### Step 1: Welcome Screen
 
 The welcome screen introduces the assessment system and explains what makes it different:
+
 - Clear value proposition
 - Time estimates
 - Privacy information
 - Expandable "Learn More" sections
 
 **Features:**
+
 - Large, tappable buttons
 - Easy-to-read typography
 - Clear visual hierarchy
@@ -76,6 +80,7 @@ The welcome screen introduces the assessment system and explains what makes it d
 ### Step 2: Getting Started
 
 Enter your information:
+
 - Identifier (name or email)
 - Experience level (optional)
 - Learning goals (optional)
@@ -86,12 +91,14 @@ The system uses this information to tailor feedback and recommendations.
 ### Step 3: Choose Focus Areas
 
 Select 1-4 skill areas to assess:
+
 - **Technical Skills** - Code quality, architecture, testing
 - **Design Thinking** - Problem analysis, solution design
 - **Collaboration** - Communication, teamwork, documentation
 - **Problem Solving** - Analytical thinking, debugging
 
 **Interactive Elements:**
+
 - Tap cards to select/deselect
 - "Learn more" buttons for detailed explanations
 - Real-time time estimates
@@ -100,11 +107,13 @@ Select 1-4 skill areas to assess:
 ### Step 4: Complete Assessment
 
 For each selected area:
+
 - Submit code or describe your approach
 - Explain your thinking process
 - Answer optional follow-up questions
 
 **Non-Linear Navigation:**
+
 - Tab between sections
 - Skip and return later
 - Previous/Next navigation
@@ -113,6 +122,7 @@ For each selected area:
 ### Step 5: View Results
 
 Detailed feedback including:
+
 - Overall score with confidence level
 - Per-path scores and breakdowns
 - Identified strengths
@@ -120,6 +130,7 @@ Detailed feedback including:
 - Specific recommendations
 
 **Interactive Results:**
+
 - Visual score displays
 - Expandable sections
 - Share functionality
@@ -158,6 +169,7 @@ Mobile Companion
 ### API Endpoints
 
 #### Page Routes
+
 - `GET /mobile/` - Welcome screen
 - `GET /mobile/start` - Getting started
 - `GET /mobile/paths` - Path selection
@@ -165,6 +177,7 @@ Mobile Companion
 - `GET /mobile/results` - Results display
 
 #### API Routes
+
 - `POST /mobile/api/mobile/assess` - Submit assessment
 - `GET /mobile/api/mobile/explain/{path}` - Get path explanation
 - `GET /mobile/api/mobile/recommendations` - Get path recommendations
@@ -176,24 +189,28 @@ Mobile Companion
 ## 🎨 Design Principles
 
 ### Mobile-First
+
 - Touch-optimized tap targets (minimum 44×44px)
 - Large, readable fonts (minimum 16px)
 - Adequate spacing between interactive elements
 - Smooth animations and transitions
 
 ### Progressive Disclosure
+
 - Show only essential information initially
 - Expandable sections for additional details
 - "Learn more" buttons for deeper explanations
 - Optional questions clearly marked
 
 ### Personalization
+
 - User chooses which paths to evaluate
 - Adjust experience based on skill level
 - Time estimates based on selections
 - Relevant recommendations based on goals
 
 ### Clear Communication
+
 - Plain language, no jargon
 - Visual icons and emoji for quick scanning
 - Color-coded feedback (green = strength, orange = improvement)
@@ -208,6 +225,7 @@ Mobile Companion
 You can customize the mobile companion by modifying:
 
 1. **Path Definitions** (`mobile/app.py`):
+
    ```python
    "paths": [
        {
@@ -222,6 +240,7 @@ You can customize the mobile companion by modifying:
    ```
 
 2. **Styling** (`mobile/static/style.css`):
+
    ```css
    :root {
        --primary-color: #2196F3;  /* Change brand color */
@@ -255,12 +274,14 @@ Integrate with your analytics platform (Google Analytics, Mixpanel, etc.) by imp
 ## 🔒 Privacy & Security
 
 ### Data Handling
+
 - No data sent to third parties
 - Session storage cleared on browser close
 - All communication over HTTPS (in production)
 - No cookies required
 
 ### Best Practices
+
 - Use HTTPS in production
 - Implement rate limiting
 - Add CSRF protection for forms
@@ -284,6 +305,7 @@ Integrate with your analytics platform (Google Analytics, Mixpanel, etc.) by imp
 ### Automated Testing
 
 Add tests in `tests/test_mobile.py`:
+
 ```python
 def test_mobile_home():
     """Test mobile home page loads."""
@@ -299,21 +321,25 @@ def test_mobile_home():
 ### Common Issues
 
 **Issue: Styles not loading**
+
 - Check static files are mounted correctly
 - Verify path: `/mobile/static/style.css`
 - Clear browser cache
 
 **Issue: Templates not found**
+
 - Verify templates directory: `mobile/templates/`
 - Check Jinja2Templates configuration
 - Ensure templates use correct extends/includes
 
 **Issue: API calls failing**
+
 - Check CORS settings
 - Verify API endpoints are registered
 - Check browser console for errors
 
 **Issue: Session data not persisting**
+
 - SessionStorage is cleared on browser close
 - Private browsing may block storage
 - Check browser storage settings
@@ -338,6 +364,7 @@ def test_mobile_home():
 ### Docker Deployment
 
 The mobile companion is automatically included when running:
+
 ```bash
 ./launcher.sh start
 ```
@@ -347,6 +374,7 @@ Access at: `http://localhost:8000/mobile`
 ### Standalone Deployment
 
 Run just the mobile app:
+
 ```bash
 python -m sono_eval.mobile.app
 ```
@@ -358,6 +386,7 @@ Access at: `http://localhost:8001`
 ## 📈 Future Enhancements
 
 Potential improvements:
+
 - Offline support with Service Workers
 - Native mobile app wrappers (React Native)
 - Push notifications for completed assessments
@@ -382,6 +411,7 @@ Potential improvements:
 ### Reviewing Mobile Assessments
 
 Mobile assessments are marked with:
+
 ```json
 {
   "submission_type": "mobile_interactive",
@@ -400,6 +430,7 @@ This helps you understand the context when reviewing results.
 Want to improve the mobile companion? See our [Contributing Guide](../CONTRIBUTING.md).
 
 Ideas for contributions:
+
 - Additional assessment paths
 - Improved accessibility
 - Better animations

@@ -20,23 +20,34 @@ A comprehensive reference of terms, concepts, technologies, and tools used in th
 
 ### Sono-Eval
 
-The name of this explainable multi-path developer assessment system. "Sono" relates to sound/resonance, suggesting the system helps identify what resonates with each candidate's unique abilities.
+The name of this explainable multi-path developer assessment system. "Sono"
+relates to sound/resonance, suggesting the system helps identify what resonates
+with each candidate's unique abilities.
 
 ### Explainable AI (XAI)
 
-Artificial intelligence systems designed to provide clear, understandable explanations for their decisions and predictions. In Sono-Eval, every assessment score is backed by evidence and natural language explanations.
+Artificial intelligence systems designed to provide clear, understandable
+explanations for their decisions and predictions. In Sono-Eval, every assessment
+score is backed by evidence and natural language explanations.
 
 ### Multi-Path Assessment
 
-An evaluation approach that assesses candidates across multiple dimensions (paths) simultaneously, recognizing that excellence can manifest in different ways. Sono-Eval evaluates: Technical, Design, Collaboration, Problem-Solving, and Communication paths.
+An evaluation approach that assesses candidates across multiple dimensions
+(paths) simultaneously, recognizing that excellence can manifest in different
+ways. Sono-Eval evaluates: Technical, Design, Collaboration, Problem-Solving,
+and Communication paths.
 
 ### Dark Horse Model
 
-A theory based on the book "Dark Horse" by Todd Rose, which emphasizes individualized paths to success through understanding intrinsic motivations. In Sono-Eval, this is implemented through micro-motive tracking.
+A theory based on the book "Dark Horse" by Todd Rose, which emphasizes
+individualized paths to success through understanding intrinsic motivations. In
+Sono-Eval, this is implemented through micro-motive tracking.
 
 ### tex-assist-coding Model
 
-A research-based model for understanding developer motivations and learning patterns, used as the foundation for the Dark Horse micro-motive tracking in Sono-Eval.
+A research-based model for understanding developer motivations and learning
+patterns, used as the foundation for the Dark Horse micro-motive tracking in
+Sono-Eval.
 
 ---
 
@@ -44,11 +55,15 @@ A research-based model for understanding developer motivations and learning patt
 
 ### Assessment Engine
 
-The core module that performs evaluations. It takes candidate submissions, analyzes them across multiple paths, generates scores with evidence, and provides explanations.
+The core module that performs evaluations. It takes candidate submissions,
+analyzes them across multiple paths, generates scores with evidence, and
+provides explanations.
 
 ### Evidence-Based Scoring
 
-A scoring methodology where every score is backed by concrete evidence from the candidate's submission, including source references (file, line number), descriptions, and confidence weights.
+A scoring methodology where every score is backed by concrete evidence from the
+candidate's submission, including source references (file, line number),
+descriptions, and confidence weights.
 
 ### Micro-Motives
 
@@ -61,9 +76,9 @@ Intrinsic motivations that drive behavior and learning. Sono-Eval tracks six typ
 - **Quality**: Attention to detail and craftsmanship
 - **Efficiency**: Focus on optimal solutions and resource management
 
-### Path Score
-
-An evaluation score for a specific assessment dimension (e.g., Technical, Design). Each path score includes metrics, micro-motives, strengths, and areas for improvement.
+An evaluation score for a specific assessment dimension (e.g., Technical,
+Design). Each path score includes metrics, micro-motives, strengths, and areas
+for improvement.
 
 ### Scoring Metric
 
@@ -78,7 +93,8 @@ An individual measurement within an assessment path. Each metric has:
 
 ### Confidence Score
 
-A measure (0.0-1.0) indicating the assessment engine's certainty about a particular score or finding, based on the strength and quantity of evidence.
+A measure (0.0-1.0) indicating the assessment engine's certainty about a
+particular score or finding, based on the strength and quantity of evidence.
 
 ### Evidence
 
@@ -96,19 +112,25 @@ Supporting information for a score, including:
 
 ### T5 (Text-to-Text Transfer Transformer)
 
-A transformer-based neural network model from Google Research that frames all NLP tasks as text-to-text problems. Used in Sono-Eval for semantic tag generation.
+A transformer-based neural network model from Google Research that frames all
+NLP tasks as text-to-text problems. Used in Sono-Eval for semantic tag
+generation.
 
 **Reference**: [Exploring Transfer Learning with T5](https://arxiv.org/abs/1910.10683)
 
 ### PEFT (Parameter-Efficient Fine-Tuning)
 
-A set of techniques for adapting large pre-trained models to specific tasks by updating only a small fraction of parameters, reducing computational costs and memory requirements.
+A set of techniques for adapting large pre-trained models to specific tasks by
+updating only a small fraction of parameters, reducing computational costs and
+memory requirements.
 
 **Library**: Hugging Face PEFT
 
 ### LoRA (Low-Rank Adaptation)
 
-A PEFT technique that injects trainable low-rank matrices into transformer layers, allowing efficient fine-tuning of large language models with minimal parameter updates.
+A PEFT technique that injects trainable low-rank matrices into transformer
+layers, allowing efficient fine-tuning of large language models with minimal
+parameter updates.
 
 **Configuration in Sono-Eval**:
 
@@ -120,15 +142,21 @@ A PEFT technique that injects trainable low-rank matrices into transformer layer
 
 ### Transformer
 
-A deep learning architecture based on self-attention mechanisms, introduced in "Attention Is All You Need" (Vaswani et al., 2017). Forms the basis of modern NLP models like T5.
+A deep learning architecture based on self-attention mechanisms, introduced in
+"Attention Is All You Need" (Vaswani et al., 2017). Forms the basis of modern
+NLP models like T5.
 
 ### Semantic Tagging
 
-Automatically generating meaningful tags or labels for code based on understanding its semantic content, not just keywords. Goes beyond syntax to understand intent and purpose.
+Automatically generating meaningful tags or labels for code based on
+understanding its semantic content, not just keywords. Goes beyond syntax to
+understand intent and purpose.
 
 ### Fallback Heuristics
 
-Rule-based tagging methods used when ML models are unavailable or for supplementing model predictions. Based on keyword matching and pattern recognition.
+Rule-based tagging methods used when ML models are unavailable or for
+supplementing model predictions. Based on keyword matching and pattern
+recognition.
 
 ---
 
@@ -147,7 +175,8 @@ The primary programming language for Sono-Eval. Version 3.9+ required.
 
 ### FastAPI
 
-A modern, high-performance Python web framework for building APIs with automatic OpenAPI documentation.
+A modern, high-performance Python web framework for building APIs with
+automatic OpenAPI documentation.
 
 **Key Features**:
 
@@ -160,7 +189,8 @@ A modern, high-performance Python web framework for building APIs with automatic
 
 ### Pydantic
 
-A data validation library using Python type annotations. Used extensively in Sono-Eval for defining data models and configuration.
+A data validation library using Python type annotations. Used extensively in
+Sono-Eval for defining data models and configuration.
 
 **Key Features**:
 
@@ -175,7 +205,8 @@ A data validation library using Python type annotations. Used extensively in Son
 
 A Python package for creating command-line interfaces with minimal code.
 
-**Usage in Sono-Eval**: All CLI commands (`sono-eval assess`, `candidate`, `tag`, etc.)
+**Usage in Sono-Eval**: All CLI commands (`sono-eval assess`, `candidate`,
+`tag`, etc.)
 
 **Website**: <https://click.palletsprojects.com/>
 
@@ -273,7 +304,8 @@ Tool for defining and running multi-container Docker applications using YAML con
 
 Open-source relational database system.
 
-**Usage**: Optional persistent storage for assessments and candidate data (default is SQLite)
+**Usage**: Optional persistent storage for assessments and candidate data
+(default is SQLite)
 
 **Website**: <https://www.postgresql.org/>
 
@@ -293,7 +325,8 @@ In-memory data structure store used as cache and message broker.
 
 Open-source data visualization and business intelligence platform.
 
-**Usage**: Pre-configured dashboards for candidate analytics, cohort comparisons, and micro-motive analysis
+**Usage**: Pre-configured dashboards for candidate analytics, cohort
+comparisons, and micro-motive analysis
 
 **Website**: <https://superset.apache.org/>
 
@@ -307,11 +340,13 @@ Lightweight, serverless SQL database engine.
 
 ### ASGI (Asynchronous Server Gateway Interface)
 
-A spiritual successor to WSGI, designed to provide a standard interface between async-capable Python web servers and applications.
+A spiritual successor to WSGI, designed to provide a standard interface
+between async-capable Python web servers and applications.
 
 ### CORS (Cross-Origin Resource Sharing)
 
-A security mechanism that allows web applications from one origin to access resources from another origin. Enabled in Sono-Eval API for web client support.
+A security mechanism that allows web applications from one origin to access
+resources from another origin. Enabled in Sono-Eval API for web client support.
 
 ---
 
@@ -388,7 +423,7 @@ File management system with semantic tagging capabilities:
 | Acronym | Full Form | Description |
 |---------|-----------|-------------|
 | API | Application Programming Interface | Interface for programmatic access |
-| ASGI | Asynchronous Server Gateway Interface | Python async web server standard |
+| ASGI | Asynchronous Server Gateway Interface | Python async web standard |
 | CLI | Command-Line Interface | Terminal-based user interface |
 | CORS | Cross-Origin Resource Sharing | Web security mechanism |
 | LRU | Least Recently Used | Cache eviction policy |
@@ -402,7 +437,7 @@ File management system with semantic tagging capabilities:
 
 ## Programming Languages
 
-### Python
+### Python Language
 
 **Version**: 3.9+
 **Usage**: Primary language for entire system
@@ -543,7 +578,8 @@ Methodology for building software-as-a-service applications.
    - Parameter-efficient fine-tuning method
    - Used in Sono-Eval tag generator
 
-4. **"Dark Horse: Achieving Success Through the Pursuit of Fulfillment"** (Rose & Ogas, 2018)
+4. **"Dark Horse: Achieving Success Through the Pursuit of Fulfillment"**
+   (Rose & Ogas, 2018)
    - Book on individualized paths to success
    - Inspiration for micro-motive tracking
 
@@ -597,7 +633,7 @@ docker-compose ps             # List containers
 Key configuration variables (see `.env.example` for complete list):
 
 | Variable | Description | Default |
-|----------|-------------|---------|
+| :------- | :---------- | :------ |
 | `APP_ENV` | Environment (development/production) | development |
 | `API_PORT` | API server port | 8000 |
 | `DATABASE_URL` | Database connection string | sqlite:///./sono_eval.db |

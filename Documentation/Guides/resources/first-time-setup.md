@@ -19,6 +19,7 @@ This guide will help you set up Sono-Eval on your personal computer for the firs
 **Why this matters:** Sono-Eval requires Python 3.9 or newer to work properly.
 
 **How to check:**
+
 ```bash
 python3 --version
 # or
@@ -36,6 +37,7 @@ python --version
 **Why this matters:** This downloads Sono-Eval to your computer so you can run it.
 
 **How to do it:**
+
 ```bash
 git clone https://github.com/doronpers/sono-eval.git
 cd sono-eval
@@ -50,6 +52,7 @@ cd sono-eval
 **Why this matters:** This keeps Sono-Eval's dependencies separate from other Python projects on your computer. It prevents conflicts and keeps things organized.
 
 **How to do it:**
+
 ```bash
 python3 -m venv venv
 ```
@@ -57,6 +60,7 @@ python3 -m venv venv
 **What happens:** A new folder called `venv` is created with an isolated Python environment.
 
 **Activate it:**
+
 - **On Mac/Linux:** `source venv/bin/activate`
 - **On Windows:** `venv\Scripts\activate`
 
@@ -69,12 +73,14 @@ python3 -m venv venv
 **Why this matters:** Sono-Eval needs other software libraries to work. This step downloads and installs them.
 
 **How to do it:**
+
 ```bash
 pip install -r requirements.txt
 pip install -e .
 ```
 
-**What happens:** 
+**What happens:**
+
 - Python downloads and installs all required libraries
 - Sono-Eval is installed in "editable" mode (you can modify it if needed)
 
@@ -87,6 +93,7 @@ pip install -e .
 **Why this matters:** Sono-Eval needs some settings to know how to run. We'll create a configuration file.
 
 **How to do it:**
+
 ```bash
 cp .env.example .env
 ```
@@ -102,11 +109,13 @@ cp .env.example .env
 **Why this matters:** This checks that everything is installed correctly before you start.
 
 **How to do it:**
+
 ```bash
 python verify_setup.py
 ```
 
-**What you should see:** 
+**What you should see:**
+
 - ✅ Green checkmarks for each component
 - "ALL CRITICAL CHECKS PASSED" message
 
@@ -119,11 +128,13 @@ python verify_setup.py
 **Why this matters:** This starts the web server so you can access Sono-Eval in your browser.
 
 **How to do it:**
+
 ```bash
 sono-eval server start
 ```
 
 **What happens:**
+
 - The server starts running
 - You'll see a message like "Starting Sono-Eval API server..."
 - The server keeps running until you stop it (Ctrl+C)
@@ -135,11 +146,13 @@ sono-eval server start
 **Why this matters:** This is how you'll actually use Sono-Eval!
 
 **How to do it:**
+
 1. Open your web browser
 2. Go to: `http://localhost:8000/mobile`
 3. You should see the Sono-Eval welcome page!
 
 **What you can do:**
+
 - Click "Let's Get Started" to begin an assessment
 - Explore the interface
 - Complete your first assessment
@@ -153,6 +166,7 @@ sono-eval server start
 **Problem:** Python or pip commands don't work
 
 **Solutions:**
+
 - Make sure Python is installed: `python3 --version`
 - Try `python` instead of `python3` (or vice versa)
 - On Windows, you might need to add Python to your PATH
@@ -162,6 +176,7 @@ sono-eval server start
 **Problem:** Another program is using port 8000
 
 **Solutions:**
+
 - Stop the other program using that port
 - Or change the port: `sono-eval server start --port 8001`
 - Then access at `http://localhost:8001/mobile`
@@ -175,6 +190,7 @@ sono-eval server start
 **Problem:** Your computer won't let you install software
 
 **Solutions:**
+
 - On Mac/Linux: Try `sudo` (use carefully!)
 - On Windows: Run terminal as Administrator
 - Or install to a user directory instead
@@ -206,6 +222,7 @@ If you run into issues:
 ## Quick Reference
 
 **Start the server:**
+
 ```bash
 sono-eval server start
 ```
@@ -217,6 +234,7 @@ Press `Ctrl+C` in the terminal
 Visit `http://localhost:8000/mobile` in your browser
 
 **Verify setup:**
+
 ```bash
 python verify_setup.py
 ```

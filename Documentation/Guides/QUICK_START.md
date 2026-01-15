@@ -1,6 +1,7 @@
 # Quick Start Guide
 
-Get Sono-Eval running in 5 minutes! This guide will help you install, configure, and run your first assessment.
+Get Sono-Eval running in 5 minutes! This guide will help you install,
+configure, and run your first assessment.
 
 ---
 
@@ -318,7 +319,8 @@ To verify everything is working:
 curl http://localhost:8000/api/v1/health
 
 # Run test assessment
-./launcher.sh cli assess run --candidate-id test --content "print('test')" --paths technical
+./launcher.sh cli assess run --candidate-id test --content "print('test')" \
+  --paths technical
 ```
 
 ### Local Installation
@@ -354,4 +356,5 @@ Need help? Check the [documentation](README.md) or [open an issue](https://githu
 
 **Estimated Time**: 5 minutes
 **Difficulty**: Beginner
-**Next**: [User Guide](user-guide/installation.md) | [API Reference](user-guide/api-reference.md) | [Examples](resources/examples/)
+**Next**: [User Guide](user-guide/installation.md) |
+[API Reference](user-guide/api-reference.md) | [Examples](resources/examples/)

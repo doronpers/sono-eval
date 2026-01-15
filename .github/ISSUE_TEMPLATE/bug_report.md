@@ -13,10 +13,10 @@ assignees: ''
 ## To Reproduce
 
 Steps to reproduce the behavior:
-1. 
-2. 
-3. 
-4. 
+1.
+2.
+3.
+4.
 
 ## Expected Behavior
 
@@ -33,12 +33,14 @@ Steps to reproduce the behavior:
 ## Environment
 
 **System Information**:
+
 - OS: [e.g., Ubuntu 22.04, macOS 13, Windows 11]
 - Python version: [e.g., 3.9.7]
 - Sono-Eval version: [e.g., 0.1.0]
 - Docker version: [e.g., 24.0.5] (if using Docker)
 
 **Configuration**:
+
 - Deployment method: [e.g., Docker, local]
 - Database: [e.g., PostgreSQL, SQLite]
 - Environment: [e.g., development, production]
@@ -47,7 +49,7 @@ Steps to reproduce the behavior:
 
 <!-- Please provide relevant log output -->
 
-```
+```text
 Paste log output here
 ```
 

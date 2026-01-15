@@ -34,7 +34,8 @@ Every hidden feature provides **real value** - not just novelty. When you discov
 
 **How to discover:** Enter: ↑ ↑ ↓ ↓ ← → ← → B A (arrow keys and B, A)
 
-**What you unlock:** 
+**What you unlock:**
+
 - Advanced metrics and raw data access
 - Comparison tools
 - Expert-level analysis features
@@ -70,6 +71,7 @@ Every hidden feature provides **real value** - not just novelty. When you discov
 **How to discover:** Visit `http://localhost:8000/mobile/advanced`
 
 **What you unlock:** Advanced features page with:
+
 - Export options (JSON download)
 - API access information
 - Batch analysis capabilities
@@ -156,7 +158,8 @@ Every hidden feature provides **real value** - not just novelty. When you discov
 
 **How to discover:** Run this command in your terminal
 
-**What you unlock:** 
+**What you unlock:**
+
 - Raw metric data access
 - Cross-path comparison tools
 - Trend analysis
@@ -169,6 +172,7 @@ Every hidden feature provides **real value** - not just novelty. When you discov
 **How to discover:** Run this command
 
 **What you unlock:**
+
 - Design pattern detection
 - Anti-pattern identification
 - Code smell analysis
@@ -181,6 +185,7 @@ Every hidden feature provides **real value** - not just novelty. When you discov
 **How to discover:** Run `sono-eval hidden --secret` or `sono-eval --secret`
 
 **What you unlock:** Secret configuration options:
+
 - `EXPERT_MODE=true`
 - `DEBUG_TRACKING=true`
 - `ADVANCED_ANALYTICS=true`

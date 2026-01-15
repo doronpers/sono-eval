@@ -29,17 +29,17 @@ assignees: ''
 
 <!-- Describe specific use cases for this feature -->
 
-1. 
-2. 
-3. 
+1.
+2.
+3.
 
 ## Benefits
 
 <!-- Describe the benefits this feature would provide -->
 
-- 
-- 
-- 
+-
+-
+-
 
 ## Implementation Suggestions
 
@@ -60,7 +60,8 @@ assignees: ''
 
 ## Additional Context
 
-<!-- Add any other context, screenshots, or examples about the feature request here -->
+<!-- Add any other context, screenshots, or examples about the feature request
+     here -->
 
 ## Checklist
 

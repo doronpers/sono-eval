@@ -1,6 +1,7 @@
 # Documentation Organization Standards
 
-**Purpose**: Guidelines for AI agents and developers to maintain clean, organized documentation structure across repositories.
+**Purpose**: Guidelines for AI agents and developers to maintain clean,
+organized documentation structure across repositories.
 
 **Last Updated**: 2026-01-10
 **Status**: Active Standard
@@ -60,7 +61,7 @@ Following Dieter Rams' "Less but Better" philosophy:
 
 ### Recommended Organization
 
-```
+```text
 documentation/
 ├── README.md                    # Documentation hub (navigation)
 ├── DOCUMENTATION_INDEX.md       # Complete index
@@ -89,7 +90,7 @@ documentation/
 ### File Limits by Category
 
 | Category | Target Count | Notes |
-|----------|--------------|-------|
+| --- | --- | --- |
 | Core docs | 5-7 files | Essential references only |
 | Guides | 5-10 files | Consolidate similar topics |
 | Reports | 2-3 core files | Use dated subfolders for historical |
@@ -132,7 +133,7 @@ documentation/
 
 **Archive, don't delete:**
 
-```
+```text
 Archive/
 ├── Reports-Historical/          # Old code reviews, audits
 ├── Guides-Legacy-YYYY/          # Superseded guides
@@ -226,7 +227,7 @@ When reorganizing documentation in any repo:
 
 **Code Reviews**:
 
-```
+```text
 Before:
 - CODE_REVIEW_2026-01-04.md
 - CODE_REVIEW_2026-01-08.md
@@ -240,7 +241,7 @@ After:
 
 **Design Audits**:
 
-```
+```text
 Before:
 - DESIGN_AUDIT_REPORT.md
 - DESIGN_AUDIT_FINDINGS.md
@@ -252,7 +253,7 @@ After:
 
 **Setup Docs**:
 
-```
+```text
 Before:
 - VENV_SETUP.md
 - LAUNCHER_USAGE.md
@@ -337,9 +338,11 @@ for guidelines on maintaining clean documentation structure.
 ## Version History
 
 | Version | Date | Changes |
-|---------|------|---------|
+| --- | --- | --- |
 | 1.0 | 2026-01-10 | Initial standard based on sonotheia-enhanced consolidation |
 
 ---
 
-**For AI Agents**: Reference this standard when organizing documentation in any repository. Follow the principles, apply the patterns, and maintain the structure over time.
+**For AI Agents**: Reference this standard when organizing documentation in any
+repository. Follow the principles, apply the patterns, and maintain the
+structure over time.

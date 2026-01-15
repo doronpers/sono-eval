@@ -1,6 +1,6 @@
 # Quick Reference: Security & Best Practices
 
-**For Developers Working on Sono-Eval**
+## For Developers Working on Sono-Eval
 
 This is a quick reference guide. For comprehensive information, see:
 

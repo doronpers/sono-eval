@@ -38,7 +38,8 @@ Errors use FastAPI's standard `detail` wrapper with Sono-Eval error metadata:
   "detail": {
     "error": true,
     "error_code": "VALIDATION_ERROR",
-    "message": "candidate_id must contain only alphanumeric characters, dashes, and underscores",
+    "message": "candidate_id must contain only alphanumeric characters, dashes,
+                and underscores",
     "details": {"field": "candidate_id"},
     "request_id": "..."
   }
@@ -147,7 +148,8 @@ Suitable for monitoring and debugging. Sensitive paths are sanitized.
 - `unavailable`: Component is not available (may be optional)
 - `unhealthy`: Component has critical issues
 
-**Note**: Health checks are cached for 5 seconds to avoid expensive operations on every request.
+**Note**: Health checks are cached for 5 seconds to avoid expensive operations
+on every request.
 
 **Example:**
 
@@ -457,7 +459,8 @@ Generate semantic tags for code or text.
 curl -X POST http://localhost:8000/api/v1/tags/generate \
   -H "Content-Type: application/json" \
   -d '{
-    "text": "async function fetchData() { const res = await fetch(url); return res.json(); }",
+    "text": "async function fetchData() { const res = await fetch(url); "
+            "return res.json(); }",
     "max_tags": 3
   }'
 ```

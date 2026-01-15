@@ -133,7 +133,6 @@ class Evidence(BaseModel):
 
 **Critical Issues**:
 
-
 2. **Default Secret Keys** ⚠️ CRITICAL
    - **Location**: `.env.example`, `docker-compose.yml`
    - **Risk**: Default keys can be exploited

@@ -1,15 +1,19 @@
 # Sample Code Submissions
 
-This directory contains example code submissions for testing the Sono-Eval assessment system.
+This directory contains example code submissions for testing the Sono-Eval
+assessment system.
 
 ## Files
 
 ### `simple-function.py`
+
 **Complexity**: Beginner
 **Assessment Paths**: TECHNICAL
-**Description**: A simple recursive Fibonacci implementation. Good for testing basic code evaluation.
+**Description**: A simple recursive Fibonacci implementation. Good for testing
+basic code evaluation.
 
 **Try it**:
+
 ```bash
 sono-eval assess run \
   --candidate-id test_user \
@@ -18,11 +22,14 @@ sono-eval assess run \
 ```
 
 ### `complex-class.py`
+
 **Complexity**: Intermediate
 **Assessment Paths**: TECHNICAL, DESIGN, COLLABORATION
-**Description**: Object-oriented task management system with proper documentation, error handling, and type hints.
+**Description**: Object-oriented task management system with proper
+documentation, error handling, and type hints.
 
 **Try it**:
+
 ```bash
 sono-eval assess run \
   --candidate-id test_user \
@@ -31,11 +38,14 @@ sono-eval assess run \
 ```
 
 ### `with-tests.py`
+
 **Complexity**: Intermediate
 **Assessment Paths**: ALL
-**Description**: Statistical functions with comprehensive tests included. Demonstrates testing awareness and documentation.
+**Description**: Statistical functions with comprehensive tests included.
+Demonstrates testing awareness and documentation.
 
 **Try it**:
+
 ```bash
 sono-eval assess run \
   --candidate-id test_user \
@@ -68,7 +78,8 @@ You can also test these via the REST API at `/docs`:
 Want to add your own sample? Great! Follow these guidelines:
 
 1. **Add meaningful docstrings** - Explain what the code does
-2. **Include variety** - Different complexity levels help test different assessment paths
+2. **Include variety** - Different complexity levels help test different
+   assessment paths
 3. **Show best practices** - Error handling, type hints, testing awareness
 4. **Keep it focused** - Each sample should demonstrate specific aspects
 5. **Update this README** - Add a description of your sample

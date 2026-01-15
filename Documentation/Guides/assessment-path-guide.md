@@ -1,36 +1,46 @@
 # Assessment Path Guide
 
-**Complete Guide to Sono-Eval Assessment Paths**
+## Complete Guide to Sono-Eval Assessment Paths
 
-This guide provides detailed explanations of each assessment path in Sono-Eval, helping you understand what is being evaluated, how scores are determined, and how to prepare effectively.
+This guide provides detailed explanations of each assessment path in Sono-Eval,
+helping you understand what is being evaluated, how scores are determined, and
+how to prepare effectively.
 
 ---
 
 ## 📋 Overview
 
-Sono-Eval evaluates candidates across **five distinct assessment paths**, each focusing on different aspects of software development. You can choose which paths to complete based on your goals and the requirements of your assessment.
+Sono-Eval evaluates candidates across **five distinct assessment paths**,
+each focusing on different aspects of software development. You can choose
+which paths to complete based on your goals and the requirements of your
+assessment.
 
 ### Why Multiple Paths?
 
-Traditional assessments often focus only on code correctness. Sono-Eval recognizes that great developers excel in many dimensions:
+Traditional assessments often focus only on code correctness. Sono-Eval
+recognizes that great developers excel in many dimensions:
 
 - **Technical skills** are important, but so is **design thinking**
 - **Problem-solving ability** matters, but **collaboration** is equally valuable
 - **Communication** skills enable effective teamwork
 
-By evaluating multiple paths, Sono-Eval provides a more complete picture of your capabilities and potential.
+By evaluating multiple paths, Sono-Eval provides a more complete picture of
+your capabilities and potential.
 
 ---
 
 ## 🔧 Technical Path
 
-**Focus**: Code quality, algorithms, problem-solving efficiency, and technical best practices
+**Focus**: Code quality, algorithms, problem-solving efficiency, and technical
+best practices
 
-### What Is Evaluated?
+### Technical: What Is Evaluated?
 
-The Technical path assesses your ability to write clean, efficient, and correct code. This is the most traditional aspect of coding assessments, but Sono-Eval goes deeper than just "does it work?"
+The Technical path assesses your ability to write clean, efficient, and
+correct code. This is the most traditional aspect of coding assessments, but
+Sono-Eval goes deeper than just "does it work?"
 
-#### Key Metrics
+#### Technical: Key Metrics
 
 1. **Code Quality** (30% weight)
    - Code structure and organization
@@ -56,7 +66,7 @@ The Technical path assesses your ability to write clean, efficient, and correct 
    - Resource management
    - Security considerations
 
-### Scoring Criteria
+### Technical: Scoring Criteria
 
 **Excellent (80-100)**:
 
@@ -87,7 +97,7 @@ The Technical path assesses your ability to write clean, efficient, and correct 
 - No tests or very basic tests
 - Many edge cases missed
 
-### Examples
+### Technical: Examples
 
 **Strong Technical Example**:
 
@@ -124,7 +134,7 @@ def find_duplicates(arr):
 - Good naming and structure
 - Handles edge cases (empty array, no duplicates)
 
-### How to Prepare
+### Technical: How to Prepare
 
 1. **Practice Clean Code**
    - Focus on readability and maintainability
@@ -152,11 +162,12 @@ def find_duplicates(arr):
 
 **Focus**: Architecture decisions, design patterns, system thinking, and modularity
 
-### What Is Evaluated?
+### Design: What Is Evaluated?
 
-The Design path assesses your ability to think about software architecture, make good design decisions, and create maintainable, scalable solutions.
+The Design path assesses your ability to think about software architecture,
+make good design decisions, and create maintainable, scalable solutions.
 
-#### Key Metrics
+#### Design: Key Metrics
 
 1. **Architecture** (40% weight)
    - System structure and organization
@@ -180,7 +191,7 @@ The Design path assesses your ability to think about software architecture, make
    - Module organization
    - Clear boundaries between components
 
-### Scoring Criteria
+### Design: Scoring Criteria
 
 **Excellent (80-100)**:
 
@@ -210,11 +221,11 @@ The Design path assesses your ability to think about software architecture, make
 - Little consideration of system design
 - Disorganized code structure
 
-### Examples
+### Design: Examples
 
 **Strong Design Example**:
 
-```
+```text
 project/
 ├── src/
 │   ├── domain/
@@ -239,7 +250,7 @@ project/
 - Logical grouping of related functionality
 - Easy to understand and navigate
 
-### How to Prepare
+### Design: How to Prepare
 
 1. **Study Architecture Patterns**
    - Layered architecture
@@ -267,13 +278,16 @@ project/
 
 ## 🤝 Collaboration Path
 
-**Focus**: Code readability, documentation quality, communication clarity, and team-oriented thinking
+**Focus**: Code readability, documentation quality, communication clarity, and
+team-oriented thinking
 
-### What Is Evaluated?
+### Collaboration: What Is Evaluated?
 
-The Collaboration path assesses how well your code and documentation enable others to understand, maintain, and extend your work. Great developers write code that others can work with.
+The Collaboration path assesses how well your code and documentation enable
+others to understand, maintain, and extend your work. Great developers write
+code that others can work with.
 
-#### Key Metrics
+#### Collaboration: Key Metrics
 
 1. **Documentation** (30% weight)
    - README quality and completeness
@@ -299,7 +313,7 @@ The Collaboration path assesses how well your code and documentation enable othe
    - Maintainability focus
    - Onboarding considerations
 
-### Scoring Criteria
+### Collaboration: Scoring Criteria
 
 **Excellent (80-100)**:
 
@@ -325,11 +339,11 @@ The Collaboration path assesses how well your code and documentation enable othe
 **Learning (0-39)**:
 
 - Minimal or missing documentation
-  - Code is difficult to understand
-  - Little explanation of decisions
-  - Hard for others to work with
+- Code is difficult to understand
+- Little explanation of decisions
+- Hard for others to work with
 
-### Examples
+### Collaboration: Examples
 
 **Strong Collaboration Example**:
 
@@ -401,7 +415,7 @@ def calculate_shipping_cost(weight: float, distance: float) -> float:
 - Error handling documented
 - Formula explained
 
-### How to Prepare
+### Collaboration: How to Prepare
 
 1. **Write Clear Documentation**
    - Practice writing README files
@@ -431,13 +445,15 @@ def calculate_shipping_cost(weight: float, distance: float) -> float:
 
 ## 🧩 Problem Solving Path
 
-**Focus**: Analytical thinking, approach to challenges, creative solutions, and debugging skills
+**Focus**: Analytical thinking, approach to challenges, creative solutions, and
+debugging skills
 
-### What Is Evaluated?
+### Problem Solving: What Is Evaluated?
 
-The Problem Solving path assesses your approach to tackling challenges, breaking down complex problems, and finding creative solutions.
+The Problem Solving path assesses your approach to tackling challenges,
+breaking down complex problems, and finding creative solutions.
 
-#### Key Metrics
+#### Problem Solving: Key Metrics
 
 1. **Problem Analysis** (30% weight)
    - Understanding of the problem
@@ -463,7 +479,7 @@ The Problem Solving path assesses your approach to tackling challenges, breaking
    - Learning from mistakes
    - Iterative improvement
 
-### Scoring Criteria
+### Problem Solving: Scoring Criteria
 
 **Excellent (80-100)**:
 
@@ -490,10 +506,10 @@ The Problem Solving path assesses your approach to tackling challenges, breaking
 
 - Poor problem analysis
 - Unclear or inefficient approach
-  - Little creative thinking
-  - Struggles with debugging
+- Little creative thinking
+- Struggles with debugging
 
-### Examples
+### Problem Solving: Examples
 
 **Strong Problem Solving Example**:
 
@@ -501,7 +517,7 @@ The Problem Solving path assesses your approach to tackling challenges, breaking
 
 **Approach Documentation**:
 
-```
+```text
 1. Problem Analysis:
    - Need to find longest substring (not subsequence)
    - Characters must be unique within substring
@@ -532,7 +548,7 @@ The Problem Solving path assesses your approach to tackling challenges, breaking
 - Complexity analyzed
 - Efficient solution chosen
 
-### How to Prepare
+### Problem Solving: How to Prepare
 
 1. **Practice Problem Decomposition**
    - Break large problems into smaller parts
@@ -563,13 +579,15 @@ The Problem Solving path assesses your approach to tackling challenges, breaking
 
 ## 💬 Communication Path
 
-**Focus**: Clarity of explanations, documentation quality, ability to convey technical concepts, and teaching ability
+**Focus**: Clarity of explanations, documentation quality, ability to convey
+technical concepts, and teaching ability
 
-### What Is Evaluated?
+### Communication: What Is Evaluated?
 
-The Communication path assesses how well you can explain technical concepts, document your work, and help others understand your solutions.
+The Communication path assesses how well you can explain technical concepts,
+document your work, and help others understand your solutions.
 
-#### Key Metrics
+#### Communication: Key Metrics
 
 1. **Clarity** (35% weight)
    - Clear, concise explanations
@@ -595,7 +613,7 @@ The Communication path assesses how well you can explain technical concepts, doc
    - Provides context
    - Helps others learn
 
-### Scoring Criteria
+### Communication: Scoring Criteria
 
 **Excellent (80-100)**:
 
@@ -625,7 +643,7 @@ The Communication path assesses how well you can explain technical concepts, doc
 - Weak technical writing
 - Difficult for others to understand
 
-### Examples
+### Communication: Examples
 
 **Strong Communication Example**:
 
@@ -675,16 +693,19 @@ mock_db = MockDatabase()
 service = UserService(mock_db)
 ```
 
+```python
+# (Rest of example trimmed for clarity in this edit)
 ```
 
 **What makes this strong**:
+
 - Explains the "why" not just "what"
 - Shows problem and solution
 - Provides concrete examples
 - Lists benefits clearly
 - Uses code examples effectively
 
-### How to Prepare
+### Communication: How to Prepare
 
 1. **Practice Technical Writing**
    - Write blog posts or documentation
@@ -717,19 +738,23 @@ service = UserService(mock_db)
 ### Which Paths Should You Complete?
 
 **For Technical Roles**:
+
 - **Required**: Technical, Problem Solving
 - **Recommended**: Design, Communication
 - **Optional**: Collaboration
 
 **For Senior/Architecture Roles**:
+
 - **Required**: Technical, Design, Problem Solving
 - **Recommended**: Communication, Collaboration
 
 **For Team Lead Roles**:
+
 - **Required**: Collaboration, Communication
 - **Recommended**: Technical, Design, Problem Solving
 
 **For Learning & Growth**:
+
 - **Complete all paths** to get a comprehensive view of your skills
 
 ### Path Combinations
@@ -755,11 +780,14 @@ Each path is scored independently on a 0-100 scale:
 
 ### Overall Score
 
-Your overall score is calculated as a weighted average of the paths you completed. Each path contributes equally unless specified otherwise.
+Your overall score is calculated as a weighted average of the paths you
+completed. Each path contributes equally unless specified otherwise.
 
 ### What Matters Most?
 
-**Remember**: Lower scores aren't failures—they're opportunities! Sono-Eval provides specific recommendations for each path, telling you exactly what to improve.
+**Remember**: Lower scores aren't failures—they're opportunities! Sono-Eval
+provides specific recommendations for each path, telling you exactly what
+to improve.
 
 ---
 
@@ -790,30 +818,35 @@ Your overall score is calculated as a weighted average of the paths you complete
 ### Path-Specific Tips
 
 **Technical Path**:
+
 - Focus on clean, efficient code
 - Write tests
 - Handle edge cases
 - Follow best practices
 
 **Design Path**:
+
 - Think about architecture
 - Use appropriate patterns
 - Consider scalability
 - Organize code logically
 
 **Collaboration Path**:
+
 - Write clear documentation
 - Make code readable
 - Explain your decisions
 - Think about others
 
 **Problem Solving Path**:
+
 - Analyze problems thoroughly
 - Show your approach
 - Consider multiple solutions
 - Document your thinking
 
 **Communication Path**:
+
 - Write clearly and concisely
 - Use examples
 - Explain complex concepts simply
@@ -825,7 +858,8 @@ Your overall score is calculated as a weighted average of the paths you complete
 
 ### Track Your Progress
 
-Sono-Eval tracks your scores over time, allowing you to see improvement in each path. Use this to:
+Sono-Eval tracks your scores over time, allowing you to see improvement in each
+path. Use this to:
 
 - Identify areas of growth
 - Focus your learning efforts
@@ -863,4 +897,6 @@ If you have questions about assessment paths:
 
 ---
 
-**Remember**: Sono-Eval is designed to help you grow. Use the feedback to improve, and don't be discouraged by lower scores—they're just starting points for your development journey!
+**Remember**: Sono-Eval is designed to help you grow. Use the feedback to
+improve, and don't be discouraged by lower scores—they're just starting points
+for your development journey!

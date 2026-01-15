@@ -15,16 +15,25 @@
 > Features are being added and refined, APIs may change, and the system
 > is not yet production-ready. Use at your own risk.
 
-**[Start Here (Landing Guide)](documentation/START_HERE.md)** • **[Start Here (Beginner-Friendly)](#-start-here-beginner-friendly)** • **[Quick Start](#-quick-start)** • **[Documentation](documentation/README.md)** • **[Key Features](#-key-features)** • **[Usage Examples](#-usage-examples)**
+**[Start Here (Landing Guide)](documentation/START_HERE.md)** •
+**[Start Here (Beginner-Friendly)](#-start-here-beginner-friendly)** •
+**[Quick Start](#-quick-start)** •
+**[Documentation](documentation/README.md)** •
+**[Key Features](#-key-features)** •
+**[Usage Examples](#-usage-examples)**
 
 ---
 
 ## 🚀 Start Here (Beginner-Friendly)
 
 ### What is this?
-Sono-Eval is a platform that evaluates developer submissions and provides detailed, explainable feedback. It's like a helpful coach that shows you exactly why you received each score and where to improve.
+
+Sono-Eval is a platform that evaluates developer submissions and provides
+detailed, explainable feedback. It's like a helpful coach that shows you
+exactly why you received each score and where to improve.
 
 ### Quick win (no terminal required)
+
 1. **Open in Codespaces** (easiest way to try it):
    - Click the "Code" button above → "Codespaces" tab → "Create codespace"
    - Wait for the environment to load (~2 minutes)
@@ -37,32 +46,40 @@ Sono-Eval is a platform that evaluates developer submissions and provides detail
    - In the API docs (`/docs`), scroll to `POST /api/v1/assessments`
    - Click "Try it out"
    - Use this sample request:
+
      ```json
      {
        "candidate_id": "demo_user",
        "submission_type": "code",
-       "content": {"code": "def fibonacci(n):\n    if n <= 1:\n        return n\n    return fibonacci(n-1) + fibonacci(n-2)"},
+       "content": {"code": "def fibonacci(n):\n    if n <= 1:\n        return n\n"
+                  "    return fibonacci(n-1) + fibonacci(n-2)"},
        "paths_to_evaluate": ["TECHNICAL"]
      }
      ```
+
    - Click "Execute" and see your first assessment result!
 
 ### Sample files for testing
+
 - `samples/` directory contains example code submissions
 - Start with `samples/simple-function.py` for a basic assessment
 - Try `samples/complex-class.py` for multi-path evaluation
 
 ### Fast path options
+
 1. **Browser only (recommended for first try)**:
    - Use GitHub Codespaces as described above
 2. **Local with Docker (no Python setup needed)**:
+
    ```bash
    git clone https://github.com/doronpers/sono-eval.git
    cd sono-eval
    ./launcher.sh start
    # Visit http://localhost:8000/docs
    ```
+
 3. **Local Python development**:
+
    ```bash
    git clone https://github.com/doronpers/sono-eval.git
    cd sono-eval
@@ -74,15 +91,19 @@ Sono-Eval is a platform that evaluates developer submissions and provides detail
    ```
 
 ### Contributing without fear
+
 New to open source? No problem! Here are small first contributions:
+
 - Add a note to this README about your experience ("What I saw when I opened /docs")
 - Add a log message to an endpoint
 - Create a test for a static endpoint
 - Fix a typo in documentation
 
-See our **[beginner-friendly contributing guide](CONTRIBUTING.md#quick-start-no-terminal)** for step-by-step instructions.
+See our **[beginner-friendly contributing guide](CONTRIBUTING.md#quick-start-no-terminal)**
+for step-by-step instructions.
 
-**Developer note:** To keep contributions consistent, install the project's pre-commit hooks locally:
+**Developer note:** To keep contributions consistent, install the project's
+pre-commit hooks locally:
 
 ```bash
 pre-commit install
@@ -93,9 +114,12 @@ pre-commit install
 See `CONTRIBUTING.md` for full details on the development workflow.
 
 ### Common questions
-- **What's an endpoint?** A URL you can call to do something (like `/health` to check if the server is running)
+
+- **What's an endpoint?** A URL you can call to do something (like `/health` to
+  check if the server is running)
 - **What's JSON?** A simple text format for data, like `{"name": "value"}`
-- **How do I open a PR?** See [CONTRIBUTING.md](CONTRIBUTING.md) for browser-based PR creation
+- **How do I open a PR?** See [CONTRIBUTING.md](CONTRIBUTING.md) for
+  browser-based PR creation
 - **I'm stuck!** Open a GitHub Discussion or Issue - beginners are welcome!
 
 ---
@@ -175,7 +199,8 @@ sono-eval assess run \
 - **📈 Track Progress** - See how you improve over time
 - **💡 Actionable Feedback** - Specific recommendations for growth
 - **🏆 Identify Strengths** - Understand what you're naturally good at
-- **📱 Mobile Companion (Optional)** - Guided, touch-friendly flow when you want it
+- **📱 Mobile Companion (Optional)** - Guided, touch-friendly flow when you
+  want it
 
 ### For Coaches (Optional)
 

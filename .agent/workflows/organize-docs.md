@@ -10,6 +10,7 @@ Follow [Documentation Organization Standards](../../documentation/Governance/DOC
 
 Check root-level markdown files:
 // turbo
+
 ```bash
 find . -maxdepth 1 -name "*.md" -type f | wc -l
 ```
@@ -19,6 +20,7 @@ find . -maxdepth 1 -name "*.md" -type f | wc -l
 ## Step 2: Analyze Documentation
 
 Run analysis:
+
 ```bash
 # List all root markdown files
 ls -1 *.md 2>/dev/null
@@ -30,11 +32,13 @@ find documentation -name "*.md" -type f | head -20
 ## Step 3: Reference Standards
 
 Read the complete standards:
+
 - [DOCUMENTATION_ORGANIZATION_STANDARDS.md](../../documentation/Governance/DOCUMENTATION_ORGANIZATION_STANDARDS.md)
 
 ## Step 4: Create Implementation Plan
 
 Follow the 5-phase checklist from standards:
+
 1. **Survey** - Identify all docs, find duplicates
 2. **Plan** - Map consolidation strategy, get approval
 3. **Execute** - Merge and archive files
@@ -46,6 +50,7 @@ Create `implementation_plan.md` artifact following the template in standards.
 ## Step 5: Execute Consolidation
 
 **Get user approval first**, then:
+
 - Consolidate dated reports (CODE_REVIEW_*.md → CODE_REVIEW_LATEST.md)
 - Merge similar docs (design audits, setup guides)
 - Archive superseded files to `documentation/Archive/`
@@ -54,6 +59,7 @@ Create `implementation_plan.md` artifact following the template in standards.
 ## Step 6: Update Indices
 
 Update all navigation files:
+
 - Root README.md
 - documentation/README.md
 - documentation/DOCUMENTATION_INDEX.md
@@ -63,6 +69,7 @@ Update all navigation files:
 
 Check results:
 // turbo
+
 ```bash
 # Verify root file count
 find . -maxdepth 1 -name "*.md" -type f | wc -l

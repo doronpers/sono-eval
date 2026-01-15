@@ -6,7 +6,8 @@ Practical examples to help you understand what good submissions look like.
 
 ## Overview
 
-These examples show actual code submissions with Sono-Eval assessments. Each example includes:
+These examples show actual code submissions with Sono-Eval assessments. Each
+example includes:
 
 - The challenge/problem
 - The submitted solution
@@ -27,18 +28,23 @@ These examples show actual code submissions with Sono-Eval assessments. Each exa
 
 ### Beginner Level
 
-- **[Example 1: String Manipulation](example-01-string-manipulation.md)** - Basic function with good documentation
-- **[Example 2: List Processing](example-02-list-processing.md)** - Simple algorithm with tests
+- **[Example 1: String Manipulation](example-01-string-manipulation.md)** -
+  Basic function with good documentation
+- **[Example 2: List Processing](example-02-list-processing.md)** - Simple
+  algorithm with tests
 
 ### Intermediate Level
 
-- **[Example 3: API Design](example-03-api-design.md)** - RESTful endpoint with error handling
-- **[Example 4: Data Processing](example-04-data-processing.md)** - File parsing with validation
+- **[Example 3: API Design](example-03-api-design.md)** - RESTful endpoint with
+  error handling
+- **[Example 4: Data Processing](example-04-data-processing.md)** - File parsing
+  with validation
 
 ### Advanced Level
 
 - **[Example 5: System Design](example-05-system-design.md)** - Multi-component architecture
-- **[Example 6: Performance Optimization](example-06-optimization.md)** - Algorithm improvement
+- **[Example 6: Performance Optimization](example-06-optimization.md)** -
+  Algorithm improvement
 
 ---
 

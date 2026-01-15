@@ -10,7 +10,8 @@
 
 - [ ] Bug fix (non-breaking change which fixes an issue)
 - [ ] New feature (non-breaking change which adds functionality)
-- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
+- [ ] Breaking change (fix or feature that would cause existing functionality
+  to not work as expected)
 - [ ] Documentation update
 - [ ] Code refactoring
 - [ ] Performance improvement
@@ -29,9 +30,9 @@ Relates to #
 
 <!-- List the main changes made in this PR -->
 
-- 
-- 
-- 
+-
+-
+-
 
 ## Testing
 
@@ -43,11 +44,13 @@ Relates to #
 - [ ] Security scan passed (if applicable)
 
 **Test Configuration**:
+
 - Python version:
 - OS:
 - Docker version (if applicable):
 
 **Test commands run**:
+
 ```bash
 # Add commands here
 pytest
@@ -84,11 +87,9 @@ pytest
 
 **Breaking changes details**:
 
-
 ## Screenshots (if applicable)
 
 <!-- Add screenshots for UI changes -->
-
 
 ## Checklist
 
@@ -106,20 +107,22 @@ pytest
 - [ ] Any dependent changes have been merged and published
 
 ## Developer tips
-- Install pre-commit hooks: `pre-commit install` (see `CONTRIBUTING.md` and `./scripts/fix-pre-commit-ssl.sh` if you encounter SSL issues).
-- Use Pydantic v2 helpers: prefer `model_dump()` / `model_validate()` in tests and serialization checks.
+
+- Install pre-commit hooks: `pre-commit install` (see `CONTRIBUTING.md` and
+  `./scripts/fix-pre-commit-ssl.sh` if you encounter SSL issues).
+- Use Pydantic v2 helpers: prefer `model_dump()` / `model_validate()` in tests
+  and serialization checks.
 - When changing APIs, update OpenAPI docs and add explicit tests for schema compatibility.
 
 ## Additional Notes
 
 <!-- Add any additional context or notes for reviewers -->
 
-
 ## Reviewer Notes
 
 <!-- For reviewers: Add your review comments and approval here -->
 
-
 ---
 
-**By submitting this pull request, I confirm that my contribution is made under the terms of the MIT License.**
+**By submitting this pull request, I confirm that my contribution is made
+under the terms of the MIT License.**

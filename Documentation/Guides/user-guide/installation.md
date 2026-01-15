@@ -9,7 +9,7 @@ Complete guide to installing and setting up Sono-Eval.
 **Choose your installation method:**
 
 | Method | Best For | Time | Difficulty |
-|--------|----------|------|------------|
+| --- | --- | --- | --- |
 | [Docker](#docker-installation-recommended) | Production, quick start | 5 min | Easy |
 | [Local Python](#local-python-installation) | Development | 10 min | Medium |
 | [From Source](#from-source-installation) | Contributing | 15 min | Medium |
@@ -123,7 +123,7 @@ curl http://localhost:8000/api/v1/health
 
 Best for: Local development, customization, no Docker
 
-### Step 1: Clone Repository
+### Local Step 1: Clone Repository
 
 ```bash
 git clone https://github.com/doronpers/sono-eval.git
@@ -157,7 +157,7 @@ pip install -e .
 pip install -e ".[dev]"
 ```
 
-### Step 4: Configure
+### Local Step 4: Configure
 
 ```bash
 # Copy example configuration
@@ -203,7 +203,8 @@ pytest
 
 ```bash
 # Option 1: Use CLI directly
-sono-eval assess run --candidate-id test --content "print('hello')" --paths technical
+sono-eval assess run --candidate-id test --content "print('hello')" \
+  --paths technical
 
 # Option 2: Start API server
 sono-eval server start --reload
@@ -258,7 +259,9 @@ pre-commit install
 ./scripts/fix-pre-commit-ssl.sh
 ```
 
-**Note**: If you encounter SSL certificate verification errors when committing, see the [troubleshooting guide](../troubleshooting.md#pre-commit-hook-ssl-certificate-errors) or [scripts/README.md](../../../scripts/README.md) for details.
+**Note**: If you encounter SSL certificate verification errors when committing,
+see the [troubleshooting guide](../troubleshooting.md#pre-commit-hook-ssl-certificate-errors)
+or [scripts/README.md](../../../scripts/README.md) for details.
 
 ### Step 4: Verify Setup
 
@@ -540,7 +543,7 @@ For more issues, see [Troubleshooting Guide](../troubleshooting.md).
 
 ## Upgrading
 
-### Docker Deployment
+### Upgrading Docker Deployment
 
 ```bash
 # Pull latest changes
@@ -551,7 +554,7 @@ docker-compose down
 docker-compose up -d --build
 ```
 
-### Local Installation
+### Upgrading Local Installation
 
 ```bash
 # Pull latest changes
@@ -571,7 +574,7 @@ alembic upgrade head
 
 ## Uninstalling
 
-### Docker Deployment
+### Uninstalling Docker Deployment
 
 ```bash
 # Stop and remove containers
@@ -584,7 +587,7 @@ docker-compose down -v
 cd .. && rm -rf sono-eval
 ```
 
-### Local Installation
+### Uninstalling Local Installation
 
 ```bash
 # Deactivate virtual environment

@@ -690,11 +690,14 @@ open http://localhost:8000/docs
 
 **Symptoms**: When committing, you see:
 
-```
-ssl.SSLCertVerificationError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed
+```text
+ssl.SSLCertVerificationError: [SSL: CERTIFICATE_VERIFY_FAILED]
+certificate verify failed
 ```
 
-**Cause**: Python 3.13 installed from python.org doesn't have SSL certificates configured by default, causing pre-commit hooks (like `markdownlint-cli`) to fail when downloading dependencies.
+**Cause**: Python 3.13 installed from python.org doesn't have SSL certificates
+configured by default, causing pre-commit hooks (like `markdownlint-cli`) to
+fail when downloading dependencies.
 
 **Solution**:
 
@@ -707,7 +710,9 @@ export SSL_CERT_FILE=$(python3 -c "import certifi; print(certifi.where())")
 pre-commit install
 ```
 
-**Prevention**: Always run `./scripts/fix-pre-commit-ssl.sh` after running `pre-commit install`. See [scripts/README.md](../../scripts/README.md) for details.
+**Prevention**: Always run `./scripts/fix-pre-commit-ssl.sh` after running
+`pre-commit install`. See [scripts/README.md](../../scripts/README.md) for
+details.
 
 ---
 
@@ -793,7 +798,8 @@ pg_dump sono_eval > backup.sql
 **Last Updated**: January 10, 2026
 **Version**: 0.1.0
 
-**Still having issues?** [Open an issue](https://github.com/doronpers/sono-eval/issues) with:
+**Still having issues?** [Open an issue](https://github.com/doronpers/sono-eval/issues)
+with:
 
 - Clear description
 - Steps to reproduce

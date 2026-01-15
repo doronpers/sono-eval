@@ -4,14 +4,18 @@ This directory contains utility scripts for the sono-eval project.
 
 ## fix-pre-commit-ssl.sh
 
-Fixes SSL certificate verification issues with pre-commit hooks when using Python 3.13.
+Fixes SSL certificate verification issues with pre-commit hooks when using
+Python 3.13.
 
 ### Problem
 
-When using Python 3.13 installed from python.org (not Homebrew), the pre-commit hooks may fail with SSL certificate verification errors when trying to install hooks like `markdownlint-cli`:
+When using Python 3.13 installed from python.org (not Homebrew), the pre-commit
+hooks may fail with SSL certificate verification errors when trying to install
+hooks like `markdownlint-cli`:
 
-```
-ssl.SSLCertVerificationError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed
+```text
+ssl.SSLCertVerificationError: [SSL: CERTIFICATE_VERIFY_FAILED]
+certificate verify failed
 ```
 
 This happens because Python 3.13 doesn't have SSL certificates configured by default.

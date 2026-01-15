@@ -1,6 +1,7 @@
 # Sono-Eval Documentation Hub
 
-Welcome to the Sono-Eval documentation. This is your single source of truth for understanding, installing, and using the system.
+Welcome to the Sono-Eval documentation. This is your single source of truth for
+understanding, installing, and using the system.
 
 **Primary experience**: desktop, single-user workflows.
 **Optional companion**: a mobile-friendly interface for guided assessments.

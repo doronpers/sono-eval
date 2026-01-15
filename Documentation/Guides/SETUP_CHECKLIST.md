@@ -209,7 +209,8 @@ sono-eval server start
 # Open: http://localhost:8000/mobile/
 ```
 
-**Note:** Assessment and tagging will use placeholder/mock implementations without ML dependencies.
+**Note:** Assessment and tagging will use placeholder/mock implementations
+without ML dependencies.
 
 ---
 

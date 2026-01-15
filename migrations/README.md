@@ -4,7 +4,8 @@ This directory contains database migrations managed by Alembic.
 
 ## Setup
 
-Alembic is already configured. The database URL is automatically loaded from your `.env` configuration.
+Alembic is already configured. The database URL is automatically loaded from
+your `.env` configuration.
 
 ## Common Commands
 
@@ -61,7 +62,7 @@ alembic history --verbose
 """add user authentication table
 
 Revision ID: 001
-Revises: 
+Revises:
 Create Date: 2026-01-11
 """
 from alembic import op
@@ -87,13 +88,16 @@ def downgrade() -> None:
 ## Troubleshooting
 
 ### "Can't locate revision identified by 'xxxx'"
+
 - Check that all migration files are present in `migrations/versions/`
 - Ensure the database `alembic_version` table is correct
 
 ### "Target database is not up to date"
+
 - Run `alembic upgrade head` to apply pending migrations
 
 ### "Multiple heads detected"
+
 - Merge branches with `alembic merge heads -m "merge branches"`
 
 ## Documentation

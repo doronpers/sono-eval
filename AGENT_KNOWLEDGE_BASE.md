@@ -133,6 +133,7 @@ Follow [Documentation Organization Standards](documentation/Governance/DOCUMENTA
 ### Code Quality Analysis
 
 The `_analyze_code_quality` method prioritizes "Density of Logic" over "Substantial Code" to align with minimalism and subtext preference. It evaluates:
+
 * Logic density (meaningful code vs. whitespace/comments)
 * Abstraction ratio (functions/classes relative to code size)
 * Structure and error handling
