@@ -60,7 +60,7 @@ cp .env.example .env
 # 3. Access the system
 # - API: http://localhost:8000
 # - API Docs: http://localhost:8000/docs
-# - Mobile UI: http://localhost:8000/mobile/
+# - Mobile Companion (optional): http://localhost:8000/mobile/
 # - Superset: http://localhost:8088 (admin/admin)
 ```
 
@@ -92,7 +92,7 @@ sono-eval server start --reload
 # 5. Access the system
 # - API: http://localhost:8000
 # - API Docs: http://localhost:8000/docs
-# - Mobile UI: http://localhost:8000/mobile/
+# - Mobile Companion (optional): http://localhost:8000/mobile/
 ```
 
 **Note:** Local development uses:
@@ -109,7 +109,7 @@ sono-eval server start --reload
 
 ```bash
 curl http://localhost:8000/health
-# Should return: {"status":"healthy","version":"0.1.0",...}
+# Should return: {"status":"healthy","version":"0.1.1",...}
 ```
 
 ### 2. **CLI Test**
@@ -246,9 +246,9 @@ Before considering setup complete:
    - Integrate with other tools
 
 4. **Review Documentation**
-   - Read [Quick Start Guide](Documentation/Guides/quick-start.md)
-   - Check [API Reference](Documentation/Guides/user-guide/api-reference.md)
-   - See [CLI Reference](Documentation/Guides/user-guide/cli-reference.md)
+   - Read [Quick Start Guide](QUICK_START.md)
+   - Check [API Reference](user-guide/api-reference.md)
+   - See [CLI Reference](user-guide/cli-reference.md)
 
 ---
 
@@ -256,7 +256,7 @@ Before considering setup complete:
 
 If you encounter issues:
 
-1. Check [Troubleshooting Guide](Documentation/Guides/troubleshooting.md)
+1. Check [Troubleshooting Guide](troubleshooting.md)
 2. Review error messages in logs
 3. Verify all prerequisites are met
 4. Check .env configuration

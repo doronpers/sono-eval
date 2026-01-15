@@ -237,7 +237,8 @@ def create_mobile_app() -> FastAPI:
             logger.error(f"Error processing mobile assessment: {e}")
             return JSONResponse(
                 status_code=500,
-                content={"success": False, "error": f"Assessment processing failed: {str(e)}"},
+                content={"success": False,
+                         "error": f"Assessment processing failed: {str(e)}"},
             )
 
     @app.get("/api/mobile/explain/{path}")
@@ -259,7 +260,7 @@ def create_mobile_app() -> FastAPI:
     ):
         """
         Get personalized path recommendations based on candidate goals and experience.
-        
+
         Uses goals and experience level to suggest relevant assessment paths.
         """
         try:
@@ -312,47 +313,27 @@ def create_mobile_app() -> FastAPI:
             logger.error(f"Error generating recommendations: {e}")
             return {"success": False, "recommendations": [], "count": 0}
 
-
-def _get_recommendation_reason(path_id: str, goals: List[str], experience: Optional[str]) -> str:
-    """Generate a reason for why a path is recommended."""
-    reasons = {
-        "technical": "Helps you understand your coding skills and technical practices",
-        "design": "Reveals your system thinking and architecture approach",
-        "collaboration": "Shows how well you communicate and work with others",
-        "problem_solving": "Demonstrates your analytical and debugging capabilities",
-    }
-    base_reason = reasons.get(path_id, "Relevant to your goals")
-
-    if "strengths" in goals:
-        return f"{base_reason} - perfect for identifying your strengths"
-    elif "improve" in goals:
-        return f"{base_reason} - great for finding areas to improve"
-    elif "practice" in goals:
-        return f"{base_reason} - excellent for interview practice"
-    else:
-        return base_reason
-
     @app.post("/api/mobile/track")
     async def track_interactions(batch: TrackingBatch):
         """
         Track user interactions for analytics and personalization.
-        
+
         Accepts anonymous tracking (session_id only) and links to candidate_id when available.
         """
         try:
             # Store interaction events (in production, this would go to a database)
             # For now, we'll log them and could store in memory/file system
-            
+
             for event in batch.events:
                 # Log important events
-                if event.event_type in ['page_view', 'easter_egg_discovered', 'milestone']:
+                if event.event_type in ["page_view", "easter_egg_discovered", "milestone"]:
                     logger.info(
                         f"Tracking: {event.event_type} - "
                         f"session={event.session_id[:8]}... "
                         f"candidate={event.candidate_id or 'anonymous'} "
                         f"page={event.page}"
                     )
-                
+
                 # Link candidate_id to session if provided
                 if event.candidate_id and event.session_id:
                     # In production, store this mapping in a database
@@ -388,7 +369,7 @@ def _get_recommendation_reason(path_id: str, goals: List[str], experience: Optio
             "message": "Easter eggs are discoverable features that unlock valuable functionality",
         }
 
-    @app.get("/mobile/advanced")
+    @app.get("/advanced")
     async def advanced_features(request: Request):
         """Hidden advanced features page."""
         # Check if expert mode is unlocked
@@ -401,6 +382,26 @@ def _get_recommendation_reason(path_id: str, goals: List[str], experience: Optio
         )
 
     return app
+
+
+def _get_recommendation_reason(path_id: str, goals: List[str], experience: Optional[str]) -> str:
+    """Generate a reason for why a path is recommended."""
+    reasons = {
+        "technical": "Helps you understand your coding skills and technical practices",
+        "design": "Reveals your system thinking and architecture approach",
+        "collaboration": "Shows how well you communicate and work with others",
+        "problem_solving": "Demonstrates your analytical and debugging capabilities",
+    }
+    base_reason = reasons.get(path_id, "Relevant to your goals")
+
+    if "strengths" in goals:
+        return f"{base_reason} - perfect for identifying your strengths"
+    elif "improve" in goals:
+        return f"{base_reason} - great for finding areas to improve"
+    elif "practice" in goals:
+        return f"{base_reason} - excellent for interview practice"
+    else:
+        return base_reason
 
 
 if __name__ == "__main__":

@@ -1,14 +1,14 @@
 # Mobile Companion Guide
 
-**Interactive, Explanatory Assessment on Any Device**
+**Optional, Interactive Companion for Desktop Users**
 
-The Sono-Eval Mobile Companion provides a mobile-optimized, interactive assessment experience that helps candidates understand the evaluation process and complete assessments on any device.
+The Sono-Eval Mobile Companion is an optional, mobile-optimized interface that complements the primary desktop workflow. Use it when a guided, touch-friendly flow is helpful, while desktop remains the default experience.
 
 ---
 
 ## 🎯 What is the Mobile Companion?
 
-The Mobile Companion is a web-based interface specifically designed for mobile devices that:
+The Mobile Companion is a web-based interface designed for mobile devices that:
 
 - **Explains Everything**: Clear descriptions of what's being assessed and why
 - **Guides You Through**: Step-by-step process with helpful tips
@@ -40,7 +40,7 @@ The Mobile Companion is a web-based interface specifically designed for mobile d
 
 ## 🚀 Quick Start
 
-### Access the Mobile Companion
+### Access the Mobile Companion (Optional)
 
 1. Start the Sono-Eval API server:
    ```bash
@@ -167,6 +167,9 @@ Mobile Companion
 #### API Routes
 - `POST /mobile/api/mobile/assess` - Submit assessment
 - `GET /mobile/api/mobile/explain/{path}` - Get path explanation
+- `GET /mobile/api/mobile/recommendations` - Get path recommendations
+- `POST /mobile/api/mobile/track` - Submit interaction events
+- `GET /mobile/api/mobile/easter-eggs` - List available easter eggs
 
 ---
 
@@ -407,15 +410,15 @@ Ideas for contributions:
 
 ## 📚 Related Documentation
 
-- [User Guide](user-guide/README.md)
+- [Installation Guide](user-guide/installation.md)
 - [API Reference](user-guide/api-reference.md)
 - [Candidate Guide](resources/candidate-guide.md)
-- [Architecture](concepts/architecture.md)
+- [Architecture](../Core/concepts/architecture.md)
 
 ---
 
-**Questions?** Check the [FAQ](../faq.md) or [open an issue](https://github.com/doronpers/sono-eval/issues).
+**Questions?** Check the [FAQ](faq.md) or [open an issue](https://github.com/doronpers/sono-eval/issues).
 
 ---
 
-*Last Updated: January 10, 2026*
+*Last Updated: January 15, 2026*

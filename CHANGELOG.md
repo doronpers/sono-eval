@@ -61,12 +61,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Standard preset for development
   - Production preset for deployment
 
-- **Architecture Diagrams** (`Documentation/Core/concepts/architecture.md`)
+- **Architecture Diagrams** (`documentation/Core/concepts/architecture.md`)
   - Mermaid diagrams for system architecture
   - Data flow diagrams
   - Component relationship visualizations
 
-- **Comprehensive Design Audit Report** (`Documentation/Reports/DESIGN_AUDIT_2026.md`)
+- **Comprehensive Design Audit Report** (`documentation/Reports/DESIGN_AUDIT_2026.md`)
   - Complete audit findings
   - All changes documented
   - Recommendations for future improvements
@@ -224,7 +224,7 @@ developer experience.
 
 **Documentation**:
 
-- Comprehensive documentation in `docs/` folder
+- Comprehensive documentation in `documentation/` folder
 - Quick Start Guide for rapid setup
 - Complete API and CLI references
 - Architecture and implementation details
@@ -299,7 +299,7 @@ Sono-Eval follows [Semantic Versioning](https://semver.org/):
 ## Links
 
 - **Repository**: <https://github.com/doronpers/sono-eval>
-- **Documentation**: [docs/README.md](docs/README.md)
+- **Documentation**: [documentation/README.md](documentation/README.md)
 - **Issues**: <https://github.com/doronpers/sono-eval/issues>
 - **Discussions**: <https://github.com/doronpers/sono-eval/discussions>
 

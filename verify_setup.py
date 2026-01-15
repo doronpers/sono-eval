@@ -12,11 +12,13 @@ def check_python_version():
     """Check Python version."""
     version = sys.version_info
     if version.major == 3 and version.minor >= 9:
-        print(f"✅ Python {version.major}.{version.minor}.{version.micro} (required: 3.9+)")
+        print(
+            f"✅ Python {version.major}.{version.minor}.{version.micro} (required: 3.9+)")
         print(f"   💡 This version supports all Sono-Eval features")
         return True
     else:
-        print(f"❌ Python {version.major}.{version.minor}.{version.micro} (required: 3.9+)")
+        print(
+            f"❌ Python {version.major}.{version.minor}.{version.micro} (required: 3.9+)")
         print(f"   💡 Update Python to access all features: https://www.python.org/downloads/")
         return False
 
@@ -119,7 +121,8 @@ def check_docker():
     import subprocess
 
     try:
-        result = subprocess.run(["docker", "--version"], capture_output=True, text=True, timeout=5)
+        result = subprocess.run(["docker", "--version"],
+                                capture_output=True, text=True, timeout=5)
         if result.returncode == 0:
             version = result.stdout.strip()
             print(f"✅ Docker available: {version}")
@@ -164,9 +167,11 @@ def main():
         print("Next steps:")
         print("  • Start the server: [cyan]sono-eval server start[/cyan]")
         print("  • Or use Docker: [cyan]./launcher.sh start[/cyan]")
-        print("  • Then visit: [cyan]http://localhost:8000/mobile[/cyan]")
+        print("  • Then visit: [cyan]http://localhost:8000/docs[/cyan] (desktop)")
+        print("  • Optional companion: [cyan]http://localhost:8000/mobile[/cyan]")
         print()
-        print("💡 Tip: Use [cyan]sono-eval setup init --interactive[/cyan] for guided setup")
+        print(
+            "💡 Tip: Use [cyan]sono-eval setup init --interactive[/cyan] for guided setup")
         return 0
     else:
         print(f"❌ {len(failed)} CRITICAL CHECK(S) FAILED:")
@@ -177,7 +182,7 @@ def main():
         print("   These checks ensure Sono-Eval can run properly on your system.")
         print("   Fix the issues above, then run this script again.")
         print()
-        print("Need help? See: Documentation/Guides/resources/first-time-setup.md")
+        print("Need help? See: documentation/Guides/resources/first-time-setup.md")
         return 1
 
 

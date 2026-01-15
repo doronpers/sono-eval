@@ -304,7 +304,7 @@ sono-eval/
 ├── tests/               # Test suite
 │   ├── unit/            # Unit tests
 │   └── integration/     # Integration tests
-├── docs/                # Documentation
+├── documentation/       # Documentation
 ├── config/              # Configuration
 └── scripts/             # Utility scripts
 ```

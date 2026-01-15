@@ -290,4 +290,4 @@ sono-eval server start
 
 ---
 
-*For more information, see the [README.md](README.md) and [Documentation](Documentation/README.md)*
+*For more information, see the [README.md](../../README.md) and [Documentation](../README.md)*

@@ -101,7 +101,7 @@ async def process(request: Request, body: MyModel, api_key: str = Depends(verify
 
 ## Documentation Standards
 
-Follow [Documentation Organization Standards](documentation/governance/DOCUMENTATION_ORGANIZATION_STANDARDS.md)
+Follow [Documentation Organization Standards](documentation/Governance/DOCUMENTATION_ORGANIZATION_STANDARDS.md)
 
 ---
 

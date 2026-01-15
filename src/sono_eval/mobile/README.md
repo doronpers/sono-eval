@@ -17,7 +17,7 @@ Open in your mobile browser:
 http://localhost:8000/mobile
 ```
 
-## 📱 Features
+## 📱 Features (Optional Companion)
 
 - **Mobile-optimized UI** - Designed for touchscreens
 - **Step-by-step guidance** - Clear instructions at each stage
@@ -64,10 +64,13 @@ mobile/
 **API:**
 - `POST /mobile/api/mobile/assess` - Submit assessment
 - `GET /mobile/api/mobile/explain/{path}` - Get path details
+- `GET /mobile/api/mobile/recommendations` - Get path recommendations
+- `POST /mobile/api/mobile/track` - Submit interaction events
+- `GET /mobile/api/mobile/easter-eggs` - List available easter eggs
 
 ## 📖 Full Documentation
 
-See [docs/mobile-companion.md](../../docs/mobile-companion.md) for complete documentation.
+See [documentation/Guides/mobile-companion.md](../../documentation/Guides/mobile-companion.md) for complete documentation.
 
 ## 🎨 Customization
 

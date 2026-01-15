@@ -342,10 +342,10 @@ This audit evaluates the Sono-Eval repository through the lens of Dieter Rams' 1
 /
 ├── README.md                    # 527 lines - comprehensive but overwhelming
 ├── CONTRIBUTING.md              # 236 lines - good
-├── GLOSSARY.md                  # 561 lines - excellent but could be in docs/
-├── IMPLEMENTATION_SUMMARY.md    # 385 lines - developer-focused, should be in docs/
+├── GLOSSARY.md                  # 561 lines - excellent but could be in documentation/
+├── IMPLEMENTATION_SUMMARY.md    # 385 lines - developer-focused, should be in documentation/
 ├── LICENSE                      # Good
-└── docs/
+└── documentation/
     └── learning-resources.md    # 364 lines - good but lonely
 ```
 
@@ -357,27 +357,27 @@ This audit evaluates the Sono-Eval repository through the lens of Dieter Rams' 1
 ├── CONTRIBUTING.md              # Stay at root (GitHub convention)
 ├── LICENSE                      # Stay at root (GitHub convention)
 ├── CHANGELOG.md                 # NEW - version history
-└── docs/
+└── documentation/
     ├── README.md                # NEW - documentation index
-    ├── quick-start.md           # NEW - 5-minute guide
-    ├── user-guide/
+    ├── QUICK_START.md           # NEW - 5-minute guide
+    ├── Guides/user-guide/
     │   ├── installation.md      # NEW - detailed installation
     │   ├── cli-reference.md     # NEW - complete CLI docs
     │   ├── api-reference.md     # NEW - API documentation
     │   └── configuration.md     # NEW - configuration guide
-    ├── concepts/
+    ├── Core/concepts/
     │   ├── architecture.md      # NEW - system architecture
     │   ├── assessment-paths.md  # NEW - assessment system
     │   └── glossary.md          # MOVED from root
-    ├── development/
+    ├── Core/development/
     │   ├── setup.md             # NEW - dev environment
     │   ├── testing.md           # NEW - testing guide
     │   └── implementation.md    # MOVED from IMPLEMENTATION_SUMMARY.md
-    ├── resources/
+    ├── Guides/resources/
     │   ├── learning.md          # MOVED from learning-resources.md
     │   ├── examples/            # NEW - practical examples
     │   └── diagrams/            # NEW - architecture diagrams
-    └── troubleshooting.md       # NEW - common issues
+    └── Guides/troubleshooting.md # NEW - common issues
 ```
 
 ---
@@ -386,12 +386,12 @@ This audit evaluates the Sono-Eval repository through the lens of Dieter Rams' 1
 
 ### Immediate (Must Do)
 
-1. ✅ Create comprehensive documentation structure in docs/
+1. ✅ Create comprehensive documentation structure in documentation/
 2. ✅ Add missing documentation files referenced in README
 3. ✅ Create architecture diagrams and visual aids
 4. ✅ Add practical quick-start guide
 5. ✅ Fix broken documentation links
-6. ✅ Consolidate root-level documentation into docs/
+6. ✅ Consolidate root-level documentation into documentation/
 
 ### Short Term (Should Do)
 

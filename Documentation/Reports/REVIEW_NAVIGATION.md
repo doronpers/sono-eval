@@ -117,7 +117,7 @@ This guide helps you navigate the comprehensive review deliverables.
 - **[README.md](README.md)** - Project overview and setup
 - **[CONTRIBUTING.md](CONTRIBUTING.md)** - Contribution guidelines
 - **[CHANGELOG.md](CHANGELOG.md)** - Version history
-- **Documentation/** - User guides and API reference
+- **documentation/** - User guides and API reference
 
 ---
 

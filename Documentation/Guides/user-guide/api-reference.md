@@ -22,31 +22,26 @@ Interactive API documentation is available at:
 
 ## Authentication
 
-**Version 0.1.0**: No authentication required (development mode)
+**Version 0.1.1**: No authentication required (development mode)
 **Production**: Will require API keys (coming soon)
 
 ---
 
 ## Response Format
 
-All responses follow this structure:
+Success responses return JSON objects as shown in each endpoint example.
 
-**Success (200-299):**
-
-```json
-{
-  "data": { ... },
-  "status": "success"
-}
-```
-
-**Error (400-599):**
+Errors use FastAPI's standard `detail` wrapper with Sono-Eval error metadata:
 
 ```json
 {
-  "detail": "Error message",
-  "status": "error",
-  "code": "ERROR_CODE"
+  "detail": {
+    "error": true,
+    "error_code": "VALIDATION_ERROR",
+    "message": "candidate_id must contain only alphanumeric characters, dashes, and underscores",
+    "details": {"field": "candidate_id"},
+    "request_id": "..."
+  }
 }
 ```
 
@@ -66,7 +61,7 @@ Suitable for load balancers and monitoring tools.
 ```json
 {
   "status": "healthy",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "timestamp": "2026-01-10T12:00:00Z",
   "components": {
     "assessment": "operational",
@@ -101,7 +96,7 @@ Suitable for monitoring and debugging. Sensitive paths are sanitized.
 ```json
 {
   "status": "healthy",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "timestamp": "2026-01-10T12:00:00Z",
   "components": {
     "assessment": "operational",
@@ -290,6 +285,7 @@ Get assessment by ID.
 **Parameters:**
 
 - `assessment_id` (path) - Assessment identifier
+- `candidate_id` (query, required) - Candidate identifier
 
 **Response:**
 Same structure as POST response above.
@@ -297,7 +293,7 @@ Same structure as POST response above.
 **Example:**
 
 ```bash
-curl http://localhost:8000/api/v1/assessments/assess_1234567890
+curl "http://localhost:8000/api/v1/assessments/assess_1234567890?candidate_id=candidate_001"
 ```
 
 ---
@@ -327,9 +323,8 @@ Create a new candidate profile.
 ```json
 {
   "candidate_id": "string",
-  "created_at": "ISO 8601",
-  "version": "1.0",
-  "message": "Candidate created successfully"
+  "created": "ISO 8601",
+  "status": "created"
 }
 ```
 
@@ -382,26 +377,19 @@ curl http://localhost:8000/api/v1/candidates/candidate_001
 
 List all candidates.
 
-**Query Parameters:**
-
-- `limit` (optional) - Maximum results (default: 100)
-- `offset` (optional) - Pagination offset (default: 0)
-
 **Response:**
 
 ```json
 {
   "candidates": ["candidate_001", "candidate_002", ...],
-  "total": 10,
-  "limit": 100,
-  "offset": 0
+  "count": 10
 }
 ```
 
 **Example:**
 
 ```bash
-curl "http://localhost:8000/api/v1/candidates?limit=50&offset=0"
+curl "http://localhost:8000/api/v1/candidates"
 ```
 
 ---
@@ -418,7 +406,7 @@ Delete a candidate.
 
 ```json
 {
-  "message": "Candidate deleted successfully",
+  "status": "deleted",
   "candidate_id": "string"
 }
 ```
@@ -442,8 +430,7 @@ Generate semantic tags for code or text.
 ```json
 {
   "text": "string",
-  "max_tags": 5,
-  "context": "string (optional)"
+  "max_tags": 5
 }
 ```
 
@@ -460,8 +447,7 @@ Generate semantic tags for code or text.
       "metadata": {}
     }
   ],
-  "total_generated": 5,
-  "model_used": "t5-base"
+  "count": 1
 }
 ```
 
@@ -478,16 +464,50 @@ curl -X POST http://localhost:8000/api/v1/tags/generate \
 
 ---
 
+### File Upload
+
+#### `POST /api/v1/files/upload`
+
+Upload a UTF-8 text file for assessment and optional tag generation.
+
+**Request (multipart/form-data):**
+
+- `file` (required) - Text file with an allowed extension
+
+**Response:**
+
+```json
+{
+  "filename": "solution.py",
+  "original_filename": "solution.py",
+  "size": 1234,
+  "tags": [],
+  "status": "uploaded"
+}
+```
+
+**Example:**
+
+```bash
+curl -X POST http://localhost:8000/api/v1/files/upload \
+  -H "Content-Type: multipart/form-data" \
+  -F "file=@solution.py"
+```
+
+---
+
 ## Error Codes
 
 | Code | Description | HTTP Status |
 |------|-------------|-------------|
-| `INVALID_INPUT` | Request validation failed | 400 |
+| `VALIDATION_ERROR` | Request validation failed | 400 |
+| `INVALID_FORMAT` | Invalid payload format | 400 |
 | `NOT_FOUND` | Resource not found | 404 |
+| `DUPLICATE_RESOURCE` | Resource already exists | 409 |
+| `SERVICE_UNAVAILABLE` | Required component unavailable | 503 |
+| `FILE_TOO_LARGE` | Upload exceeds size limit | 400 |
+| `INVALID_FILE_TYPE` | Upload file type not allowed | 400 |
 | `INTERNAL_ERROR` | Server error | 500 |
-| `ASSESSMENT_FAILED` | Assessment processing failed | 500 |
-| `CANDIDATE_EXISTS` | Candidate already exists | 409 |
-| `MODEL_ERROR` | ML model error | 500 |
 
 ---
 
@@ -621,11 +641,11 @@ def assess_with_retry(data, max_retries=3):
 ## See Also
 
 - [CLI Reference](cli-reference.md) - Command-line interface
-- [Quick Start](../quick-start.md) - Get started quickly
-- [Examples](../resources/examples/) - Practical code examples
-- [Architecture](../concepts/architecture.md) - System design
+- [Quick Start](../QUICK_START.md) - Get started quickly
+- [Examples](../resources/examples/README.md) - Practical code examples
+- [Architecture](../../Core/concepts/architecture.md) - System design
 
 ---
 
-**Last Updated**: January 10, 2026
-**Version**: 0.1.0
+**Last Updated**: January 15, 2026
+**Version**: 0.1.1

@@ -169,29 +169,22 @@ sono-eval server start
 - Celery async query support
 - Pre-configured database connections
 
-**Key Files**:
 
 - `superset_config.py` - Superset configuration
 - `README.md` - Setup and usage documentation
 
 ### ✅ 8. Docker & Docker Compose
 
-**Location**: Root directory
-
-**Features**:
-
 - Multi-container setup with:
   - Sono-Eval application (port 8000)
   - PostgreSQL database (port 5432)
   - Redis cache/queue (port 6379)
   - Apache Superset analytics (port 8088)
-- Health checks
 - Volume persistence
 - Network isolation
 - Production-ready configuration
 
 **Key Files**:
-
 - `Dockerfile` - Application container
 - `docker-compose.yml` - Multi-service orchestration
 - `.dockerignore` - Build optimization
@@ -200,13 +193,11 @@ sono-eval server start
 
 **Location**: `launcher.sh`
 
-**Features**:
 
 - Start/stop/restart all services
 - View service status and logs
 - Run CLI commands in containers
 - Setup development environment
-- Automatic .env creation from .env.example
 
 **Usage**:
 
@@ -214,24 +205,21 @@ sono-eval server start
 ./launcher.sh start      # Start all services
 ./launcher.sh status     # Check status
 ./launcher.sh logs       # View logs
-./launcher.sh cli assess --help
 ./launcher.sh dev        # Setup dev environment
 ```
 
 ### ✅ 10. Comprehensive Documentation
 
-**Files Created**:
 
 - `README.md` - Complete project documentation with:
   - Quick start guide
   - Feature descriptions
   - Usage examples (CLI, API, Docker)
-  - Configuration guide
   - Development setup
   - Architecture overview
 - `CONTRIBUTING.md` - Contribution guidelines
 - `LICENSE` - MIT License
-- `docs/learning-resources.md` - Educational resources including:
+- `documentation/Guides/resources/learning.md` - Educational resources including:
   - Core concepts (Explainable AI, Multi-Path Assessment, Dark Horse Model)
   - Getting started tutorials
   - Best practices

@@ -2,11 +2,14 @@
 
 Welcome to the Sono-Eval documentation. This is your single source of truth for understanding, installing, and using the system.
 
+**Primary experience**: desktop, single-user workflows.
+**Optional companion**: a mobile-friendly interface for guided assessments.
+
 ---
 
 ## 🗺️ Navigation by Role
 
-### 👋 For Candidates (Beta Testers)
+### 👋 For Individuals (Desktop)
 
 1. **[Candidate Guide](Guides/resources/candidate-guide.md)** - Your starting point
 2. **[Quick Start](Guides/QUICK_START.md)** - Get running in 5 minutes
@@ -19,11 +22,15 @@ Welcome to the Sono-Eval documentation. This is your single source of truth for 
 3. **[Implementation Details](Core/development/implementation.md)** - Code dive
 4. **[Contributing](../CONTRIBUTING.md)** - How to help
 
-### 📊 For Evaluators & Architects
+### 📊 For Coaches (Optional)
 
 1. **[Assessment Path Guide](Guides/assessment-path-guide.md)** - What we measure
 2. **[API Reference](Guides/user-guide/api-reference.md)** - Integration points
 3. **[Glossary](Core/concepts/glossary.md)** - Terminology
+
+### 📱 Optional Mobile Companion
+
+1. **[Mobile Companion Guide](Guides/mobile-companion.md)** - Touch-friendly flow
 
 ---
 
@@ -77,4 +84,4 @@ Welcome to the Sono-Eval documentation. This is your single source of truth for 
 
 ---
 
-**Version**: 0.1.1 | **Last Updated**: January 13, 2026
+**Version**: 0.1.1 | **Last Updated**: January 15, 2026

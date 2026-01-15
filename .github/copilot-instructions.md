@@ -1,6 +1,6 @@
 # Copilot / AI Agent Instructions for Sono-Eval ✅
 
-Purpose: Make AI coding agents productive quickly by documenting the project's purpose, architecture, developer workflows, conventions, and concrete examples. Follow `Documentation/Governance/AGENT_BEHAVIORAL_STANDARDS.md` for behavioral rules and quality expectations.
+Purpose: Make AI coding agents productive quickly by documenting the project's purpose, architecture, developer workflows, conventions, and concrete examples. Follow `documentation/Governance/AGENT_BEHAVIORAL_STANDARDS.md` for behavioral rules and quality expectations.
 
 ## Quick elevator (what to do first) 💡
 - Run the system (Docker-first): `./launcher.sh start` → API: http://localhost:8000, API docs: `/docs`, Superset: http://localhost:8088 (admin/admin in dev). See `docker-compose.yml` for services and insecure default credentials (dev-only).
@@ -47,7 +47,7 @@ Why this matters: The `POST /api/v1/assessments` flow calls `AssessmentEngine.as
 - Run linters/formatters: `black --check --line-length 100 src/ tests/` and `flake8 --max-line-length 100 src/ tests/`.
 - Verify CI matrix expectations (Python 3.9–3.11) and fix or document any environment-specific failures.
 - Check Pydantic schema changes for compatibility; prefer `model_dump(mode="json")`/`model_validate()` tests for serialization changes.
-- Confirm API contract changes are documented (update `Documentation/*` and OpenAPI if needed) and add examples to `/docs` when helpful.
+- Confirm API contract changes are documented (update `documentation/*` and OpenAPI if needed) and add examples to `/docs` when helpful.
 - Ensure no secrets or default credentials were introduced (check `.env`, `docker-compose.yml`, `config/`).
 - Verify request logging and `X-Request-ID` propagation on modified endpoints when relevant.
 - Prefer small, focused PRs. If the PR is large, include a clear implementation plan and manual testing steps in the description.
@@ -78,8 +78,8 @@ Why this matters: The `POST /api/v1/assessments` flow calls `AssessmentEngine.as
 
 ## Where to read more (priority order) 📚
 1. `README.md` - quick start & sample requests
-2. `Documentation/Core/concepts/architecture.md` - system flow and design rationale
-3. `Documentation/Governance/AGENT_BEHAVIORAL_STANDARDS.md` - agent mandates and quality rules
+2. `documentation/Core/concepts/architecture.md` - system flow and design rationale
+3. `documentation/Governance/AGENT_BEHAVIORAL_STANDARDS.md` - agent mandates and quality rules
 4. `CONTRIBUTING.md` - PR and local dev workflow
 5. `SECURITY.md` - secrets, production hardening, input validation patterns
 6. `./launcher.sh`, `docker-compose.yml`, `.github/workflows/ci.yml` - operational commands and CI rules

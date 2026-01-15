@@ -3,8 +3,8 @@
 **Complete catalog of all Sono-Eval documentation, organized by purpose and
 category.**
 
-**Last Updated**: 2026-01-10
-**Version**: 0.1.0
+**Last Updated**: 2026-01-15
+**Version**: 0.1.1
 
 ---
 
@@ -19,7 +19,7 @@ category.**
 
 ## Core Documentation (Essential References)
 
-**Location**: `Documentation/Core/`
+**Location**: `documentation/Core/`
 
 ### Concepts
 
@@ -39,7 +39,7 @@ category.**
 
 ## Guides (How-To Documentation)
 
-**Location**: `Documentation/Guides/`
+**Location**: `documentation/Guides/`
 
 ### Getting Started
 
@@ -73,13 +73,13 @@ category.**
   educational content
 - **[Examples](Guides/resources/examples/README.md)** - Practical code examples
 
-**Total Guide Files**: 10 files
+**Total Guide Files**: 20 files
 
 ---
 
 ## Reports (Status & Reviews)
 
-**Location**: `Documentation/Reports/`
+**Location**: `documentation/Reports/`
 
 - **[Design Audit](Reports/DESIGN_AUDIT.md)** - Dieter Rams design principles
   audit
@@ -93,20 +93,20 @@ category.**
 - **[Port Allocation Fix](Reports/FIX_PORT_ALLOCATION.md)** - Port allocation
   troubleshooting and fix
 
-**Total Report Files**: 2 files
+**Total Report Files**: 13 files
 
 ---
 
 ## Governance (Standards & Maintenance)
 
-**Location**: `Documentation/Governance/`
+**Location**: `documentation/Governance/`
 
 - **[Documentation Organization Standards](Governance/DOCUMENTATION_ORGANIZATION_STANDARDS.md)**
   - Guidelines for maintaining documentation structure
 - **[Maintenance Notes](Governance/MAINTENANCE.md)** - Documentation maintenance
   procedures
 
-**Total Governance Files**: 2 files
+**Total Governance Files**: 5 files
 
 ---
 
@@ -130,11 +130,11 @@ category.**
 | Category | File Count | Status |
 |----------|------------|--------|
 | Core | 3 | ✅ Complete |
-| Guides | 9 | ✅ Complete |
-| Reports | 2 | ✅ Complete |
-| Governance | 2 | ✅ Complete |
+| Guides | 20 | ✅ Complete |
+| Reports | 13 | ✅ Complete |
+| Governance | 5 | ✅ Complete |
 | Root | 4 | ✅ Complete |
-| **Total** | **20** | ✅ Organized |
+| **Total** | **45** | ✅ Organized |
 
 ---
 
@@ -233,5 +233,5 @@ Documentation maintenance procedures are documented in
 
 ---
 
-**Version**: 0.1.0
-**Last Updated**: January 10, 2026
+**Version**: 0.1.1
+**Last Updated**: January 15, 2026

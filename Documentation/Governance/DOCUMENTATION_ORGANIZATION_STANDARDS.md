@@ -56,12 +56,12 @@ Following Dieter Rams' "Less but Better" philosophy:
 
 ---
 
-## Documentation/ Directory Structure
+## documentation/ Directory Structure
 
 ### Recommended Organization
 
 ```
-Documentation/
+documentation/
 ├── README.md                    # Documentation hub (navigation)
 ├── DOCUMENTATION_INDEX.md       # Complete index
 ├── Core/ or root files          # Essential references (5-7 files)
@@ -154,15 +154,15 @@ Archive/
 
 1. **README.md** (Root):
    - Quick start section
-   - Links to Documentation/
+   - Links to documentation/
    - Links to essential files
 
-2. **Documentation/README.md**:
+2. **documentation/README.md**:
    - Documentation hub
    - Role-based navigation
    - Recent updates section
 
-3. **Documentation/DOCUMENTATION_INDEX.md**:
+3. **documentation/DOCUMENTATION_INDEX.md**:
    - Complete catalog
    - Categorized by purpose
    - Kept current with structure
@@ -185,7 +185,7 @@ When reorganizing documentation in any repo:
 ### Phase 1: Survey
 
 - [ ] Count all markdown files at root
-- [ ] List all files in Documentation/
+- [ ] List all files in documentation/
 - [ ] Identify duplicate/overlapping content
 - [ ] Find superseded versions
 
@@ -206,8 +206,8 @@ When reorganizing documentation in any repo:
 ### Phase 4: Update Indices
 
 - [ ] Update root README.md
-- [ ] Update Documentation/README.md
-- [ ] Update DOCUMENTATION_INDEX.md
+- [ ] Update documentation/README.md
+- [ ] Update documentation/DOCUMENTATION_INDEX.md
 - [ ] Update cross-references
 - [ ] Test all navigation paths
 
@@ -233,9 +233,9 @@ Before:
 - CODE_REVIEW_2026-01-10.md
 
 After:
-- Documentation/Reports/CODE_REVIEW_LATEST.md (consolidated)
-- Documentation/Reports/CODE_REVIEW.md (navigation file)
-- Documentation/Archive/Reports-Historical/*.md (archived)
+- documentation/Reports/CODE_REVIEW_LATEST.md (consolidated)
+- documentation/Reports/CODE_REVIEW.md (navigation file)
+- documentation/Archive/Reports-Historical/*.md (archived)
 ```
 
 **Design Audits**:
@@ -246,7 +246,7 @@ Before:
 - DESIGN_AUDIT_FINDINGS.md
 
 After:
-- Documentation/Reports/DESIGN_AUDIT_CONSOLIDATED.md
+- documentation/Reports/DESIGN_AUDIT_CONSOLIDATED.md
 - Archived originals
 ```
 
@@ -291,7 +291,7 @@ After:
 **Initial setup:**
 
 1. Start with essential root files only (README, CONTRIBUTING)
-2. Create Documentation/ structure early
+2. Create documentation/ structure early
 3. Use dated subfolders from the start for reports
 4. Establish Archive/ at creation time
 

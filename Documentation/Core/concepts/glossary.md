@@ -631,7 +631,7 @@ Key configuration variables (see `.env.example` for complete list):
 
 ### Learning Resources
 
-See `docs/learning-resources.md` for tutorials and guides
+See `../../Guides/resources/learning.md` for tutorials and guides
 
 ### Community
 
@@ -641,5 +641,5 @@ See `docs/learning-resources.md` for tutorials and guides
 
 ---
 
-**Last Updated**: 2026-01-10
-**Version**: 0.1.0
+**Last Updated**: 2026-01-15
+**Version**: 0.1.1

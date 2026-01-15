@@ -107,7 +107,7 @@ This repository has been thoroughly audited for secrets, credentials, and propri
 - [x] README.md
 - [x] SECURITY.md
 - [x] CONTRIBUTING.md
-- [x] All files in `/Documentation` directory
+- [x] All files in `/documentation` directory
 - [x] CODE_OF_CONDUCT.md
 - [x] CHANGELOG.md
 
@@ -219,7 +219,7 @@ Created this SECRETS_AUDIT.md file to:
 ### Documentation
 
 - ✅ All `.md` files - No sensitive information
-- ✅ `/Documentation/**/*` - Safe for public
+- ✅ `/documentation/**/*` - Safe for public
 
 ### Infrastructure
 

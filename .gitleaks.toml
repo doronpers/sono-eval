@@ -14,7 +14,7 @@ description = "Allowlist for Sono-Eval specific patterns"
 paths = [
     '''docker-compose\.yml''',
     '''\.env\.example''',
-    '''Documentation/.*''',
+    '''documentation/.*''',
 ]
 
 # Allow specific patterns that are safe/expected

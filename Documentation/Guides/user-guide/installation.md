@@ -46,7 +46,7 @@ docker-compose --version
 
 ## Docker Installation (Recommended)
 
-Best for: Production deployment, quick evaluation, team environments
+Best for: Desktop evaluation, quick start, local testing
 
 ### Step 1: Clone Repository
 
@@ -480,9 +480,9 @@ pytest -v
 
 ### Recommended Next Steps
 
-1. **Read Quick Start**: [Quick Start Guide](../quick-start.md)
+1. **Read Quick Start**: [Quick Start Guide](../QUICK_START.md)
 2. **Configure**: [Configuration Guide](configuration.md)
-3. **Try Examples**: [Examples](../resources/examples/)
+3. **Try Examples**: [Examples](../resources/examples/README.md)
 4. **Explore API**: <http://localhost:8000/docs>
 
 ### Optional Setup
@@ -598,12 +598,12 @@ cd .. && rm -rf sono-eval
 
 ## Getting Help
 
-- **Documentation**: [docs/README.md](../README.md)
+- **Documentation**: [documentation/README.md](../README.md)
 - **Troubleshooting**: [Troubleshooting Guide](../troubleshooting.md)
 - **FAQ**: [FAQ](../faq.md)
 - **Issues**: [GitHub Issues](https://github.com/doronpers/sono-eval/issues)
 
 ---
 
-**Last Updated**: January 10, 2026
-**Version**: 0.1.0
+**Last Updated**: January 15, 2026
+**Version**: 0.1.1

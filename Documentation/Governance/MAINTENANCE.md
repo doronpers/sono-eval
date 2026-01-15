@@ -8,13 +8,13 @@ Several documentation files contain hardcoded version numbers and dates:
 
 ### Files to Update on Version Changes:
 - README.md
-- docs/README.md
-- docs/quick-start.md
-- docs/user-guide/*.md
-- docs/resources/*.md
-- docs/concepts/*.md
-- docs/troubleshooting.md
-- docs/faq.md
+- documentation/README.md
+- documentation/Guides/QUICK_START.md
+- documentation/Guides/user-guide/*.md
+- documentation/Guides/resources/*.md
+- documentation/Core/concepts/*.md
+- documentation/Guides/troubleshooting.md
+- documentation/Guides/faq.md
 - CHANGELOG.md
 
 ### Automation Recommendation:
@@ -26,12 +26,12 @@ Consider implementing a script or CI/CD step to automatically update these value
 ### Manual Update Process:
 ```bash
 # Find all occurrences
-grep -r "0.1.0" docs/
-grep -r "January 10, 2026" docs/
+grep -r "0.1.0" documentation/
+grep -r "January 10, 2026" documentation/
 
 # Update with new version/date
-find docs -name "*.md" -exec sed -i 's/0.1.0/NEW_VERSION/g' {} \;
-find docs -name "*.md" -exec sed -i 's/January 10, 2026/NEW_DATE/g' {} \;
+find documentation -name "*.md" -exec sed -i 's/0.1.0/NEW_VERSION/g' {} \;
+find documentation -name "*.md" -exec sed -i 's/January 10, 2026/NEW_DATE/g' {} \;
 ```
 
 ## Email Addresses
