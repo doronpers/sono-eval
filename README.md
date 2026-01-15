@@ -15,8 +15,78 @@
 > Features are being added and refined, APIs may change, and the system
 > is not yet production-ready. Use at your own risk.
 
-**[Quick Start](#-quick-start)** • **[Documentation](Documentation/README.md)** •
-**[Key Features](#-key-features)** • **[Usage Examples](#-usage-examples)**
+**[Start Here (Beginner-Friendly)](#-start-here-beginner-friendly)** • **[Quick Start](#-quick-start)** • **[Documentation](Documentation/README.md)** • **[Key Features](#-key-features)** • **[Usage Examples](#-usage-examples)**
+
+---
+
+## 🚀 Start Here (Beginner-Friendly)
+
+### What is this?
+Sono-Eval is a platform that evaluates developer submissions and provides detailed, explainable feedback. It's like a helpful coach that shows you exactly why you received each score and where to improve.
+
+### Quick win (no terminal required)
+1. **Open in Codespaces** (easiest way to try it):
+   - Click the "Code" button above → "Codespaces" tab → "Create codespace"
+   - Wait for the environment to load (~2 minutes)
+   - In the VS Code web interface, open the Terminal
+   - Run: `./launcher.sh start`
+   - When services are ready, open `http://localhost:8000/docs` in the Ports tab
+   - Try the `/health` endpoint to verify everything works
+
+2. **First assessment in the browser**:
+   - In the API docs (`/docs`), scroll to `POST /api/v1/assessments`
+   - Click "Try it out"
+   - Use this sample request:
+     ```json
+     {
+       "candidate_id": "demo_user",
+       "submission_type": "code",
+       "content": {"code": "def fibonacci(n):\n    if n <= 1:\n        return n\n    return fibonacci(n-1) + fibonacci(n-2)"},
+       "paths_to_evaluate": ["TECHNICAL"]
+     }
+     ```
+   - Click "Execute" and see your first assessment result!
+
+### Sample files for testing
+- `samples/` directory contains example code submissions
+- Start with `samples/simple-function.py` for a basic assessment
+- Try `samples/complex-class.py` for multi-path evaluation
+
+### Fast path options
+1. **Browser only (recommended for first try)**:
+   - Use GitHub Codespaces as described above
+2. **Local with Docker (no Python setup needed)**:
+   ```bash
+   git clone https://github.com/doronpers/sono-eval.git
+   cd sono-eval
+   ./launcher.sh start
+   # Visit http://localhost:8000/docs
+   ```
+3. **Local Python development**:
+   ```bash
+   git clone https://github.com/doronpers/sono-eval.git
+   cd sono-eval
+   python3 -m venv venv
+   source venv/bin/activate  # Windows: venv\Scripts\activate
+   pip install -r requirements.txt
+   pip install -e .
+   sono-eval server start --reload
+   ```
+
+### Contributing without fear
+New to open source? No problem! Here are small first contributions:
+- Add a note to this README about your experience ("What I saw when I opened /docs")
+- Add a log message to an endpoint
+- Create a test for a static endpoint
+- Fix a typo in documentation
+
+See our **[beginner-friendly contributing guide](CONTRIBUTING.md#quick-start-no-terminal)** for step-by-step instructions.
+
+### Common questions
+- **What's an endpoint?** A URL you can call to do something (like `/health` to check if the server is running)
+- **What's JSON?** A simple text format for data, like `{"name": "value"}`
+- **How do I open a PR?** See [CONTRIBUTING.md](CONTRIBUTING.md) for browser-based PR creation
+- **I'm stuck!** Open a GitHub Discussion or Issue - beginners are welcome!
 
 ---
 
