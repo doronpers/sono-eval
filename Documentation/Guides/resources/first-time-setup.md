@@ -1,8 +1,9 @@
 # First-Time Setup Guide
 
-**For Remote Candidates Setting Up on Personal Machines**
+For Remote Candidates Setting Up on Personal Machines
 
-This guide will help you set up Sono-Eval on your personal computer for the first time. We'll explain what each step does and why it matters.
+This guide will help you set up Sono-Eval on your personal computer for the
+first time. We'll explain what each step does and why it matters.
 
 ---
 
@@ -43,13 +44,16 @@ git clone https://github.com/doronpers/sono-eval.git
 cd sono-eval
 ```
 
-**What happens:** Sono-Eval files are downloaded to a folder called `sono-eval` on your computer.
+**What happens:** Sono-Eval files are downloaded to a folder called
+`sono-eval` on your computer.
 
 ---
 
 ## Step 3: Create a Virtual Environment
 
-**Why this matters:** This keeps Sono-Eval's dependencies separate from other Python projects on your computer. It prevents conflicts and keeps things organized.
+**Why this matters:** This keeps Sono-Eval's dependencies separate from other
+Python projects on your computer. It prevents conflicts and keeps things
+organized.
 
 **How to do it:**
 
@@ -70,7 +74,8 @@ python3 -m venv venv
 
 ## Step 4: Install Dependencies
 
-**Why this matters:** Sono-Eval needs other software libraries to work. This step downloads and installs them.
+**Why this matters:** Sono-Eval needs other software libraries to work. This
+step downloads and installs them.
 
 **How to do it:**
 
@@ -90,7 +95,8 @@ pip install -e .
 
 ## Step 5: Configure Environment
 
-**Why this matters:** Sono-Eval needs some settings to know how to run. We'll create a configuration file.
+**Why this matters:** Sono-Eval needs some settings to know how to run. We'll
+create a configuration file.
 
 **How to do it:**
 
@@ -106,7 +112,8 @@ cp .env.example .env
 
 ## Step 6: Verify Your Setup
 
-**Why this matters:** This checks that everything is installed correctly before you start.
+**Why this matters:** This checks that everything is installed correctly before
+you start.
 
 **How to do it:**
 
@@ -125,7 +132,8 @@ python verify_setup.py
 
 ## Step 7: Start Sono-Eval
 
-**Why this matters:** This starts the web server so you can access Sono-Eval in your browser.
+**Why this matters:** This starts the web server so you can access Sono-Eval in
+your browser.
 
 **How to do it:**
 
@@ -204,7 +212,8 @@ Once you have Sono-Eval running:
 1. **Complete your first assessment** - Follow the guided flow
 2. **Explore the results** - See what insights you get
 3. **Try different paths** - Assess different skill areas
-4. **Discover hidden features** - Look for easter eggs! (Try pressing `?` for keyboard shortcuts)
+4. **Discover hidden features** - Look for easter eggs! (Try pressing `?`
+   for keyboard shortcuts)
 
 ---
 
@@ -241,4 +250,5 @@ python verify_setup.py
 
 ---
 
-**Remember:** This is a learning tool. Take your time, explore, and don't worry if something doesn't work perfectly the first time!
+**Remember:** This is a learning tool. Take your time, explore, and don't worry
+if something doesn't work perfectly the first time!

@@ -3,7 +3,8 @@
 **Primary experience**: desktop, individual workflows.
 **Optional companion**: mobile-friendly guided assessment.
 
-All critical issues have been fixed. You can now run and preview Sono-Eval as a real user.
+All critical issues have been fixed. You can now run and preview Sono-Eval as a
+real user.
 
 ## 🔧 What Was Fixed
 
@@ -202,6 +203,7 @@ python3 verify_setup.py
 
 ## ✨ You're All Set
 
-Everything is ready. Just follow the quick start steps above and you'll be previewing Sono-Eval in minutes!
+Everything is ready. Just follow the quick start steps above and you'll be
+previewing Sono-Eval in minutes!
 
 **Happy assessing!** 🎯

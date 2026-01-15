@@ -1,8 +1,10 @@
 # Mobile Companion Guide
 
-**Optional, Interactive Companion for Desktop Users**
+Optional, Interactive Companion for Desktop Users
 
-The Sono-Eval Mobile Companion is an optional, mobile-optimized interface that complements the primary desktop workflow. Use it when a guided, touch-friendly flow is helpful, while desktop remains the default experience.
+The Sono-Eval Mobile Companion is an optional, mobile-optimized interface that
+complements the primary desktop workflow. Use it when a guided, touch-friendly
+flow is helpful, while desktop remains the default experience.
 
 ---
 
@@ -52,7 +54,7 @@ The Mobile Companion is a web-based interface designed for mobile devices that:
 
 2. Open your mobile browser and navigate to:
 
-   ```
+   ```text
    http://localhost:8000/mobile
    ```
 
@@ -142,7 +144,7 @@ Detailed feedback including:
 
 ### Architecture
 
-```
+```text
 Mobile Companion
 ├── FastAPI Backend (mobile/app.py)
 │   ├── Page Routes (HTML templates)
@@ -267,7 +269,8 @@ trackEvent('path', 'selected', pathId);
 trackEvent('assessment', 'completed', assessmentId);
 ```
 
-Integrate with your analytics platform (Google Analytics, Mixpanel, etc.) by implementing the `trackEvent` function.
+Integrate with your analytics platform (Google Analytics, Mixpanel, etc.) by
+implementing the `trackEvent` function.
 
 ---
 
@@ -320,25 +323,25 @@ def test_mobile_home():
 
 ### Common Issues
 
-**Issue: Styles not loading**
+#### Issue: Styles not loading
 
 - Check static files are mounted correctly
 - Verify path: `/mobile/static/style.css`
 - Clear browser cache
 
-**Issue: Templates not found**
+#### Issue: Templates not found
 
 - Verify templates directory: `mobile/templates/`
 - Check Jinja2Templates configuration
 - Ensure templates use correct extends/includes
 
-**Issue: API calls failing**
+#### Issue: API calls failing
 
 - Check CORS settings
 - Verify API endpoints are registered
 - Check browser console for errors
 
-**Issue: Session data not persisting**
+#### Issue: Session data not persisting
 
 - SessionStorage is cleared on browser close
 - Private browsing may block storage
@@ -452,4 +455,4 @@ Ideas for contributions:
 
 ---
 
-*Last Updated: January 15, 2026*
+Last Updated: January 15, 2026

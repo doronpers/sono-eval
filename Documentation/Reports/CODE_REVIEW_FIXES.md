@@ -17,7 +17,8 @@
 
 **File**: `src/sono_eval/api/main.py`
 
-- **Issue**: CORS allowed all origins (`allow_origins=["*"]`) which is insecure for production
+- **Issue**: CORS allowed all origins (`allow_origins=["*"]`) which is
+  insecure for production
 - **Fix**:
   - Made CORS origins configurable via `ALLOWED_HOSTS` environment variable
   - Properly parses comma-separated origins
@@ -95,7 +96,8 @@
 ## Security Improvements
 
 1. **CORS Configuration**: Now configurable and secure for production
-2. **Information Disclosure**: Removed sensitive paths and connection details from responses
+2. **Information Disclosure**: Removed sensitive paths and connection details
+   from responses
 3. **Error Handling**: Sanitized error messages prevent information leakage
 
 ## Performance Improvements

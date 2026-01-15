@@ -2,7 +2,8 @@
 
 ## System Instructions
 
-Before starting any task on this repository, read `AGENT_KNOWLEDGE_BASE.md` in the repository root. This file contains:
+Before starting any task on this repository, read `AGENT_KNOWLEDGE_BASE.md` in
+the repository root. This file contains:
 
 - Prime directives (patent compliance, security, design philosophy)
 - Coding standards

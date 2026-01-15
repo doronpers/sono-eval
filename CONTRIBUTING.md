@@ -1,10 +1,12 @@
 # Contributing to Sono-Eval
 
-Thank you for your interest in contributing to Sono-Eval! This document provides guidelines and instructions for contributing.
+Thank you for your interest in contributing to Sono-Eval! This document
+provides guidelines and instructions for contributing.
 
 ## Quick Start (No Terminal)
 
-New to contributing? Start here! You can make your first contribution entirely in your browser:
+New to contributing? Start here! You can make your first contribution entirely
+in your browser:
 
 1. **Fork the repository** (click "Fork" button on GitHub)
 2. **Edit a file in your fork**:
@@ -113,7 +115,8 @@ Before submitting your pull request:
 
 ## Code of Conduct
 
-We are committed to providing a welcoming and inclusive environment. Please be respectful and constructive in all interactions.
+We are committed to providing a welcoming and inclusive environment. Please be
+respectful and constructive in all interactions.
 
 ## How to Contribute
 
@@ -293,7 +296,7 @@ def test_assessment_engine_technical_path():
 
 ## Project Structure
 
-```
+```text
 sono-eval/
 ├── src/sono_eval/       # Source code
 │   ├── assessment/      # Assessment engine
@@ -328,7 +331,7 @@ We especially welcome contributions in:
 - Enhanced analytics dashboards
 - Integration with code platforms
 
-### Documentation
+### Documentation Contributions
 
 - Tutorials and guides
 - API examples
@@ -360,7 +363,8 @@ We especially welcome contributions in:
 
 ## License
 
-By contributing, you agree that your contributions will be licensed under the MIT License.
+By contributing, you agree that your contributions will be licensed under the
+MIT License.
 
 ---
 

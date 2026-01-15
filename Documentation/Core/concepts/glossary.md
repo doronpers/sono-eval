@@ -1,6 +1,7 @@
 # Glossary
 
-A comprehensive reference of terms, concepts, technologies, and tools used in the Sono-Eval system.
+A comprehensive reference of terms, concepts, technologies, and tools used in
+the Sono-Eval system.
 
 ---
 

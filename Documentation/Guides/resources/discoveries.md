@@ -1,14 +1,18 @@
 # Discoveries & Hidden Features
 
-**For the Curious Explorer**
+For the Curious Explorer
 
-Sono-Eval includes hidden features and easter eggs that reward exploration with valuable functionality. These aren't required to use the system, but they unlock additional insights and tools for those who discover them.
+Sono-Eval includes hidden features and easter eggs that reward exploration
+with valuable functionality. These aren't required to use the system, but they
+unlock additional insights and tools for those who discover them.
 
 ---
 
 ## 🎯 Discovery Philosophy
 
-Every hidden feature provides **real value** - not just novelty. When you discover something, you're unlocking useful functionality that enhances your experience.
+Every hidden feature provides **real value** - not just novelty. When you
+discover something, you're unlocking useful functionality that enhances your
+experience.
 
 ---
 
@@ -40,7 +44,8 @@ Every hidden feature provides **real value** - not just novelty. When you discov
 - Comparison tools
 - Expert-level analysis features
 
-**Value:** Deeper insights into your assessments and ability to compare across different evaluations
+**Value:** Deeper insights into your assessments and ability to compare across
+different evaluations
 
 ---
 
@@ -50,7 +55,8 @@ Every hidden feature provides **real value** - not just novelty. When you discov
 
 **How to discover:** Click the Sono-Eval logo three times quickly
 
-**What you unlock:** Comprehensive keyboard shortcuts cheat sheet and power user tips
+**What you unlock:** Comprehensive keyboard shortcuts cheat sheet and power user
+tips
 
 **Value:** Learn all available shortcuts and productivity tips
 
@@ -100,7 +106,8 @@ Every hidden feature provides **real value** - not just novelty. When you discov
 
 ### `// deep dive` Comment
 
-**How to discover:** Add `// deep dive` or `// sono-eval: analyze-architecture` to your code
+**How to discover:** Add `// deep dive` or `// sono-eval: analyze-architecture`
+to your code
 
 **What you unlock:** Bonus pattern recognition analysis
 
@@ -120,7 +127,8 @@ Every hidden feature provides **real value** - not just novelty. When you discov
 
 ### Complete All Paths
 
-**How to discover:** Complete assessments for all available paths (Technical, Design, Collaboration, Problem Solving)
+**How to discover:** Complete assessments for all available paths (Technical,
+Design, Collaboration, Problem Solving)
 
 **What you unlock:** Full Profile Analysis mode with cross-path insights
 
@@ -253,4 +261,5 @@ If you're stuck or want hints:
 
 ---
 
-**Remember:** The main features work perfectly without discovering anything. These are bonuses for the curious! 🎉
+**Remember:** The main features work perfectly without discovering anything.
+These are bonuses for the curious! 🎉

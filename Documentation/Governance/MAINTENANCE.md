@@ -21,7 +21,8 @@ Several documentation files contain hardcoded version numbers and dates:
 
 ### Automation Recommendation
 
-Consider implementing a script or CI/CD step to automatically update these values across all files when releasing a new version. Example approaches:
+Consider implementing a script or CI/CD step to automatically update these
+values across all files when releasing a new version. Example approaches:
 
 1. Use templating (Jinja2, mustache)
 2. Pre-release script with find/replace
@@ -46,7 +47,8 @@ Current placeholder: `support@sono-eval.example`
 **Action Required**: Update to actual support email before production deployment:
 
 ```bash
-find . -name "*.md" -exec sed -i 's/support@sono-eval\.example/actual@email.com/g' {} \;
+find . -name "*.md" -exec sed -i \
+  's/support@sono-eval\.example/actual@email.com/g' {} \;
 ```
 
 ## Pre-commit Hooks
@@ -67,4 +69,5 @@ pre-commit run mypy --all-files
 
 ---
 
-**Maintainer**: Update this file when adding new documentation or changing maintenance procedures.
+**Maintainer**: Update this file when adding new documentation or changing
+maintenance procedures.

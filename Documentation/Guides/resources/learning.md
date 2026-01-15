@@ -1,6 +1,7 @@
 # Learning Resources
 
-This guide provides resources to help you understand and use the Sono-Eval system effectively.
+This guide provides resources to help you understand and use the Sono-Eval
+system effectively.
 
 ## Core Concepts
 
@@ -333,18 +334,18 @@ Create custom Superset dashboards for your needs:
 
 ### Common Issues
 
-**Issue: Low confidence scores**
+#### Issue: Low confidence scores
 
 - Solution: Provide more context and evidence in submissions
 - Check assessment configuration
 
-**Issue: Model loading errors**
+#### Issue: Model loading errors
 
 - Solution: Verify model cache directory permissions
 - Ensure sufficient disk space
 - Check internet connection for downloads
 
-**Issue: Memory storage errors**
+#### Issue: Memory storage errors
 
 - Solution: Check file permissions on storage path
 - Verify disk space
