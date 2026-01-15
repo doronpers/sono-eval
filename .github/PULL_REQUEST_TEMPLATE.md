@@ -94,14 +94,21 @@ pytest
 
 <!-- Ensure all items are checked before requesting review -->
 
-- [ ] My code follows the style guidelines of this project
+- [ ] My code follows the style guidelines of this project (Black, line length 100)
 - [ ] I have performed a self-review of my own code
 - [ ] I have commented my code, particularly in hard-to-understand areas
 - [ ] I have made corresponding changes to the documentation
 - [ ] My changes generate no new warnings
 - [ ] I have added tests that prove my fix is effective or that my feature works
 - [ ] New and existing unit tests pass locally with my changes
+- [ ] Linting passes (`flake8`)
+- [ ] No secrets or credentials are included in this change
 - [ ] Any dependent changes have been merged and published
+
+## Developer tips
+- Install pre-commit hooks: `pre-commit install` (see `CONTRIBUTING.md` and `./scripts/fix-pre-commit-ssl.sh` if you encounter SSL issues).
+- Use Pydantic v2 helpers: prefer `model_dump()` / `model_validate()` in tests and serialization checks.
+- When changing APIs, update OpenAPI docs and add explicit tests for schema compatibility.
 
 ## Additional Notes
 

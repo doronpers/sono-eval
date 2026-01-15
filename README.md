@@ -82,6 +82,16 @@ New to open source? No problem! Here are small first contributions:
 
 See our **[beginner-friendly contributing guide](CONTRIBUTING.md#quick-start-no-terminal)** for step-by-step instructions.
 
+**Developer note:** To keep contributions consistent, install the project's pre-commit hooks locally:
+
+```bash
+pre-commit install
+# If you run into SSL issues installing hooks, run:
+./scripts/fix-pre-commit-ssl.sh
+```
+
+See `CONTRIBUTING.md` for full details on the development workflow.
+
 ### Common questions
 - **What's an endpoint?** A URL you can call to do something (like `/health` to check if the server is running)
 - **What's JSON?** A simple text format for data, like `{"name": "value"}`
