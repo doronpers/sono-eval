@@ -8,7 +8,9 @@
 
 ## Overview
 
-This roadmap outlines the path from the current alpha release (v0.1.0) to a production-ready v1.0.0. The improvements are organized by priority and release milestone.
+This roadmap outlines the path from the current alpha release (v0.1.0) to a
+production-ready v1.0.0. The improvements are organized by priority and release
+milestone.
 
 ---
 
