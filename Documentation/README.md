@@ -9,6 +9,10 @@ Welcome to the Sono-Eval documentation. This is your single source of truth for 
 
 ## 🗺️ Navigation by Role
 
+### 🚦 Start Here (Landing Guide)
+
+- **[Start Here](START_HERE.md)** - Single landing page for first-time readers
+
 ### 👋 For Individuals (Desktop)
 
 1. **[Candidate Guide](Guides/resources/candidate-guide.md)** - Your starting point

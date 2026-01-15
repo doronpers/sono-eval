@@ -15,7 +15,7 @@
 > Features are being added and refined, APIs may change, and the system
 > is not yet production-ready. Use at your own risk.
 
-**[Start Here (Beginner-Friendly)](#-start-here-beginner-friendly)** • **[Quick Start](#-quick-start)** • **[Documentation](documentation/README.md)** • **[Key Features](#-key-features)** • **[Usage Examples](#-usage-examples)**
+**[Start Here (Landing Guide)](documentation/START_HERE.md)** • **[Start Here (Beginner-Friendly)](#-start-here-beginner-friendly)** • **[Quick Start](#-quick-start)** • **[Documentation](documentation/README.md)** • **[Key Features](#-key-features)** • **[Usage Examples](#-usage-examples)**
 
 ---
 

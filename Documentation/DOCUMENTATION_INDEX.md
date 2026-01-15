@@ -10,6 +10,7 @@ category.**
 
 ## 📚 Navigation
 
+- **[Start Here](START_HERE.md)** - Single landing page for first-time readers
 - **[Documentation Hub](README.md)** - Start here for role-based navigation
 - **[Quick Start Guide](Guides/QUICK_START.md)** - Get running in 5 minutes
 - **[Architecture Overview](Core/concepts/architecture.md)** - System design and
@@ -125,6 +126,14 @@ category.**
 
 ---
 
+## Landing Documentation
+
+**Location**: `documentation/`
+
+- **[Start Here](START_HERE.md)** - Single landing page for first-time readers
+
+---
+
 ## Documentation Statistics
 
 | Category | File Count | Status |
@@ -134,7 +143,8 @@ category.**
 | Reports | 13 | ✅ Complete |
 | Governance | 5 | ✅ Complete |
 | Root | 4 | ✅ Complete |
-| **Total** | **45** | ✅ Organized |
+| Landing | 1 | ✅ Complete |
+| **Total** | **46** | ✅ Organized |
 
 ---
 
@@ -144,9 +154,10 @@ category.**
 
 **For Candidates**:
 
-1. Start with [Candidate Guide](Guides/resources/candidate-guide.md)
-2. Read [Quick Start](Guides/QUICK_START.md)
-3. Check [FAQ](Guides/faq.md) for questions
+1. Start with [Start Here](START_HERE.md)
+2. Continue with [Candidate Guide](Guides/resources/candidate-guide.md)
+3. Read [Quick Start](Guides/QUICK_START.md)
+4. Check [FAQ](Guides/faq.md) for questions
 
 **For Users**:
 
