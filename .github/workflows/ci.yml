@@ -54,11 +54,14 @@ jobs:
 
       - name: Check for whitespace errors
         run: |
+          # Exclude binary/vendor directories from whitespace checks
+          EXCLUDE_PATHS=":(exclude)venv/ :(exclude)venv-test/ :(exclude)node_modules/ :(exclude).mypy_cache/ :(exclude)__pycache__/ :(exclude)models/cache/ :(exclude)*.pyc :(exclude)*.pyo :(exclude)*.so :(exclude)*.egg-info/"
+          
           if [ "${{ github.event_name }}" = "pull_request" ]; then
             git fetch origin "${{ github.base_ref }}" --depth=1
-            git diff --check "origin/${{ github.base_ref }}...${{ github.sha }}"
+            git diff --check "origin/${{ github.base_ref }}...${{ github.sha }}" -- . $EXCLUDE_PATHS
           else
-            git diff --check "${{ github.event.before }}...${{ github.sha }}"
+            git diff --check "${{ github.event.before }}...${{ github.sha }}" -- . $EXCLUDE_PATHS
           fi
 
   secrets:
