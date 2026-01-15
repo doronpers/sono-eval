@@ -35,9 +35,9 @@ lint: ## Run linting checks
 	@echo "Lint check complete!"
 
 clean: ## Clean up generated files
-	find . -type d -name "__pycache__" -exec rm -rf {} +
+	find . -depth -type d -name "__pycache__" -exec rm -rf {} + || true
 	find . -type f -name "*.pyc" -delete
-	find . -type d -name "*.egg-info" -exec rm -rf {} +
+	find . -depth -type d -name "*.egg-info" -exec rm -rf {} + || true
 	rm -rf .pytest_cache
 	rm -rf htmlcov
 	rm -rf dist build
