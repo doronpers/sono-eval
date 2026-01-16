@@ -70,11 +70,47 @@ category.**
 
 - **[Candidate Guide](Guides/resources/candidate-guide.md)** - Welcome guide for
   candidates
-- **[Learning Resources](Guides/resources/learning.md)** - Tutorials and
-  educational content
+- **[Learning Resources](Guides/resources/learning.md)** - Core concepts and
+  tutorials
 - **[Examples](Guides/resources/examples/README.md)** - Practical code examples
 
 **Total Guide Files**: 20 files
+
+---
+
+## Learning Resources (Beginner-Friendly Guides)
+
+**Location**: `documentation/Learning/`
+
+### Philosophy & Framework
+
+- **[Dark Horse Approach](Learning/Philosophy/dark-horse-approach.md)** - Individualized learning framework
+- **[Micro-Motives Framework](Learning/Philosophy/micro-motives-framework.md)** - Understanding what energizes learners
+
+### Learning Paths
+
+- **[Complete Beginner Path](Learning/Paths/complete-beginner-path.md)** - Month-by-month roadmap for absolute beginners
+- **[Technical Leader Learning](Learning/Paths/technical-leader-learning.md)** - Path for managers learning to code
+
+### Exercises
+
+- **[Discover Your Micro-Motives](Learning/Exercises/discover-your-micro-motives.md)** - Self-discovery exercise
+
+### Templates
+
+- **[Learning Journal](Learning/Templates/learning-journal.md)** - Progress tracking template
+- **[Pull Request Description](Learning/Templates/pull-request-description.md)** - PR template
+- **[Project README](Learning/Templates/project-readme.md)** - README template
+
+### Guides
+
+- **[GitHub Basics](Learning/Guides/github-basics/)** - Beginner-friendly GitHub documentation
+- **[AI Tools](Learning/Guides/ai-tools/)** - AI coding tools guide
+- **[Workflow Building](Learning/Guides/workflow-building/)** - Personal workflow development
+
+**Total Learning Files**: 30+ files
+
+**See**: [Learning Resources Overview](Learning/README.md) for complete index
 
 ---
 

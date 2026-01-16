@@ -1,5 +1,9 @@
 # Sono-Eval Improvement Roadmap
 
+**⚠️ NOTE**: This document has been consolidated into [ROADMAP.md](../../../ROADMAP.md).  
+Please refer to ROADMAP.md for the current TODO list and roadmap.  
+This file is kept for detailed implementation guides and code examples.
+
 **Version**: 0.1.0 → 1.0.0  
 **Last Updated**: January 10, 2026  
 **Status**: Planning Phase

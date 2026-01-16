@@ -8,10 +8,17 @@ guide that points you to the right place without duplicating content.
 
 ## ✅ Choose your path
 
-### 👋 I’m a candidate or learner
+### 👋 I'm a candidate or learner
 
 Start with the **[Candidate Guide](Guides/resources/candidate-guide.md)**. It
 explains the experience, expectations, and how to get meaningful feedback.
+
+**New to coding or GitHub?** Check out our **[Learning Resources](Learning/README.md)**:
+
+- Complete beginner learning paths
+- GitHub basics guide
+- AI tools tutorials
+- Micro-motives discovery exercises
 
 ### 🧭 I want a fast demo
 

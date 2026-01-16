@@ -248,7 +248,8 @@ sono-eval assess run \
 - **[FAQ](documentation/Guides/faq.md)** - Frequently asked questions
 - **[Troubleshooting](documentation/Guides/troubleshooting.md)** - Solutions to
   common issues
-- **[Learning Resources](documentation/Guides/resources/learning.md)** -
+- **[Learning Resources](documentation/Learning/README.md)** - Beginner-friendly guides, learning paths, and tutorials
+- **[Core Learning Concepts](documentation/Guides/resources/learning.md)** -
   Tutorials and guides
 
 📖 **[Browse All Documentation](documentation/README.md)**
@@ -489,6 +490,8 @@ You're free to use, modify, and distribute it. See the LICENSE file for details.
 ---
 
 ## 🗺️ Roadmap
+
+For the complete roadmap and TODO list, see [ROADMAP.md](ROADMAP.md).
 
 ### Current (v0.1.0 - Active Development)
 

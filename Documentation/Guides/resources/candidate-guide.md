@@ -291,9 +291,14 @@ Sono-Eval helps with all three!
 
 ### Learning Resources
 
+- **[Complete Learning Guide](../../Learning/README.md)** - Beginner-friendly guides and learning paths
+  - **[Complete Beginner Path](../../Learning/Paths/complete-beginner-path.md)** - Month-by-month roadmap for absolute beginners
+  - **[GitHub Basics](../../Learning/Guides/github-basics/)** - Beginner-friendly GitHub documentation
+  - **[AI Tools Guide](../../Learning/Guides/ai-tools/)** - Using AI coding tools effectively
+  - **[Micro-Motives Discovery](../../Learning/Exercises/discover-your-micro-motives.md)** - Understand what energizes you
 - **[First-Time Setup Guide](first-time-setup.md)** - Step-by-step setup for
   remote candidates
-- **[Learning Guide](learning.md)** - Tutorials and best practices
+- **[Learning Guide](learning.md)** - Core concepts and tutorials
 - **[Examples](examples/)** - Sample submissions with explanations
 - **[Discoveries Guide](discoveries.md)** - Hidden features and easter eggs (for
   the curious!)

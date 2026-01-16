@@ -42,7 +42,7 @@ system effectively.
 
 ### 3. Dark Horse Model & Micro-Motives
 
-Based on the tex-assist-coding model, we track intrinsic motivations:
+Sono-Eval is built on individualized learning principles that recognize each person's unique path to excellence. We track intrinsic motivations through micro-motives:
 
 **Micro-Motives:**
 
@@ -54,7 +54,10 @@ Based on the tex-assist-coding model, we track intrinsic motivations:
 
 **Resources:**
 
-- [Dark Horse Theory](https://www.darkhorseinstitute.com/)
+- **[Dark Horse Approach](../../Learning/Philosophy/dark-horse-approach.md)** - Complete framework for individualized learning
+- **[Micro-Motives Framework](../../Learning/Philosophy/micro-motives-framework.md)** - Understanding what energizes you
+- **[Discover Your Micro-Motives Exercise](../../Learning/Exercises/discover-your-micro-motives.md)** - Self-discovery exercise
+- [Dark Horse Theory](https://www.darkhorseinstitute.com/) - Original research
 - Research on individualized learning paths
 
 ### 4. Semantic Tagging with T5
