@@ -1,6 +1,8 @@
 # Learning Resources
 
-This directory contains reusable learning resources extracted from tex-assist-coding, structured for use across multiple repositories.
+This directory contains reusable learning resources extracted from [tex-assist-coding](https://github.com/doronpers/tex-assist-coding/tree/main/reusable), structured for use across multiple repositories.
+
+**Source Repository**: The original source of these resources is [tex-assist-coding/reusable](https://github.com/doronpers/tex-assist-coding/tree/main/reusable). This directory is a copy/extraction for use within sono-eval.
 
 ## 📚 Contents
 
@@ -56,9 +58,9 @@ For learning resources, see [sono-eval Learning Resources](https://github.com/do
 ## 📝 Notes
 
 - These resources are designed to be **portable and reusable**
+- **Source**: Original content is maintained in [tex-assist-coding/reusable](https://github.com/doronpers/tex-assist-coding/tree/main/reusable)
 - Update paths/links when copying to other repos
-- Keep this directory as the **single source of truth** for learning resources
-- Contributions welcome to expand these resources
+- For contributions or updates, consider contributing back to tex-assist-coding
 
 ## 🔗 Related Resources
 

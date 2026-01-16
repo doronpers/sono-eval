@@ -563,7 +563,7 @@ Now you understand trust:
 
 - **[Discovery Exercises](discovery-exercises.md)** - Practice evaluation
 - **[Workflow Building](../../03-workflow-building/README.md)** - Integrate AI safely
-- **[Examples](../../examples/01-hello-api/)** - See trust in action
+- **Examples**: See [tex-assist-coding examples](https://github.com/doronpers/tex-assist-coding/tree/main/examples) for project ideas
 
 ---
 

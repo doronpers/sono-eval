@@ -463,7 +463,7 @@ Now that you understand PRs:
 - **[When Things Break](when-things-break.md)** - Fix conflicts
 
 Ready to practice?
-→ **[Exercises: GitHub Fundamentals](../../exercises/github-fundamentals/04-pull-requests.md)**
+→ See [tex-assist-coding exercises](https://github.com/doronpers/tex-assist-coding/tree/main/exercises) for practice activities
 
 ---
 

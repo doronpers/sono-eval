@@ -144,19 +144,19 @@ You can read a simple file and understand its purpose.
 
 **Why:** Hands-on experience builds real understanding.
 
-**Project:** Build the [Hello API](../../examples/01-hello-api/)
+**Project:** Build a simple API or application
 
 **Why This Project:**
 
 - Simple enough to complete in hours
 - Covers fundamental concepts
-- Uses modern framework (FastAPI)
+- Uses modern frameworks
 - Result you can demo
 - Foundation for understanding your team's APIs
 
 **Process:**
 
-1. Follow [HOW_TO_BUILD.md](../../examples/01-hello-api/HOW_TO_BUILD.md)
+1. See [tex-assist-coding examples](https://github.com/doronpers/tex-assist-coding/tree/main/examples) for project ideas and build guides
 2. Use AI assistance liberally
 3. Focus on understanding, not memorizing
 4. Take notes on concepts that click

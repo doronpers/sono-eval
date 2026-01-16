@@ -746,7 +746,7 @@ Track these metrics:
 → **[Choosing Stages](choosing-stages.md)** - Customize your process
 
 **Build something:**
-→ **[Examples](../../examples/)** - Apply your workflow
+→ See [tex-assist-coding examples](https://github.com/doronpers/tex-assist-coding/tree/main/examples) for project ideas
 
 ---
 

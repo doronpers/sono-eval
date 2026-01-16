@@ -183,8 +183,8 @@ Not bad! Take a breath. You're doing great.
 
 ### If You Want to Build Something
 
-- **[Examples](../../examples/01-hello-api/)** - Build your first API
-- **[Exercises](../../exercises/github-fundamentals/)** - Practice activities
+- **Examples**: See [tex-assist-coding examples](https://github.com/doronpers/tex-assist-coding/tree/main/examples) for project ideas
+- **Exercises**: Practice activities are available in the [source repository](https://github.com/doronpers/tex-assist-coding/tree/main/exercises)
 
 ## Scavenger Hunt (Optional Fun)
 
@@ -247,7 +247,7 @@ Great! Try the exercises or build an example project. You've got the basics down
 - Edit your README.md to describe yourself
 - Create a file called `ideas.md` and list things you want to build
 - Browse [awesome lists](https://github.com/topics/awesome) for inspiration
-- Try an exercise: [Create a Repo Exercise](../../exercises/github-fundamentals/01-create-repo.md)
+- Try an exercise: See [tex-assist-coding exercises](https://github.com/doronpers/tex-assist-coding/tree/main/exercises) for practice activities
 
 **If you broke something:**
 
@@ -266,10 +266,10 @@ You've explored GitHub! Choose your path:
 → [AI Tools Overview](../02-ai-tools/README.md)
 
 **Want to practice GitHub?**
-→ [GitHub Exercises](../../exercises/github-fundamentals/)
+→ See [tex-assist-coding exercises](https://github.com/doronpers/tex-assist-coding/tree/main/exercises) for practice activities
 
 **Want to build something?**
-→ [Hello API Example](../../examples/01-hello-api/)
+→ See [tex-assist-coding examples](https://github.com/doronpers/tex-assist-coding/tree/main/examples) for project ideas
 
 ## Remember
 

@@ -430,7 +430,7 @@ Ready to dive deeper?
 Or jump ahead to:
 
 - **[Workflow Building](../03-workflow-building/README.md)** - Design your process
-- **[Examples](../../examples/01-hello-api/)** - Build something now
+- **Examples**: See [tex-assist-coding examples](https://github.com/doronpers/tex-assist-coding/tree/main/examples) for project ideas
 
 ## You Might Be Ready for [Workflow Building](../03-workflow-building/README.md) When
 

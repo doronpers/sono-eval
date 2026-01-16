@@ -642,7 +642,7 @@ Agent: Let's check dependencies first:
 - **[When Things Break](when-things-break.md)** - Manual fixes for common issues
 - **[Common Mistakes](common-mistakes.md)** - Prevention strategies
 - **[AI Tools](../02-ai-tools/README.md)** - Learn more about AI assistants
-- **[Exercises](../../exercises/github-fundamentals/)** - Practice safely
+- **Exercises**: See [tex-assist-coding exercises](https://github.com/doronpers/tex-assist-coding/tree/main/exercises) for practice activities
 
 ---
 

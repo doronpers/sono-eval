@@ -654,7 +654,7 @@ Cut and keep this near your workspace:
 → **[Evolving Your Process](evolving-your-process.md)**
 
 **Start building:**
-→ **[Examples](../../examples/)** - Apply your workflow
+→ See [tex-assist-coding examples](https://github.com/doronpers/tex-assist-coding/tree/main/examples) for project ideas
 
 ---
 

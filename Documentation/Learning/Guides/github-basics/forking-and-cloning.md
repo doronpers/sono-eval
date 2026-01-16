@@ -381,7 +381,7 @@ Now you understand forking and cloning:
 - **[Pull Requests Explained](pull-requests-explained.md)** - Contribute from your fork
 
 Ready to practice?
-→ **[Exercises: Forking and Cloning](../../exercises/github-fundamentals/03-branches.md)**
+→ See [tex-assist-coding exercises](https://github.com/doronpers/tex-assist-coding/tree/main/exercises) for practice activities
 
 ---
 

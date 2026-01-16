@@ -94,7 +94,7 @@ Ask ChatGPT: "Explain what a git repository is like I'm 5 years old"
 **Follow this:**
 
 1. Install Python (python.org)
-2. Follow [Hello API](../examples/01-hello-api/) - Don't just read, actually build it!
+2. **Build a simple project**: Start with a basic API or web app. See [tex-assist-coding examples](https://github.com/doronpers/tex-assist-coding/tree/main/examples) for project ideas.
 3. Use AI when stuck:
 
    ```
@@ -214,9 +214,7 @@ Instead of "good first projects," ask: **What problem do I actually want to solv
 
 **Read patterns:**
 
-- [API Basics](../documentation/04-patterns/api-basics/)
-- [Testing](../documentation/04-patterns/testing/)
-- [Security](../documentation/04-patterns/security/)
+**Note**: Advanced patterns (API basics, testing, security) are available in the [source repository](https://github.com/doronpers/tex-assist-coding/tree/main/documentation/04-patterns).
 
 **Improve your Month 2 project:**
 

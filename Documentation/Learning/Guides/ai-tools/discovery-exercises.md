@@ -584,7 +584,7 @@ After completing these exercises:
 **You're ready for:**
 
 - **[Workflow Building](../../03-workflow-building/README.md)** - Design your process
-- **[Examples](../../examples/01-hello-api/)** - Build real projects
+- **Examples**: See [tex-assist-coding examples](https://github.com/doronpers/tex-assist-coding/tree/main/examples) for project ideas
 - **[Patterns](../../04-patterns/README.md)** - Learn common solutions
 
 **Keep practicing:**

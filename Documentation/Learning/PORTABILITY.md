@@ -116,6 +116,7 @@ Feel free to:
 
 ## Maintenance
 
-- **Primary source**: sono-eval/documentation/Learning
-- **Updates**: Contribute improvements back to sono-eval
+- **Primary source**: [tex-assist-coding/reusable](https://github.com/doronpers/tex-assist-coding/tree/main/reusable)
+- **This directory**: Copy/extraction for sono-eval use
+- **Updates**: For improvements, consider contributing to tex-assist-coding first
 - **Versioning**: Consider tagging versions if breaking changes occur

@@ -568,7 +568,7 @@ Now that you know common pitfalls:
 
 - **[When Things Break](when-things-break.md)** - Detailed fixes
 - **[Branches and Commits](branches-and-commits.md)** - Understanding the fundamentals
-- **[Exercises](../../exercises/github-fundamentals/)** - Practice safely
+- **Exercises**: See [tex-assist-coding exercises](https://github.com/doronpers/tex-assist-coding/tree/main/exercises) for practice activities
 
 ---
 

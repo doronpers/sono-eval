@@ -443,7 +443,7 @@ Adjust workflow accordingly!
 → Read **[AI Tools](../02-ai-tools/README.md)** - Compare and choose tools
 
 **If you're ready to experiment:**
-→ Try the **[Examples](../../examples/)** - Build real projects
+→ See [tex-assist-coding examples](https://github.com/doronpers/tex-assist-coding/tree/main/examples) for project ideas
 
 **If you want examples:**
 → See **[Workflow Examples](workflow-examples.md)** - Real scenarios with complete workflows
