@@ -66,7 +66,7 @@
             if (konamiSequence.length > konamiCode.length) {
                 konamiSequence.shift();
             }
-            
+
             if (konamiSequence.join(',') === konamiCode.join(',')) {
                 triggerEasterEgg('konami_code');
                 konamiSequence = [];
@@ -79,7 +79,7 @@
             logo.addEventListener('click', function() {
                 logoClickCount++;
                 clearTimeout(logoClickTimer);
-                
+
                 if (logoClickCount === 3) {
                     triggerEasterEgg('triple_click_logo');
                     logoClickCount = 0;
@@ -103,7 +103,7 @@
                 e.preventDefault();
                 showKeyboardShortcuts();
             }
-            
+
             // d for debug mode
             if (e.key === 'd' && e.ctrlKey && !e.metaKey && !e.altKey) {
                 e.preventDefault();
@@ -164,12 +164,12 @@
                 </div>
             </div>
         `;
-        
+
         document.body.appendChild(notification);
-        
+
         // Animate in
         setTimeout(() => notification.classList.add('show'), 10);
-        
+
         // Remove after 5 seconds
         setTimeout(() => {
             notification.classList.remove('show');
@@ -206,9 +206,9 @@
                 </div>
             </div>
         `;
-        
+
         document.body.appendChild(modal);
-        
+
         // Close on outside click
         modal.addEventListener('click', function(e) {
             if (e.target === modal) {
@@ -221,7 +221,7 @@
     function toggleDebugMode() {
         const isDebug = localStorage.getItem('sono_eval_debug_mode') === 'true';
         localStorage.setItem('sono_eval_debug_mode', (!isDebug).toString());
-        
+
         if (!isDebug) {
             showDiscoveryNotification('Debug Mode', 'Debug information is now visible. Check console for details.');
         }
@@ -233,7 +233,7 @@
         if (!score) return;
 
         const explanation = `This score is calculated based on multiple factors including code quality, problem-solving approach, and best practices. Each path evaluates different aspects of your work.`;
-        
+
         if (window.sonoEval && window.sonoEval.showSuccess) {
             window.sonoEval.showSuccess(`<strong>Score Explanation:</strong><br>${explanation}`);
         } else {
@@ -246,7 +246,7 @@
         // Check if all paths completed
         const completedPaths = JSON.parse(sessionStorage.getItem('completed_paths') || '[]');
         const allPaths = ['technical', 'design', 'collaboration', 'problem_solving'];
-        
+
         if (allPaths.every(p => completedPaths.includes(p))) {
             triggerEasterEgg('all_paths_complete');
         }

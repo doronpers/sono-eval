@@ -26,11 +26,11 @@
             <button class="toggle-btn active" data-method="paste" type="button" aria-pressed="true">Paste Code</button>
             <button class="toggle-btn" data-method="upload" type="button" aria-pressed="false">Upload File</button>
         </div>
-        
+
         <!-- Paste Method -->
         <div class="input-paste" id="paste-input">
-            <textarea 
-                id="code-textarea" 
+            <textarea
+                id="code-textarea"
                 class="code-editor"
                 placeholder="Paste your code here..."
                 aria-label="Code input"
@@ -40,7 +40,7 @@
                 <span id="char-count">0</span> characters
             </div>
         </div>
-        
+
         <!-- Upload Method -->
         <div class="input-upload hidden" id="upload-input">
             <div class="upload-zone" id="drop-zone" role="button" tabindex="0" aria-label="File upload drop zone">
@@ -54,7 +54,7 @@
                 <button class="remove-file" type="button" aria-label="Remove file">×</button>
             </div>
         </div>
-        
+
         <!-- Validation Feedback -->
         <div class="validation-feedback hidden" id="validation-feedback" role="alert">
             <span class="feedback-icon"></span>
@@ -119,7 +119,7 @@ document.querySelectorAll('.toggle-btn').forEach(btn => {
     btn.addEventListener('click', function() {
         const method = this.dataset.method;
         currentMethod = method;
-        
+
         // Update buttons
         document.querySelectorAll('.toggle-btn').forEach(b => {
             b.classList.remove('active');
@@ -127,11 +127,11 @@ document.querySelectorAll('.toggle-btn').forEach(btn => {
         });
         this.classList.add('active');
         this.setAttribute('aria-pressed', 'true');
-        
+
         // Show/hide sections
         document.getElementById('paste-input').classList.toggle('hidden', method !== 'paste');
         document.getElementById('upload-input').classList.toggle('hidden', method !== 'upload');
-        
+
         // Validate
         validateInput();
     });
@@ -178,18 +178,18 @@ function handleFile(file) {
     // Validate file type
     const allowedExts = ['.py', '.js', '.ts', '.java', '.go', '.rs', '.rb', '.cpp', '.c', '.cs'];
     const fileExt = '.' + file.name.split('.').pop().toLowerCase();
-    
+
     if (!allowedExts.includes(fileExt)) {
         showValidation('error', `File type ${fileExt} not supported. Allowed: ${allowedExts.join(', ')}`);
         return;
     }
-    
+
     // Validate file size (10MB limit)
     if (file.size > 10 * 1024 * 1024) {
         showValidation('error', 'File too large. Maximum size: 10MB');
         return;
     }
-    
+
     uploadedFile = file;
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -224,13 +224,13 @@ codeTextarea.addEventListener('input', () => {
 
 // Validation
 function validateInput() {
-    const hasContent = currentMethod === 'paste' 
+    const hasContent = currentMethod === 'paste'
         ? codeTextarea.value.trim().length > 0
         : uploadedFile !== null && codeContent.length > 0;
-    
+
     const submitBtn = document.getElementById('submit-btn');
     submitBtn.disabled = !hasContent;
-    
+
     if (hasContent) {
         hideValidation();
     } else {
@@ -242,7 +242,7 @@ function showValidation(type, message) {
     const feedback = document.getElementById('validation-feedback');
     const icon = feedback.querySelector('.feedback-icon');
     const msg = feedback.querySelector('.feedback-message');
-    
+
     feedback.classList.remove('hidden', 'error', 'success', 'info');
     feedback.classList.add(type);
     icon.textContent = type === 'error' ? '⚠️' : type === 'success' ? '✓' : 'ℹ️';
@@ -260,12 +260,12 @@ document.getElementById('submit-btn').addEventListener('click', async function()
         showValidation('error', 'Please provide code to assess');
         return;
     }
-    
+
     // Show processing state
     document.getElementById('code-input').classList.add('hidden');
     document.getElementById('processing-section').classList.remove('hidden');
     this.disabled = true;
-    
+
     // Animate processing steps
     const steps = document.querySelectorAll('.proc-step');
     const tips = [
@@ -273,7 +273,7 @@ document.getElementById('submit-btn').addEventListener('click', async function()
         'Evaluating technical skills and best practices...',
         'Generating personalized insights...'
     ];
-    
+
     steps.forEach((step, index) => {
         setTimeout(() => {
             step.querySelector('.proc-icon').textContent = '✓';
@@ -283,14 +283,14 @@ document.getElementById('submit-btn').addEventListener('click', async function()
             }
         }, (index + 1) * 2000);
     });
-    
+
     try {
         // Prepare content
         const content = {};
         selectedPaths.forEach(path => {
             content[`content_${path}`] = codeContent;
         });
-        
+
         const response = await fetch('/mobile/api/assess', {
             method: 'POST',
             headers: {
@@ -306,13 +306,13 @@ document.getElementById('submit-btn').addEventListener('click', async function()
                 }
             })
         });
-        
+
         const result = await response.json();
-        
+
         if (result.success) {
             // Store result in sessionStorage for results page
             sessionStorage.setItem('lastAssessmentResult', JSON.stringify(result.result));
-            
+
             // Redirect to results
             window.location.href = `/mobile/results?assessment_id=${result.assessment_id}&candidate_id=${candidateId}`;
         } else {

@@ -1347,14 +1347,14 @@ body {
     .navigation-buttons {
         grid-template-columns: 1fr;
     }
-    
+
     .easter-egg-notification {
         right: 0.5rem;
         left: 0.5rem;
         max-width: none;
         transform: translateY(-200px);
     }
-    
+
     .easter-egg-notification.show {
         transform: translateY(0);
     }

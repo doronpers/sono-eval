@@ -1,7 +1,7 @@
-version: '3.8'
+version: "3.8"
 
 # ⚠️ SECURITY WARNING: This docker-compose.yml contains DEFAULT CREDENTIALS for development only!
-# 
+#
 # Default credentials in this file:
 #   - PostgreSQL: postgres/postgres
 #   - Superset: admin/admin
@@ -23,9 +23,9 @@ services:
       dockerfile: Dockerfile
     container_name: sono-eval-app
     ports:
-      - "8001:8000"  # Changed external port to 8001 to avoid conflict
+      - "8001:8000" # Changed external port to 8001 to avoid conflict
     environment:
-      - APP_ENV=development  # Development setup with default credentials
+      - APP_ENV=development # Development setup with default credentials
       - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/sono_eval
       - REDIS_HOST=redis
       - REDIS_PORT=6379
@@ -50,10 +50,10 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '2'
+          cpus: "2"
           memory: 4G
         reservations:
-          cpus: '1'
+          cpus: "1"
           memory: 2G
 
   # PostgreSQL database
@@ -63,7 +63,7 @@ services:
     environment:
       # ⚠️ DEVELOPMENT ONLY: Change these credentials for production!
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres  # INSECURE: Change in production
+      - POSTGRES_PASSWORD=postgres # INSECURE: Change in production
       - POSTGRES_DB=sono_eval
     ports:
       - "5432:5432"
@@ -105,10 +105,10 @@ services:
       - "8088:8088"
     environment:
       # ⚠️ DEVELOPMENT ONLY: Change these for production!
-      - SUPERSET_SECRET_KEY=change_this_secret_key_in_production  # INSECURE: Generate strong key
+      - SUPERSET_SECRET_KEY=change_this_secret_key_in_production # INSECURE: Generate strong key
       - DATABASE_DIALECT=postgresql
       - DATABASE_USER=postgres
-      - DATABASE_PASSWORD=postgres  # INSECURE: Must match postgres service password
+      - DATABASE_PASSWORD=postgres # INSECURE: Must match postgres service password
       - DATABASE_HOST=postgres
       - DATABASE_PORT=5432
       - DATABASE_DB=superset
@@ -124,7 +124,8 @@ services:
     command: >
       sh -c "
         superset db upgrade &&
-        superset fab create-admin --username admin --firstname Admin --lastname User --email admin@sono-eval.local --password admin &&
+        superset fab create-admin --username admin --firstname Admin \
+        --lastname User --email admin@sono-eval.local --password admin &&
         superset init &&
         superset run -h 0.0.0.0 -p 8088 --with-threads --reload --debugger
       "

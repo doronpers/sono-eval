@@ -81,19 +81,19 @@ class EasterEggRegistry:
     def check_code_comment(self, code: str) -> Optional[str]:
         """
         Check if code contains easter egg comments.
-        
+
         Returns egg_id if found, None otherwise.
         """
         code_lower = code.lower()
-        
+
         # Deep dive comment
         if "// sono-eval: analyze-architecture" in code_lower or "// deep dive" in code_lower:
             return "deep_dive_comment"
-        
+
         # Pattern recognition
         if "// sono-eval: pattern-recognition" in code_lower:
             return "pattern_recognition"
-        
+
         return None
 
 
@@ -109,7 +109,7 @@ def get_registry() -> EasterEggRegistry:
 def check_code_for_eggs(code: str) -> List[str]:
     """
     Check code for easter egg patterns.
-    
+
     Returns list of discovered egg IDs.
     """
     discovered = []

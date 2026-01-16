@@ -6,18 +6,18 @@ rules:
   subject-empty:
     - 2
     - never
-  
+
   # Subject must not be longer than 72 characters
   subject-max-length:
     - 2
     - always
     - 72
-  
+
   # Type must be provided
   type-empty:
     - 2
     - never
-  
+
   # Type must be one of the allowed values
   type-enum:
     - 2
@@ -35,36 +35,36 @@ rules:
       - revert    # Revert a previous commit
       - security  # Security fixes
       - deps      # Dependency updates
-  
+
   # Type must be lowercase
   type-case:
     - 2
     - always
     - lower-case
-  
+
   # Scope must be lowercase
   scope-case:
     - 2
     - always
     - lower-case
-  
+
   # Subject must be lowercase
   subject-case:
     - 2
     - always
     - lower-case
-  
+
   # Subject must not end with a period
   subject-full-stop:
     - 2
     - never
     - '.'
-  
+
   # Body must have blank line after subject
   body-leading-blank:
     - 1
     - always
-  
+
   # Footer must have blank line before it
   footer-leading-blank:
     - 1
