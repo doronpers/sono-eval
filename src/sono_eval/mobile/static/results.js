@@ -14,10 +14,10 @@ class ResultsDisplay {
         const urlParams = new URLSearchParams(window.location.search);
         const assessmentId = urlParams.get('assessment_id');
         const candidateId = urlParams.get('candidate_id');
-        
+
         // Check sessionStorage for recent assessment
         const storedResult = sessionStorage.getItem('lastAssessmentResult');
-        
+
         if (storedResult) {
             try {
                 this.assessmentData = JSON.parse(storedResult);
@@ -39,8 +39,10 @@ class ResultsDisplay {
 
     async fetchAssessment(assessmentId, candidateId) {
         try {
+            const safeAssessmentId = encodeURIComponent(assessmentId);
+            const safeCandidateId = encodeURIComponent(candidateId);
             const response = await fetch(
-                `/api/v1/assessments/${assessmentId}?candidate_id=${candidateId}`
+                `/api/v1/assessments/${safeAssessmentId}?candidate_id=${safeCandidateId}`
             );
             if (response.ok) {
                 this.assessmentData = await response.json();
@@ -65,13 +67,13 @@ class ResultsDisplay {
 
         // Animate overall score
         this.animateScore(data.overall_score);
-        
+
         // Confidence
-        document.getElementById('confidence-value').textContent = 
+        document.getElementById('confidence-value').textContent =
             `${(data.confidence * 100).toFixed(0)}%`;
-        
+
         // Assessment ID
-        document.getElementById('assessment-id').textContent = 
+        document.getElementById('assessment-id').textContent =
             `ID: ${data.assessment_id}`;
 
         // Summary
@@ -98,31 +100,32 @@ class ResultsDisplay {
     animateScore(score) {
         const scoreNumber = document.getElementById('score-number');
         const scoreRing = document.getElementById('score-ring');
-        
+        const safeScore = Number.isFinite(score) ? Math.max(0, Math.min(score, 100)) : 0;
+
         // Animate number
         let current = 0;
         const duration = 1500;
-        const step = score / (duration / 16);
-        
+        const step = safeScore / (duration / 16);
+
         const animate = () => {
-            current = Math.min(current + step, score);
+            current = Math.min(current + step, safeScore);
             scoreNumber.textContent = Math.round(current);
-            
+
             // Animate ring
             const circumference = 2 * Math.PI * 45;
             const offset = circumference - (current / 100) * circumference;
             scoreRing.style.strokeDasharray = circumference;
             scoreRing.style.strokeDashoffset = offset;
-            
+
             // Color based on score
             const color = this.getScoreColor(current);
             scoreRing.style.stroke = color;
-            
-            if (current < score) {
+
+            if (current < safeScore) {
                 requestAnimationFrame(animate);
             }
         };
-        
+
         requestAnimationFrame(animate);
     }
 
@@ -139,33 +142,54 @@ class ResultsDisplay {
         pathScores.forEach((ps, index) => {
             const bar = document.createElement('div');
             bar.className = 'path-score-bar';
-            bar.innerHTML = `
-                <div class="bar-label">
-                    <span class="path-name">${this.formatPathName(ps.path)}</span>
-                    <span class="path-score">${ps.overall_score.toFixed(1)}</span>
-                </div>
-                <div class="bar-track">
-                    <div class="bar-fill" style="--target-width: ${ps.overall_score}%; --delay: ${index * 0.1}s; background: ${this.getScoreColor(ps.overall_score)}"></div>
-                </div>
-            `;
+            const label = document.createElement('div');
+            label.className = 'bar-label';
+
+            const name = document.createElement('span');
+            name.className = 'path-name';
+            name.textContent = this.formatPathName(ps.path);
+
+            const score = Number(ps.overall_score);
+            const clampedScore = Number.isFinite(score) ? Math.max(0, Math.min(score, 100)) : 0;
+            const scoreLabel = document.createElement('span');
+            scoreLabel.className = 'path-score';
+            scoreLabel.textContent = Number.isFinite(score) ? score.toFixed(1) : '--';
+
+            label.appendChild(name);
+            label.appendChild(scoreLabel);
+
+            const track = document.createElement('div');
+            track.className = 'bar-track';
+
+            const fill = document.createElement('div');
+            fill.className = 'bar-fill';
+            fill.style.setProperty('--target-width', `${clampedScore}%`);
+            fill.style.setProperty('--delay', `${index * 0.1}s`);
+            fill.style.background = this.getScoreColor(clampedScore);
+
+            track.appendChild(fill);
+            bar.appendChild(label);
+            bar.appendChild(track);
             container.appendChild(bar);
-            
+
             // Animate bar fill
             setTimeout(() => {
-                const fill = bar.querySelector('.bar-fill');
-                fill.style.width = `${ps.overall_score}%`;
+                fill.style.width = `${clampedScore}%`;
             }, index * 100);
         });
     }
 
     formatPathName(path) {
-        return path.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+        if (!path) {
+            return 'Unknown';
+        }
+        return String(path).replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
     }
 
     renderList(elementId, items, className) {
         const list = document.getElementById(elementId);
         list.innerHTML = '';
-        
+
         items.forEach(item => {
             const li = document.createElement('li');
             li.className = className;
@@ -194,10 +218,16 @@ class ResultsDisplay {
         recommendations.forEach((rec, index) => {
             const item = document.createElement('div');
             item.className = 'recommendation-item';
-            item.innerHTML = `
-                <span class="rec-number">${index + 1}</span>
-                <span class="rec-text">${rec}</span>
-            `;
+            const number = document.createElement('span');
+            number.className = 'rec-number';
+            number.textContent = String(index + 1);
+
+            const text = document.createElement('span');
+            text.className = 'rec-text';
+            text.textContent = String(rec ?? '');
+
+            item.appendChild(number);
+            item.appendChild(text);
             container.appendChild(item);
         });
     }
@@ -205,20 +235,36 @@ class ResultsDisplay {
     renderMotives(motives) {
         const section = document.getElementById('motives-section');
         const chart = document.getElementById('motives-chart');
-        
+
         section.style.display = 'block';
         chart.innerHTML = '';
 
         motives.forEach(motive => {
             const bar = document.createElement('div');
             bar.className = 'motive-bar';
-            bar.innerHTML = `
-                <div class="motive-label">${motive.motive_type}</div>
-                <div class="motive-track">
-                    <div class="motive-fill" style="width: ${motive.strength * 100}%"></div>
-                </div>
-                <div class="motive-value">${(motive.strength * 100).toFixed(0)}%</div>
-            `;
+            const label = document.createElement('div');
+            label.className = 'motive-label';
+            label.textContent = String(motive.motive_type ?? '');
+
+            const track = document.createElement('div');
+            track.className = 'motive-track';
+
+            const fill = document.createElement('div');
+            fill.className = 'motive-fill';
+            const strength = Number(motive.strength);
+            const clampedStrength = Number.isFinite(strength)
+                ? Math.max(0, Math.min(strength, 1))
+                : 0;
+            fill.style.width = `${clampedStrength * 100}%`;
+
+            const value = document.createElement('div');
+            value.className = 'motive-value';
+            value.textContent = `${Math.round(clampedStrength * 100)}%`;
+
+            track.appendChild(fill);
+            bar.appendChild(label);
+            bar.appendChild(track);
+            bar.appendChild(value);
             chart.appendChild(bar);
         });
     }
@@ -236,7 +282,7 @@ function downloadResults() {
         alert('No results available to download');
         return;
     }
-    
+
     try {
         const data = JSON.parse(stored);
         const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });

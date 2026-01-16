@@ -63,8 +63,8 @@ class TagGenerator:
             return
 
         try:
-            from transformers import T5ForConditionalGeneration, T5Tokenizer
             from peft import LoraConfig, get_peft_model
+            from transformers import T5ForConditionalGeneration, T5Tokenizer
 
             logger.info(f"Loading T5 model: {self.model_name}")
 
@@ -90,7 +90,8 @@ class TagGenerator:
             )
 
             self.model = get_peft_model(base_model, lora_config)
-            self.model.eval()
+            if self.model:
+                self.model.eval()
 
             self._initialized = True
             logger.info("Model initialization complete")
@@ -128,6 +129,10 @@ class TagGenerator:
         try:
             # Prepare input
             prompt = f"generate tags: {text[:500]}"  # Limit input length
+
+            if self.tokenizer is None or self.model is None:
+                raise RuntimeError("Model resources not available")
+
             inputs = self.tokenizer(
                 prompt,
                 return_tensors="pt",
@@ -177,7 +182,7 @@ class TagGenerator:
         Returns:
             List of heuristically generated tags
         """
-        tags = []
+        tags: List[SemanticTag] = []
         text_lower = text.lower()
 
         # Simple keyword-based tagging

@@ -171,7 +171,7 @@ Detailed status information about the API configuration.
 
 ```json
 {
-  "api_version": "0.1.0",
+  "api_version": "0.1.1",
   "assessment_engine_version": "1.0",
   "config": {
     "multi_path_tracking": true,
@@ -206,6 +206,10 @@ Create and run a new assessment.
   }
 }
 ```
+
+**Notes:**
+
+- `candidate_id` must contain only alphanumeric characters, dashes, and underscores.
 
 **Path Types:**
 
@@ -287,7 +291,8 @@ Get assessment by ID.
 **Parameters:**
 
 - `assessment_id` (path) - Assessment identifier
-- `candidate_id` (query, required) - Candidate identifier
+- `candidate_id` (query, required) - Candidate identifier (alphanumeric, dashes,
+  underscores)
 
 **Response:**
 Same structure as POST response above.
@@ -296,6 +301,41 @@ Same structure as POST response above.
 
 ```bash
 curl "http://localhost:8000/api/v1/assessments/assess_1234567890?candidate_id=candidate_001"
+```
+
+---
+
+#### `GET /api/v1/assessments/{assessment_id}/dashboard`
+
+Get visualization-ready dashboard data for an assessment.
+
+**Parameters:**
+
+- `assessment_id` (path) - Assessment identifier
+- `candidate_id` (query, required) - Candidate identifier (alphanumeric, dashes,
+  underscores)
+- `include_history` (query, optional) - Include historical trend data
+  (`true`/`false`)
+
+**Response:**
+
+```json
+{
+  "overall_score": 85.5,
+  "overall_grade": "B",
+  "confidence": 0.9,
+  "summary": "Short summary...",
+  "path_scores": [...],
+  "trend_data": [...],
+  "assessment_id": "assess_1234567890",
+  "candidate_id": "candidate_001"
+}
+```
+
+**Example:**
+
+```bash
+curl "http://localhost:8000/api/v1/assessments/assess_1234567890/dashboard?candidate_id=candidate_001&include_history=true"
 ```
 
 ---
@@ -319,6 +359,10 @@ Create a new candidate profile.
   }
 }
 ```
+
+**Notes:**
+
+- `candidate_id` must contain only alphanumeric characters, dashes, and underscores.
 
 **Response:**
 
@@ -349,7 +393,7 @@ Get candidate information.
 
 **Parameters:**
 
-- `candidate_id` (path) - Candidate identifier
+- `candidate_id` (path) - Candidate identifier (alphanumeric, dashes, underscores)
 
 **Response:**
 
@@ -402,7 +446,7 @@ Delete a candidate.
 
 **Parameters:**
 
-- `candidate_id` (path) - Candidate identifier
+- `candidate_id` (path) - Candidate identifier (alphanumeric, dashes, underscores)
 
 **Response:**
 
@@ -417,6 +461,47 @@ Delete a candidate.
 
 ```bash
 curl -X DELETE http://localhost:8000/api/v1/candidates/candidate_001
+```
+
+---
+
+#### `GET /api/v1/candidates/{candidate_id}/stats`
+
+Get aggregate statistics and trend information for a candidate.
+
+**Parameters:**
+
+- `candidate_id` (path) - Candidate identifier (alphanumeric, dashes, underscores)
+
+**Response:**
+
+```json
+{
+  "candidate_id": "candidate_001",
+  "total_assessments": 3,
+  "statistics": {
+    "average_score": 82.3,
+    "best_score": 90.1,
+    "worst_score": 74.5,
+    "latest_score": 85.0,
+    "average_confidence": 0.78,
+    "score_std_dev": 6.2
+  },
+  "path_averages": {"technical": 84.0, "design": 79.5},
+  "trend": {
+    "direction": "stable",
+    "recent_average": 83.0,
+    "historical_average": 81.5
+  },
+  "first_assessment": "2024-01-10T12:00:00Z",
+  "last_assessment": "2024-01-20T12:00:00Z"
+}
+```
+
+**Example:**
+
+```bash
+curl "http://localhost:8000/api/v1/candidates/candidate_001/stats"
 ```
 
 ---

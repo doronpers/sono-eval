@@ -13,7 +13,6 @@ from typing import Optional
 import click
 from rich.console import Console
 from rich.table import Table
-from tabulate import tabulate
 
 from sono_eval.assessment.engine import AssessmentEngine
 from sono_eval.assessment.models import AssessmentInput, PathType
@@ -27,14 +26,14 @@ console = Console()
 @click.group()
 @click.version_option(version="0.1.0")
 def cli():
-    """Sono-Eval: Explainable Multi-Path Developer Assessment System"""
+    """Sono-Eval: Explainable Multi-Path Developer Assessment System."""
     pass
 
 
 # Assessment Commands
 @cli.group()
 def assess():
-    """Assessment commands"""
+    """Assessment commands."""
     pass
 
 
@@ -67,7 +66,6 @@ def run(
     Run an assessment for a candidate.
 
     Examples:
-
         # Assess a code file with all paths
         sono-eval assess run --candidate-id john_doe --file solution.py
 
@@ -75,7 +73,8 @@ def run(
         sono-eval assess run --candidate-id john_doe --file solution.py --paths technical design
 
         # Assess inline content
-        sono-eval assess run --candidate-id john_doe --content "def hello(): return 'world'" --paths technical
+        sono-eval assess run --candidate-id john_doe \
+            --content "def hello(): return 'world'" --paths technical
 
         # Save results to file
         sono-eval assess run --candidate-id john_doe --file solution.py --output results.json
@@ -118,7 +117,8 @@ def run(
                     path_list.append(PathType[p.upper()])
                 except KeyError:
                     console.print(
-                        f"[yellow]Warning: Invalid path '{p}'. Valid paths: {', '.join(p.value for p in PathType)}[/yellow]"
+                        f"[yellow]Warning: Invalid path '{p}'. Valid paths: "
+                        f"{', '.join(p.value for p in PathType)}[/yellow]"
                     )
             if not path_list:
                 console.print("[red]Error: No valid paths specified[/red]")
@@ -127,7 +127,8 @@ def run(
             path_list = list(PathType)
             if not quiet:
                 console.print(
-                    f"[dim]No paths specified, evaluating all: {', '.join(p.value for p in path_list)}[/dim]"
+                    f"[dim]No paths specified, evaluating all: "
+                    f"{', '.join(p.value for p in path_list)}[/dim]"
                 )
     except Exception as e:
         console.print(f"[red]Error parsing paths: {e}[/red]")
@@ -162,7 +163,7 @@ def run(
 
     # Display results
     if not quiet:
-        console.print(f"\n[bold green]✓ Assessment Complete![/bold green]")
+        console.print("\n[bold green]✓ Assessment Complete![/bold green]")
         console.print(f"Overall Score: [bold cyan]{result.overall_score:.2f}/100[/bold cyan]")
         console.print(f"Confidence: [cyan]{result.confidence:.2%}[/cyan]")
         if verbose:
@@ -224,7 +225,6 @@ def run(
                 console.print(f"\n[green]✓ Results saved to {output}[/green]")
         except Exception as e:
             console.print(f"[red]Error saving results: {e}[/red]")
-            raise click.Abort()
 
     if quiet:
         # In quiet mode, just print the score
@@ -234,7 +234,7 @@ def run(
 # Candidate Management Commands
 @cli.group()
 def candidate():
-    """Candidate management commands"""
+    """Candidate management commands."""
     pass
 
 
@@ -252,12 +252,12 @@ def create(candidate_id: str, data: Optional[str], quiet: bool):
     Create a new candidate in memory storage.
 
     Examples:
-
         # Create a candidate
         sono-eval candidate create --id john_doe
 
         # Create with initial data
-        sono-eval candidate create --id john_doe --data '{"email": "john@example.com"}'
+        sono-eval candidate create --id john_doe \
+            --data '{"email": "john@example.com"}'
     """
     try:
         storage = MemUStorage()
@@ -297,7 +297,6 @@ def show(candidate_id: str, verbose: bool):
     Show candidate information and memory structure.
 
     Examples:
-
         # Show basic info
         sono-eval candidate show --id john_doe
 
@@ -326,7 +325,7 @@ def show(candidate_id: str, verbose: bool):
             console.print(json.dumps(memory.root_node.data, indent=2))
 
         if verbose:
-            console.print(f"\n[bold]Memory Structure:[/bold]")
+            console.print("\n[bold]Memory Structure:[/bold]")
             console.print(f"Root Node ID: {memory.root_node.node_id}")
             if memory.root_node.children:
                 console.print(f"Child Nodes: {', '.join(memory.root_node.children)}")
@@ -342,7 +341,6 @@ def list(quiet: bool):
     List all candidates in memory storage.
 
     Examples:
-
         # List all candidates
         sono-eval candidate list
 
@@ -382,7 +380,7 @@ def list(quiet: bool):
 @click.option("--id", "candidate_id", required=True, help="Candidate ID")
 @click.confirmation_option(prompt="Are you sure you want to delete this candidate?")
 def delete(candidate_id: str):
-    """Delete a candidate"""
+    """Delete a candidate."""
     storage = MemUStorage()
     success = storage.delete_candidate_memory(candidate_id)
 
@@ -401,7 +399,6 @@ def history(candidate_id: str, limit: int, output_format: str):
     Show assessment history for a candidate.
 
     Examples:
-
         # View last 10 assessments
         sono-eval candidate history --id john_doe
 
@@ -445,7 +442,9 @@ def history(candidate_id: str, limit: int, output_format: str):
             console.print(json.dumps(assessments, indent=2, default=str))
         else:
             console.print(f"\n[bold cyan]Assessment History for {candidate_id}[/bold cyan]")
-            console.print(f"[dim]Showing {len(assessments)} of {len(assessments)} assessments[/dim]\n")
+            console.print(
+                f"[dim]Showing {len(assessments)} of {len(assessments)} assessments[/dim]\n"
+            )
 
             table = Table(show_header=True, header_style="bold cyan")
             table.add_column("Date", style="dim")
@@ -466,7 +465,7 @@ def history(candidate_id: str, limit: int, output_format: str):
                         dt = datetime.fromisoformat(ts.replace("Z", "+00:00"))
                         ts = dt.strftime("%Y-%m-%d %H:%M")
                     except Exception:
-                        pass
+                        pass  # nosec B110
 
                 table.add_row(
                     ts[:16] if ts else "N/A",
@@ -483,7 +482,9 @@ def history(candidate_id: str, limit: int, output_format: str):
             if len(assessments) >= 2:
                 scores = [a.get("overall_score", 0) for a in assessments]
                 recent_avg = sum(scores[:3]) / min(3, len(scores))
-                older_avg = sum(scores[3:]) / max(1, len(scores) - 3) if len(scores) > 3 else recent_avg
+                older_avg = (
+                    sum(scores[3:]) / max(1, len(scores) - 3) if len(scores) > 3 else recent_avg
+                )
 
                 if recent_avg > older_avg + 5:
                     console.print("\n[green]📈 Trend: Improving[/green]")
@@ -505,7 +506,6 @@ def report(candidate_id: str, output: Optional[str]):
     Generate a comprehensive report for a candidate.
 
     Examples:
-
         # Generate and display report
         sono-eval candidate report --id john_doe
 
@@ -538,12 +538,12 @@ def report(candidate_id: str, output: Optional[str]):
         # Generate report
         report_lines = [
             f"# Assessment Report: {candidate_id}",
-            f"",
+            "",
             f"**Generated:** {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}",
             f"**Total Assessments:** {len(assessments)}",
-            f"",
-            f"## Overview",
-            f"",
+            "",
+            "## Overview",
+            "",
         ]
 
         # Calculate statistics
@@ -554,15 +554,15 @@ def report(candidate_id: str, output: Optional[str]):
 
         report_lines.extend(
             [
-                f"| Metric | Value |",
-                f"|--------|-------|",
+                "| Metric | Value |",
+                "|--------|-------|",
                 f"| Average Score | {avg_score:.1f} |",
                 f"| Best Score | {best_score:.1f} |",
                 f"| Latest Score | {latest_score:.1f} |",
                 f"| Total Assessments | {len(assessments)} |",
-                f"",
-                f"## Assessment History",
-                f"",
+                "",
+                "## Assessment History",
+                "",
             ]
         )
 
@@ -570,12 +570,12 @@ def report(candidate_id: str, output: Optional[str]):
             report_lines.extend(
                 [
                     f"### Assessment {i}",
-                    f"",
+                    "",
                     f"- **ID:** {a.get('assessment_id', 'N/A')}",
                     f"- **Score:** {a.get('overall_score', 0):.1f}/100",
                     f"- **Confidence:** {a.get('confidence', 0) * 100:.0f}%",
                     f"- **Summary:** {a.get('summary', 'N/A')}",
-                    f"",
+                    "",
                 ]
             )
 
@@ -598,7 +598,7 @@ def report(candidate_id: str, output: Optional[str]):
 # Tagging Commands
 @cli.group()
 def tag():
-    """Tagging commands"""
+    """Tagging commands."""
     pass
 
 
@@ -613,7 +613,6 @@ def generate(file: Optional[str], text: Optional[str], max_tags: int, quiet: boo
     Generate semantic tags for code or text.
 
     Examples:
-
         # Tag a file
         sono-eval tag generate --file solution.py
 
@@ -692,7 +691,7 @@ def generate(file: Optional[str], text: Optional[str], max_tags: int, quiet: boo
 # Server Commands
 @cli.group()
 def server():
-    """Server management commands"""
+    """Server management commands."""
     pass
 
 
@@ -701,7 +700,7 @@ def server():
 @click.option("--port", default=None, type=int, help="Port to bind to")
 @click.option("--reload", is_flag=True, help="Enable auto-reload")
 def start(host: Optional[str], port: Optional[int], reload: bool):
-    """Start the API server"""
+    """Start the API server."""
     import uvicorn
 
     from sono_eval.utils.config import get_config
@@ -711,7 +710,7 @@ def start(host: Optional[str], port: Optional[int], reload: bool):
     host = host or config.api_host
     port = port or config.api_port
 
-    console.print(f"[bold green]Starting Sono-Eval API server...[/bold green]")
+    console.print("[bold green]Starting Sono-Eval API server...[/bold green]")
     console.print(f"Host: {host}")
     console.print(f"Port: {port}")
     console.print(f"Reload: {reload}")
@@ -727,7 +726,7 @@ def start(host: Optional[str], port: Optional[int], reload: bool):
 # Config Commands
 @cli.group()
 def setup():
-    """Interactive setup and onboarding commands"""
+    """Interactive setup and onboarding commands."""
     pass
 
 
@@ -736,7 +735,7 @@ def setup():
 def init(interactive: bool):
     """
     Initialize Sono-Eval setup (interactive mode).
-    
+
     Guides you through first-time setup with explanations.
     """
     if interactive:
@@ -749,9 +748,15 @@ def init(interactive: bool):
 
         version = sys.version_info
         if version.major == 3 and version.minor >= 9:
-            console.print(f"[green]✓[/green] Python {version.major}.{version.minor}.{version.micro} (required: 3.9+)")
+            console.print(
+                f"[green]✓[/green] Python {version.major}.{version.minor}"
+                f".{version.micro} (required: 3.9+)"
+            )
         else:
-            console.print(f"[red]✗[/red] Python {version.major}.{version.minor}.{version.micro} (required: 3.9+)")
+            console.print(
+                f"[red]✗[/red] Python {version.major}.{version.minor}"
+                f".{version.micro} (required: 3.9+)"
+            )
             console.print("[yellow]Please install Python 3.9 or higher[/yellow]")
             return
 
@@ -768,14 +773,13 @@ def init(interactive: bool):
                 missing.append(dep)
 
         if missing:
-            console.print(f"\n[yellow]Installing missing dependencies...[/yellow]")
+            console.print("\n[yellow]Installing missing dependencies...[/yellow]")
             console.print("[dim]Run: pip install -r requirements.txt[/dim]")
         else:
             console.print("[green]✓ All critical dependencies installed[/green]")
 
         # Step 3: Environment file
         console.print("\n[bold]Step 3: Checking configuration...[/bold]")
-        from pathlib import Path
 
         env_file = Path(".env")
         env_example = Path(".env.example")
@@ -810,7 +814,10 @@ def init(interactive: bool):
         console.print("  1. Start the server: [cyan]sono-eval server start[/cyan]")
         console.print("  2. Open in browser: [cyan]http://localhost:8000/mobile[/cyan]")
         console.print("  3. Complete your first assessment!")
-        console.print("\n[yellow]💡 Tip:[/yellow] Use [cyan]sono-eval --help[/cyan] to see all available commands\n")
+        console.print(
+            "\n[yellow]💡 Tip:[/yellow] Use [cyan]sono-eval --help[/cyan] "
+            "to see all available commands\n"
+        )
     else:
         console.print("[yellow]Run with --interactive flag for guided setup[/yellow]")
         console.print("[dim]Example: sono-eval setup init --interactive[/dim]")
@@ -818,13 +825,13 @@ def init(interactive: bool):
 
 @cli.group()
 def config():
-    """Configuration commands"""
+    """Manage configuration."""
     pass
 
 
 @cli.group()
 def insights():
-    """Insights and analysis commands (hidden features)"""
+    """Insights and analysis commands (hidden features)."""
     pass
 
 
@@ -832,10 +839,9 @@ def insights():
 @click.option("--deep", is_flag=True, help="Deep analysis mode (easter egg)")
 @click.option("--pattern-recognition", is_flag=True, help="Pattern recognition analysis")
 def analyze(deep: bool, pattern_recognition: bool):
-    """
-    Advanced analysis features (hidden command).
-    
-    Discovered by: sono-eval insights --deep
+    """Unlock advanced analysis features (hidden command).
+
+    Discovered by: sono-eval insights --deep.
     """
     if deep:
         console.print("[bold cyan]🔓 Expert Mode Unlocked![/bold cyan]")
@@ -844,7 +850,9 @@ def analyze(deep: bool, pattern_recognition: bool):
         console.print("  • Cross-path comparison tools")
         console.print("  • Trend analysis over time")
         console.print("  • Pattern detection algorithms")
-        console.print("\n[yellow]Use these features to get deeper insights into assessments.[/yellow]")
+        console.print(
+            "\n[yellow]Use these features to get deeper insights into assessments.[/yellow]"
+        )
     elif pattern_recognition:
         console.print("[bold cyan]🔓 Pattern Recognition Unlocked![/bold cyan]")
         console.print("\n[bold]Pattern Analysis Features:[/bold]")
@@ -863,7 +871,7 @@ def analyze(deep: bool, pattern_recognition: bool):
 def hidden(secret: bool, explore: bool):
     """
     Hidden features and configuration (easter egg command).
-    
+
     Discovered by: sono-eval --secret or sono-eval hidden
     """
     if secret:
@@ -884,13 +892,15 @@ def hidden(secret: bool, explore: bool):
         console.print("  • CLI: sono-eval insights --deep")
         console.print("\n[yellow]Each discovery unlocks valuable features![/yellow]")
     else:
-        console.print("[yellow]Try: sono-eval hidden --secret or sono-eval hidden --explore[/yellow]")
+        console.print(
+            "[yellow]Try: sono-eval hidden --secret or sono-eval hidden --explore[/yellow]"
+        )
         console.print("[dim]This command has hidden features. Explore the flags![/dim]")
 
 
-@config.command()
-def show():
-    """Show current configuration"""
+@config.command(name="show")
+def show_config():
+    """Show current configuration."""
     cfg = get_config()
 
     console.print("\n[bold]Sono-Eval Configuration[/bold]\n")
@@ -933,7 +943,7 @@ def show():
 
 @config.command()
 def list_presets():
-    """List all available configuration presets"""
+    """List all available configuration presets."""
     from sono_eval.utils.config import Config
 
     presets = Config.list_presets()
@@ -965,7 +975,6 @@ def apply_preset(preset: str, output: Optional[str]):
     Apply a configuration preset.
 
     Examples:
-
         # List available presets
         sono-eval config apply-preset --preset list
 
@@ -988,13 +997,14 @@ def apply_preset(preset: str, output: Optional[str]):
             # Write to .env file
             with open(output, "w") as f:
                 f.write(f"# Configuration preset: {preset}\n")
-                f.write(f"# Generated by sono-eval config apply-preset\n\n")
+                f.write("# Generated by sono-eval config apply-preset\n\n")
                 for key, value in preset_values.items():
                     if value:  # Only write non-empty values
                         f.write(f"{key}={value}\n")
             console.print(f"[green]✓ Preset '{preset}' saved to {output}[/green]")
             console.print(
-                f"[yellow]⚠ Remember to set required values (SECRET_KEY, ALLOWED_HOSTS, etc.)[/yellow]"
+                "[yellow]⚠ Remember to set required values (SECRET_KEY, ALLOWED_HOSTS, etc.)"
+                "[/yellow]"
             )
         else:
             # Display preset values
@@ -1010,9 +1020,10 @@ def apply_preset(preset: str, output: Optional[str]):
                 table.add_row(key, display_value)
 
             console.print(table)
-            console.print(f"\n[yellow]To apply:[/yellow]")
+            console.print("\n[yellow]To apply:[/yellow]")
             console.print(
-                f"  export $(sono-eval config apply-preset --preset {preset} --output - | grep -v '^#' | xargs)"
+                f"  export $(sono-eval config apply-preset --preset {preset} --output - "
+                "| grep -v '^#' | xargs)"
             )
     except ValueError as e:
         console.print(f"[red]Error: {e}[/red]")

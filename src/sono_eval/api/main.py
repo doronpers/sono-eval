@@ -10,7 +10,7 @@ from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 from time import time
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 from fastapi import FastAPI, File, HTTPException, Request, Response, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
@@ -67,6 +67,11 @@ assessment_engine: Optional[AssessmentEngine] = None
 memu_storage: Optional[MemUStorage] = None
 tag_generator: Optional[TagGenerator] = None
 config = get_config()
+API_VERSION = "0.1.1"
+CANDIDATE_ID_PATTERN = re.compile(r"^[a-zA-Z0-9_-]+$")
+CANDIDATE_ID_ERROR_MESSAGE = (
+    "candidate_id must contain only alphanumeric characters, dashes, and underscores"
+)
 
 
 @asynccontextmanager
@@ -139,7 +144,7 @@ def _validate_security_config():
 app = FastAPI(
     title="Sono-Eval API",
     description="Explainable Multi-Path Developer Assessment System",
-    version="0.1.1",
+    version=API_VERSION,
     lifespan=lifespan,
 )
 
@@ -173,10 +178,6 @@ mobile_app = create_mobile_app()
 app.mount("/mobile", mobile_app)
 
 
-# API Versioning - Define version prefix
-API_V1_PREFIX = "/api/v1"
-
-
 # Request/Response Models
 
 
@@ -190,10 +191,8 @@ class CandidateCreateRequest(BaseModel):
     def validate_candidate_id(cls, v):
         """Validate candidate_id format to prevent injection attacks."""
         # Allow only alphanumeric, dash, underscore
-        if not re.match(r"^[a-zA-Z0-9_-]+$", v):
-            raise ValueError(
-                "candidate_id must contain only alphanumeric characters, dashes, and underscores"
-            )
+        if not CANDIDATE_ID_PATTERN.match(v):
+            raise ValueError(CANDIDATE_ID_ERROR_MESSAGE)
         return v
 
 
@@ -210,6 +209,16 @@ class TagRequest(BaseModel):
         if "\x00" in v:
             raise ValueError("text contains invalid null bytes")
         return v
+
+
+def _validate_candidate_id(candidate_id: str, request_id: Optional[str] = None) -> None:
+    """Validate candidate_id format to prevent path traversal and injection."""
+    if not CANDIDATE_ID_PATTERN.match(candidate_id):
+        raise validation_error(
+            CANDIDATE_ID_ERROR_MESSAGE,
+            field="candidate_id",
+            request_id=request_id,
+        )
 
 
 # Health check caching (5 second cache to avoid expensive operations on every call)
@@ -472,7 +481,7 @@ async def root():
     health_data = await check_component_health(include_details=True)
     return HealthResponse(
         status="healthy" if health_data["healthy"] else "degraded",
-        version="0.1.1",
+        version=API_VERSION,
         timestamp=datetime.now(timezone.utc).isoformat(),
         components=health_data["components"],
         details=health_data.get("details"),
@@ -495,7 +504,7 @@ async def health_check(response: Response):
 
     return HealthResponse(
         status="healthy" if health_data["healthy"] else "unhealthy",
-        version="0.1.1",
+        version=API_VERSION,
         timestamp=datetime.now(timezone.utc).isoformat(),
         components=health_data["components"],
         details=None,  # No sensitive details in basic health check
@@ -519,7 +528,7 @@ async def health_check_v1(response: Response):
 
     return HealthResponse(
         status="healthy" if health_data["healthy"] else "unhealthy",
-        version="0.1.1",
+        version=API_VERSION,
         timestamp=datetime.now(timezone.utc).isoformat(),
         components=health_data["components"],
         details=health_data.get("details"),
@@ -530,7 +539,7 @@ async def health_check_v1(response: Response):
 async def status():
     """Detailed status information."""
     return {
-        "api_version": "0.1.0",
+        "api_version": API_VERSION,
         "assessment_engine_version": assessment_engine.version if assessment_engine else "unknown",
         "config": {
             "multi_path_tracking": config.assessment_multi_path_tracking,
@@ -599,6 +608,7 @@ async def get_assessment(request: Request, assessment_id: str, candidate_id: str
         Complete assessment result with scores and explanations
     """
     request_id = getattr(request.state, "request_id", None)
+    _validate_candidate_id(candidate_id, request_id=request_id)
 
     if not memu_storage:
         raise service_unavailable_error("Memory storage", request_id=request_id)
@@ -637,6 +647,7 @@ async def get_assessment_dashboard(
         DashboardData with visualization-ready structures
     """
     request_id = getattr(request.state, "request_id", None)
+    _validate_candidate_id(candidate_id, request_id=request_id)
 
     if not memu_storage:
         raise service_unavailable_error("Memory storage", request_id=request_id)
@@ -732,6 +743,7 @@ async def get_candidate(request: Request, candidate_id: str):
         Candidate memory structure
     """
     request_id = getattr(request.state, "request_id", None)
+    _validate_candidate_id(candidate_id, request_id=request_id)
 
     if not memu_storage:
         raise service_unavailable_error("Memory storage", request_id=request_id)
@@ -766,6 +778,7 @@ async def list_candidates(request: Request):
 async def delete_candidate(request: Request, candidate_id: str):
     """Delete a candidate."""
     request_id = getattr(request.state, "request_id", None)
+    _validate_candidate_id(candidate_id, request_id=request_id)
 
     if not memu_storage:
         raise service_unavailable_error("Memory storage", request_id=request_id)
@@ -785,6 +798,7 @@ async def get_candidate_stats(request: Request, candidate_id: str):
     Returns aggregated statistics across all assessments.
     """
     request_id = getattr(request.state, "request_id", None)
+    _validate_candidate_id(candidate_id, request_id=request_id)
 
     if not memu_storage:
         raise service_unavailable_error("Memory storage", request_id=request_id)
@@ -813,7 +827,7 @@ async def get_candidate_stats(request: Request, candidate_id: str):
     confidences = [a.get("confidence", 0) for a in assessments]
 
     # Path frequency
-    path_scores = {}
+    path_scores: Dict[str, List[float]] = {}
     for a in assessments:
         for ps in a.get("path_scores", []):
             path = ps.get("path", "unknown")
@@ -842,7 +856,7 @@ async def get_candidate_stats(request: Request, candidate_id: str):
     if len(scores) > 1:
         mean_score = sum(scores) / len(scores)
         variance = sum((s - mean_score) ** 2 for s in scores) / len(scores)
-        std_dev = variance ** 0.5
+        std_dev = variance**0.5
     else:
         std_dev = 0.0
 
@@ -922,7 +936,11 @@ async def upload_file(request: Request, file: UploadFile = File(...)):  # noqa: 
 
     try:
         # Security: Validate file extension
-        allowed_extensions = config.allowed_extensions.split(",")
+        allowed_extensions = [
+            ext.strip().lstrip(".").lower()
+            for ext in config.allowed_extensions.split(",")
+            if ext.strip()
+        ]
         file_ext = file.filename.split(".")[-1].lower() if "." in file.filename else ""
 
         if file_ext not in allowed_extensions:

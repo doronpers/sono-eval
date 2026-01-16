@@ -13,7 +13,7 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from sono_eval.assessment.engine import AssessmentEngine
 from sono_eval.assessment.models import AssessmentInput, PathType
@@ -33,10 +33,10 @@ class MobileAssessmentState(BaseModel):
     """State for mobile assessment session."""
 
     candidate_id: str
-    selected_paths: List[PathType] = []
+    selected_paths: List[PathType] = Field(default_factory=list)
     current_step: int = 0
-    answers: Dict[str, str] = {}
-    personalization: Dict[str, str] = {}
+    answers: Dict[str, str] = Field(default_factory=dict)
+    personalization: Dict[str, str] = Field(default_factory=dict)
 
 
 class MobilePathSelection(BaseModel):
@@ -52,7 +52,7 @@ class MobileSubmission(BaseModel):
     candidate_id: str
     paths: List[str]
     content: Dict[str, str]
-    personalization: Dict[str, str] = {}
+    personalization: Dict[str, str] = Field(default_factory=dict)
 
 
 class InteractionEvent(BaseModel):
@@ -63,7 +63,7 @@ class InteractionEvent(BaseModel):
     candidate_id: Optional[str] = None
     page: str
     timestamp: str
-    data: Dict[str, Any] = {}
+    data: Dict[str, Any] = Field(default_factory=dict)
 
 
 class TrackingBatch(BaseModel):
@@ -80,7 +80,9 @@ def load_mobile_config() -> Dict[str, Any]:
 
     try:
         with open(CONFIG_PATH, "r") as f:
-            return yaml.safe_load(f)
+            from typing import cast
+
+            return cast(Dict[str, Any], yaml.safe_load(f))
     except Exception as e:
         logger.error(f"Error loading mobile config: {e}")
         return {"paths": {}}
@@ -217,6 +219,7 @@ def create_mobile_app() -> FastAPI:
             code_content = submission.content.get("code", "")
             if code_content:
                 from sono_eval.mobile.easter_eggs import check_code_for_eggs
+
                 easter_eggs = check_code_for_eggs(code_content)
 
             # Run assessment
@@ -237,8 +240,7 @@ def create_mobile_app() -> FastAPI:
             logger.error(f"Error processing mobile assessment: {e}")
             return JSONResponse(
                 status_code=500,
-                content={"success": False,
-                         "error": f"Assessment processing failed: {str(e)}"},
+                content={"success": False, "error": f"Assessment processing failed: {str(e)}"},
             )
 
     @app.get("/api/mobile/explain/{path}")
@@ -287,9 +289,7 @@ def create_mobile_app() -> FastAPI:
                 recommendations.extend(["design", "collaboration"])
 
             # Remove duplicates and filter to valid paths
-            recommendations = list(
-                dict.fromkeys([r for r in recommendations if r in paths_config])
-            )
+            recommendations = list(dict.fromkeys([r for r in recommendations if r in paths_config]))
 
             # Build recommendation details
             recommended_paths = []
@@ -373,7 +373,7 @@ def create_mobile_app() -> FastAPI:
     async def store_session_data(data: Dict[str, Any]):
         """
         Store assessment result in server-side session for retrieval.
-        
+
         This allows sharing results between pages without URL params.
         In production, use Redis or database for session storage.
         For now, return success and rely on client-side sessionStorage.
@@ -421,4 +421,4 @@ if __name__ == "__main__":
     import uvicorn
 
     app = create_mobile_app()
-    uvicorn.run(app, host="0.0.0.0", port=8001, reload=True)
+    uvicorn.run(app, host="0.0.0.0", port=8001, reload=True)  # nosec B104

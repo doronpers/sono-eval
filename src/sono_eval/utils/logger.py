@@ -67,7 +67,7 @@ def get_logger(name: str, level: Optional[str] = None, structured: bool = False)
         handler.setLevel(getattr(logging, log_level.upper()))
 
         if structured:
-            formatter = StructuredFormatter()
+            formatter: logging.Formatter = StructuredFormatter()
         else:
             formatter = logging.Formatter(
                 "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
