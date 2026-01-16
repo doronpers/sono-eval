@@ -108,7 +108,8 @@ jobs:
         if: matrix.python-version == '3.9'
         uses: codecov/codecov-action@v5
         with:
-          file: ./coverage.xml
+          files: ./coverage.xml
+
           flags: unittests
           name: codecov-umbrella
 
