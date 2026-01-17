@@ -15,7 +15,7 @@
 ## Task A — Single CTA in README → START_HERE.md
 
 ### Before (current)
-- Multiple “Start here / Quick Start / Documentation” options are listed at lines 18–23, competing for attention.
+- `README.md` lines 18–23 list multiple CTAs (“Start Here”, “Quick Start”, “Documentation”, etc.).
 
 ### After (target)
 - Replace the CTA cluster with a **single primary CTA** pointing to a reworked `START_HERE.md`.
@@ -107,7 +107,7 @@ Use this index to quickly find what you need:
 ## Task D — Simplify CONTRIBUTING.md Quickstarts
 
 ### Before (current)
-- Three overlapping “Quick Start” sections (browser-only, codespaces, local) at lines 6–64.
+- `CONTRIBUTING.md` lines 6–64 contain three overlapping quick-start paths.
 
 ### After (target)
 - Replace with three clear pathways: **Browser**, **Codespaces**, **Local**. Each path should be 3–5 steps and link to deeper docs.
@@ -161,4 +161,3 @@ Choose the path that matches your setup:
 
 1. Restore README CTA cluster and previous CONTRIBUTING instructions.
 2. Remove START_HERE changes, SEARCH.md, NAVIGATION.md if needed.
-

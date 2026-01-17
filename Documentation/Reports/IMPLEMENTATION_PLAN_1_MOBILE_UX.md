@@ -18,7 +18,7 @@
 ## Task A — Replace Expandable Cards With 4-Value Grid
 
 ### Before (current)
-- Three `.discovery-card` blocks plus a separate process accordion in `index.html` lines 11–134.
+- `src/sono_eval/mobile/templates/index.html` lines 11–134 contain three `.discovery-card` blocks plus a separate process accordion.
 
 ### After (target)
 - Replace the discovery cards with a 4-value grid and a single “Learn more” accordion **after** the CTA.
@@ -113,7 +113,10 @@ function toggleDetails(button) {
 ## Task B — Add Step Progress Indicators + Time Estimates
 
 ### Before (current)
-- No progress indicator in `start.html` or `paths.html`. (See `start.html` lines 4–89, `paths.html` lines 4–79.)
+- `src/sono_eval/mobile/templates/start.html` lines 4–89 show no progress indicator.
+- `src/sono_eval/mobile/templates/paths.html` lines 4–79 show no progress indicator.
+- `src/sono_eval/mobile/templates/assess.html` (top of main container) has no step indicator.
+- `src/sono_eval/mobile/templates/results.html` lines 4–25 show score and meta without a step indicator.
 
 ### After (target)
 - Add a compact progress row on each step:
@@ -193,7 +196,8 @@ function toggleDetails(button) {
 ## Task C — Quick-Pick Path Selection (“New to coding”)
 
 ### Before (current)
-- Recommendations are shown, but no single action to auto-select. (See `paths.html` lines 13–68 and 117–173.)
+- `src/sono_eval/mobile/templates/paths.html` lines 13–68 show tips and recommendations, but no quick-pick CTA.
+- `src/sono_eval/mobile/templates/paths.html` lines 117–173 show recommendation logic without auto-select.
 
 ### After (target)
 - Add a “New to coding” quick-pick button that auto-selects **technical + problem_solving**.
@@ -243,7 +247,7 @@ function applyQuickPick(type) {
 ## Task D — Results Page: score → summary → actions → evidence (collapsible)
 
 ### Before (current)
-- Everything is shown top-to-bottom: scores, charts, findings, strengths, motives, recommendations, actions. (See `results.html` lines 6–80.)
+- `src/sono_eval/mobile/templates/results.html` lines 6–80 render all sections in a single linear flow (score, summary, charts, findings, strengths, motives, recommendations, actions).
 
 ### After (target)
 - Reorder to: **Score** → **Summary** → **Actions** → **Evidence** (collapsible sections for scores, findings, strengths, motives, recommendations).
@@ -331,4 +335,3 @@ function applyQuickPick(type) {
 1. Revert the changes in templates and CSS to the previous commit.
 2. Ensure `index.html` reverts to discovery cards + expandable process section.
 3. Remove `toggleDetails` from results template if added.
-

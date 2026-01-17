@@ -15,7 +15,7 @@
 ## Task A — Extend ErrorResponse with `help`
 
 ### Before (current)
-- `ErrorResponse` includes `error`, `error_code`, `message`, `details`, `request_id`. (See `errors.py` lines 49–56.)
+- `src/sono_eval/utils/errors.py` lines 49–56 define `ErrorResponse` without any help payload.
 
 ### After (target)
 - Add a `help` field with: `valid_examples`, `suggestion`, `docs_url`.
@@ -140,7 +140,7 @@ raise validation_error(
 ## Task C — Add component troubleshooting hints to health checks
 
 ### Before (current)
-- Health checks show status and details but no actionable “how to fix” hints.
+- `src/sono_eval/api/main.py` lines 230–534 return component status/details without troubleshooting hints.
 
 ### After (target)
 - Add `troubleshooting` hints per component in the detailed health check response.
@@ -224,4 +224,3 @@ async def error_reference():
 1. Revert `errors.py` model and remove `ErrorHelp` / `help` field.
 2. Remove any error help references in API handlers.
 3. Remove `/api/v1/errors` endpoint and any troubleshooting hints.
-
