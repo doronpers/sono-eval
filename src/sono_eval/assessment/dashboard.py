@@ -145,7 +145,7 @@ class DashboardData(BaseModel):
                 color=path_colors.get(ps.path, "#6b7280"),
                 metrics_count=len(ps.metrics),
                 top_strength=ps.strengths[0] if ps.strengths else None,
-                top_improvement=ps.areas_for_improvement[0] if ps.areas_for_improvement else None,
+                top_improvement=(ps.areas_for_improvement[0] if ps.areas_for_improvement else None),
                 breakdown=[
                     ScoreBreakdown(
                         label=m.name,

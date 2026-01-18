@@ -68,6 +68,7 @@ memu_storage: Optional[MemUStorage] = None
 tag_generator: Optional[TagGenerator] = None
 config = get_config()
 API_VERSION = "0.1.1"
+API_V1_PREFIX = "/api/v1"
 CANDIDATE_ID_PATTERN = re.compile(r"^[a-zA-Z0-9_-]+$")
 CANDIDATE_ID_ERROR_MESSAGE = (
     "candidate_id must contain only alphanumeric characters, dashes, and underscores"
@@ -325,7 +326,10 @@ async def check_component_health(include_details: bool = True) -> Dict[str, Any]
             if cache_dir.exists():
                 components["tagging"] = "operational"
                 if include_details:
-                    details["tagging"] = {"model_name": config.t5_model_name, "initialized": True}
+                    details["tagging"] = {
+                        "model_name": config.t5_model_name,
+                        "initialized": True,
+                    }
             else:
                 components["tagging"] = "degraded"
                 if include_details:
@@ -352,7 +356,10 @@ async def check_component_health(include_details: bool = True) -> Dict[str, Any]
                 if db_file.parent.exists():
                     components["database"] = "operational"
                     if include_details:
-                        details["database"] = {"type": "sqlite", "exists": db_file.exists()}
+                        details["database"] = {
+                            "type": "sqlite",
+                            "exists": db_file.exists(),
+                        }
                 else:
                     components["database"] = "degraded"
                     if include_details:
@@ -540,7 +547,9 @@ async def status():
     """Detailed status information."""
     return {
         "api_version": API_VERSION,
-        "assessment_engine_version": assessment_engine.version if assessment_engine else "unknown",
+        "assessment_engine_version": (
+            assessment_engine.version if assessment_engine else "unknown"
+        ),
         "config": {
             "multi_path_tracking": config.assessment_multi_path_tracking,
             "explanations_enabled": config.assessment_enable_explanations,
@@ -948,7 +957,10 @@ async def upload_file(request: Request, file: UploadFile = File(...)):  # noqa: 
             raise file_upload_error(
                 message=f"File type '.{file_ext}' not allowed. Allowed types: {allowed_str}",
                 error_type=ErrorCode.INVALID_FILE_TYPE,
-                details={"file_extension": file_ext, "allowed_extensions": allowed_extensions},
+                details={
+                    "file_extension": file_ext,
+                    "allowed_extensions": allowed_extensions,
+                },
                 request_id=request_id,
             )
 

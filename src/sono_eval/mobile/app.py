@@ -173,7 +173,9 @@ def create_mobile_app() -> FastAPI:
 
     @app.get("/assess", response_class=HTMLResponse)
     async def mobile_assess(
-        request: Request, candidate_id: Optional[str] = None, paths: Optional[str] = None
+        request: Request,
+        candidate_id: Optional[str] = None,
+        paths: Optional[str] = None,
     ):
         """Interactive assessment page."""
         selected_paths = paths.split(",") if paths else []
@@ -263,7 +265,10 @@ def create_mobile_app() -> FastAPI:
             logger.error(f"Error processing mobile assessment: {e}")
             return JSONResponse(
                 status_code=500,
-                content={"success": False, "error": f"Assessment processing failed: {str(e)}"},
+                content={
+                    "success": False,
+                    "error": f"Assessment processing failed: {str(e)}",
+                },
             )
 
     @app.get("/api/mobile/explain/{path}")
@@ -349,7 +354,11 @@ def create_mobile_app() -> FastAPI:
 
             for event in batch.events:
                 # Log important events
-                if event.event_type in ["page_view", "easter_egg_discovered", "milestone"]:
+                if event.event_type in [
+                    "page_view",
+                    "easter_egg_discovered",
+                    "milestone",
+                ]:
                     logger.info(
                         f"Tracking: {event.event_type} - "
                         f"session={event.session_id[:8]}... "

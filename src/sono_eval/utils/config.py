@@ -54,6 +54,8 @@ class Config(BaseSettings):
     assessment_multi_path_tracking: bool = Field(
         default=True, alias="ASSESSMENT_MULTI_PATH_TRACKING"
     )
+    # Dark Horse mode: Set to "disabled" for public release to avoid licensing concerns
+    # See DARK_HORSE_MITIGATION.md for details
     dark_horse_mode: str = Field(default="enabled", alias="DARK_HORSE_MODE")
     pattern_checks_enabled: bool = Field(default=True, alias="PATTERN_CHECKS_ENABLED")
     pattern_penalty_low: float = Field(default=1.0, alias="PATTERN_PENALTY_LOW")

@@ -53,7 +53,10 @@ class TaskManager:
             raise ValueError("Title and description cannot be empty")
 
         task = Task(
-            id=self._next_id, title=title, description=description, created_at=datetime.now()
+            id=self._next_id,
+            title=title,
+            description=description,
+            created_at=datetime.now(),
         )
         self.tasks.append(task)
         self._next_id += 1

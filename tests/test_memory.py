@@ -1,8 +1,10 @@
 """Tests for the MemU storage system."""
 
-import pytest
 from pathlib import Path
-from sono_eval.memory.memu import MemUStorage, CandidateMemory
+
+import pytest
+
+from sono_eval.memory.memu import CandidateMemory, MemUStorage
 
 
 @pytest.fixture

@@ -172,7 +172,7 @@ class AssessmentExporter:
                 timestamp=result.timestamp,
                 overall_score=result.overall_score,
                 confidence=result.confidence,
-                dominant_path=result.dominant_path.value if result.dominant_path else None,
+                dominant_path=(result.dominant_path.value if result.dominant_path else None),
                 summary=result.summary,
                 key_findings=result.key_findings,
                 recommendations=result.recommendations,

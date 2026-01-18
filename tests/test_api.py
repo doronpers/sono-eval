@@ -11,7 +11,8 @@ from sono_eval.api.main import app
 @pytest.fixture
 def client():
     """Create test client."""
-    return TestClient(app)
+    with TestClient(app) as client:
+        yield client
 
 
 def test_health_endpoint(client):
@@ -61,8 +62,8 @@ def test_cors_headers_present(client):
     assert response.status_code in [200, 204]
 
 
-@patch("sono_eval.api.main.assessment_engine")
-def test_assessment_endpoint_with_valid_input(mock_engine, client):
+@patch("sono_eval.api.main.AssessmentEngine")
+def test_assessment_endpoint_with_valid_input(MockEngineClass, client):
     """Test assessment creation with valid input."""
     # Mock the assessment engine
     mock_result = MagicMock()
@@ -78,6 +79,7 @@ def test_assessment_endpoint_with_valid_input(mock_engine, client):
         "confidence": 0.9,
     }
 
+    mock_engine = MockEngineClass.return_value
     mock_engine.assess.return_value = mock_result
 
     response = client.post(
@@ -179,7 +181,8 @@ def test_tag_generation_max_tags_limits(client):
     """Test max_tags validation."""
     # max_tags too high
     response = client.post(
-        "/api/v1/tags/generate", json={"text": "Sample text", "max_tags": 21}  # Limit is 20
+        "/api/v1/tags/generate",
+        json={"text": "Sample text", "max_tags": 21},  # Limit is 20
     )
 
     assert response.status_code == 422  # Validation error
