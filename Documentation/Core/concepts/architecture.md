@@ -468,7 +468,7 @@ flowchart TD
 
 ### Backend
 
-- **Python 3.9+**: Core language
+- **Python 3.13+**: Core language
 - **FastAPI**: Web framework
 - **Uvicorn**: ASGI server
 - **Pydantic**: Data validation
@@ -677,4 +677,4 @@ Create Superset visualizations for your needs.
 ---
 
 **Last Updated**: January 10, 2026
-**Version**: 0.1.0
+**Version**: 0.1.1

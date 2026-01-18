@@ -5,7 +5,7 @@
 **Audit Date**: January 10, 2026
 **Auditor**: Design Review Agent (Dieter Rams Principles)
 **Repository**: doronpers/sono-eval
-**Version**: 0.1.0
+**Version**: 0.1.1
 
 ---
 
@@ -170,7 +170,7 @@ clarity, and user experience.
 
 **Strengths**:
 
-- Clear about being version 0.1.0 (alpha status)
+- Clear about being version 0.1.1 (alpha status)
 - Honest about features in development (roadmap)
 - Assessment engine clearly uses example scores (not deceptive)
 - Open about dependencies and requirements

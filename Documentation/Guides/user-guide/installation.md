@@ -20,7 +20,7 @@ Complete guide to installing and setting up Sono-Eval.
 
 ### Required
 
-- **Python 3.9+** - [Download Python](https://www.python.org/downloads/)
+- **Python 3.13+** - [Download Python](https://www.python.org/downloads/)
 - **Git** - [Install Git](https://git-scm.com/downloads)
 
 ### Optional (for Docker)
@@ -31,7 +31,7 @@ Complete guide to installing and setting up Sono-Eval.
 ### Verify Prerequisites
 
 ```bash
-# Check Python version (must be 3.9+)
+# Check Python version (must be 3.13+)
 python3 --version
 
 # Check Git
@@ -296,7 +296,7 @@ git checkout -b feature/your-feature-name
 ```bash
 sudo apt-get update
 sudo apt-get install -y \
-    python3.9 python3.9-venv python3-pip \
+    python3.13 python3.13-venv python3-pip \
     git build-essential python3-dev \
     docker.io docker-compose
 ```
@@ -342,7 +342,7 @@ open -a Docker
 
 **Native Windows:**
 
-1. Install [Python 3.9+](https://www.python.org/downloads/windows/)
+1. Install [Python 3.13+](https://www.python.org/downloads/windows/)
 2. Install [Git for Windows](https://git-scm.com/download/win)
 3. Install [Docker Desktop for Windows](https://www.docker.com/products/docker-desktop)
 4. Use PowerShell or Command Prompt
@@ -440,7 +440,7 @@ redis-cli ping
 
 ```bash
 sono-eval --version
-# Should show: 0.1.0
+# Should show: 0.1.1
 
 sono-eval config show
 # Should display configuration
@@ -523,7 +523,7 @@ tar -czf backups/sono-eval-$(date +%Y%m%d).tar.gz data/
 ### Common Installation Issues
 
 **Problem**: `python3: command not found`
-**Solution**: Install Python 3.9+ from python.org
+**Solution**: Install Python 3.13+ from python.org
 
 **Problem**: `Permission denied` when running Docker
 **Solution**: Add user to docker group (see Linux section)

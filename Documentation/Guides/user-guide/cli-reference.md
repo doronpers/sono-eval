@@ -523,4 +523,4 @@ See the [Troubleshooting Guide](../troubleshooting.md) for more help.
 ---
 
 **Last Updated**: January 10, 2026
-**Version**: 0.1.0
+**Version**: 0.1.1

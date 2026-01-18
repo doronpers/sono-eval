@@ -223,4 +223,4 @@ See [Contributing Guide](../../CONTRIBUTING.md) for details.
 ---
 
 **Last Updated**: January 10, 2026
-**Version**: 0.1.0
+**Version**: 0.1.1

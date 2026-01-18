@@ -9,14 +9,14 @@ configure, and run your first assessment.
 
 Before starting, ensure you have:
 
-- **Python 3.9+** installed ([Download](https://www.python.org/downloads/))
+- **Python 3.13+** installed ([Download](https://www.python.org/downloads/))
 - **Docker & Docker Compose** (for containerized deployment)
 - **Git** for cloning the repository
 
 Check your versions:
 
 ```bash
-python3 --version  # Should be 3.9 or higher
+python3 --version  # Should be 3.13 or higher
 docker --version
 docker-compose --version
 ```

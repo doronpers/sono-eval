@@ -35,6 +35,7 @@ This plan provides step-by-step instructions for coding agents to enhance docume
    - `Documentation/Governance/DOCUMENTATION_ORGANIZATION_STANDARDS.md`
 
 4. Map the current structure:
+
    ```bash
    find Documentation -name "*.md" | head -20
    ls -la *.md
@@ -47,6 +48,7 @@ This plan provides step-by-step instructions for coding agents to enhance docume
 **File**: `README.md`
 
 ### Current Issues
+
 - Lines 18-23: 5+ different "start here" options
 - Lines 27-103: Beginner section duplicates quick start
 - No clear single path forward
@@ -131,6 +133,7 @@ curl -X POST http://localhost:8000/api/v1/assessments \
 - **For contributors**: Check the [🤝 contributing guide](CONTRIBUTING.md)
 
 ---
+
 ```
 
 #### 1.3: Move Detailed Content to Appropriate Docs
@@ -162,6 +165,7 @@ curl -X POST http://localhost:8000/api/v1/assessments \
 ```
 
 ### Expected Outcome
+
 - Single clear CTA: "Get Started in 5 Minutes"
 - Reduced cognitive load: One primary path, alternatives clearly secondary
 - Faster time to success: Streamlined quick start
@@ -174,6 +178,7 @@ curl -X POST http://localhost:8000/api/v1/assessments \
 **File**: `Documentation/START_HERE.md`
 
 ### Current Issues
+
 - Good structure but not visually engaging
 - Missing time estimates
 - No visual hierarchy for paths
@@ -289,12 +294,14 @@ cd sono-eval
 <summary><b>Step 2: Verify It's Running (30 seconds)</b></summary>
 
 **In Codespaces:**
+
 - Look for the "Ports" tab at the bottom
 - Find port 8000, click the globe icon to open
 - Add `/docs` to the URL: `https://...github.dev/docs`
 
 **Local:**
-- Open browser to: http://localhost:8000/docs
+
+- Open browser to: <http://localhost:8000/docs>
 
 **You should see:** Interactive API documentation (Swagger UI)
 
@@ -330,7 +337,7 @@ cd sono-eval
 
 For a guided, touch-friendly experience:
 
-1. Navigate to: http://localhost:8000/mobile (or add `/mobile` to your Codespaces URL)
+1. Navigate to: <http://localhost:8000/mobile> (or add `/mobile` to your Codespaces URL)
 2. Follow the interactive flow
 3. Choose "Technical" path
 4. Complete a simple assessment
@@ -375,6 +382,7 @@ Now that you've run Sono-Eval:
    - Action items
 
 **Interactive learning:**
+
 - Try the mobile companion for guided experience
 - Complete a practice assessment
 - Review sample results in `samples/`
@@ -399,6 +407,7 @@ Now that you've run Sono-Eval:
    - Extension points
 
 **Learning resources:**
+
 - [Learning Resources Hub](Learning/README.md) - Complete beginner paths
 - [FAQ](Guides/faq.md) - Common questions answered
 - [Troubleshooting](Guides/troubleshooting.md) - Common issues
@@ -412,6 +421,7 @@ Now that you've run Sono-Eval:
 ### For Integration & Deployment
 
 **Prerequisites:**
+
 - Python 3.9+ or Docker
 - Basic command-line familiarity
 - Git installed
@@ -434,6 +444,7 @@ Now that you've run Sono-Eval:
    - Production hardening
 
 **Integration examples:**
+
 - [Python SDK usage](Guides/user-guide/python-sdk.md)
 - [CLI integration](Guides/user-guide/cli-reference.md)
 - [Batch processing](Guides/user-guide/batch-processing.md)
@@ -458,6 +469,7 @@ Now that you've run Sono-Eval:
    - Code standards
 
 **Good first contributions:**
+
 - Add sample submissions to `samples/`
 - Improve documentation clarity
 - Add tests for existing features
@@ -466,6 +478,7 @@ Now that you've run Sono-Eval:
 **[View open issues →](https://github.com/doronpers/sono-eval/issues)**
 
 ---
+
 ```
 
 ### Expected Outcome
@@ -667,6 +680,7 @@ Can't find what you're looking for?
 ```
 
 ### Expected Outcome
+
 - Quick navigation table for common needs
 - Visual icons improve scannability
 - Time estimates help users plan
@@ -680,6 +694,7 @@ Can't find what you're looking for?
 **File**: `CONTRIBUTING.md`
 
 ### Current Issues
+
 - Lines 6-42: Three "quick start" sections with overlap
 - No clear beginner vs experienced paths
 - Missing visual hierarchy
@@ -770,6 +785,7 @@ git push origin your-branch
 **[See full development setup →](#development-setup)**
 
 ---
+
 ```
 
 #### 4.2: Add Contribution Types Matrix
@@ -852,6 +868,7 @@ Not sure where to start? Here are common contribution types by difficulty:
 ```
 
 ### Expected Outcome
+
 - Clear path for each skill level
 - Visual table shows contribution types
 - Reduced confusion about where to start
@@ -967,7 +984,7 @@ ls Documentation/Learning/
 
 ## Still Can't Find It?
 
-### Try These:
+### Try These
 
 1. **[Documentation Index](DOCUMENTATION_INDEX.md)** - Complete file catalog
 2. **[FAQ](Guides/faq.md)** - Common questions
@@ -988,6 +1005,7 @@ If you found what you were looking for but it was hard to find:
 ---
 
 **Last Updated:** January 17, 2026
+
 ```
 
 Then **add link to SEARCH.md** in `Documentation/README.md`:
@@ -999,6 +1017,7 @@ Then **add link to SEARCH.md** in `Documentation/README.md`:
 ```
 
 ### Expected Outcome
+
 - Centralized search helper
 - Keyword-based navigation
 - Quick command reference
@@ -1018,6 +1037,7 @@ Then **add link to SEARCH.md** in `Documentation/README.md`:
 **Visual guide to finding what you need.**
 
 ```
+
 ┌─────────────────────────────────────────────────────────────┐
 │                      SONO-EVAL                              │
 │                     Documentation                           │
@@ -1035,11 +1055,13 @@ Then **add link to SEARCH.md** in `Documentation/README.md`:
     ┌─────┴────┐       ┌────┴────┐      ┌────┴────┐
     │          │       │         │      │         │
     ▼          ▼       ▼         ▼      ▼         ▼
+
 ```
 
 ## For First-Time Users
 
 ```
+
 START_HERE.md
     ├── Try It Path
     │   ├── Quick Start Guide
@@ -1055,6 +1077,7 @@ START_HERE.md
         ├── Architecture Overview
         ├── Installation Guide
         └── Contributing Guide
+
 ```
 
 ## For Specific Goals
@@ -1062,33 +1085,40 @@ START_HERE.md
 ### "I want to run an assessment"
 
 ```
+
 Guides/
 ├── QUICK_START.md ──────────┐
 ├── assessment-path-guide.md │ Start here
 └── mobile-companion.md ─────┘
+
 ```
 
 ### "I want to integrate the API"
 
 ```
+
 Guides/user-guide/
 ├── api-reference.md ────────┐
 ├── configuration.md         │ Start here
 └── cli-reference.md ────────┘
+
 ```
 
 ### "I want to contribute"
 
 ```
+
 CONTRIBUTING.md ─────────────┐
 Core/concepts/               │ Start here
 ├── architecture.md          │
 └── implementation.md ───────┘
+
 ```
 
 ### "I'm new to coding"
 
 ```
+
 Learning/
 ├── README.md ───────────────┐
 ├── Paths/                   │ Start here
@@ -1096,6 +1126,7 @@ Learning/
 └── Guides/
     ├── github-basics/
     └── ai-tools/ ───────────┘
+
 ```
 
 ## Documentation Categories
@@ -1107,6 +1138,7 @@ Learning/
 
 ### 📖 User Guides
 ```
+
 Documentation/Guides/
 ├── QUICK_START.md
 ├── assessment-path-guide.md
@@ -1118,10 +1150,12 @@ Documentation/Guides/
     ├── configuration.md
     ├── api-reference.md
     └── cli-reference.md
+
 ```
 
 ### 🏗️ Technical Documentation
 ```
+
 Documentation/Core/
 ├── concepts/
 │   ├── architecture.md
@@ -1130,10 +1164,12 @@ Documentation/Core/
 └── development/
     ├── implementation.md
     └── setup.md
+
 ```
 
 ### 🎓 Learning Resources
 ```
+
 Documentation/Learning/
 ├── README.md
 ├── Paths/
@@ -1144,23 +1180,28 @@ Documentation/Learning/
 │   └── workflow-building/
 └── Philosophy/
     └── dark-horse-approach.md
+
 ```
 
 ### 📊 Reports & Audits
 ```
+
 Documentation/Reports/
 ├── DESIGN_AUDIT.md
 ├── PUBLIC_READINESS_REPORT.md
 ├── SECURITY_AUDIT_SUMMARY.md
 └── SECRETS_AUDIT.md
+
 ```
 
 ### 🔧 Governance
 ```
+
 Documentation/Governance/
 ├── DOCUMENTATION_ORGANIZATION_STANDARDS.md
 ├── AGENT_BEHAVIORAL_STANDARDS.md
 └── MAINTENANCE.md
+
 ```
 
 ## Quick Links by Role
@@ -1288,16 +1329,19 @@ Ask 5 test users to complete tasks:
 ### Metrics to Track
 
 **Before:**
+
 - Time to first assessment: ~10-15 minutes
 - Documentation bounce rate: High (users leave confused)
 - Setup abandonment: ~40%
 
 **After:**
+
 - Time to first assessment: < 5 minutes (50% improvement)
 - Documentation bounce rate: Reduced by 35%
 - Setup abandonment: < 20% (50% improvement)
 
 **Qualitative:**
+
 - "I knew exactly where to start"
 - "The visual paths helped me choose"
 - "Found what I needed quickly"

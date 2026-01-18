@@ -118,19 +118,24 @@ category.**
 
 **Location**: `documentation/Reports/`
 
-- **[Design Audit](Reports/DESIGN_AUDIT.md)** - Dieter Rams design principles
-  audit
-- **[Final Report](Reports/FINAL_REPORT.md)** - Summary of design improvements
-  and changes
-- **[Code Review Report](Reports/CODE_REVIEW_REPORT.md)** - Detailed code
-  quality analysis
-- **[Assessment Summary](Reports/ASSESSMENT_SUMMARY.md)** - Consolidated
-  assessment findings
-- **[Fix Documentation](Reports/FIX_NOT_FOUND.md)** - Fix for not found issues
-- **[Port Allocation Fix](Reports/FIX_PORT_ALLOCATION.md)** - Port allocation
-  troubleshooting and fix
+**Current Reports:**
 
-**Total Report Files**: 13 files
+- **[Design Audit](Reports/DESIGN_AUDIT.md)** - Dieter Rams design principles audit
+- **[Design Audit 2026](Reports/DESIGN_AUDIT_2026.md)** - Updated design audit
+- **[Final Report](Reports/FINAL_REPORT.md)** - Summary of design improvements and changes
+- **[Code Review Report](Reports/CODE_REVIEW_REPORT.md)** - Detailed code quality analysis
+- **[Assessment Summary](Reports/ASSESSMENT_SUMMARY.md)** - Consolidated assessment findings
+- **[Public Readiness Report](Reports/PUBLIC_READINESS_REPORT.md)** - Beta release status
+- **[Security Audit Summary](Reports/SECURITY_AUDIT_SUMMARY.md)** - Security review summary
+- **[Secrets Audit](Reports/SECRETS_AUDIT.md)** - Credentials and PII check
+
+**See [Reports/README.md](Reports/README.md) for complete list and descriptions.**
+
+**Historical Reports:**
+
+- Implementation plans, fix notes, and navigation reviews have been moved to **[Archive/Reports-Historical/](Archive/Reports-Historical/)**
+
+**Total Current Report Files**: 8 files (historical reports archived)
 
 ---
 
@@ -144,6 +149,19 @@ category.**
   procedures
 
 **Total Governance Files**: 5 files
+
+---
+
+## Archive (Historical Documentation)
+
+**Location**: `documentation/Archive/`
+
+Historical and internal documentation that has been superseded or is no longer needed as primary entry points.
+
+- **[Archive README](Archive/README.md)** - Explains what's archived and why
+- **[Historical Reports](Archive/Reports-Historical/)** - Implementation plans, fix notes, navigation reviews
+
+**See [Archive/README.md](Archive/README.md) for details.**
 
 ---
 
@@ -281,4 +299,4 @@ Documentation maintenance procedures are documented in
 ---
 
 **Version**: 0.1.1
-**Last Updated**: January 15, 2026
+**Last Updated**: January 18, 2026

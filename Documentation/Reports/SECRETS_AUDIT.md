@@ -428,7 +428,7 @@ If you discover any security issues not covered in this audit:
 2. Report privately via GitHub Security Advisory
 3. Or email: <security@sono-eval.example>
 
-See [SECURITY.md](SECURITY.md) for full security reporting guidelines.
+See [SECURITY.md](../../SECURITY.md) for full security reporting guidelines.
 
 ---
 

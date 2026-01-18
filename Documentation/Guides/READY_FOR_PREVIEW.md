@@ -120,7 +120,7 @@ curl http://localhost:8000/api/v1/candidates
 
 Before running, verify:
 
-- [ ] Python 3.9+ installed
+- [ ] Python 3.13+ installed
 - [ ] Dependencies installed: `pip install -r requirements.txt`
 - [ ] Package installed: `pip install -e .`
 - [ ] .env file created: `cp .env.example .env`

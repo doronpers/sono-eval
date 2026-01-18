@@ -9,7 +9,7 @@ first time. We'll explain what each step does and why it matters.
 
 ## What You'll Need
 
-- **Python 3.9 or higher** - The programming language Sono-Eval uses
+- **Python 3.13 or higher** - The programming language Sono-Eval uses
 - **Internet connection** - To download dependencies and access the web interface
 - **About 15 minutes** - For the initial setup
 
@@ -17,7 +17,7 @@ first time. We'll explain what each step does and why it matters.
 
 ## Step 1: Check Your Python Version
 
-**Why this matters:** Sono-Eval requires Python 3.9 or newer to work properly.
+**Why this matters:** Sono-Eval requires Python 3.13 or newer to work properly.
 
 **How to check:**
 
@@ -27,7 +27,7 @@ python3 --version
 python --version
 ```
 
-**What you should see:** Something like `Python 3.9.0` or higher
+**What you should see:** Something like `Python 3.13.0` or higher
 
 **If you don't have Python:** Download from [python.org](https://www.python.org/downloads/)
 

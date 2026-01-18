@@ -3,7 +3,7 @@
 **Date**: January 10, 2026
 **Auditor**: Design Review Agent (Dieter Rams Principles)
 **Repository**: sono-eval
-**Version**: 0.1.0 → Enhanced
+**Version**: 0.1.1 → Enhanced
 
 ---
 

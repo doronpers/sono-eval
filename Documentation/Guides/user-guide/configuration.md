@@ -621,4 +621,4 @@ python -c "from transformers import T5ForConditionalGeneration; T5ForConditional
 ---
 
 **Last Updated**: January 10, 2026
-**Version**: 0.1.0
+**Version**: 0.1.1

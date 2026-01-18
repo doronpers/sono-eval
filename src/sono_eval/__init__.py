@@ -9,7 +9,7 @@ A comprehensive system for evaluating developer skills with:
 - Analytics and visualization
 """
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 __author__ = "Sono-Eval Team"
 
 from sono_eval.assessment.engine import AssessmentEngine

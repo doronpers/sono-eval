@@ -27,6 +27,7 @@ This plan provides step-by-step instructions for coding agents to enhance the mo
    - `src/sono_eval/mobile/static/script.js` (interactions)
 
 2. Understand the current user flow:
+
    ```
    /mobile → index.html → start.html → paths.html → assess.html → results.html
    ```
@@ -36,6 +37,7 @@ This plan provides step-by-step instructions for coding agents to enhance the mo
    - `src/sono_eval/mobile/app.py` (FastAPI routes)
 
 4. Test the current mobile interface:
+
    ```bash
    ./launcher.sh start
    # Open http://localhost:8000/mobile in browser
@@ -49,6 +51,7 @@ This plan provides step-by-step instructions for coding agents to enhance the mo
 **File**: `src/sono_eval/mobile/templates/index.html`
 
 ### Current Issues
+
 - 3 discovery cards + expandable section = too many decisions
 - No clear visual priority or reading order
 - Equal weight to all information (value prop, time, privacy)
@@ -120,7 +123,7 @@ Move time commitment and privacy info into a **single** collapsible "Learn More"
             </ul>
             <p class="detail-note">You can save progress and return later</p>
         </div>
-        
+
         <div class="detail-section">
             <h4>🔒 Privacy</h4>
             <ul>
@@ -129,7 +132,7 @@ Move time commitment and privacy info into a **single** collapsible "Learn More"
                 <li>✅ Full transparency on scoring</li>
             </ul>
         </div>
-        
+
         <div class="detail-section">
             <h4>📋 The Process</h4>
             <ol>
@@ -151,11 +154,11 @@ Move time commitment and privacy info into a **single** collapsible "Learn More"
 function toggleDetails(button) {
     const content = button.nextElementSibling;
     const icon = button.querySelector('.toggle-icon');
-    
+
     if (content.style.display === 'none') {
         content.style.display = 'block';
         icon.textContent = '▲';
-        
+
         // Track interaction
         if (window.sonoEvalTracking && window.sonoEvalTracking.trackEvent) {
             window.sonoEvalTracking.trackEvent('engagement', {
@@ -171,6 +174,7 @@ function toggleDetails(button) {
 ```
 
 ### Expected Outcome
+
 - Single clear path forward (CTA button prominent)
 - Reduced cognitive load (4 value items vs 3 expandable cards + section)
 - Secondary info available but not blocking action
@@ -179,11 +183,13 @@ function toggleDetails(button) {
 
 ## Task 2: Add Step Progress Indicators
 
-**Files**: 
+**Files**:
+
 - `src/sono_eval/mobile/templates/base.html`
 - `src/sono_eval/mobile/static/style.css`
 
 ### Current Issues
+
 - Progress bar exists but lacks context
 - Users don't know "step X of Y"
 - No time estimates per step
@@ -212,6 +218,7 @@ function toggleDetails(button) {
 #### 2.2: Update Each Template with Progress Info
 
 **In `start.html`**, add:
+
 ```html
 {% block progress_label %}Step 1: Enter ID{% endblock %}
 {% block progress_step %}1/4{% endblock %}
@@ -220,6 +227,7 @@ function toggleDetails(button) {
 ```
 
 **In `paths.html`**, add:
+
 ```html
 {% block progress_label %}Step 2: Choose Areas{% endblock %}
 {% block progress_step %}2/4{% endblock %}
@@ -228,6 +236,7 @@ function toggleDetails(button) {
 ```
 
 **In `assess.html`**, add:
+
 ```html
 {% block progress_label %}Step 3: Assessment{% endblock %}
 {% block progress_step %}3/4{% endblock %}
@@ -236,6 +245,7 @@ function toggleDetails(button) {
 ```
 
 **In `results.html`**, add:
+
 ```html
 {% block progress_label %}Complete!{% endblock %}
 {% block progress_step %}4/4{% endblock %}
@@ -286,6 +296,7 @@ function toggleDetails(button) {
 ```
 
 ### Expected Outcome
+
 - Clear context: "Step 2 of 4"
 - Time awareness: "1-2 min" estimates
 - Visual progress: More informative progress bar
@@ -297,6 +308,7 @@ function toggleDetails(button) {
 **File**: `src/sono_eval/mobile/templates/paths.html`
 
 ### Current Issues
+
 - All 5 paths shown with equal weight
 - No guidance on which to choose
 - No indication of difficulty or time per path
@@ -311,24 +323,24 @@ function toggleDetails(button) {
 <div class="guidance-section">
     <h3>Choose Your Focus Areas</h3>
     <p class="guidance-text">
-        Select 1-4 areas based on your goals. Not sure? Start with 
+        Select 1-4 areas based on your goals. Not sure? Start with
         <strong>Technical</strong> for a quick assessment.
     </p>
-    
+
     <div class="quick-picks">
         <button class="quick-pick-btn" onclick="selectQuickPath('beginner')">
             <span class="pick-icon">🌱</span>
             <span class="pick-label">New to coding</span>
             <span class="pick-desc">Technical + Problem Solving</span>
         </button>
-        
+
         <button class="quick-pick-btn" onclick="selectQuickPath('comprehensive')">
             <span class="pick-icon">🎯</span>
             <span class="pick-label">Complete profile</span>
             <span class="pick-desc">All 4 areas (60-90 min)</span>
         </button>
     </div>
-    
+
     <p class="or-divider">or choose specific areas below</p>
 </div>
 ```
@@ -365,12 +377,12 @@ function selectQuickPath(pathType) {
     document.querySelectorAll('.path-card').forEach(card => {
         card.classList.remove('selected');
     });
-    
+
     const pathMap = {
         'beginner': ['technical', 'problem_solving'],
         'comprehensive': ['technical', 'design', 'collaboration', 'problem_solving']
     };
-    
+
     const paths = pathMap[pathType];
     paths.forEach(pathId => {
         const card = document.querySelector(`[data-path="${pathId}"]`);
@@ -379,10 +391,10 @@ function selectQuickPath(pathType) {
             card.querySelector('.path-select-btn').textContent = 'Selected ✓';
         }
     });
-    
+
     // Show continue button
     document.querySelector('.continue-btn').style.display = 'block';
-    
+
     // Track selection
     if (window.sonoEvalTracking && window.sonoEvalTracking.trackEvent) {
         window.sonoEvalTracking.trackEvent('path_selection', {
@@ -391,16 +403,17 @@ function selectQuickPath(pathType) {
             paths: paths
         });
     }
-    
+
     // Scroll to continue button
-    document.querySelector('.continue-btn').scrollIntoView({ 
-        behavior: 'smooth', 
-        block: 'center' 
+    document.querySelector('.continue-btn').scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
     });
 }
 ```
 
 ### Expected Outcome
+
 - Reduced decision paralysis with quick-pick options
 - Better informed choices with time estimates
 - Guided experience for new users
@@ -412,6 +425,7 @@ function selectQuickPath(pathType) {
 **File**: `src/sono_eval/mobile/templates/results.html`
 
 ### Current Issues
+
 - Flat information hierarchy
 - Scores not prominent enough
 - Recommendations buried in evidence
@@ -431,7 +445,7 @@ function selectQuickPath(pathType) {
         </div>
         <p class="score-context">{{ score_context }}</p>
     </div>
-    
+
     <div class="key-highlights">
         <div class="highlight-item positive">
             <span class="highlight-icon">✨</span>
@@ -440,7 +454,7 @@ function selectQuickPath(pathType) {
                 <p>{{ top_strength }}</p>
             </div>
         </div>
-        
+
         <div class="highlight-item improvement">
             <span class="highlight-icon">📈</span>
             <div>
@@ -463,12 +477,12 @@ Organize each path result with clear sections:
         <h3>{{ path.display_name }}</h3>
         <span class="path-score">{{ path.score }}/100</span>
     </div>
-    
+
     <!-- Executive summary -->
     <div class="path-summary">
         <p class="summary-text">{{ path.summary }}</p>
     </div>
-    
+
     <!-- Strengths (collapsible) -->
     <div class="collapsible-section">
         <button class="section-toggle" onclick="toggleSection(this)">
@@ -483,7 +497,7 @@ Organize each path result with clear sections:
             </ul>
         </div>
     </div>
-    
+
     <!-- Areas for improvement (expanded by default) -->
     <div class="collapsible-section expanded">
         <button class="section-toggle" onclick="toggleSection(this)">
@@ -510,7 +524,7 @@ Organize each path result with clear sections:
             </ul>
         </div>
     </div>
-    
+
     <!-- Evidence (collapsible, closed by default) -->
     <div class="collapsible-section">
         <button class="section-toggle" onclick="toggleSection(this)">
@@ -538,7 +552,7 @@ At the bottom, add clear next steps:
             <p>Download a detailed PDF report</p>
             <button class="action-btn">Download PDF</button>
         </div>
-        
+
         <div class="action-card">
             <span class="action-icon">🔄</span>
             <h4>Try Another Path</h4>
@@ -547,7 +561,7 @@ At the bottom, add clear next steps:
                 Select Paths
             </button>
         </div>
-        
+
         <div class="action-card">
             <span class="action-icon">📚</span>
             <h4>Learn More</h4>
@@ -561,6 +575,7 @@ At the bottom, add clear next steps:
 ```
 
 ### Expected Outcome
+
 - Clear visual hierarchy: Score → Summary → Actions → Details
 - Actionable focus: Improvements prominent, evidence secondary
 - Better engagement: Clear next steps
@@ -571,7 +586,7 @@ At the bottom, add clear next steps:
 
 **File**: `src/sono_eval/mobile/static/style.css`
 
-### Add the following styles (append to file):
+### Add the following styles (append to file)
 
 ```css
 /* Value Proposition Grid */
@@ -962,11 +977,11 @@ At the bottom, add clear next steps:
     .value-grid {
         grid-template-columns: repeat(4, 1fr);
     }
-    
+
     .quick-picks {
         flex-direction: row;
     }
-    
+
     .action-cards {
         flex-direction: row;
     }
@@ -988,12 +1003,12 @@ Update the results route to include summary data:
 async def results_page(request: Request, session_id: Optional[str] = None):
     """Display assessment results with enhanced summary."""
     # ... existing code ...
-    
+
     # Calculate top strength and improvement
     top_strength = calculate_top_strength(assessment_result)
     top_improvement = calculate_top_improvement(assessment_result)
     score_context = get_score_context(assessment_result.overall_score)
-    
+
     return templates.TemplateResponse(
         "results.html",
         {
@@ -1036,6 +1051,7 @@ def calculate_top_improvement(result: AssessmentResult) -> str:
 After implementing all changes, test thoroughly:
 
 ### 1. Visual Testing
+
 ```bash
 ./launcher.sh start
 # Open http://localhost:8000/mobile
@@ -1043,6 +1059,7 @@ After implementing all changes, test thoroughly:
 ```
 
 **Check:**
+
 - Welcome screen has 4 value items in grid
 - CTA button is prominent
 - Details section collapses/expands smoothly
@@ -1053,6 +1070,7 @@ After implementing all changes, test thoroughly:
 ### 2. Interaction Testing
 
 **User Flow:**
+
 1. Land on welcome → Click "Start Your Assessment"
 2. Enter candidate ID → See progress "Step 1/4"
 3. Click quick-pick "New to coding" → See 2 paths selected
@@ -1062,12 +1080,14 @@ After implementing all changes, test thoroughly:
 ### 3. Mobile Device Testing
 
 Test on actual mobile devices or use browser DevTools:
+
 - iPhone SE (375px)
 - iPhone 12 Pro (390px)
 - iPad (768px)
 - Android phones (various)
 
 **Verify:**
+
 - Touch targets are at least 44x44px
 - Text is readable without zooming
 - Buttons are accessible
@@ -1076,6 +1096,7 @@ Test on actual mobile devices or use browser DevTools:
 ### 4. Analytics Verification
 
 Check that tracking events fire:
+
 - Welcome page discovery interactions
 - Quick-pick selections
 - Section toggles on results page
@@ -1088,6 +1109,7 @@ curl -w "@curl-format.txt" -o /dev/null -s http://localhost:8000/mobile
 ```
 
 **Targets:**
+
 - Welcome page: < 500ms
 - Path selection: < 300ms
 - Results rendering: < 800ms
@@ -1099,17 +1121,20 @@ curl -w "@curl-format.txt" -o /dev/null -s http://localhost:8000/mobile
 If issues arise:
 
 1. **Code Backup**: Before starting, create a branch:
+
    ```bash
    git checkout -b mobile-ux-enhancement
    ```
 
 2. **Incremental Commits**: Commit after each task:
+
    ```bash
    git add src/sono_eval/mobile/templates/index.html
    git commit -m "Task 1: Simplify welcome screen"
    ```
 
 3. **Quick Rollback**: If a task causes issues:
+
    ```bash
    git checkout HEAD~1 -- src/sono_eval/mobile/templates/index.html
    ```

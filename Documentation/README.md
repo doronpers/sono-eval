@@ -37,7 +37,9 @@ understanding, installing, and using the system.
 
 1. **[Mobile Companion Guide](Guides/mobile-companion.md)** - Touch-friendly flow
 
-### 📖 Learning Resources
+### 📖 Optional Learning Resources
+
+> **Note**: These are optional educational resources for beginners. Core Sono-Eval documentation is above.
 
 1. **[Learning Resources](Learning/README.md)** - Beginner-friendly guides and learning paths
    - Dark Horse Approach to individualized learning
@@ -70,7 +72,9 @@ understanding, installing, and using the system.
 - **[Security Audit](Reports/SECURITY_AUDIT_SUMMARY.md)** - Security review summary
 - **[Secrets Audit](Reports/SECRETS_AUDIT.md)** - Credentials and PII check
 
-### Learning Resources
+### Optional Learning Resources
+
+> **Note**: These resources are optional and primarily for beginners learning to code or use GitHub. Core Sono-Eval functionality documentation is in the sections above.
 
 - **[Learning Resources Overview](Learning/README.md)** - Complete learning resource index
 - **[Dark Horse Approach](Learning/Philosophy/dark-horse-approach.md)** - Individualized learning framework
@@ -106,4 +110,4 @@ understanding, installing, and using the system.
 
 ---
 
-**Version**: 0.1.1 | **Last Updated**: January 15, 2026
+**Version**: 0.1.1 | **Last Updated**: January 18, 2026

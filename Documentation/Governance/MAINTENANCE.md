@@ -4,8 +4,8 @@
 
 Several documentation files contain hardcoded version numbers and dates:
 
-- Version: 0.1.0
-- Last Updated: January 10, 2026
+- Version: 0.1.1
+- Last Updated: January 18, 2026
 
 ### Files to Update on Version Changes
 
@@ -66,6 +66,47 @@ To enable locally:
 # Or run manually:
 pre-commit run mypy --all-files
 ```
+
+## Link Conventions
+
+To prevent broken links, follow these conventions when linking between documentation files:
+
+### Linking to Root Files
+
+From `documentation/Guides/*` or `documentation/Reports/*`:
+
+- Use `../../SECURITY.md` for root-level files (SECURITY.md, CHANGELOG.md, etc.)
+- Use `../../README.md` for root README
+- Use `../../CONTRIBUTING.md` for root CONTRIBUTING
+
+### Linking Within Documentation
+
+From `documentation/Guides/*`:
+
+- To other Guides: `../QUICK_START.md` (same level)
+- To Reports: `../Reports/ASSESSMENT_SUMMARY.md`
+- To Governance: `../Governance/IMPROVEMENT_ROADMAP.md`
+- To Core: `../Core/concepts/architecture.md`
+
+From `documentation/Reports/*`:
+
+- To other Reports: `ASSESSMENT_SUMMARY.md` (same directory)
+- To Guides: `../Guides/QUICK_REFERENCE.md`
+- To Governance: `../Governance/IMPROVEMENT_ROADMAP.md`
+- To root files: `../../SECURITY.md`
+
+### File Name Case Sensitivity
+
+- Use exact case: `QUICK_START.md` not `quick-start.md`
+- Check actual filename before linking
+
+### Common Broken Link Patterns to Avoid
+
+❌ **BAD**: `[SECURITY.md](SECURITY.md)` from `documentation/Guides/` (assumes same directory)
+✅ **GOOD**: `[SECURITY.md](../../SECURITY.md)` from `documentation/Guides/`
+
+❌ **BAD**: `[quick-start.md](../quick-start.md)` (wrong case)
+✅ **GOOD**: `[QUICK_START.md](../QUICK_START.md)` (matches actual filename)
 
 ---
 

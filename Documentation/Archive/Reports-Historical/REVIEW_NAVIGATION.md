@@ -21,7 +21,7 @@ This guide helps you navigate the comprehensive review deliverables.
 📋 **Read These** (30-45 min):
 
 1. [ASSESSMENT_SUMMARY.md](ASSESSMENT_SUMMARY.md) - Executive summary and recommendation
-2. [IMPROVEMENT_ROADMAP.md](IMPROVEMENT_ROADMAP.md) - Development plan and timeline
+2. [IMPROVEMENT_ROADMAP.md](../Governance/IMPROVEMENT_ROADMAP.md) - Development plan and timeline
 
 **Key Questions Answered**:
 
@@ -36,9 +36,9 @@ This guide helps you navigate the comprehensive review deliverables.
 
 🔧 **Read These** (1-2 hours):
 
-1. [QUICK_REFERENCE.md](QUICK_REFERENCE.md) - Start here for quick patterns
+1. [QUICK_REFERENCE.md](../Guides/QUICK_REFERENCE.md) - Start here for quick patterns
 2. [CODE_REVIEW_REPORT.md](CODE_REVIEW_REPORT.md) - Detailed technical analysis
-3. [SECURITY.md](SECURITY.md) - Security best practices
+3. [SECURITY.md](../../SECURITY.md) - Security best practices
 
 **Key Questions Answered**:
 
@@ -53,7 +53,7 @@ This guide helps you navigate the comprehensive review deliverables.
 
 🔒 **Read These** (1-2 hours):
 
-1. [SECURITY.md](SECURITY.md) - Comprehensive security documentation
+1. [SECURITY.md](../../SECURITY.md) - Comprehensive security documentation
 2. [CODE_REVIEW_REPORT.md](CODE_REVIEW_REPORT.md) - Section 3: Security
 3. [QUICK_REFERENCE.md](QUICK_REFERENCE.md) - Section: Security Essentials
 
@@ -70,7 +70,7 @@ This guide helps you navigate the comprehensive review deliverables.
 
 🗺️ **Read These** (1 hour):
 
-1. [IMPROVEMENT_ROADMAP.md](IMPROVEMENT_ROADMAP.md) - Complete development plan
+1. [IMPROVEMENT_ROADMAP.md](../Governance/IMPROVEMENT_ROADMAP.md) - Complete development plan
 2. [ASSESSMENT_SUMMARY.md](ASSESSMENT_SUMMARY.md) - Section: Next Steps
 
 **Key Questions Answered**:
@@ -87,7 +87,7 @@ This guide helps you navigate the comprehensive review deliverables.
 ✅ **Read These** (1 hour):
 
 1. [CODE_REVIEW_REPORT.md](CODE_REVIEW_REPORT.md) - Section 4: Testing
-2. [IMPROVEMENT_ROADMAP.md](IMPROVEMENT_ROADMAP.md) - Section: Testing
+2. [IMPROVEMENT_ROADMAP.md](../Governance/IMPROVEMENT_ROADMAP.md) - Section: Testing
 3. [QUICK_REFERENCE.md](QUICK_REFERENCE.md) - Section: Testing Patterns
 
 **Key Questions Answered**:
@@ -107,17 +107,17 @@ This guide helps you navigate the comprehensive review deliverables.
 | --- | --- | --- | --- |
 | **[ASSESSMENT_SUMMARY.md](ASSESSMENT_SUMMARY.md)** | 432 lines | Executive overview, recommendation | 15-20 min |
 | **[CODE_REVIEW_REPORT.md](CODE_REVIEW_REPORT.md)** | 771 lines | Detailed technical analysis | 45-60 min |
-| **[IMPROVEMENT_ROADMAP.md](IMPROVEMENT_ROADMAP.md)** | 674 lines | Development plan and timeline | 30-45 min |
-| **[SECURITY.md](SECURITY.md)** | 381 lines | Security policies and best practices | 30-40 min |
-| **[QUICK_REFERENCE.md](QUICK_REFERENCE.md)** | 546 lines | Developer quick guide | 20-30 min |
+| **[IMPROVEMENT_ROADMAP.md](../Governance/IMPROVEMENT_ROADMAP.md)** | 674 lines | Development plan and timeline | 30-45 min |
+| **[SECURITY.md](../../SECURITY.md)** | 381 lines | Security policies and best practices | 30-40 min |
+| **[QUICK_REFERENCE.md](../Guides/QUICK_REFERENCE.md)** | 546 lines | Developer quick guide | 20-30 min |
 
 **Total**: 2,804 lines, ~72KB of documentation
 
 ### Supporting Documents (Already in Repo)
 
-- **[README.md](README.md)** - Project overview and setup
-- **[CONTRIBUTING.md](CONTRIBUTING.md)** - Contribution guidelines
-- **[CHANGELOG.md](CHANGELOG.md)** - Version history
+- **[README.md](../../README.md)** - Project overview and setup
+- **[CONTRIBUTING.md](../../CONTRIBUTING.md)** - Contribution guidelines
+- **[CHANGELOG.md](../../CHANGELOG.md)** - Version history
 - **documentation/** - User guides and API reference
 
 ---
@@ -138,7 +138,7 @@ Card"
 
 ### Q: What are the critical security issues?
 
-**A**: No authentication, default secrets, CORS issues. See [SECURITY.md](SECURITY.md)
+**A**: No authentication, default secrets, CORS issues. See [SECURITY.md](../../SECURITY.md)
 Section: "Known Security Limitations"
 
 ### Q: What code changes were made?
@@ -150,21 +150,21 @@ Improvements Made"
 ### Q: How long until production-ready?
 
 **A**: 3-6 months with focused development. See
-[IMPROVEMENT_ROADMAP.md](IMPROVEMENT_ROADMAP.md) Section: "Timeline"
+[IMPROVEMENT_ROADMAP.md](../Governance/IMPROVEMENT_ROADMAP.md) Section: "Timeline"
 
 ### Q: How much will it cost?
 
-**A**: $70K-110K estimated. See [IMPROVEMENT_ROADMAP.md](IMPROVEMENT_ROADMAP.md)
+**A**: $70K-110K estimated. See [IMPROVEMENT_ROADMAP.md](../Governance/IMPROVEMENT_ROADMAP.md)
 Section: "Resource Requirements"
 
 ### Q: What needs to be done first?
 
 **A**: Security hardening (2-4 weeks). See
-[IMPROVEMENT_ROADMAP.md](IMPROVEMENT_ROADMAP.md) Section: "Immediate Actions"
+[IMPROVEMENT_ROADMAP.md](../Governance/IMPROVEMENT_ROADMAP.md) Section: "Immediate Actions"
 
 ### Q: How do I deploy securely?
 
-**A**: Follow production checklist. See [SECURITY.md](SECURITY.md) Section:
+**A**: Follow production checklist. See [SECURITY.md](../../SECURITY.md) Section:
 "Security Checklist for Production"
 
 ### Q: What testing is needed?
@@ -174,7 +174,7 @@ Section: "Resource Requirements"
 
 ### Q: Who should I contact?
 
-**A**: See respective document for specific questions, or team contact info in [README.md](README.md)
+**A**: See respective document for specific questions, or team contact info in [README.md](../../README.md)
 
 ---
 
@@ -185,9 +185,9 @@ Section: "Resource Requirements"
 Good for busy executives or initial assessment
 
 1. Read [ASSESSMENT_SUMMARY.md](ASSESSMENT_SUMMARY.md) - Executive Summary section
-2. Skim [IMPROVEMENT_ROADMAP.md](IMPROVEMENT_ROADMAP.md) - Overview and Timeline
+2. Skim [IMPROVEMENT_ROADMAP.md](../Governance/IMPROVEMENT_ROADMAP.md) - Overview and Timeline
    sections
-3. Review [SECURITY.md](SECURITY.md) - Known Limitations section
+3. Review [SECURITY.md](../../SECURITY.md) - Known Limitations section
 
 **Outcome**: Understand current state and decision recommendation
 
@@ -195,9 +195,9 @@ Good for busy executives or initial assessment
 
 Good for developers who will implement changes
 
-1. Read [QUICK_REFERENCE.md](QUICK_REFERENCE.md) - All sections
+1. Read [QUICK_REFERENCE.md](../Guides/QUICK_REFERENCE.md) - All sections
 2. Read [CODE_REVIEW_REPORT.md](CODE_REVIEW_REPORT.md) - All sections
-3. Read [SECURITY.md](SECURITY.md) - Best Practices sections
+3. Read [SECURITY.md](../../SECURITY.md) - Best Practices sections
 4. Review actual code changes in `src/`
 
 **Outcome**: Ready to implement improvements
@@ -207,7 +207,7 @@ Good for developers who will implement changes
 Good for project managers and team leads
 
 1. Read [ASSESSMENT_SUMMARY.md](ASSESSMENT_SUMMARY.md) - Full document
-2. Read [IMPROVEMENT_ROADMAP.md](IMPROVEMENT_ROADMAP.md) - Full document
+2. Read [IMPROVEMENT_ROADMAP.md](../Governance/IMPROVEMENT_ROADMAP.md) - Full document
 3. Review [CODE_REVIEW_REPORT.md](CODE_REVIEW_REPORT.md) - Recommendations sections
 4. Create project plan based on roadmap
 
@@ -217,9 +217,9 @@ Good for project managers and team leads
 
 Good for security engineers and DevOps
 
-1. Read [SECURITY.md](SECURITY.md) - Full document
+1. Read [SECURITY.md](../../SECURITY.md) - Full document
 2. Read [CODE_REVIEW_REPORT.md](CODE_REVIEW_REPORT.md) - Section 3: Security
-3. Review [QUICK_REFERENCE.md](QUICK_REFERENCE.md) - Security sections
+3. Review [QUICK_REFERENCE.md](../Guides/QUICK_REFERENCE.md) - Security sections
 4. Review actual code changes for security improvements
 
 **Outcome**: Ready to implement security fixes

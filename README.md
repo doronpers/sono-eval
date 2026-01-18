@@ -2,7 +2,7 @@
 
 ## Explainable Multi-Path Developer Assessment System
 
-[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.13+](https://img.shields.io/badge/python-3.13+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Version](https://img.shields.io/badge/version-0.1.1-green.svg)](CHANGELOG.md)
 [![Security Audit](https://img.shields.io/badge/security-audited-green.svg)](documentation/Reports/SECRETS_AUDIT.md)
@@ -15,112 +15,72 @@
 > Features are being added and refined, APIs may change, and the system
 > is not yet production-ready. Use at your own risk.
 
-**[Start Here (Landing Guide)](documentation/START_HERE.md)** •
-**[Start Here (Beginner-Friendly)](#-start-here-beginner-friendly)** •
-**[Quick Start](#-quick-start)** •
-**[Documentation](documentation/README.md)** •
-**[Key Features](#-key-features)** •
-**[Usage Examples](#-usage-examples)**
+## 🚀 Start Here
+
+**New to Sono-Eval?** → **[Get Started in 5 Minutes](documentation/START_HERE.md)**
+
+**Alternative paths:**
+
+- [View documentation hub](documentation/README.md) - Browse all docs
+- [Quick Start Guide](documentation/Guides/QUICK_START.md) - 5-minute setup
+- [Contributing guide](CONTRIBUTING.md) - Help us improve
 
 ---
 
-## 🚀 Start Here (Beginner-Friendly)
+## ⚡ Quick Start (2 Minutes)
 
-### What is this?
+### Try It Now (No Installation)
 
-Sono-Eval is a platform that evaluates developer submissions and provides
-detailed, explainable feedback. It's like a helpful coach that shows you
-exactly why you received each score and where to improve.
+**Option 1: GitHub Codespaces** (Recommended for first-time users)
 
-### Quick win (no terminal required)
+1. Click the green "Code" button above → "Codespaces" → "Create codespace"
+2. Wait ~2 minutes for environment to load
+3. In the terminal: `./launcher.sh start`
+4. Open the `/docs` port when prompted
+5. Try the `/health` endpoint to verify it works
 
-1. **Open in Codespaces** (easiest way to try it):
-   - Click the "Code" button above → "Codespaces" tab → "Create codespace"
-   - Wait for the environment to load (~2 minutes)
-   - In the VS Code web interface, open the Terminal
-   - Run: `./launcher.sh start`
-   - When services are ready, open `http://localhost:8000/docs` in the Ports tab
-   - Try the `/health` endpoint to verify everything works
+🎉 **Success!** You just ran Sono-Eval. Now try creating your first assessment in the `/docs` interface.
 
-2. **First assessment in the browser**:
-   - In the API docs (`/docs`), scroll to `POST /api/v1/assessments`
-   - Click "Try it out"
-   - Use this sample request:
-
-     ```json
-     {
-       "candidate_id": "demo_user",
-       "submission_type": "code",
-       "content": {"code": "def fibonacci(n):\n    if n <= 1:\n        return n\n"
-                  "    return fibonacci(n-1) + fibonacci(n-2)"},
-       "paths_to_evaluate": ["TECHNICAL"]
-     }
-     ```
-
-   - Click "Execute" and see your first assessment result!
-
-### Sample files for testing
-
-- `samples/` directory contains example code submissions
-- Start with `samples/simple-function.py` for a basic assessment
-- Try `samples/complex-class.py` for multi-path evaluation
-
-### Fast path options
-
-1. **Browser only (recommended for first try)**:
-   - Use GitHub Codespaces as described above
-2. **Local with Docker (no Python setup needed)**:
-
-   ```bash
-   git clone https://github.com/doronpers/sono-eval.git
-   cd sono-eval
-   ./launcher.sh start
-   # Visit http://localhost:8000/docs
-   ```
-
-3. **Local Python development**:
-
-   ```bash
-   git clone https://github.com/doronpers/sono-eval.git
-   cd sono-eval
-   python3 -m venv venv
-   source venv/bin/activate  # Windows: venv\Scripts\activate
-   pip install -r requirements.txt
-   pip install -e . --no-deps
-   sono-eval server start --reload
-   ```
-
-### Contributing without fear
-
-New to open source? No problem! Here are small first contributions:
-
-- Add a note to this README about your experience ("What I saw when I opened /docs")
-- Add a log message to an endpoint
-- Create a test for a static endpoint
-- Fix a typo in documentation
-
-See our **[beginner-friendly contributing guide](CONTRIBUTING.md#quick-start-no-terminal)**
-for step-by-step instructions.
-
-**Developer note:** To keep contributions consistent, install the project's
-pre-commit hooks locally:
+**Option 2: Local Docker** (Requires Docker installed)
 
 ```bash
-pre-commit install
-# If you run into SSL issues installing hooks, run:
-./scripts/fix-pre-commit-ssl.sh
+git clone https://github.com/doronpers/sono-eval.git
+cd sono-eval
+./launcher.sh start
+# Open http://localhost:8000/docs
 ```
 
-See `CONTRIBUTING.md` for full details on the development workflow.
+**Option 3: Python Virtual Environment** (For developers)
 
-### Common questions
+See the **[detailed installation guide](documentation/Guides/user-guide/installation.md)** for all options.
 
-- **What's an endpoint?** A URL you can call to do something (like `/health` to
-  check if the server is running)
-- **What's JSON?** A simple text format for data, like `{"name": "value"}`
-- **How do I open a PR?** See [CONTRIBUTING.md](CONTRIBUTING.md) for
-  browser-based PR creation
-- **I'm stuck!** Open a GitHub Discussion or Issue - beginners are welcome!
+### First Assessment (30 Seconds)
+
+Once running, try this:
+
+```bash
+# Using the CLI
+./launcher.sh cli assess run \
+  --candidate-id demo \
+  --content "def hello(): return 'world'" \
+  --paths technical
+
+# Using curl
+curl -X POST http://localhost:8000/api/v1/assessments \
+  -H "Content-Type: application/json" \
+  -d '{
+    "candidate_id": "demo",
+    "submission_type": "code",
+    "content": {"code": "def hello(): return \"world\""},
+    "paths_to_evaluate": ["TECHNICAL"]
+  }'
+```
+
+### What's Next?
+
+- **For individuals**: Try the [📱 mobile companion](documentation/Guides/mobile-companion.md) for a guided experience
+- **For developers**: Read the [🏗️ architecture overview](documentation/Core/concepts/architecture.md)
+- **For contributors**: Check the [🤝 contributing guide](CONTRIBUTING.md)
 
 ---
 
@@ -191,68 +151,26 @@ sono-eval assess run \
 
 ## 🌟 Key Features
 
-### For Individuals (Desktop)
+### For Individuals
 
-- **📖 Clear Explanations** - Understand exactly why you received each score
-- **🎯 Multiple Paths** - Evaluated on technical skills, design thinking,
-  collaboration, and more
-- **📈 Track Progress** - See how you improve over time
-- **💡 Actionable Feedback** - Specific recommendations for growth
-- **🏆 Identify Strengths** - Understand what you're naturally good at
-- **📱 Mobile Companion (Optional)** - Guided, touch-friendly flow when you
-  want it
+📖 **Clear Explanations** • 🎯 **Multiple Paths** • 📈 **Track Progress** • 💡 **Actionable Feedback**
 
 ### For Coaches (Optional)
 
-- **🔍 Deep Insights** - Go beyond surface-level scores
-- **📊 Analytics** - Visualize candidate performance and cohorts
-- **⚖️ Fair Assessment** - Consistent, evidence-based evaluation
-- **🤝 Better Experience** - Candidates learn even if not hired
-- **🚀 Easy Setup** - Docker deployment in minutes
-- **📱 Mobile-Friendly (Optional)** - Candidates can complete assessments anywhere
+🔍 **Deep Insights** • 📊 **Analytics** • ⚖️ **Fair Assessment** • 🚀 **Easy Setup**
 
----
+**See all features** → [Documentation Hub](documentation/README.md)
 
 ## 📚 Documentation
 
-### Getting Started
+**Popular pages:**
 
-- **[Quick Start](documentation/Guides/QUICK_START.md)** - 5-minute setup guide
-- **[Installation](documentation/Guides/user-guide/installation.md)** -
-  Detailed installation for all platforms
-- **[For Candidates](documentation/Guides/resources/candidate-guide.md)** -
-  Welcome guide for candidates 👋
+- [Quick Start Guide](documentation/Guides/QUICK_START.md) - 5-minute setup
+- [API Reference](documentation/Guides/user-guide/api-reference.md) - REST API docs  
+- [CLI Reference](documentation/Guides/user-guide/cli-reference.md) - Command-line usage
+- [FAQ](documentation/Guides/faq.md) - Common questions
 
-### User Guides
-
-- **[CLI Reference](documentation/Guides/user-guide/cli-reference.md)** -
-  Complete command-line guide
-- **[API Reference](documentation/Guides/user-guide/api-reference.md)** - REST
-  API documentation
-- **[Configuration](documentation/Guides/user-guide/configuration.md)** -
-  Configure for your needs
-- **[Configuration Presets](documentation/Guides/user-guide/configuration-presets.md)**
-  - Optimized presets for quick setup
-
-### Concepts
-
-- **[Architecture](documentation/Core/concepts/architecture.md)** - System design
-  and components
-- **[Glossary](documentation/Core/concepts/glossary.md)** - Comprehensive
-  terminology
-
-### Help & Resources
-
-- **[Assessment Path Guide](documentation/Guides/assessment-path-guide.md)** -
-  Complete guide to all assessment paths
-- **[FAQ](documentation/Guides/faq.md)** - Frequently asked questions
-- **[Troubleshooting](documentation/Guides/troubleshooting.md)** - Solutions to
-  common issues
-- **[Learning Resources](documentation/Learning/README.md)** - Beginner-friendly guides, learning paths, and tutorials
-- **[Core Learning Concepts](documentation/Guides/resources/learning.md)** -
-  Tutorials and guides
-
-📖 **[Browse All Documentation](documentation/README.md)**
+**[Browse all documentation →](documentation/README.md)**
 
 ---
 
@@ -283,7 +201,7 @@ details.
 
 ## ⚠️ System Limits (Honesty Statement)
 
-**Current State (v0.1.0 - Active Development):**
+**Current State (v0.1.1 - Active Development):**
 
 - **ML Integration**: Current "Hybrid" mode is primarily heuristic-driven.
   ML insights (T5/LoRA) are secondary and require high-compute
@@ -316,144 +234,33 @@ details.
 
 ## 💻 Usage Examples
 
-### Command Line
+**Command Line:**
 
 ```bash
-# Create a candidate
-sono-eval candidate create --id candidate_001
-
-# Run assessment
-sono-eval assess run \
-  --candidate-id candidate_001 \
-  --file solution.py \
-  --paths technical design collaboration
-
-# Generate code tags
-sono-eval tag generate --file mycode.js --max-tags 5
-
-# Start API server
-sono-eval server start --reload
+sono-eval assess run --candidate-id demo --file solution.py --paths technical
 ```
 
-### Python API
+**Python API:**
 
 ```python
-from sono_eval.assessment import AssessmentEngine, AssessmentInput, PathType
-
-# Initialize engine
+from sono_eval.assessment import AssessmentEngine
 engine = AssessmentEngine()
-
-# Run assessment
-result = await engine.assess(AssessmentInput(
-    candidate_id="candidate_001",
-    submission_type="code",
-    content={"code": your_code},
-    paths_to_evaluate=[PathType.TECHNICAL, PathType.DESIGN]
-))
-
-# View results
-print(f"Score: {result.overall_score}/100")
-print(f"Summary: {result.summary}")
-for finding in result.key_findings:
-    print(f"• {finding}")
+result = await engine.assess(AssessmentInput(...))
 ```
 
-### REST API
+**REST API:**
 
 ```bash
-# Create assessment
-curl -X POST http://localhost:8000/api/v1/assessments \
-  -H "Content-Type: application/json" \
-  -d '{
-    "candidate_id": "candidate_001",
-    "submission_type": "code",
-    "content": {"code": "def hello(): return \"world\""},
-    "paths_to_evaluate": ["TECHNICAL"]
-  }'
+curl -X POST http://localhost:8000/api/v1/assessments -H "Content-Type: application/json" -d '{...}'
 ```
 
----
-
-## 🚀 Deployment
-
-### Docker (Recommended)
-
-```bash
-# Start all services
-./launcher.sh start
-
-# View status
-./launcher.sh status
-
-# View logs
-./launcher.sh logs
-
-# Stop services
-./launcher.sh stop
-```
-
-### Local Development
-
-```bash
-# Setup environment
-./launcher.sh dev
-
-# Activate virtual environment
-source venv/bin/activate
-
-# Run directly
-sono-eval assess run --candidate-id test --file test.py
-```
-
-See **[Installation Guide](documentation/Guides/user-guide/installation.md)** for
-detailed instructions.
+**See [API Reference](documentation/Guides/user-guide/api-reference.md) and [CLI Reference](documentation/Guides/user-guide/cli-reference.md) for complete examples.**
 
 ---
 
 ## 🧪 Development
 
-### Setup
-
-```bash
-# Clone repository
-git clone https://github.com/doronpers/sono-eval.git
-cd sono-eval
-
-# Setup dev environment
-./launcher.sh dev
-source venv/bin/activate
-
-# Install with dev dependencies
-pip install -e ".[dev]"
-```
-
-### Testing
-
-```bash
-# Run tests
-pytest
-
-# With coverage
-pytest --cov=src/sono_eval --cov-report=html
-
-# Specific test file
-pytest tests/test_assessment.py
-```
-
-### Code Quality
-
-```bash
-# Format code
-black src/ tests/
-
-# Lint
-flake8 src/ tests/
-
-# Type check
-mypy src/
-```
-
-See **[Contributing Guide](CONTRIBUTING.md)** for more details.
+See **[Contributing Guide](CONTRIBUTING.md)** for development setup, testing, and code quality guidelines.
 
 ---
 
@@ -493,7 +300,7 @@ You're free to use, modify, and distribute it. See the LICENSE file for details.
 
 For the complete roadmap and TODO list, see [ROADMAP.md](ROADMAP.md).
 
-### Current (v0.1.0 - Active Development)
+### Current (v0.1.1 - Active Development)
 
 - Explainable assessment engine (heuristic-first)
 - Multi-path evaluation

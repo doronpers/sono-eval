@@ -93,7 +93,7 @@ ports:
 
 ### Python Version Too Old
 
-**Symptoms**: `Python 3.9+ required`
+**Symptoms**: `Python 3.13+ required`
 
 **Solution**:
 
@@ -101,15 +101,15 @@ ports:
 # Check current version
 python3 --version
 
-# Install Python 3.9+
+# Install Python 3.13+
 # Ubuntu/Debian
-sudo apt-get install python3.9 python3.9-venv
+sudo apt-get install python3.13 python3.13-venv
 
 # macOS
-brew install python@3.9
+brew install python@3.13
 
 # Use specific version
-python3.9 -m venv venv
+python3.13 -m venv venv
 ```
 
 ### Pip Install Fails
@@ -796,7 +796,7 @@ pg_dump sono_eval > backup.sql
 ---
 
 **Last Updated**: January 10, 2026
-**Version**: 0.1.0
+**Version**: 0.1.1
 
 **Still having issues?** [Open an issue](https://github.com/doronpers/sono-eval/issues)
 with:

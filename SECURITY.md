@@ -2,7 +2,7 @@
 
 ## Supported Versions
 
-Currently, Sono-Eval is in **alpha** (version 0.1.0). Security updates are
+Currently, Sono-Eval is in **alpha** (version 0.1.1). Security updates are
 provided for:
 
 | Version | Supported          |

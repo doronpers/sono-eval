@@ -6,7 +6,7 @@ This checklist covers everything needed to preview and use Sono-Eval as a real u
 
 ### 1. **Python Environment**
 
-- [ ] Python 3.9+ installed
+- [ ] Python 3.13+ installed
 - [ ] Virtual environment created (or use Docker)
 
 ### 2. **Docker (Optional but Recommended)**

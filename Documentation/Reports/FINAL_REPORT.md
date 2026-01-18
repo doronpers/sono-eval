@@ -5,7 +5,7 @@
 **Project**: Sono-Eval Repository
 **Audit Framework**: Dieter Rams' 10 Principles of Good Design
 **Completed**: January 10, 2026
-**Version**: 0.1.0 → 0.1.0 (Documentation & Structure Improvements)
+**Version**: 0.1.0 → 0.1.1 (Documentation & Structure Improvements)
 
 ---
 
@@ -253,7 +253,7 @@ assessment platform**.
 
 - ✅ Added CHANGELOG.md for transparency
 - ✅ Created "Current Limitations" in FAQ
-- ✅ Clear about alpha status (0.1.0)
+- ✅ Clear about alpha status (0.1.1)
 - ✅ Honest about production readiness
 - ✅ Documented known issues
 

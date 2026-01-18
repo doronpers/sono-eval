@@ -25,6 +25,7 @@ This plan provides step-by-step instructions for coding agents to enhance API er
    - `src/sono_eval/assessment/models.py` (Pydantic models)
 
 2. Understand the current error response structure:
+
    ```python
    {
        "error": true,
@@ -36,6 +37,7 @@ This plan provides step-by-step instructions for coding agents to enhance API er
    ```
 
 3. Test the current API:
+
    ```bash
    ./launcher.sh start
    # Open http://localhost:8000/docs
@@ -54,6 +56,7 @@ This plan provides step-by-step instructions for coding agents to enhance API er
 **File**: `src/sono_eval/utils/errors.py`
 
 ### Current Issues
+
 - Error responses lack actionable guidance
 - No examples of correct usage
 - Missing links to documentation
@@ -68,14 +71,14 @@ This plan provides step-by-step instructions for coding agents to enhance API er
 ```python
 class ErrorResponse(BaseModel):
     """Standard error response format with actionable guidance."""
-    
+
     error: bool = True
     error_code: str
     message: str
     details: Optional[Dict[str, Any]] = None
     help: Optional[Dict[str, Any]] = None  # NEW: Actionable help
     request_id: Optional[str] = None
-    
+
     class Config:
         json_schema_extra = {
             "example": {
@@ -104,7 +107,7 @@ class ErrorResponse(BaseModel):
 ```python
 class HelpContext:
     """Builder for help context in error responses."""
-    
+
     @staticmethod
     def for_validation(
         field: str,
@@ -114,19 +117,19 @@ class HelpContext:
     ) -> Dict[str, Any]:
         """Create help context for validation errors."""
         help_dict = {}
-        
+
         if examples:
             help_dict["valid_examples"] = examples
-        
+
         if pattern:
             help_dict["pattern"] = pattern
             help_dict["explanation"] = f"Must match pattern: {pattern}"
-        
+
         if docs_path:
             help_dict["docs_url"] = docs_path
-        
+
         return help_dict
-    
+
     @staticmethod
     def for_not_found(
         resource_type: str,
@@ -137,16 +140,16 @@ class HelpContext:
         help_dict = {
             "suggestion": f"Verify the {resource_type} exists or create a new one"
         }
-        
+
         if search_endpoint:
             help_dict["search_url"] = search_endpoint
-        
+
         if create_endpoint:
             help_dict["create_url"] = create_endpoint
             help_dict["next_steps"] = f"Create a new {resource_type} using POST {create_endpoint}"
-        
+
         return help_dict
-    
+
     @staticmethod
     def for_file_upload(
         max_size_mb: int,
@@ -161,12 +164,12 @@ class HelpContext:
             },
             "suggestion": "Ensure file meets size and type requirements"
         }
-        
+
         if example_curl:
             help_dict["example_request"] = example_curl
-        
+
         return help_dict
-    
+
     @staticmethod
     def for_service_error(
         service_name: str,
@@ -177,14 +180,14 @@ class HelpContext:
         help_dict = {
             "suggestion": f"The {service_name} is temporarily unavailable"
         }
-        
+
         if health_check_url:
             help_dict["health_check_url"] = health_check_url
             help_dict["next_steps"] = f"Check service status at {health_check_url}"
-        
+
         if retry_seconds:
             help_dict["retry_after"] = f"{retry_seconds} seconds"
-        
+
         return help_dict
 ```
 
@@ -203,7 +206,7 @@ def create_error_response(
 ) -> HTTPException:
     """
     Create a standardized HTTP exception with error response.
-    
+
     Args:
         error_code: Standard error code from ErrorCode
         message: Human-readable error message
@@ -211,10 +214,10 @@ def create_error_response(
         details: Optional additional error details
         help_context: Optional actionable help/guidance for resolving the error
         request_id: Optional request ID for tracking
-    
+
     Returns:
         HTTPException with standardized error response
-    
+
     Example:
         >>> help_ctx = HelpContext.for_validation(
         ...     field="email",
@@ -235,7 +238,7 @@ def create_error_response(
         help=help_context,
         request_id=request_id,
     )
-    
+
     return HTTPException(
         status_code=status_code,
         detail=error_response.model_dump(exclude_none=True),
@@ -266,7 +269,7 @@ def validation_error(
 ) -> HTTPException:
     """
     Create a validation error response with actionable help.
-    
+
     Args:
         message: Error message
         field: Field name that failed validation
@@ -275,7 +278,7 @@ def validation_error(
         examples: List of valid example values
         details: Additional error details
         request_id: Request tracking ID
-    
+
     Returns:
         HTTPException with validation error and help context
     """
@@ -286,7 +289,7 @@ def validation_error(
         error_details["received"] = received_value
     if pattern:
         error_details["pattern"] = pattern
-    
+
     # Build help context
     help_context = None
     if field and (pattern or examples):
@@ -296,7 +299,7 @@ def validation_error(
             examples=examples,
             docs_path=f"/docs#field-{field.replace('_', '-')}"
         )
-        
+
         # Add specific suggestion based on common patterns
         if "candidate_id" in field.lower():
             help_context["suggestion"] = "Replace special characters with dashes or underscores"
@@ -304,7 +307,7 @@ def validation_error(
             help_context["suggestion"] = "Ensure email includes @ symbol and domain"
         elif "url" in field.lower():
             help_context["suggestion"] = "Include protocol (http:// or https://)"
-    
+
     return create_error_response(
         error_code=ErrorCode.VALIDATION_ERROR,
         message=message,
@@ -329,27 +332,27 @@ def not_found_error(
 ) -> HTTPException:
     """
     Create a not found error response with next steps.
-    
+
     Args:
         resource_type: Type of resource (e.g., "Assessment", "Candidate")
         resource_id: ID of the resource that wasn't found
         search_endpoint: Endpoint to search for resources
         create_endpoint: Endpoint to create new resource
         request_id: Request tracking ID
-    
+
     Returns:
         HTTPException with not found error and help context
     """
     message = f"{resource_type} not found"
     if resource_id:
         message += f": {resource_id}"
-    
+
     help_context = HelpContext.for_not_found(
         resource_type=resource_type.lower(),
         search_endpoint=search_endpoint,
         create_endpoint=create_endpoint
     )
-    
+
     return create_error_response(
         error_code=ErrorCode.NOT_FOUND,
         message=message,
@@ -378,7 +381,7 @@ def file_upload_error(
 ) -> HTTPException:
     """
     Create a file upload error response with requirements and examples.
-    
+
     Args:
         message: Error message
         error_type: Specific error code
@@ -386,25 +389,25 @@ def file_upload_error(
         allowed_types: List of allowed MIME types
         details: Additional error details
         request_id: Request tracking ID
-    
+
     Returns:
         HTTPException with file upload error and help context
     """
     allowed = allowed_types or ["text/plain", "text/x-python", "application/javascript"]
-    
+
     example_curl = f"""curl -X POST http://localhost:8000/api/v1/assessments \\
   -H "Content-Type: multipart/form-data" \\
   -F "file=@solution.py" \\
   -F "candidate_id=candidate_001" \\
   -F "paths=TECHNICAL"
 """
-    
+
     help_context = HelpContext.for_file_upload(
         max_size_mb=max_size_mb,
         allowed_types=allowed,
         example_curl=example_curl
     )
-    
+
     return create_error_response(
         error_code=error_type,
         message=message,
@@ -428,13 +431,13 @@ def service_unavailable_error(
 ) -> HTTPException:
     """
     Create a service unavailable error response with troubleshooting.
-    
+
     Args:
         service: Name of unavailable service
         health_check_url: URL to check service health
         retry_after: Suggested retry delay in seconds
         request_id: Request tracking ID
-    
+
     Returns:
         HTTPException with service unavailable error and help context
     """
@@ -443,7 +446,7 @@ def service_unavailable_error(
         health_check_url=health_check_url or "/api/v1/health",
         retry_seconds=retry_after
     )
-    
+
     return create_error_response(
         error_code=ErrorCode.SERVICE_UNAVAILABLE,
         message=f"{service} is currently unavailable",
@@ -475,11 +478,11 @@ CANDIDATE_ID_EXAMPLES = ["john_doe", "candidate-001", "user_123", "test-candidat
 def _validate_candidate_id(candidate_id: str, request_id: Optional[str] = None) -> None:
     """
     Validate candidate_id format to prevent path traversal and injection.
-    
+
     Args:
         candidate_id: Candidate identifier to validate
         request_id: Request ID for error tracking
-    
+
     Raises:
         HTTPException: If candidate_id format is invalid
     """
@@ -507,19 +510,19 @@ async def get_assessment(
 ):
     """
     Retrieve a specific assessment by ID.
-    
+
     Args:
         assessment_id: Assessment identifier
         include_details: Whether to include detailed evidence
-    
+
     Returns:
         Assessment result with scores and explanations
-    
+
     Raises:
         HTTPException: If assessment not found
     """
     request_id = getattr(request.state, "request_id", None)
-    
+
     try:
         result = memu_storage.get_assessment(assessment_id)
         if not result:
@@ -530,7 +533,7 @@ async def get_assessment(
                 create_endpoint="/api/v1/assessments",
                 request_id=request_id,
             )
-        
+
         return result
     except Exception as e:
         logger.error(f"Error retrieving assessment: {e}", exc_info=True)
@@ -555,7 +558,7 @@ async def upload_assessment(
 ):
     """Upload and assess a code file."""
     request_id = getattr(request.state, "request_id", None)
-    
+
     # Validate file size
     MAX_FILE_SIZE = 10 * 1024 * 1024  # 10MB
     content = await file.read()
@@ -567,7 +570,7 @@ async def upload_assessment(
             details={"received_size_mb": len(content) / 1024 / 1024},
             request_id=request_id
         )
-    
+
     # Validate file type
     ALLOWED_TYPES = ["text/plain", "text/x-python", "application/javascript", "text/x-java"]
     if file.content_type not in ALLOWED_TYPES:
@@ -578,7 +581,7 @@ async def upload_assessment(
             details={"received_type": file.content_type},
             request_id=request_id
         )
-    
+
     # ... rest of upload logic ...
 ```
 
@@ -599,37 +602,37 @@ async def upload_assessment(
 async def health_check(request: Request, detailed: bool = False):
     """
     Health check endpoint with optional troubleshooting hints.
-    
+
     Args:
         detailed: Include detailed component status and troubleshooting
-    
+
     Returns:
         Health status of all components
     """
     request_id = getattr(request.state, "request_id", None)
     components = await check_component_health(include_details=detailed)
-    
+
     # Determine overall status
     overall_status = "healthy"
     if any(v == "unavailable" for v in components["components"].values()):
         overall_status = "unavailable"
     elif any(v == "degraded" for v in components["components"].values()):
         overall_status = "degraded"
-    
+
     response = {
         "status": overall_status,
         "version": API_VERSION,
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "components": components["components"],
     }
-    
+
     if detailed:
         response["details"] = components.get("details", {})
-        
+
         # Add troubleshooting hints for unhealthy components
         if overall_status != "healthy":
             response["troubleshooting"] = generate_troubleshooting_hints(components)
-    
+
     return response
 
 def generate_troubleshooting_hints(health_data: Dict[str, Any]) -> Dict[str, List[str]]:
@@ -637,11 +640,11 @@ def generate_troubleshooting_hints(health_data: Dict[str, Any]) -> Dict[str, Lis
     hints = {}
     components = health_data.get("components", {})
     details = health_data.get("details", {})
-    
+
     for component, status in components.items():
         if status in ["unavailable", "degraded"]:
             component_hints = []
-            
+
             if component == "assessment":
                 component_hints = [
                     "Verify AssessmentEngine initialized correctly",
@@ -649,7 +652,7 @@ def generate_troubleshooting_hints(health_data: Dict[str, Any]) -> Dict[str, Lis
                     "Ensure all required dependencies are installed",
                     "Try: docker-compose restart sono-eval"
                 ]
-            
+
             elif component == "memory":
                 storage_path = details.get("memory", {}).get("storage_path")
                 component_hints = [
@@ -658,7 +661,7 @@ def generate_troubleshooting_hints(health_data: Dict[str, Any]) -> Dict[str, Lis
                     "Ensure sufficient disk space available",
                     "Check file permissions on storage directory"
                 ]
-            
+
             elif component == "tagging":
                 component_hints = [
                     "Verify TagGenerator initialized correctly",
@@ -666,9 +669,9 @@ def generate_troubleshooting_hints(health_data: Dict[str, Any]) -> Dict[str, Lis
                     "Review memory requirements (T5 models need ~2GB RAM)",
                     "Consider using heuristic mode if resources limited"
                 ]
-            
+
             hints[component] = component_hints
-    
+
     return hints
 ```
 
@@ -687,7 +690,7 @@ def generate_troubleshooting_hints(health_data: Dict[str, Any]) -> Dict[str, Lis
 ```python
 class APIExamples:
     """Common API usage examples for error responses."""
-    
+
     @staticmethod
     def assessment_creation() -> str:
         """Example of creating an assessment."""
@@ -715,7 +718,7 @@ response = requests.post(
 )
 result = response.json()
 """
-    
+
     @staticmethod
     def candidate_creation() -> str:
         """Example of creating a candidate."""
@@ -728,7 +731,7 @@ curl -X POST http://localhost:8000/api/v1/candidates \\
     "initial_data": {"name": "John Doe"}
   }'
 """
-    
+
     @staticmethod
     def assessment_retrieval() -> str:
         """Example of retrieving an assessment."""
@@ -739,7 +742,7 @@ curl http://localhost:8000/api/v1/assessments/{assessment_id}
 # List all assessments for a candidate:
 curl http://localhost:8000/api/v1/candidates/{candidate_id}/assessments
 """
-    
+
     @staticmethod
     def tag_generation() -> str:
         """Example of generating tags."""
@@ -762,10 +765,10 @@ def add_example_to_help(help_context: Dict[str, Any], example_type: str) -> Dict
         "retrieval": APIExamples.assessment_retrieval(),
         "tags": APIExamples.tag_generation()
     }
-    
+
     if example_type in examples:
         help_context["example"] = examples[example_type]
-    
+
     return help_context
 ```
 
@@ -786,20 +789,20 @@ def not_found_error(
     message = f"{resource_type} not found"
     if resource_id:
         message += f": {resource_id}"
-    
+
     help_context = HelpContext.for_not_found(
         resource_type=resource_type.lower(),
         search_endpoint=search_endpoint,
         create_endpoint=create_endpoint
     )
-    
+
     # Add relevant example
     if include_example:
         if "assessment" in resource_type.lower():
             help_context = add_example_to_help(help_context, "assessment")
         elif "candidate" in resource_type.lower():
             help_context = add_example_to_help(help_context, "candidate")
-    
+
     return create_error_response(
         error_code=ErrorCode.NOT_FOUND,
         message=message,
@@ -837,7 +840,7 @@ router = APIRouter(prefix="/api/v1/errors", tags=["Documentation"])
 
 class ErrorDocumentation(BaseModel):
     """Documentation for a specific error code."""
-    
+
     code: str
     name: str
     http_status: int
@@ -890,7 +893,7 @@ POST /api/v1/assessments
             }
         }
     ),
-    
+
     "NOT_FOUND": ErrorDocumentation(
         code="NOT_FOUND",
         name="Resource Not Found",
@@ -924,7 +927,7 @@ POST /api/v1/assessments
             }
         }
     ),
-    
+
     # Add more error documentation...
 }
 
@@ -944,7 +947,7 @@ async def get_error_documentation(error_code: str):
             "message": f"No documentation found for error code: {error_code}",
             "available_codes": list(ERROR_DOCS.keys())
         }
-    
+
     return ERROR_DOCS[error_code]
 
 
@@ -953,7 +956,7 @@ async def search_errors(keyword: str):
     """Search error documentation by keyword."""
     results = []
     keyword_lower = keyword.lower()
-    
+
     for code, doc in ERROR_DOCS.items():
         if (keyword_lower in doc.name.lower() or
             keyword_lower in doc.description.lower() or
@@ -963,7 +966,7 @@ async def search_errors(keyword: str):
                 "name": doc.name,
                 "description": doc.description
             })
-    
+
     return results
 ```
 
@@ -1058,15 +1061,15 @@ def test_validation_error_includes_help():
             "paths_to_evaluate": ["TECHNICAL"]
         }
     )
-    
+
     assert response.status_code == 400
     error = response.json()
-    
+
     # Verify error structure
     assert error["error"] is True
     assert error["error_code"] == "VALIDATION_ERROR"
     assert "help" in error
-    
+
     # Verify help context
     help_ctx = error["help"]
     assert "valid_examples" in help_ctx
@@ -1077,10 +1080,10 @@ def test_validation_error_includes_help():
 def test_not_found_includes_next_steps():
     """Test that not found errors include next steps."""
     response = client.get("/api/v1/assessments/nonexistent-id")
-    
+
     assert response.status_code == 404
     error = response.json()
-    
+
     assert "help" in error
     help_ctx = error["help"]
     assert "suggestion" in help_ctx
@@ -1095,7 +1098,7 @@ def test_error_documentation_endpoint():
     codes = response.json()
     assert isinstance(codes, list)
     assert "VALIDATION_ERROR" in codes
-    
+
     # Get specific error docs
     response = client.get("/api/v1/errors/VALIDATION_ERROR")
     assert response.status_code == 200
@@ -1110,13 +1113,14 @@ def test_health_check_troubleshooting():
     response = client.get("/api/v1/health?detailed=true")
     assert response.status_code == 200
     health = response.json()
-    
+
     # If any component is unhealthy, should have troubleshooting
     if health["status"] != "healthy":
         assert "troubleshooting" in health
 ```
 
 Run tests:
+
 ```bash
 pytest tests/test_enhanced_errors.py -v
 ```
@@ -1145,6 +1149,7 @@ pytest tests/test_enhanced_errors.py -v
 ## Expected Impact
 
 ### Before
+
 ```json
 {
   "error": true,
@@ -1154,6 +1159,7 @@ pytest tests/test_enhanced_errors.py -v
 ```
 
 ### After
+
 ```json
 {
   "error": true,
@@ -1174,6 +1180,7 @@ pytest tests/test_enhanced_errors.py -v
 ```
 
 **Improvements:**
+
 - Clear next steps (suggestion)
 - Concrete examples (valid_examples)
 - Technical details (pattern, received value)

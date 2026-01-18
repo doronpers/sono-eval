@@ -427,4 +427,4 @@ Can't find your answer? We're here to help!
 ---
 
 **Last Updated**: January 10, 2026
-**Version**: 0.1.0
+**Version**: 0.1.1

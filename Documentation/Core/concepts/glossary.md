@@ -549,7 +549,7 @@ Python Enhancement Proposal 8 - Style Guide for Python Code
 
 Version numbering scheme (MAJOR.MINOR.PATCH)
 
-**Current Version**: 0.1.0
+**Current Version**: 0.1.1
 
 **Website**: <https://semver.org/>
 

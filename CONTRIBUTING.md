@@ -217,7 +217,6 @@ pre-commit install
 cp .env.example .env
 ```
 
-<｜tool▁calls▁begin｜><｜tool▁call▁begin｜>
 read_file
 
 ### Docker Development

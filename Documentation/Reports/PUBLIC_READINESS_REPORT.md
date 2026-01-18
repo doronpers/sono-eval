@@ -329,7 +329,7 @@ created, all checks passed.
 For questions about this audit:
 
 - Review: [SECRETS_AUDIT.md](SECRETS_AUDIT.md)
-- Security: [SECURITY.md](SECURITY.md)
+- Security: [SECURITY.md](../../SECURITY.md)
 - Issues: GitHub Issues
 
 For security concerns:

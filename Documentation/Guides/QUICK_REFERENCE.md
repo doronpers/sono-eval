@@ -4,10 +4,10 @@
 
 This is a quick reference guide. For comprehensive information, see:
 
-- 📘 [SECURITY.md](SECURITY.md) - Full security documentation
-- 📊 [CODE_REVIEW_REPORT.md](CODE_REVIEW_REPORT.md) - Detailed code analysis
-- 🗺️ [IMPROVEMENT_ROADMAP.md](IMPROVEMENT_ROADMAP.md) - Development roadmap
-- 📋 [ASSESSMENT_SUMMARY.md](ASSESSMENT_SUMMARY.md) - Executive summary
+- 📘 [SECURITY.md](../../SECURITY.md) - Full security documentation
+- 📊 [CODE_REVIEW_REPORT.md](../Reports/CODE_REVIEW_REPORT.md) - Detailed code analysis
+- 🗺️ [IMPROVEMENT_ROADMAP.md](../Governance/IMPROVEMENT_ROADMAP.md) - Development roadmap
+- 📋 [ASSESSMENT_SUMMARY.md](../Reports/ASSESSMENT_SUMMARY.md) - Executive summary
 
 ---
 
@@ -517,10 +517,10 @@ trivy image sono-eval:latest
 
 ## 📚 Reference Links
 
-- **Security**: [SECURITY.md](SECURITY.md)
-- **Code Review**: [CODE_REVIEW_REPORT.md](CODE_REVIEW_REPORT.md)
-- **Roadmap**: [IMPROVEMENT_ROADMAP.md](IMPROVEMENT_ROADMAP.md)
-- **Summary**: [ASSESSMENT_SUMMARY.md](ASSESSMENT_SUMMARY.md)
+- **Security**: [SECURITY.md](../../SECURITY.md)
+- **Code Review**: [CODE_REVIEW_REPORT.md](../Reports/CODE_REVIEW_REPORT.md)
+- **Roadmap**: [IMPROVEMENT_ROADMAP.md](../Governance/IMPROVEMENT_ROADMAP.md)
+- **Summary**: [ASSESSMENT_SUMMARY.md](../Reports/ASSESSMENT_SUMMARY.md)
 
 ### External Resources
 
@@ -545,7 +545,7 @@ trivy image sono-eval:latest
 ---
 
 **Last Updated**: January 10, 2026  
-**Version**: 0.1.0  
+**Version**: 0.1.1  
 **Maintainer**: Sono-Eval Team
 
 ---

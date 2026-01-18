@@ -306,7 +306,7 @@ Sono-Eval helps with all three!
 
 ### Technical Help
 
-- **[Quick Start](../quick-start.md)** - Setup and usage
+- **[Quick Start](../QUICK_START.md)** - Setup and usage
 - **[Troubleshooting](../troubleshooting.md)** - Common issues
 
 ### Getting Support
@@ -339,6 +339,6 @@ This guide exists to help you have the best possible experience.
 
 ---
 
-**Version**: 0.1.0 | **Last Updated**: January 10, 2026
+**Version**: 0.1.1 | **Last Updated**: January 18, 2026
 
-**Next**: [Quick Start Guide](../quick-start.md) | [FAQ](../faq.md) | [Learning Resources](learning.md)
+**Next**: [Quick Start Guide](../QUICK_START.md) | [FAQ](../faq.md) | [Learning Resources](learning.md)
