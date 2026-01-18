@@ -95,4 +95,64 @@
 
 {% block extra_js %}
 <script src="{{ request.base_url }}static/results.js"></script>
+<script>
+// Check for export parameter and handle JSON export
+const assessmentId = '{{ assessment_id }}';
+
+function checkExportParam() {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('export') === 'json') {
+        exportResultsAsJSON();
+    }
+}
+
+// Export results as JSON (complements results.js)
+function exportResultsAsJSON() {
+    // Get results from the results.js loaded data
+    const resultsData = window.resultsData || {};
+    
+    const exportData = {
+        assessment_id: assessmentId,
+        timestamp: new Date().toISOString(),
+        ...resultsData
+    };
+    
+    const dataStr = JSON.stringify(exportData, null, 2);
+    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `sono-eval-results-${assessmentId || 'assessment'}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    // Track export
+    if (window.sonoEvalTracking && window.sonoEvalTracking.trackEvent) {
+        window.sonoEvalTracking.trackEvent('results_exported', {
+            format: 'json',
+            assessment_id: assessmentId,
+        });
+    }
+}
+
+// Track results view
+document.addEventListener('DOMContentLoaded', function() {
+    if (window.sonoEvalTracking && window.sonoEvalTracking.trackEvent) {
+        window.sonoEvalTracking.trackEvent('results_viewed', {
+            assessment_id: assessmentId || 'unknown',
+        });
+    }
+    
+    if (window.sonoEval && window.sonoEval.trackMilestone) {
+        window.sonoEval.trackMilestone('results_viewed', {
+            assessment_id: assessmentId || 'unknown',
+        });
+    }
+    
+    // Check for export parameter
+    checkExportParam();
+});
+</script>
 {% endblock %}

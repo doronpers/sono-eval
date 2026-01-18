@@ -1,31 +1,29 @@
-# Implementation Plan: Mobile Onboarding & Progressive Disclosure UX
+# Implementation Plan 1: Mobile Onboarding & Progressive Disclosure
 
-**Area**: Mobile Companion Interface Enhancement  
-**Priority**: HIGH  
-**Impact**: HIGH  
-**Effort**: MEDIUM  
-**Estimated Time**: 4-6 hours  
-**Agent Type**: General-purpose or UI/UX specialist
+**Impact**: HIGH | **Effort**: MEDIUM | **Time**: 4–6h  
+**Scope**: Mobile companion templates + CSS + client-side logic
 
 ---
 
-## Overview
+## Prerequisites (exact files)
 
-This plan provides step-by-step instructions for coding agents to enhance the mobile onboarding experience in Sono-Eval. The goal is to reduce cognitive load, improve information hierarchy, and increase assessment completion rates through better progressive disclosure and guided flows.
+1. Welcome screen template: `src/sono_eval/mobile/templates/index.html` (current discovery cards at lines 11–134).  
+2. Candidate start screen: `src/sono_eval/mobile/templates/start.html` (lines 4–123).  
+3. Path selection: `src/sono_eval/mobile/templates/paths.html` (lines 4–210+).  
+4. Results page: `src/sono_eval/mobile/templates/results.html` (lines 4–80).  
+5. Styling and interactions: `src/sono_eval/mobile/static/style.css` + `src/sono_eval/mobile/static/script.js`.
 
 ---
 
-## Prerequisites
+## Task A — Replace Expandable Cards With 4-Value Grid
 
-**Before starting, the agent must:**
+### Before (current)
+- `src/sono_eval/mobile/templates/index.html` lines 11–134 contain three `.discovery-card` blocks plus a separate process accordion.
 
-1. Read the existing mobile interface code:
-   - `src/sono_eval/mobile/templates/index.html` (welcome screen)
-   - `src/sono_eval/mobile/templates/start.html` (candidate entry)
-   - `src/sono_eval/mobile/templates/paths.html` (path selection)
-   - `src/sono_eval/mobile/static/style.css` (styling)
-   - `src/sono_eval/mobile/static/script.js` (interactions)
+### After (target)
+- Replace the discovery cards with a 4-value grid and a single “Learn more” accordion **after** the CTA.
 
+<<<<<<< HEAD:Documentation/Archive/Reports-Historical/IMPLEMENTATION_PLAN_1_MOBILE_UX.md
 2. Understand the current user flow:
 
    ```
@@ -61,77 +59,72 @@ This plan provides step-by-step instructions for coding agents to enhance the mo
 #### 1.1: Reduce Discovery Cards from 3 to 1 Primary Card
 
 **Replace lines 11-100** with a single prominent value proposition:
+=======
+#### Replace HTML (copy-paste)
+**File**: `src/sono_eval/mobile/templates/index.html`  
+**Replace** lines 11–134 with:
+>>>>>>> 6b7113d6352e4fb7d7504d7a7d221ee1ac543c33:Documentation/Reports/IMPLEMENTATION_PLAN_1_MOBILE_UX.md
 
 ```html
-<div class="hero-section">
-    <div class="hero-icon">🎯</div>
-    <h2 class="hero-title">Welcome to Sono-Eval</h2>
-    <p class="hero-subtitle">Understand your strengths and get actionable feedback</p>
-</div>
-
-<div class="value-proposition">
-    <div class="value-grid">
-        <div class="value-item">
-            <span class="value-icon">💡</span>
-            <h4>Explained Scores</h4>
-            <p>See exactly why you received each score with clear evidence</p>
-        </div>
-        <div class="value-item">
-            <span class="value-icon">🎯</span>
-            <h4>Choose Your Focus</h4>
-            <p>Pick 1-4 areas that matter most to you</p>
-        </div>
-        <div class="value-item">
-            <span class="value-icon">📈</span>
-            <h4>Grow Skills</h4>
-            <p>Get specific recommendations you can use immediately</p>
-        </div>
-        <div class="value-item">
-            <span class="value-icon">⏱️</span>
-            <h4>Your Pace</h4>
-            <p>10-90 minutes depending on areas selected</p>
-        </div>
+<div class="value-grid" role="list">
+    <div class="value-item" role="listitem">
+        <span class="value-icon">✨</span>
+        <h3>Explained Scores</h3>
+        <p>See evidence for every score—no black boxes.</p>
+    </div>
+    <div class="value-item" role="listitem">
+        <span class="value-icon">🎯</span>
+        <h3>Choose Your Focus</h3>
+        <p>Pick 1–4 skills that matter most to you.</p>
+    </div>
+    <div class="value-item" role="listitem">
+        <span class="value-icon">⏱️</span>
+        <h3>10–90 Minutes</h3>
+        <p>Complete one area or a full profile at your pace.</p>
+    </div>
+    <div class="value-item" role="listitem">
+        <span class="value-icon">📈</span>
+        <h3>Actionable Growth</h3>
+        <p>Get specific next steps to improve.</p>
     </div>
 </div>
-```
 
-#### 1.2: Move Secondary Information to Collapsible Section
-
-Move time commitment and privacy info into a **single** collapsible "Learn More" section **after** the CTA:
-
-```html
 <div class="cta-section">
     <button class="primary-button" onclick="location.href='/mobile/start'">
-        Start Your Assessment
+        Let's Get Started
         <span class="button-arrow">→</span>
     </button>
-    <p class="cta-subtext">No account needed • 10-90 minutes</p>
+    <p class="cta-subtext">No account needed • 10–90 minutes</p>
 </div>
 
 <div class="info-details">
     <button class="details-toggle" onclick="toggleDetails(this)">
-        <span>How does this work?</span>
+        <span>How it works</span>
         <span class="toggle-icon">▼</span>
     </button>
     <div class="details-content" style="display: none;">
         <div class="detail-section">
-            <h4>⏱️ Time Commitment</h4>
-            <ul>
-                <li><strong>1 area:</strong> 10-20 minutes</li>
-                <li><strong>2-3 areas:</strong> 30-60 minutes</li>
-                <li><strong>All areas:</strong> 60-90 minutes</li>
-            </ul>
-            <p class="detail-note">You can save progress and return later</p>
+            <h4>📋 The Process</h4>
+            <ol>
+                <li>Choose 1–4 skill areas</li>
+                <li>Complete guided tasks</li>
+                <li>Review scores + evidence</li>
+                <li>Act on recommendations</li>
+            </ol>
         </div>
+<<<<<<< HEAD:Documentation/Archive/Reports-Historical/IMPLEMENTATION_PLAN_1_MOBILE_UX.md
 
+=======
+>>>>>>> 6b7113d6352e4fb7d7504d7a7d221ee1ac543c33:Documentation/Reports/IMPLEMENTATION_PLAN_1_MOBILE_UX.md
         <div class="detail-section">
             <h4>🔒 Privacy</h4>
             <ul>
-                <li>✅ No account required to try</li>
+                <li>✅ No account required</li>
                 <li>✅ Your code stays private</li>
-                <li>✅ Full transparency on scoring</li>
+                <li>✅ Transparent scoring</li>
             </ul>
         </div>
+<<<<<<< HEAD:Documentation/Archive/Reports-Historical/IMPLEMENTATION_PLAN_1_MOBILE_UX.md
 
         <div class="detail-section">
             <h4>📋 The Process</h4>
@@ -142,18 +135,21 @@ Move time commitment and privacy info into a **single** collapsible "Learn More"
                 <li>Receive growth recommendations</li>
             </ol>
         </div>
+=======
+>>>>>>> 6b7113d6352e4fb7d7504d7a7d221ee1ac543c33:Documentation/Reports/IMPLEMENTATION_PLAN_1_MOBILE_UX.md
     </div>
 </div>
 ```
 
-#### 1.3: Update JavaScript for New Toggle
-
-**Add after line 189:**
+#### Add JS toggle (copy-paste)
+**File**: `src/sono_eval/mobile/templates/index.html`  
+**Replace** the existing `toggleExpand` + `exploreDiscovery` functions (lines 140–187) with:
 
 ```javascript
 function toggleDetails(button) {
     const content = button.nextElementSibling;
     const icon = button.querySelector('.toggle-icon');
+<<<<<<< HEAD:Documentation/Archive/Reports-Historical/IMPLEMENTATION_PLAN_1_MOBILE_UX.md
 
     if (content.style.display === 'none') {
         content.style.display = 'block';
@@ -396,13 +392,20 @@ function selectQuickPath(pathType) {
     document.querySelector('.continue-btn').style.display = 'block';
 
     // Track selection
+=======
+    const isOpen = content.style.display === 'block';
+
+    content.style.display = isOpen ? 'none' : 'block';
+    icon.textContent = isOpen ? '▼' : '▲';
+
+>>>>>>> 6b7113d6352e4fb7d7504d7a7d221ee1ac543c33:Documentation/Reports/IMPLEMENTATION_PLAN_1_MOBILE_UX.md
     if (window.sonoEvalTracking && window.sonoEvalTracking.trackEvent) {
-        window.sonoEvalTracking.trackEvent('path_selection', {
-            method: 'quick_pick',
-            type: pathType,
-            paths: paths
+        window.sonoEvalTracking.trackEvent('discovery', {
+            action: isOpen ? 'collapsed' : 'expanded',
+            section: 'how_it_works',
         });
     }
+<<<<<<< HEAD:Documentation/Archive/Reports-Historical/IMPLEMENTATION_PLAN_1_MOBILE_UX.md
 
     // Scroll to continue button
     document.querySelector('.continue-btn').scrollIntoView({
@@ -418,25 +421,42 @@ function selectQuickPath(pathType) {
 - Better informed choices with time estimates
 - Guided experience for new users
 
+=======
+}
+```
+
+>>>>>>> 6b7113d6352e4fb7d7504d7a7d221ee1ac543c33:Documentation/Reports/IMPLEMENTATION_PLAN_1_MOBILE_UX.md
 ---
 
-## Task 4: Enhance Results Page Hierarchy
+## Task B — Add Step Progress Indicators + Time Estimates
 
-**File**: `src/sono_eval/mobile/templates/results.html`
+### Before (current)
+- `src/sono_eval/mobile/templates/start.html` lines 4–89 show no progress indicator.
+- `src/sono_eval/mobile/templates/paths.html` lines 4–79 show no progress indicator.
+- `src/sono_eval/mobile/templates/assess.html` (top of main container) has no step indicator.
+- `src/sono_eval/mobile/templates/results.html` lines 4–25 show score and meta without a step indicator.
 
+<<<<<<< HEAD:Documentation/Archive/Reports-Historical/IMPLEMENTATION_PLAN_1_MOBILE_UX.md
 ### Current Issues
 
 - Flat information hierarchy
 - Scores not prominent enough
 - Recommendations buried in evidence
+=======
+### After (target)
+- Add a compact progress row on each step:
+  - Step 1/4: “About you” (1 min)
+  - Step 2/4: “Pick focus areas” (1–2 min)
+  - Step 3/4: “Complete tasks” (10–60 min)
+  - Step 4/4: “Review results” (2–5 min)
+>>>>>>> 6b7113d6352e4fb7d7504d7a7d221ee1ac543c33:Documentation/Reports/IMPLEMENTATION_PLAN_1_MOBILE_UX.md
 
-### Changes Required
-
-#### 4.1: Add Results Summary Section
-
-**At the top of results**, add a summary card:
+#### Insert HTML (copy-paste)
+**File**: `src/sono_eval/mobile/templates/start.html`  
+**Insert** after line 4:
 
 ```html
+<<<<<<< HEAD:Documentation/Archive/Reports-Historical/IMPLEMENTATION_PLAN_1_MOBILE_UX.md
 <div class="results-summary">
     <div class="score-hero">
         <div class="score-display">
@@ -463,14 +483,19 @@ function selectQuickPath(pathType) {
             </div>
         </div>
     </div>
+=======
+<div class="step-progress">
+    <span class="step-pill active">Step 1/4</span>
+    <span class="step-label">About you • 1 min</span>
+>>>>>>> 6b7113d6352e4fb7d7504d7a7d221ee1ac543c33:Documentation/Reports/IMPLEMENTATION_PLAN_1_MOBILE_UX.md
 </div>
 ```
 
-#### 4.2: Restructure Path Results
-
-Organize each path result with clear sections:
+**File**: `src/sono_eval/mobile/templates/paths.html`  
+**Insert** after line 4:
 
 ```html
+<<<<<<< HEAD:Documentation/Archive/Reports-Historical/IMPLEMENTATION_PLAN_1_MOBILE_UX.md
 <div class="path-result" data-path="{{ path.name }}">
     <!-- Score at top -->
     <div class="path-score-header">
@@ -535,14 +560,19 @@ Organize each path result with clear sections:
             <!-- Evidence items -->
         </div>
     </div>
+=======
+<div class="step-progress">
+    <span class="step-pill active">Step 2/4</span>
+    <span class="step-label">Pick focus areas • 1–2 min</span>
+>>>>>>> 6b7113d6352e4fb7d7504d7a7d221ee1ac543c33:Documentation/Reports/IMPLEMENTATION_PLAN_1_MOBILE_UX.md
 </div>
 ```
 
-#### 4.3: Add Action Items Section
-
-At the bottom, add clear next steps:
+**File**: `src/sono_eval/mobile/templates/assess.html`  
+**Insert** near the top of the main container:
 
 ```html
+<<<<<<< HEAD:Documentation/Archive/Reports-Historical/IMPLEMENTATION_PLAN_1_MOBILE_UX.md
 <div class="next-steps">
     <h3>What's Next?</h3>
     <div class="action-cards">
@@ -579,134 +609,96 @@ At the bottom, add clear next steps:
 - Clear visual hierarchy: Score → Summary → Actions → Details
 - Actionable focus: Improvements prominent, evidence secondary
 - Better engagement: Clear next steps
+=======
+<div class="step-progress">
+    <span class="step-pill active">Step 3/4</span>
+    <span class="step-label">Complete tasks • 10–60 min</span>
+</div>
+```
+
+**File**: `src/sono_eval/mobile/templates/results.html`  
+**Insert** after line 4:
+>>>>>>> 6b7113d6352e4fb7d7504d7a7d221ee1ac543c33:Documentation/Reports/IMPLEMENTATION_PLAN_1_MOBILE_UX.md
+
+```html
+<div class="step-progress">
+    <span class="step-pill active">Step 4/4</span>
+    <span class="step-label">Review results • 2–5 min</span>
+</div>
+```
+
+#### CSS additions (copy-paste)
+**File**: `src/sono_eval/mobile/static/style.css`
+
+<<<<<<< HEAD:Documentation/Archive/Reports-Historical/IMPLEMENTATION_PLAN_1_MOBILE_UX.md
+### Add the following styles (append to file)
+
+=======
+>>>>>>> 6b7113d6352e4fb7d7504d7a7d221ee1ac543c33:Documentation/Reports/IMPLEMENTATION_PLAN_1_MOBILE_UX.md
+```css
+.step-progress {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.step-pill {
+    background: #111827;
+    color: #fff;
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 999px;
+}
+
+.step-label {
+    font-size: 13px;
+    color: #6b7280;
+}
+```
 
 ---
 
-## Task 5: Add CSS for New Components
+## Task C — Quick-Pick Path Selection (“New to coding”)
 
-**File**: `src/sono_eval/mobile/static/style.css`
+### Before (current)
+- `src/sono_eval/mobile/templates/paths.html` lines 13–68 show tips and recommendations, but no quick-pick CTA.
+- `src/sono_eval/mobile/templates/paths.html` lines 117–173 show recommendation logic without auto-select.
 
-### Add the following styles (append to file)
+### After (target)
+- Add a “New to coding” quick-pick button that auto-selects **technical + problem_solving**.
 
-```css
-/* Value Proposition Grid */
-.value-proposition {
-    margin: 2rem 0;
-    padding: 0 1rem;
-}
+#### Insert CTA (copy-paste)
+**File**: `src/sono_eval/mobile/templates/paths.html`  
+**Insert** after line 18:
 
-.value-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-}
+```html
+<div class="quick-pick">
+    <button type="button" class="secondary-button" onclick="applyQuickPick('new')">
+        👶 New to coding? Pick a starter path
+    </button>
+    <p class="quick-pick-note">We’ll preselect Technical + Problem Solving.</p>
+</div>
+```
 
-.value-item {
-    background: var(--bg-white);
-    padding: 1rem;
-    border-radius: var(--radius);
-    border: 1px solid var(--border-color);
-    text-align: center;
-}
+#### Add JS (copy-paste)
+**File**: `src/sono_eval/mobile/templates/paths.html`  
+**Insert** after line 110:
 
-.value-icon {
-    font-size: 2rem;
-    display: block;
-    margin-bottom: 0.5rem;
-}
+```javascript
+function applyQuickPick(type) {
+    const quickPickMap = {
+        new: ['technical', 'problem_solving'],
+    };
 
-.value-item h4 {
-    font-size: var(--text-base);
-    margin-bottom: 0.25rem;
-    color: var(--text-primary);
-}
+    const picks = quickPickMap[type] || [];
+    document.querySelectorAll('.path-checkbox').forEach(checkbox => {
+        const pathId = checkbox.closest('.path-card').dataset.path;
+        checkbox.checked = picks.includes(pathId);
+        checkbox.dispatchEvent(new Event('change'));
+    });
 
-.value-item p {
-    font-size: var(--text-sm);
-    color: var(--text-secondary);
-    margin: 0;
-}
-
-/* Info Details Section */
-.info-details {
-    margin: 2rem 1rem;
-    background: var(--bg-white);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-}
-
-.details-toggle {
-    width: 100%;
-    padding: 1rem;
-    background: transparent;
-    border: none;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    cursor: pointer;
-    font-size: var(--text-base);
-    font-weight: 600;
-    color: var(--primary-color);
-}
-
-.details-toggle:hover {
-    background: var(--bg-light);
-}
-
-.details-content {
-    padding: 0 1rem 1rem 1rem;
-}
-
-.detail-section {
-    margin-bottom: 1.5rem;
-}
-
-.detail-section:last-child {
-    margin-bottom: 0;
-}
-
-.detail-section h4 {
-    font-size: var(--text-base);
-    margin-bottom: 0.5rem;
-    color: var(--text-primary);
-}
-
-.detail-section ul {
-    list-style: none;
-    padding: 0;
-    margin: 0.5rem 0;
-}
-
-.detail-section ul li {
-    padding: 0.25rem 0;
-    font-size: var(--text-sm);
-    color: var(--text-secondary);
-}
-
-.detail-section ol {
-    padding-left: 1.5rem;
-    margin: 0.5rem 0;
-}
-
-.detail-section ol li {
-    padding: 0.25rem 0;
-    font-size: var(--text-sm);
-    color: var(--text-secondary);
-}
-
-.detail-note {
-    font-size: var(--text-xs);
-    color: var(--text-muted);
-    font-style: italic;
-    margin-top: 0.5rem;
-}
-
-/* Guidance Section */
-.guidance-section {
-    padding: 1rem;
-    margin-bottom: 1.5rem;
-}
-
+<<<<<<< HEAD:Documentation/Archive/Reports-Historical/IMPLEMENTATION_PLAN_1_MOBILE_UX.md
 .guidance-section h3 {
     font-size: var(--text-xl);
     margin-bottom: 0.5rem;
@@ -984,20 +976,33 @@ At the bottom, add clear next steps:
 
     .action-cards {
         flex-direction: row;
+=======
+    if (window.sonoEvalTracking && window.sonoEvalTracking.trackEvent) {
+        window.sonoEvalTracking.trackEvent('paths', {
+            action: 'quick_pick',
+            type: type,
+            selected: picks,
+        });
+>>>>>>> 6b7113d6352e4fb7d7504d7a7d221ee1ac543c33:Documentation/Reports/IMPLEMENTATION_PLAN_1_MOBILE_UX.md
     }
 }
 ```
 
 ---
 
-## Task 6: Update Mobile App Routes
+## Task D — Results Page: score → summary → actions → evidence (collapsible)
 
-**File**: `src/sono_eval/mobile/app.py`
+### Before (current)
+- `src/sono_eval/mobile/templates/results.html` lines 6–80 render all sections in a single linear flow (score, summary, charts, findings, strengths, motives, recommendations, actions).
 
-### Ensure route handlers pass new context variables
+### After (target)
+- Reorder to: **Score** → **Summary** → **Actions** → **Evidence** (collapsible sections for scores, findings, strengths, motives, recommendations).
 
-Update the results route to include summary data:
+#### Replace HTML (copy-paste)
+**File**: `src/sono_eval/mobile/templates/results.html`  
+**Replace** lines 27–80 with:
 
+<<<<<<< HEAD:Documentation/Archive/Reports-Historical/IMPLEMENTATION_PLAN_1_MOBILE_UX.md
 ```python
 @app.get("/results", response_class=HTMLResponse)
 async def results_page(request: Request, session_id: Optional[str] = None):
@@ -1021,33 +1026,65 @@ async def results_page(request: Request, session_id: Optional[str] = None):
             # ... other context ...
         }
     )
+=======
+```html
+<div class="results-section">
+    <h3 class="section-title">📝 Summary</h3>
+    <p class="summary-text" id="summary-text"></p>
+</div>
+>>>>>>> 6b7113d6352e4fb7d7504d7a7d221ee1ac543c33:Documentation/Reports/IMPLEMENTATION_PLAN_1_MOBILE_UX.md
 
-def get_score_context(score: float) -> str:
-    """Get contextual message for score."""
-    if score >= 85:
-        return "Excellent work! Strong performance across areas."
-    elif score >= 70:
-        return "Good job! Solid foundation with room to grow."
-    elif score >= 55:
-        return "Making progress! Focus on key improvements."
-    else:
-        return "Keep going! Every expert was once a beginner."
+<div class="results-actions">
+    <button class="secondary-button" onclick="downloadResults()">
+        <span>📥</span> Download Report
+    </button>
+    <button class="primary-button" onclick="startNewAssessment()">
+        <span>🔄</span> New Assessment
+    </button>
+</div>
 
-def calculate_top_strength(result: AssessmentResult) -> str:
-    """Extract the single best strength."""
-    # Implementation: Find highest scoring metric
-    pass
-
-def calculate_top_improvement(result: AssessmentResult) -> str:
-    """Extract the single most impactful improvement."""
-    # Implementation: Find lowest scoring metric or highest-impact improvement
-    pass
+<div class="results-section">
+    <button class="details-toggle" onclick="toggleDetails(this)">
+        <span>Evidence & Details</span>
+        <span class="toggle-icon">▼</span>
+    </button>
+    <div class="details-content" style="display: none;">
+        <div class="results-section">
+            <h3 class="section-title">📊 Path Scores</h3>
+            <div class="path-scores-chart" id="path-scores"></div>
+        </div>
+        <div class="results-section">
+            <h3 class="section-title">🔍 Key Findings</h3>
+            <ul class="findings-list" id="findings-list"></ul>
+        </div>
+        <div class="results-section dual-column">
+            <div class="column strengths">
+                <h4><span class="icon">💪</span> Strengths</h4>
+                <ul class="strength-list" id="strengths-list"></ul>
+            </div>
+            <div class="column improvements">
+                <h4><span class="icon">🎯</span> Areas to Improve</h4>
+                <ul class="improvement-list" id="improvements-list"></ul>
+            </div>
+        </div>
+        <div class="results-section" id="motives-section" style="display: none;">
+            <h3 class="section-title">🧠 Your Micro-Motives</h3>
+            <p class="motives-intro">These reveal what drives your approach:</p>
+            <div class="motives-chart" id="motives-chart"></div>
+        </div>
+        <div class="results-section">
+            <h3 class="section-title">💡 Recommendations</h3>
+            <div class="recommendations-list" id="recommendations-list"></div>
+        </div>
+    </div>
+</div>
 ```
 
 ---
 
 ## Testing Instructions
 
+<<<<<<< HEAD:Documentation/Archive/Reports-Historical/IMPLEMENTATION_PLAN_1_MOBILE_UX.md
 After implementing all changes, test thoroughly:
 
 ### 1. Visual Testing
@@ -1138,40 +1175,28 @@ If issues arise:
    ```bash
    git checkout HEAD~1 -- src/sono_eval/mobile/templates/index.html
    ```
+=======
+1. Run the server: `./launcher.sh start`.
+2. Open `/mobile` and confirm:
+   - Welcome page shows 4-value grid and a single CTA.
+   - Step indicators appear on start/paths/assess/results.
+   - “New to coding” quick-pick selects two paths and updates the time estimate.
+   - Results page shows score + summary + actions, with evidence collapsed by default.
+>>>>>>> 6b7113d6352e4fb7d7504d7a7d221ee1ac543c33:Documentation/Reports/IMPLEMENTATION_PLAN_1_MOBILE_UX.md
 
 ---
 
 ## Success Criteria
 
-**Before marking as complete, verify:**
-
-- [ ] Welcome screen has single clear CTA
-- [ ] Information hierarchy follows: Action → Value → Details
-- [ ] Progress indicators show at all steps with time estimates
-- [ ] Path selection has quick-pick options
-- [ ] Results page shows score → summary → actions → details
-- [ ] All collapsible sections work smoothly
-- [ ] Mobile responsive (tested on 3+ viewport sizes)
-- [ ] No console errors
-- [ ] Analytics events fire correctly
-- [ ] Performance meets targets (page loads < 1s)
+- ✅ Welcome screen presents 4-value grid, no expandable cards.
+- ✅ Each step shows progress indicator with time estimate.
+- ✅ Quick-pick auto-selects 2 paths and updates the selection summary.
+- ✅ Results page is reordered with collapsible evidence.
 
 ---
 
-## Follow-Up Enhancements (Future)
+## Rollback Procedure
 
-After core implementation:
-
-1. **A/B Testing**: Compare old vs new welcome screen completion rates
-2. **Heatmaps**: Track where users click most
-3. **Time Tracking**: Measure time spent per section
-4. **Accessibility**: Add ARIA labels and keyboard navigation
-5. **Animations**: Add subtle transitions for better polish
-6. **Offline Support**: Add service worker for offline functionality
-
----
-
-**Document Version**: 1.0  
-**Last Updated**: January 17, 2026  
-**Estimated Implementation Time**: 4-6 hours  
-**Difficulty**: Medium
+1. Revert the changes in templates and CSS to the previous commit.
+2. Ensure `index.html` reverts to discovery cards + expandable process section.
+3. Remove `toggleDetails` from results template if added.

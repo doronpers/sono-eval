@@ -1,30 +1,26 @@
-# Implementation Plan: Documentation Navigation & First-Time User Experience
+# Implementation Plan 3: Documentation Navigation & First-Time UX
 
-**Area**: Documentation Organization and Discovery  
-**Priority**: MEDIUM  
-**Impact**: HIGH  
-**Effort**: LOW  
-**Estimated Time**: 2-3 hours  
-**Agent Type**: Documentation specialist or general-purpose
+**Impact**: HIGH | **Effort**: LOW | **Time**: 2–3h
 
 ---
 
-## Overview
+## Prerequisites (exact files)
 
-This plan provides step-by-step instructions for coding agents to enhance documentation navigation and improve the first-time user experience in Sono-Eval. The goal is to create a clear, single entry point and optimize the journey from "curious visitor" to "running assessment" in under 5 minutes.
+1. Root README CTA cluster: `README.md` lines 18–23.  
+2. Existing onboarding doc: `Documentation/START_HERE.md`.  
+3. CONTRIBUTING quickstarts: `CONTRIBUTING.md` lines 6–64.
 
 ---
 
-## Prerequisites
+## Task A — Single CTA in README → START_HERE.md
 
-**Before starting, the agent must:**
+### Before (current)
+- `README.md` lines 18–23 list multiple CTAs (“Start Here”, “Quick Start”, “Documentation”, etc.).
 
-1. Read the current documentation structure:
-   - `README.md` (root, lines 1-564)
-   - `Documentation/START_HERE.md`
-   - `Documentation/README.md` (documentation hub)
-   - `CONTRIBUTING.md`
+### After (target)
+- Replace the CTA cluster with a **single primary CTA** pointing to a reworked `START_HERE.md`.
 
+<<<<<<< HEAD:Documentation/Archive/Reports-Historical/IMPLEMENTATION_PLAN_3_DOC_NAVIGATION.md
 2. Understand the problem:
    - Multiple "start here" options create confusion
    - 80+ documentation files with no search
@@ -58,20 +54,17 @@ This plan provides step-by-step instructions for coding agents to enhance docume
 #### 1.1: Replace Multiple Entry Points with Single CTA
 
 **Replace lines 18-23** with a single, prominent start:
+=======
+#### Replace README CTA block (copy-paste)
+**File**: `README.md`  
+**Replace** lines 18–23 with:
+>>>>>>> 6b7113d6352e4fb7d7504d7a7d221ee1ac543c33:Documentation/Reports/IMPLEMENTATION_PLAN_3_DOC_NAVIGATION.md
 
 ```markdown
-## 🚀 Start Here
-
-**New to Sono-Eval?** → **[Get Started in 5 Minutes](Documentation/START_HERE.md)**
-
-**Alternative paths:**
-- [View documentation hub](Documentation/README.md) - Browse all docs
-- [Read the research paper](RESEARCH.md) - Understand the approach
-- [Contributing guide](CONTRIBUTING.md) - Help us improve
-
----
+**[Start Here →](Documentation/START_HERE.md)**
 ```
 
+<<<<<<< HEAD:Documentation/Archive/Reports-Historical/IMPLEMENTATION_PLAN_3_DOC_NAVIGATION.md
 #### 1.2: Simplify Beginner-Friendly Section
 
 **Replace lines 27-125** with focused quickstart:
@@ -171,123 +164,92 @@ curl -X POST http://localhost:8000/api/v1/assessments \
 - Faster time to success: Streamlined quick start
 - Better organization: Details moved to appropriate docs
 
+=======
+>>>>>>> 6b7113d6352e4fb7d7504d7a7d221ee1ac543c33:Documentation/Reports/IMPLEMENTATION_PLAN_3_DOC_NAVIGATION.md
 ---
 
-## Task 2: Enhance START_HERE.md Landing Page
+## Task B — START_HERE.md: 3 Visual Paths + Quick Navigation
 
+### Goal
+Provide a single, visually guided entry point with three paths:
+- **Try** (5–10 min)
+- **Learn** (15–20 min)
+- **Build** (30–45 min)
+
+#### START_HERE template (copy-paste)
 **File**: `Documentation/START_HERE.md`
 
+<<<<<<< HEAD:Documentation/Archive/Reports-Historical/IMPLEMENTATION_PLAN_3_DOC_NAVIGATION.md
 ### Current Issues
 
 - Good structure but not visually engaging
 - Missing time estimates
 - No visual hierarchy for paths
 - Doesn't guide user based on confidence level
-
-### Changes Required
-
-#### 2.1: Add Hero Section with Clear Value Prop
-
-**Replace lines 1-8** with:
-
+=======
 ```markdown
-# Welcome to Sono-Eval 👋
+# Start Here
+>>>>>>> 6b7113d6352e4fb7d7504d7a7d221ee1ac543c33:Documentation/Reports/IMPLEMENTATION_PLAN_3_DOC_NAVIGATION.md
 
-> **Understand your strengths, track your progress, and get actionable feedback.**
+Welcome! Choose the path that matches your goal:
 
-Sono-Eval is an assessment platform that explains every score with clear evidence, helps you identify growth areas, and tracks your journey over time.
+| Path | Best for | Time | Link |
+| --- | --- | --- | --- |
+| 🚀 **Try** | First-time users | 5–10 min | [Quick Try](Guides/QUICK_START.md) |
+| 📚 **Learn** | Understand the system | 15–20 min | [User Guide](Guides/user-guide/overview.md) |
+| 🛠️ **Build** | Contribute or extend | 30–45 min | [Contributor Path](../CONTRIBUTING.md) |
 
-**⏱️ Time to first assessment: 5 minutes**
+## Quick Navigation
+
+- **API Reference**: [API Reference](Guides/user-guide/api-reference.md)
+- **Install Options**: [Installation Guide](Guides/user-guide/installation.md)
+- **CLI Usage**: [CLI Guide](Guides/user-guide/cli.md)
+- **Mobile Companion**: [Mobile Overview](Guides/user-guide/mobile.md)
+
+## Reading Times
+
+- Quick Try: ~5–10 minutes
+- Learn the system: ~15–20 minutes
+- Build + Contribute: ~30–45 minutes
+```
 
 ---
 
-## Choose Your Path
+## Task C — Add SEARCH.md and NAVIGATION.md
 
-Select based on your comfort level and goals:
-
-<table>
-<tr>
-<td width="33%" align="center">
-
-### 🚀 Try It
-**2-5 minutes**
-
-Just want to see it work?
-
-**Perfect for:**
-- First-time users
-- Quick evaluation
-- No local setup
-
-**[→ Try in Codespaces](#try-it-no-installation)**
-
-</td>
-<td width="33%" align="center">
-
-### 📚 Learn It  
-**15-30 minutes**
-
-Want to understand how it works?
-
-**Perfect for:**
-- Candidates preparing
-- Curious learners
-- Understanding results
-
-**[→ Learning Resources](Learning/README.md)**
-
-</td>
-<td width="33%" align="center">
-
-### 🛠️ Build With It
-**30-60 minutes**
-
-Ready to integrate or contribute?
-
-**Perfect for:**
-- Developers
-- Contributors
-- Custom deployments
-
-**[→ Architecture Guide](Core/concepts/architecture.md)**
-
-</td>
-</tr>
-</table>
-
----
-```
-
-#### 2.2: Add Detailed Path Instructions
-
-**Replace lines 9-50** with expanded, guided paths:
+### SEARCH.md (keyword-based)
+**File**: `Documentation/SEARCH.md` (new)
 
 ```markdown
-## Path 1: Try It (No Installation)
+# Search Guide
 
-**Goal**: Run Sono-Eval and complete your first assessment in 5 minutes.
+Use this index to quickly find what you need:
 
-### Steps
-
-<details open>
-<summary><b>Step 1: Launch Environment (2 minutes)</b></summary>
-
-**Using GitHub Codespaces** (Easiest, no setup needed):
-
-1. Visit https://github.com/doronpers/sono-eval
-2. Click the green "Code" button
-3. Select "Codespaces" tab
-4. Click "Create codespace on main"
-5. Wait for VS Code web interface to load (~2 minutes)
-
-**Alternative - Local Docker** (Requires Docker):
-
-```bash
-git clone https://github.com/doronpers/sono-eval.git
-cd sono-eval
-./launcher.sh start
+- **Getting started** → START_HERE.md, Guides/QUICK_START.md
+- **API** → Guides/user-guide/api-reference.md
+- **Assessment engine** → Core/assessment-engine.md
+- **Mobile** → Guides/user-guide/mobile.md
+- **Troubleshooting** → Guides/user-guide/troubleshooting.md
 ```
 
+### NAVIGATION.md (visual site map)
+**File**: `Documentation/NAVIGATION.md` (new)
+
+```markdown
+# Documentation Map
+
+- START_HERE.md
+  - Guides/QUICK_START.md
+  - Guides/user-guide/overview.md
+  - Guides/user-guide/installation.md
+  - Guides/user-guide/api-reference.md
+- Core/
+- Governance/
+- Learning/
+- Reports/
+```
+
+<<<<<<< HEAD:Documentation/Archive/Reports-Historical/IMPLEMENTATION_PLAN_3_DOC_NAVIGATION.md
 </details>
 
 <details open>
@@ -356,14 +318,19 @@ Now that you've run Sono-Eval:
 - **Read about assessment paths**: [Assessment Path Guide](Guides/assessment-path-guide.md)
 - **Understand the results**: [Candidate Guide](Guides/resources/candidate-guide.md)
 
+=======
+>>>>>>> 6b7113d6352e4fb7d7504d7a7d221ee1ac543c33:Documentation/Reports/IMPLEMENTATION_PLAN_3_DOC_NAVIGATION.md
 ---
 
-## Path 2: Learn It
+## Task D — Simplify CONTRIBUTING.md Quickstarts
 
-**Goal**: Understand Sono-Eval's approach and how to interpret results.
+### Before (current)
+- `CONTRIBUTING.md` lines 6–64 contain three overlapping quick-start paths.
 
-### For Candidates Taking Assessments
+### After (target)
+- Replace with three clear pathways: **Browser**, **Codespaces**, **Local**. Each path should be 3–5 steps and link to deeper docs.
 
+<<<<<<< HEAD:Documentation/Archive/Reports-Historical/IMPLEMENTATION_PLAN_3_DOC_NAVIGATION.md
 **Start here:**
 
 1. **[Candidate Welcome Guide](Guides/resources/candidate-guide.md)** (5 min read)
@@ -704,10 +671,16 @@ Can't find what you're looking for?
 #### 4.1: Simplify Quick Start Options
 
 **Replace lines 6-64** with:
+=======
+#### Replace contributing quickstarts (copy-paste)
+**File**: `CONTRIBUTING.md`  
+**Replace** lines 6–64 with:
+>>>>>>> 6b7113d6352e4fb7d7504d7a7d221ee1ac543c33:Documentation/Reports/IMPLEMENTATION_PLAN_3_DOC_NAVIGATION.md
 
 ```markdown
 ## Quick Start
 
+<<<<<<< HEAD:Documentation/Archive/Reports-Historical/IMPLEMENTATION_PLAN_3_DOC_NAVIGATION.md
 Choose your path based on comfort level:
 
 ### 🌐 Browser Only (Easiest)
@@ -1237,95 +1210,49 @@ Then **add link in README.md**:
 ## 🗺️ Site Map
 
 Not sure where to look? Check the **[navigation map](NAVIGATION.md)** for a visual guide.
+=======
+Choose the path that matches your setup:
+
+### 🌐 Browser (edit-only)
+1. Fork the repo on GitHub.
+2. Edit a file directly in the browser.
+3. Commit changes and open a PR.
+
+### ☁️ Codespaces (full dev in browser)
+1. Open Codespaces from the “Code” menu.
+2. Run `./launcher.sh start`.
+3. Make changes, commit, and publish your branch.
+
+### 💻 Local (full control)
+1. Clone your fork.
+2. Run `python3 -m venv venv && source venv/bin/activate`.
+3. Install dependencies: `pip install -r requirements.txt`.
+4. Start dev server: `./launcher.sh dev`.
+>>>>>>> 6b7113d6352e4fb7d7504d7a7d221ee1ac543c33:Documentation/Reports/IMPLEMENTATION_PLAN_3_DOC_NAVIGATION.md
 ```
 
 ---
 
 ## Testing Instructions
 
-### 1. User Flow Testing
-
-Test each path manually:
-
-```bash
-# Test Path 1: Try It
-# Follow START_HERE.md "Try It" path
-# - Time yourself: should be < 5 minutes
-# - Note any confusion points
-# - Verify all links work
-
-# Test Path 2: Learn It
-# Follow START_HERE.md "Learn It" path
-# - Check that guides are in logical order
-# - Verify time estimates are accurate
-# - Ensure examples work
-
-# Test Path 3: Build It
-# Follow START_HERE.md "Build It" path
-# - Test installation instructions
-# - Verify API docs are accessible
-# - Check architecture diagrams render
-```
-
-### 2. Link Validation
-
-```bash
-# Check all markdown links
-find Documentation -name "*.md" -exec markdown-link-check {} \;
-
-# Or manually:
-grep -r "](Documentation" *.md
-grep -r "](../Documentation" Documentation/**/*.md
-```
-
-### 3. Navigation Testing
-
-Ask 5 test users to complete tasks:
-
-1. **Task**: "Install Sono-Eval and run your first assessment"
-   - **Success**: Complete in < 10 minutes
-   - **Metric**: Time to completion, confusion points
-
-2. **Task**: "Find information about assessment scoring"
-   - **Success**: Find candidate guide in < 2 minutes
-   - **Metric**: Number of pages visited, success rate
-
-3. **Task**: "Learn how to contribute documentation"
-   - **Success**: Find contributing guide in < 1 minute
-   - **Metric**: Number of clicks, success rate
-
-### 4. Readability Testing
-
-```bash
-# Check reading level (optional)
-# Use tools like:
-# - Hemingway Editor
-# - Flesch-Kincaid Grade Level
-# Target: Grade 8-10 level for docs
-```
+1. Open README and confirm only one CTA remains.
+2. Verify START_HERE, SEARCH, and NAVIGATION links render correctly.
+3. Confirm CONTRIBUTING quickstarts are succinct and non-overlapping.
 
 ---
 
 ## Success Criteria
 
-**Before marking as complete, verify:**
-
-- [ ] Root README has single clear CTA to START_HERE.md
-- [ ] START_HERE.md has 3 visual paths with time estimates
-- [ ] Documentation/README.md has quick navigation table
-- [ ] All documents have estimated reading times
-- [ ] Visual icons improve scannability
-- [ ] CONTRIBUTING.md simplified to 3 clear options
-- [ ] SEARCH.md provides keyword-based finding
-- [ ] NAVIGATION.md shows visual site map
-- [ ] All internal links validated (no 404s)
-- [ ] Test users complete tasks successfully
-- [ ] Mobile responsive (navigation works on mobile)
+- ✅ README has a single primary CTA.
+- ✅ START_HERE provides three clear paths with time estimates.
+- ✅ SEARCH and NAVIGATION docs exist and link to core docs.
+- ✅ CONTRIBUTING quickstarts are simplified to three clear options.
 
 ---
 
-## Expected Impact
+## Rollback Procedure
 
+<<<<<<< HEAD:Documentation/Archive/Reports-Historical/IMPLEMENTATION_PLAN_3_DOC_NAVIGATION.md
 ### Metrics to Track
 
 **Before:**
@@ -1384,3 +1311,7 @@ After core implementation:
 **Last Updated**: January 17, 2026  
 **Estimated Implementation Time**: 2-3 hours  
 **Difficulty**: Low
+=======
+1. Restore README CTA cluster and previous CONTRIBUTING instructions.
+2. Remove START_HERE changes, SEARCH.md, NAVIGATION.md if needed.
+>>>>>>> 6b7113d6352e4fb7d7504d7a7d221ee1ac543c33:Documentation/Reports/IMPLEMENTATION_PLAN_3_DOC_NAVIGATION.md

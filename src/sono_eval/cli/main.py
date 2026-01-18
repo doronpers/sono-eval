@@ -30,6 +30,16 @@ def cli():
     pass
 
 
+# Add interactive setup command to the existing setup group
+try:
+    from sono_eval.cli.onboarding import setup as interactive_setup_command
+    # Add to the existing setup group
+    setup.add_command(interactive_setup_command, name="interactive")
+except ImportError:
+    # Onboarding module not available
+    pass
+
+
 # Assessment Commands
 @cli.group()
 def assess():

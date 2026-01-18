@@ -130,7 +130,31 @@ python verify_setup.py
 
 ---
 
-## Step 7: Start Sono-Eval
+## Step 7: Interactive Setup (Optional but Recommended)
+
+**Why this matters:** The interactive setup wizard guides you through configuration and validates your environment.
+
+**How to do it:**
+```bash
+sono-eval setup
+```
+
+**What happens:**
+- Interactive wizard checks your Python version
+- Verifies dependencies are installed
+- Guides you through configuration
+- Validates your setup
+
+**Or use the web interface:**
+1. Start the server (see Step 8)
+2. Visit `http://localhost:8000/mobile/setup`
+3. Follow the interactive wizard
+
+**Value:** The wizard explains each step and why it matters, making setup easier for first-time users.
+
+---
+
+## Step 8: Start Sono-Eval
 
 **Why this matters:** This starts the web server so you can access Sono-Eval in
 your browser.
@@ -149,7 +173,7 @@ sono-eval server start
 
 ---
 
-## Step 8: Access Sono-Eval
+## Step 9: Access Sono-Eval
 
 **Why this matters:** This is how you'll actually use Sono-Eval!
 

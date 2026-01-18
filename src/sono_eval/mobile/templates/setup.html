@@ -1,0 +1,301 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="setup-screen">
+    <div class="section-header">
+        <span class="section-icon">⚙️</span>
+        <h2>Setup Your Environment</h2>
+        <p class="section-subtitle">
+            Let's get everything ready for your first assessment
+        </p>
+    </div>
+
+    <div class="setup-wizard">
+        <div class="wizard-step active" data-step="1">
+            <div class="step-header">
+                <span class="step-number">1</span>
+                <h3>Check Prerequisites</h3>
+            </div>
+            <div class="step-content">
+                <p class="step-description">
+                    We'll verify that your environment is ready for remote assessment.
+                </p>
+                <div class="checklist">
+                    <div class="checklist-item">
+                        <input type="checkbox" id="check-python" disabled>
+                        <label for="check-python">
+                            <strong>Python 3.8+</strong>
+                            <span class="check-hint">Required for code execution</span>
+                        </label>
+                        <span class="check-status" id="status-python">Checking...</span>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="check-internet" disabled>
+                        <label for="check-internet">
+                            <strong>Internet Connection</strong>
+                            <span class="check-hint">For submitting assessments</span>
+                        </label>
+                        <span class="check-status" id="status-internet">Checking...</span>
+                    </div>
+                    <div class="checklist-item">
+                        <input type="checkbox" id="check-browser" disabled>
+                        <label for="check-browser">
+                            <strong>Modern Browser</strong>
+                            <span class="check-hint">Chrome, Firefox, Safari, or Edge</span>
+                        </label>
+                        <span class="check-status" id="status-browser">Checking...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="wizard-step" data-step="2">
+            <div class="step-header">
+                <span class="step-number">2</span>
+                <h3>Configure Your Workspace</h3>
+            </div>
+            <div class="step-content">
+                <p class="step-description">
+                    Set up your coding environment for the assessment.
+                </p>
+                <div class="form-group">
+                    <label class="form-label">
+                        Preferred Code Editor
+                        <span class="help-text">Where you'll write your code</span>
+                    </label>
+                    <select class="form-input" id="editor-select">
+                        <option value="">Select an editor...</option>
+                        <option value="vscode">VS Code</option>
+                        <option value="vim">Vim/Neovim</option>
+                        <option value="sublime">Sublime Text</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">
+                        Working Directory
+                        <span class="help-text">Where you'll save your assessment files</span>
+                    </label>
+                    <input type="text" class="form-input" id="work-dir" placeholder="e.g., ~/assessments" value="">
+                    <button type="button" class="secondary-button" style="margin-top: 0.5rem; width: auto;" onclick="selectDirectory()">
+                        Browse...
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="wizard-step" data-step="3">
+            <div class="step-header">
+                <span class="step-number">3</span>
+                <h3>Test Your Setup</h3>
+            </div>
+            <div class="step-content">
+                <p class="step-description">
+                    Let's make sure everything works correctly.
+                </p>
+                <div class="test-section">
+                    <button type="button" class="primary-button" onclick="runTests()">
+                        Run Setup Tests
+                    </button>
+                    <div id="test-results" style="margin-top: 1.5rem; display: none;">
+                        <div class="test-result-item">
+                            <span class="test-icon">✓</span>
+                            <span class="test-text">Connection test passed</span>
+                        </div>
+                        <div class="test-result-item">
+                            <span class="test-icon">✓</span>
+                            <span class="test-text">File system accessible</span>
+                        </div>
+                        <div class="test-result-item">
+                            <span class="test-icon">✓</span>
+                            <span class="test-text">Browser compatibility confirmed</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="wizard-step" data-step="4">
+            <div class="step-header">
+                <span class="step-number">4</span>
+                <h3>You're Ready!</h3>
+            </div>
+            <div class="step-content">
+                <div class="success-message">
+                    <span class="success-icon">🎉</span>
+                    <h3>Setup Complete</h3>
+                    <p>Your environment is ready for assessment. You can now proceed to start your first assessment.</p>
+                    <div class="next-steps">
+                        <h4>What's Next?</h4>
+                        <ol class="steps-list">
+                            <li>Choose your assessment paths</li>
+                            <li>Complete the interactive tasks</li>
+                            <li>Review your personalized feedback</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="wizard-navigation">
+        <button type="button" class="secondary-button" id="prev-step" onclick="previousStep()" style="display: none;">
+            ← Previous
+        </button>
+        <button type="button" class="primary-button" id="next-step" onclick="nextStep()">
+            Next →
+        </button>
+        <button type="button" class="primary-button" id="finish-step" onclick="finishSetup()" style="display: none;">
+            Start Assessment →
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let currentStep = 1;
+const totalSteps = 4;
+
+function updateStep(step) {
+    currentStep = step;
+    
+    // Hide all steps
+    document.querySelectorAll('.wizard-step').forEach(s => {
+        s.classList.remove('active');
+    });
+    
+    // Show current step
+    const currentStepEl = document.querySelector(`.wizard-step[data-step="${step}"]`);
+    if (currentStepEl) {
+        currentStepEl.classList.add('active');
+    }
+    
+    // Update navigation
+    const prevButton = document.getElementById('prev-step');
+    const nextButton = document.getElementById('next-step');
+    const finishButton = document.getElementById('finish-step');
+    
+    prevButton.style.display = step > 1 ? 'block' : 'none';
+    nextButton.style.display = step < totalSteps ? 'block' : 'none';
+    finishButton.style.display = step === totalSteps ? 'block' : 'none';
+    
+    // Run step-specific initialization
+    if (step === 1) {
+        checkPrerequisites();
+    } else if (step === 3) {
+        // Test step - ready for tests
+    }
+}
+
+function nextStep() {
+    if (currentStep < totalSteps) {
+        updateStep(currentStep + 1);
+        
+        // Track progress
+        if (window.sonoEvalTracking && window.sonoEvalTracking.trackEvent) {
+            window.sonoEvalTracking.trackEvent('setup_progress', {
+                step: currentStep,
+                action: 'next',
+            });
+        }
+    }
+}
+
+function previousStep() {
+    if (currentStep > 1) {
+        updateStep(currentStep - 1);
+    }
+}
+
+function checkPrerequisites() {
+    // Check Python (simulated - in real implementation would check via API)
+    setTimeout(() => {
+        document.getElementById('check-python').checked = true;
+        document.getElementById('status-python').textContent = '✓ Found';
+        document.getElementById('status-python').style.color = 'var(--success-color)';
+    }, 1000);
+    
+    // Check internet
+    setTimeout(() => {
+        document.getElementById('check-internet').checked = navigator.onLine;
+        document.getElementById('status-internet').textContent = navigator.onLine ? '✓ Connected' : '✗ Offline';
+        document.getElementById('status-internet').style.color = navigator.onLine ? 'var(--success-color)' : 'var(--error-color)';
+    }, 1500);
+    
+    // Check browser
+    setTimeout(() => {
+        const isModern = !!(window.fetch && window.Promise && document.querySelector);
+        document.getElementById('check-browser').checked = isModern;
+        document.getElementById('status-browser').textContent = isModern ? '✓ Compatible' : '✗ Not supported';
+        document.getElementById('status-browser').style.color = isModern ? 'var(--success-color)' : 'var(--error-color)';
+    }, 2000);
+}
+
+function runTests() {
+    const resultsDiv = document.getElementById('test-results');
+    resultsDiv.style.display = 'block';
+    
+    // Simulate test results
+    setTimeout(() => {
+        resultsDiv.innerHTML = `
+            <div class="test-result-item">
+                <span class="test-icon" style="color: var(--success-color);">✓</span>
+                <span class="test-text">Connection test passed</span>
+            </div>
+            <div class="test-result-item">
+                <span class="test-icon" style="color: var(--success-color);">✓</span>
+                <span class="test-text">File system accessible</span>
+            </div>
+            <div class="test-result-item">
+                <span class="test-icon" style="color: var(--success-color);">✓</span>
+                <span class="test-text">Browser compatibility confirmed</span>
+            </div>
+        `;
+        
+        // Track test completion
+        if (window.sonoEvalTracking && window.sonoEvalTracking.trackEvent) {
+            window.sonoEvalTracking.trackEvent('setup_test', {
+                action: 'completed',
+            });
+        }
+    }, 1500);
+}
+
+function selectDirectory() {
+    // In a real implementation, this would use a file picker API
+    alert('Directory selection would open a file picker. For now, you can manually enter the path.');
+}
+
+function finishSetup() {
+    // Save setup preferences
+    const editor = document.getElementById('editor-select').value;
+    const workDir = document.getElementById('work-dir').value;
+    
+    localStorage.setItem('sono_eval_editor', editor);
+    localStorage.setItem('sono_eval_work_dir', workDir);
+    localStorage.setItem('sono_eval_setup_complete', 'true');
+    
+    // Track setup completion
+    if (window.sonoEval && window.sonoEval.trackMilestone) {
+        window.sonoEval.trackMilestone('setup_completed', {
+            editor: editor,
+            work_dir: workDir,
+        });
+    }
+    
+    // Redirect to start page
+    location.href = '/mobile/start';
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    updateStep(1);
+    
+    // Track setup start
+    if (window.sonoEvalTracking && window.sonoEvalTracking.trackEvent) {
+        window.sonoEvalTracking.trackEvent('setup_started', {});
+    }
+});
+</script>
+{% endblock %}

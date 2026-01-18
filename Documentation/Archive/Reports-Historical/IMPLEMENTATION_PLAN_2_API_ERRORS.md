@@ -1,29 +1,26 @@
-# Implementation Plan: API Error Responses & Developer Experience
+# Implementation Plan 2: API Error Responses & Developer Experience
 
-**Area**: API Error Handling and Developer Experience Enhancement  
-**Priority**: HIGH  
-**Impact**: HIGH  
-**Effort**: LOW  
-**Estimated Time**: 2-3 hours  
-**Agent Type**: Backend/API specialist or general-purpose
+**Impact**: HIGH | **Effort**: LOW | **Time**: 2–3h
 
 ---
 
-## Overview
+## Prerequisites (exact files)
 
-This plan provides step-by-step instructions for coding agents to enhance API error responses and developer experience in Sono-Eval. The goal is to make errors more actionable, reduce debugging time, and improve the onboarding experience for API consumers.
+1. Error models/utilities: `src/sono_eval/utils/errors.py` (ErrorResponse at lines 49–56).  
+2. Health checks: `src/sono_eval/api/main.py` (health checks at lines 230–534).  
+3. API router entry points: `src/sono_eval/api/main.py` (place new endpoint near existing `/health` endpoints).
 
 ---
 
-## Prerequisites
+## Task A — Extend ErrorResponse with `help`
 
-**Before starting, the agent must:**
+### Before (current)
+- `src/sono_eval/utils/errors.py` lines 49–56 define `ErrorResponse` without any help payload.
 
-1. Read the existing error handling code:
-   - `src/sono_eval/utils/errors.py` (error response utilities)
-   - `src/sono_eval/api/main.py` (API endpoints and validation)
-   - `src/sono_eval/assessment/models.py` (Pydantic models)
+### After (target)
+- Add a `help` field with: `valid_examples`, `suggestion`, `docs_url`.
 
+<<<<<<< HEAD:Documentation/Archive/Reports-Historical/IMPLEMENTATION_PLAN_2_API_ERRORS.md
 2. Understand the current error response structure:
 
    ```python
@@ -67,17 +64,34 @@ This plan provides step-by-step instructions for coding agents to enhance API er
 #### 1.1: Extend ErrorResponse Model
 
 **Replace lines 49-57** with enhanced model:
+=======
+#### Model Update (copy-paste)
+**File**: `src/sono_eval/utils/errors.py`  
+**Replace** the `ErrorResponse` class with:
+>>>>>>> 6b7113d6352e4fb7d7504d7a7d221ee1ac543c33:Documentation/Reports/IMPLEMENTATION_PLAN_2_API_ERRORS.md
 
 ```python
+class ErrorHelp(BaseModel):
+    """Helpful guidance for API clients."""
+
+    valid_examples: Optional[list[dict[str, Any]]] = None
+    suggestion: Optional[str] = None
+    docs_url: Optional[str] = None
+
+
 class ErrorResponse(BaseModel):
+<<<<<<< HEAD:Documentation/Archive/Reports-Historical/IMPLEMENTATION_PLAN_2_API_ERRORS.md
     """Standard error response format with actionable guidance."""
+=======
+    """Standard error response format."""
+>>>>>>> 6b7113d6352e4fb7d7504d7a7d221ee1ac543c33:Documentation/Reports/IMPLEMENTATION_PLAN_2_API_ERRORS.md
 
     error: bool = True
     error_code: str
     message: str
     details: Optional[Dict[str, Any]] = None
-    help: Optional[Dict[str, Any]] = None  # NEW: Actionable help
     request_id: Optional[str] = None
+<<<<<<< HEAD:Documentation/Archive/Reports-Historical/IMPLEMENTATION_PLAN_2_API_ERRORS.md
 
     class Config:
         json_schema_extra = {
@@ -98,13 +112,23 @@ class ErrorResponse(BaseModel):
                 "request_id": "abc-123-def-456"
             }
         }
+=======
+    help: Optional[ErrorHelp] = None
+>>>>>>> 6b7113d6352e4fb7d7504d7a7d221ee1ac543c33:Documentation/Reports/IMPLEMENTATION_PLAN_2_API_ERRORS.md
 ```
 
-#### 1.2: Add Help Context Builder
+---
 
-**Add after ErrorResponse class** (around line 58):
+## Task B — Add HelpContext builder utilities
+
+### Goal
+Provide consistent `help` payloads per error type: validation, not-found, file-upload, and service errors.
+
+#### New builder module (copy-paste)
+**File**: `src/sono_eval/utils/error_help.py` (new)
 
 ```python
+<<<<<<< HEAD:Documentation/Archive/Reports-Historical/IMPLEMENTATION_PLAN_2_API_ERRORS.md
 class HelpContext:
     """Builder for help context in error responses."""
 
@@ -189,11 +213,48 @@ class HelpContext:
             help_dict["retry_after"] = f"{retry_seconds} seconds"
 
         return help_dict
+=======
+from typing import Any, Dict, Optional
+
+from .errors import ErrorHelp
+
+
+def validation_help(field: str, example: Dict[str, Any], docs_url: str) -> ErrorHelp:
+    return ErrorHelp(
+        valid_examples=[example],
+        suggestion=f"Ensure '{field}' matches the documented format.",
+        docs_url=docs_url,
+    )
+
+
+def not_found_help(resource: str, example: Dict[str, Any], docs_url: str) -> ErrorHelp:
+    return ErrorHelp(
+        valid_examples=[example],
+        suggestion=f"Confirm the {resource} exists or create it before retrying.",
+        docs_url=docs_url,
+    )
+
+
+def file_upload_help(max_size_mb: int, extensions: list[str], docs_url: str) -> ErrorHelp:
+    return ErrorHelp(
+        valid_examples=[{"max_size_mb": max_size_mb, "extensions": extensions}],
+        suggestion="Validate file type/size and retry the upload.",
+        docs_url=docs_url,
+    )
+
+
+def service_help(service: str, docs_url: str, hint: Optional[str] = None) -> ErrorHelp:
+    return ErrorHelp(
+        valid_examples=[{"service": service}],
+        suggestion=hint or f"Verify {service} is healthy and retry.",
+        docs_url=docs_url,
+    )
+>>>>>>> 6b7113d6352e4fb7d7504d7a7d221ee1ac543c33:Documentation/Reports/IMPLEMENTATION_PLAN_2_API_ERRORS.md
 ```
 
-#### 1.3: Update Error Creation Functions
-
-**Update `create_error_response` function** (lines 59-90):
+#### Wire into create_error_response (copy-paste)
+**File**: `src/sono_eval/utils/errors.py`  
+**Add** `help` argument to `create_error_response` and pass it into `ErrorResponse`:
 
 ```python
 def create_error_response(
@@ -201,9 +262,10 @@ def create_error_response(
     message: str,
     status_code: int = status.HTTP_400_BAD_REQUEST,
     details: Optional[Dict[str, Any]] = None,
-    help_context: Optional[Dict[str, Any]] = None,  # NEW parameter
     request_id: Optional[str] = None,
+    help: Optional[ErrorHelp] = None,
 ) -> HTTPException:
+<<<<<<< HEAD:Documentation/Archive/Reports-Historical/IMPLEMENTATION_PLAN_2_API_ERRORS.md
     """
     Create a standardized HTTP exception with error response.
 
@@ -230,34 +292,31 @@ def create_error_response(
         ...     help_context=help_ctx
         ... )
     """
+=======
+>>>>>>> 6b7113d6352e4fb7d7504d7a7d221ee1ac543c33:Documentation/Reports/IMPLEMENTATION_PLAN_2_API_ERRORS.md
     error_response = ErrorResponse(
         error=True,
         error_code=error_code,
         message=message,
         details=details,
-        help=help_context,
         request_id=request_id,
+<<<<<<< HEAD:Documentation/Archive/Reports-Historical/IMPLEMENTATION_PLAN_2_API_ERRORS.md
     )
 
     return HTTPException(
         status_code=status_code,
         detail=error_response.model_dump(exclude_none=True),
+=======
+        help=help,
+>>>>>>> 6b7113d6352e4fb7d7504d7a7d221ee1ac543c33:Documentation/Reports/IMPLEMENTATION_PLAN_2_API_ERRORS.md
     )
 ```
 
----
-
-## Task 2: Enhance Specific Error Handlers
-
-**File**: `src/sono_eval/utils/errors.py`
-
-### Update each error helper function to include help context
-
-#### 2.1: Enhance validation_error
-
-**Replace lines 93-110** with:
+#### Usage example (copy-paste)
+**File**: `src/sono_eval/api/main.py` (near candidate ID validation)
 
 ```python
+<<<<<<< HEAD:Documentation/Archive/Reports-Historical/IMPLEMENTATION_PLAN_2_API_ERRORS.md
 def validation_error(
     message: str,
     field: Optional[str] = None,
@@ -814,17 +873,40 @@ def not_found_error(
         help_context=help_context,
         request_id=request_id,
     )
+=======
+from sono_eval.utils.error_help import validation_help
+
+# Example usage
+raise validation_error(
+    CANDIDATE_ID_ERROR_MESSAGE,
+    field="candidate_id",
+    request_id=request_id,
+    details={"pattern": "[A-Za-z0-9_.-]+"},
+    help=validation_help(
+        "candidate_id",
+        {"candidate_id": "demo_user"},
+        "/api/v1/errors#validation",
+    ),
+)
+>>>>>>> 6b7113d6352e4fb7d7504d7a7d221ee1ac543c33:Documentation/Reports/IMPLEMENTATION_PLAN_2_API_ERRORS.md
 ```
 
 ---
 
-## Task 6: Add Interactive Error Documentation
+## Task C — Add component troubleshooting hints to health checks
 
-**File**: Create new file `src/sono_eval/api/error_docs.py`
+### Before (current)
+- `src/sono_eval/api/main.py` lines 230–534 return component status/details without troubleshooting hints.
 
-### Create error documentation endpoint
+### After (target)
+- Add `troubleshooting` hints per component in the detailed health check response.
+
+#### Add hints (copy-paste)
+**File**: `src/sono_eval/api/main.py`  
+**Within** `check_component_health`, extend `details` to include `troubleshooting` hints, e.g.:
 
 ```python
+<<<<<<< HEAD:Documentation/Archive/Reports-Historical/IMPLEMENTATION_PLAN_2_API_ERRORS.md
 """
 Interactive error documentation for Sono-Eval API.
 
@@ -968,22 +1050,63 @@ async def search_errors(keyword: str):
             })
 
     return results
+=======
+if include_details:
+    details["assessment"]["troubleshooting"] = "Restart the server to reinitialize the assessment engine."
+>>>>>>> 6b7113d6352e4fb7d7504d7a7d221ee1ac543c33:Documentation/Reports/IMPLEMENTATION_PLAN_2_API_ERRORS.md
 ```
 
-**Then mount in main.py**:
+Provide hints for:
+- `assessment`: missing initialization
+- `memory`: storage path permissions
+- `tagging`: missing model cache
+- `database`: invalid SQLite path
+- `redis`: optional dependency not installed
+- `filesystem`: non-writable directories
+
+---
+
+## Task D — Interactive Error Documentation Endpoint
+
+### Goal
+Expose a new endpoint: `/api/v1/errors` listing known error codes with examples and troubleshooting guidance.
+
+#### Endpoint (copy-paste)
+**File**: `src/sono_eval/api/main.py`  
+**Add** below the existing health endpoints:
 
 ```python
-# In src/sono_eval/api/main.py, add:
-from sono_eval.api.error_docs import router as error_docs_router
-
-# After app creation:
-app.include_router(error_docs_router)
+@app.get("/api/v1/errors")
+async def error_reference():
+    return {
+        "errors": [
+            {
+                "error_code": ErrorCode.VALIDATION_ERROR,
+                "message": "Input validation failed",
+                "help": {
+                    "valid_examples": [{"candidate_id": "demo_user"}],
+                    "suggestion": "Ensure the field follows the required format.",
+                    "docs_url": "/api/v1/errors#validation",
+                },
+            },
+            {
+                "error_code": ErrorCode.NOT_FOUND,
+                "message": "Resource not found",
+                "help": {
+                    "valid_examples": [{"candidate_id": "demo_user"}],
+                    "suggestion": "Confirm the resource exists before retrying.",
+                    "docs_url": "/api/v1/errors#not-found",
+                },
+            },
+        ]
+    }
 ```
 
 ---
 
 ## Testing Instructions
 
+<<<<<<< HEAD:Documentation/Archive/Reports-Historical/IMPLEMENTATION_PLAN_2_API_ERRORS.md
 ### 1. Test Enhanced Error Responses
 
 ```bash
@@ -1124,30 +1247,26 @@ Run tests:
 ```bash
 pytest tests/test_enhanced_errors.py -v
 ```
+=======
+1. Run the API: `./launcher.sh start`.
+2. Trigger a validation error (e.g., invalid `candidate_id`) and confirm the response includes `help`.
+3. Hit `/api/v1/health` and verify troubleshooting hints are present in `details`.
+4. Hit `/api/v1/errors` and confirm it returns the error reference list.
+>>>>>>> 6b7113d6352e4fb7d7504d7a7d221ee1ac543c33:Documentation/Reports/IMPLEMENTATION_PLAN_2_API_ERRORS.md
 
 ---
 
 ## Success Criteria
 
-**Before marking as complete, verify:**
-
-- [ ] ErrorResponse model includes `help` field
-- [ ] HelpContext class provides builders for all error types
-- [ ] All error functions accept and use help_context parameter
-- [ ] Validation errors include valid_examples and pattern
-- [ ] Not found errors include search_url and create_url
-- [ ] File upload errors include requirements and curl example
-- [ ] Service errors include health_check_url and retry guidance
-- [ ] Health check includes troubleshooting hints when degraded
-- [ ] Error documentation endpoint exists at /api/v1/errors
-- [ ] All tests pass (pytest tests/test_enhanced_errors.py)
-- [ ] OpenAPI docs show enhanced error models
-- [ ] Manual curl testing confirms improved error messages
+- ✅ Error responses include `help` with examples, suggestions, and docs URLs.
+- ✅ Health check details include troubleshooting hints per component.
+- ✅ `/api/v1/errors` returns a readable JSON index of error codes.
 
 ---
 
-## Expected Impact
+## Rollback Procedure
 
+<<<<<<< HEAD:Documentation/Archive/Reports-Historical/IMPLEMENTATION_PLAN_2_API_ERRORS.md
 ### Before
 
 ```json
@@ -1209,3 +1328,8 @@ git checkout HEAD~1 -- src/sono_eval/utils/errors.py
 **Last Updated**: January 17, 2026  
 **Estimated Implementation Time**: 2-3 hours  
 **Difficulty**: Low-Medium
+=======
+1. Revert `errors.py` model and remove `ErrorHelp` / `help` field.
+2. Remove any error help references in API handlers.
+3. Remove `/api/v1/errors` endpoint and any troubleshooting hints.
+>>>>>>> 6b7113d6352e4fb7d7504d7a7d221ee1ac543c33:Documentation/Reports/IMPLEMENTATION_PLAN_2_API_ERRORS.md

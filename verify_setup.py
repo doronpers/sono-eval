@@ -15,11 +15,13 @@ def check_python_version():
         print(
             f"✅ Python {version.major}.{version.minor}.{version.micro} (required: 3.9+)")
         print(f"   💡 This version supports all Sono-Eval features")
+        print(f"   📚 Why this matters: Python 3.9+ enables modern features and better performance")
         return True
     else:
         print(
             f"❌ Python {version.major}.{version.minor}.{version.micro} (required: 3.9+)")
         print(f"   💡 Update Python to access all features: https://www.python.org/downloads/")
+        print(f"   📚 Why this matters: Newer Python versions provide better security and performance")
         return False
 
 
@@ -41,6 +43,7 @@ def check_dependencies():
         except ImportError:
             print(f"❌ {module} - {desc} (MISSING)")
             print(f"   💡 Install with: pip install {module}")
+            print(f"   📚 Why this matters: {desc} is essential for Sono-Eval to function properly")
             missing.append(module)
 
     return len(missing) == 0
@@ -164,14 +167,19 @@ def main():
         print()
         print("🎉 You're ready to start using Sono-Eval!")
         print()
+        print("📚 What you've accomplished:")
+        print("  • Your environment is properly configured")
+        print("  • All required components are installed")
+        print("  • You're ready for your first assessment")
+        print()
         print("Next steps:")
         print("  • Start the server: [cyan]sono-eval server start[/cyan]")
         print("  • Or use Docker: [cyan]./launcher.sh start[/cyan]")
         print("  • Then visit: [cyan]http://localhost:8000/docs[/cyan] (desktop)")
         print("  • Optional companion: [cyan]http://localhost:8000/mobile[/cyan]")
         print()
-        print(
-            "💡 Tip: Use [cyan]sono-eval setup init --interactive[/cyan] for guided setup")
+        print("💡 Tip: Use [cyan]sono-eval setup interactive[/cyan] for guided setup")
+        print("💡 Or visit [cyan]http://localhost:8000/mobile/setup[/cyan] for web-based setup")
         return 0
     else:
         print(f"❌ {len(failed)} CRITICAL CHECK(S) FAILED:")
@@ -182,7 +190,7 @@ def main():
         print("   These checks ensure Sono-Eval can run properly on your system.")
         print("   Fix the issues above, then run this script again.")
         print()
-        print("Need help? See: documentation/Guides/resources/first-time-setup.md")
+        print("Need help? See: Documentation/Guides/resources/first-time-setup.md")
         return 1
 
 

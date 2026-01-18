@@ -124,6 +124,17 @@ def create_mobile_app() -> FastAPI:
             },
         )
 
+    @app.get("/setup", response_class=HTMLResponse)
+    async def mobile_setup(request: Request):
+        """Interactive setup wizard for remote candidates."""
+        return templates.TemplateResponse(
+            "setup.html",
+            {
+                "request": request,
+                "title": "Setup Your Environment",
+            },
+        )
+
     @app.get("/start", response_class=HTMLResponse)
     async def mobile_start(request: Request):
         """Start assessment - candidate information."""
@@ -184,6 +195,18 @@ def create_mobile_app() -> FastAPI:
             {
                 "request": request,
                 "title": "Your Results",
+                "assessment_id": assessment_id,
+            },
+        )
+
+    @app.get("/insights", response_class=HTMLResponse)
+    async def mobile_insights(request: Request, assessment_id: Optional[str] = None):
+        """Dedicated insights page with learning journey and recommendations."""
+        return templates.TemplateResponse(
+            "insights.html",
+            {
+                "request": request,
+                "title": "Your Insights",
                 "assessment_id": assessment_id,
             },
         )
@@ -313,8 +336,29 @@ def create_mobile_app() -> FastAPI:
             logger.error(f"Error generating recommendations: {e}")
             return {"success": False, "recommendations": [], "count": 0}
 
-    @app.post("/api/mobile/track")
-    async def track_interactions(batch: TrackingBatch):
+
+def _get_recommendation_reason(path_id: str, goals: List[str], experience: Optional[str]) -> str:
+    """Generate a reason for why a path is recommended."""
+    reasons = {
+        "technical": "Helps you understand your coding skills and technical practices",
+        "design": "Reveals your system thinking and architecture approach",
+        "collaboration": "Shows how well you communicate and work with others",
+        "problem_solving": "Demonstrates your analytical and debugging capabilities",
+    }
+    base_reason = reasons.get(path_id, "Relevant to your goals")
+
+    if "strengths" in goals:
+        return f"{base_reason} - perfect for identifying your strengths"
+    elif "improve" in goals:
+        return f"{base_reason} - great for finding areas to improve"
+    elif "practice" in goals:
+        return f"{base_reason} - excellent for interview practice"
+    else:
+        return base_reason
+
+
+@app.post("/api/mobile/track")
+async def track_interactions(batch: TrackingBatch):
         """
         Track user interactions for analytics and personalization.
 
@@ -357,33 +401,36 @@ def create_mobile_app() -> FastAPI:
                 },
             )
 
-    @app.get("/api/mobile/easter-eggs")
-    async def list_easter_eggs():
-        """List available easter eggs (for discovery documentation)."""
-        registry = get_registry()
-        eggs = registry.list_eggs()
-        return {
-            "success": True,
-            "eggs": eggs,
-            "count": len(eggs),
-            "message": "Easter eggs are discoverable features that unlock valuable functionality",
-        }
 
-    @app.post("/api/mobile/session/store")
-    async def store_session_data(data: Dict[str, Any]):
-        """
-        Store assessment result in server-side session for retrieval.
+@app.get("/api/mobile/easter-eggs")
+async def list_easter_eggs():
+    """List available easter eggs (for discovery documentation)."""
+    registry = get_registry()
+    eggs = registry.list_eggs()
+    return {
+        "success": True,
+        "eggs": eggs,
+        "count": len(eggs),
+        "message": "Easter eggs are discoverable features that unlock valuable functionality",
+    }
 
-        This allows sharing results between pages without URL params.
-        In production, use Redis or database for session storage.
-        For now, return success and rely on client-side sessionStorage.
-        """
-        # In production, use Redis or database for session storage
-        # For now, return success and rely on client-side sessionStorage
-        return {"success": True, "message": "Data acknowledged"}
 
-    @app.get("/advanced")
-    async def advanced_features(request: Request):
+@app.post("/api/mobile/session/store")
+async def store_session_data(data: Dict[str, Any]):
+    """
+    Store assessment result in server-side session for retrieval.
+
+    This allows sharing results between pages without URL params.
+    In production, use Redis or database for session storage.
+    For now, return success and rely on client-side sessionStorage.
+    """
+    # In production, use Redis or database for session storage
+    # For now, return success and rely on client-side sessionStorage
+    return {"success": True, "message": "Data acknowledged"}
+
+
+@app.get("/mobile/advanced")
+async def advanced_features(request: Request):
         """Hidden advanced features page."""
         # Check if expert mode is unlocked
         return templates.TemplateResponse(

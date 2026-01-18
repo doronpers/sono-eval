@@ -331,6 +331,22 @@ document.getElementById('submit-btn').addEventListener('click', async function()
     }
 });
 
+// Track assessment start
+document.addEventListener('DOMContentLoaded', function() {
+    if (window.sonoEvalTracking && window.sonoEvalTracking.trackEvent) {
+        window.sonoEvalTracking.trackEvent('assessment_started', {
+            paths: selectedPaths,
+        });
+    }
+    
+    if (window.sonoEval && window.sonoEval.trackMilestone) {
+        window.sonoEval.trackMilestone('assessment_started', {
+            paths: selectedPaths,
+        });
+    }
+});
+
+
 // Initialize
 validateInput();
 </script>
