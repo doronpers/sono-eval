@@ -66,8 +66,7 @@
 
 # Linguist overrides for documentation
 *.md linguist-documentation
-Documentation/** linguist-documentation
-docs/** linguist-documentation
+documentation/** linguist-documentation
 
 # Linguist overrides for vendored code
 models/** linguist-vendored

@@ -2,12 +2,15 @@
 
 ## Problem
 
-When accessing the mobile interface at `/mobile/`, you were getting `{"detail":"Not Found"}` errors.
+When accessing the mobile interface at `/mobile/`, you were getting
+`{"detail":"Not Found"}` errors.
 
 ## Root Cause
 
-1. **Static file paths**: Templates were using absolute paths `/static/...` which don't work when the app is mounted at `/mobile`
-2. **API route paths**: Routes were defined as `/api/mobile/...` which became `/mobile/api/mobile/...` (redundant and incorrect)
+1. **Static file paths**: Templates were using absolute paths `/static/...`
+   which don't work when the app is mounted at `/mobile`
+2. **API route paths**: Routes were defined as `/api/mobile/...` which became
+   `/mobile/api/mobile/...` (redundant and incorrect)
 
 ## Fixes Applied
 

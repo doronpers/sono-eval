@@ -13,7 +13,7 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from sono_eval.assessment.engine import AssessmentEngine
 from sono_eval.assessment.models import AssessmentInput, PathType
@@ -33,10 +33,10 @@ class MobileAssessmentState(BaseModel):
     """State for mobile assessment session."""
 
     candidate_id: str
-    selected_paths: List[PathType] = []
+    selected_paths: List[PathType] = Field(default_factory=list)
     current_step: int = 0
-    answers: Dict[str, str] = {}
-    personalization: Dict[str, str] = {}
+    answers: Dict[str, str] = Field(default_factory=dict)
+    personalization: Dict[str, str] = Field(default_factory=dict)
 
 
 class MobilePathSelection(BaseModel):
@@ -52,7 +52,7 @@ class MobileSubmission(BaseModel):
     candidate_id: str
     paths: List[str]
     content: Dict[str, str]
-    personalization: Dict[str, str] = {}
+    personalization: Dict[str, str] = Field(default_factory=dict)
 
 
 class InteractionEvent(BaseModel):
@@ -63,7 +63,7 @@ class InteractionEvent(BaseModel):
     candidate_id: Optional[str] = None
     page: str
     timestamp: str
-    data: Dict[str, Any] = {}
+    data: Dict[str, Any] = Field(default_factory=dict)
 
 
 class TrackingBatch(BaseModel):
@@ -80,7 +80,9 @@ def load_mobile_config() -> Dict[str, Any]:
 
     try:
         with open(CONFIG_PATH, "r") as f:
-            return yaml.safe_load(f)
+            from typing import cast
+
+            return cast(Dict[str, Any], yaml.safe_load(f))
     except Exception as e:
         logger.error(f"Error loading mobile config: {e}")
         return {"paths": {}}
@@ -240,6 +242,7 @@ def create_mobile_app() -> FastAPI:
             code_content = submission.content.get("code", "")
             if code_content:
                 from sono_eval.mobile.easter_eggs import check_code_for_eggs
+
                 easter_eggs = check_code_for_eggs(code_content)
 
             # Run assessment
@@ -282,7 +285,7 @@ def create_mobile_app() -> FastAPI:
     ):
         """
         Get personalized path recommendations based on candidate goals and experience.
-        
+
         Uses goals and experience level to suggest relevant assessment paths.
         """
         try:
@@ -309,9 +312,7 @@ def create_mobile_app() -> FastAPI:
                 recommendations.extend(["design", "collaboration"])
 
             # Remove duplicates and filter to valid paths
-            recommendations = list(
-                dict.fromkeys([r for r in recommendations if r in paths_config])
-            )
+            recommendations = list(dict.fromkeys([r for r in recommendations if r in paths_config]))
 
             # Build recommendation details
             recommended_paths = []
@@ -360,23 +361,23 @@ def _get_recommendation_reason(path_id: str, goals: List[str], experience: Optio
 async def track_interactions(batch: TrackingBatch):
         """
         Track user interactions for analytics and personalization.
-        
+
         Accepts anonymous tracking (session_id only) and links to candidate_id when available.
         """
         try:
             # Store interaction events (in production, this would go to a database)
             # For now, we'll log them and could store in memory/file system
-            
+
             for event in batch.events:
                 # Log important events
-                if event.event_type in ['page_view', 'easter_egg_discovered', 'milestone']:
+                if event.event_type in ["page_view", "easter_egg_discovered", "milestone"]:
                     logger.info(
                         f"Tracking: {event.event_type} - "
                         f"session={event.session_id[:8]}... "
                         f"candidate={event.candidate_id or 'anonymous'} "
                         f"page={event.page}"
                     )
-                
+
                 # Link candidate_id to session if provided
                 if event.candidate_id and event.session_id:
                     # In production, store this mapping in a database
@@ -403,19 +404,33 @@ async def track_interactions(batch: TrackingBatch):
 
 @app.get("/api/mobile/easter-eggs")
 async def list_easter_eggs():
-        """List available easter eggs (for discovery documentation)."""
-        registry = get_registry()
-        eggs = registry.list_eggs()
-        return {
-            "success": True,
-            "eggs": eggs,
-            "count": len(eggs),
-            "message": "Easter eggs are discoverable features that unlock valuable functionality",
-        }
+    """List available easter eggs (for discovery documentation)."""
+    registry = get_registry()
+    eggs = registry.list_eggs()
+    return {
+        "success": True,
+        "eggs": eggs,
+        "count": len(eggs),
+        "message": "Easter eggs are discoverable features that unlock valuable functionality",
+    }
 
 
-    @app.get("/mobile/advanced")
-    async def advanced_features(request: Request):
+@app.post("/api/mobile/session/store")
+async def store_session_data(data: Dict[str, Any]):
+    """
+    Store assessment result in server-side session for retrieval.
+
+    This allows sharing results between pages without URL params.
+    In production, use Redis or database for session storage.
+    For now, return success and rely on client-side sessionStorage.
+    """
+    # In production, use Redis or database for session storage
+    # For now, return success and rely on client-side sessionStorage
+    return {"success": True, "message": "Data acknowledged"}
+
+
+@app.get("/mobile/advanced")
+async def advanced_features(request: Request):
         """Hidden advanced features page."""
         # Check if expert mode is unlocked
         return templates.TemplateResponse(
@@ -429,8 +444,28 @@ async def list_easter_eggs():
     return app
 
 
+def _get_recommendation_reason(path_id: str, goals: List[str], experience: Optional[str]) -> str:
+    """Generate a reason for why a path is recommended."""
+    reasons = {
+        "technical": "Helps you understand your coding skills and technical practices",
+        "design": "Reveals your system thinking and architecture approach",
+        "collaboration": "Shows how well you communicate and work with others",
+        "problem_solving": "Demonstrates your analytical and debugging capabilities",
+    }
+    base_reason = reasons.get(path_id, "Relevant to your goals")
+
+    if "strengths" in goals:
+        return f"{base_reason} - perfect for identifying your strengths"
+    elif "improve" in goals:
+        return f"{base_reason} - great for finding areas to improve"
+    elif "practice" in goals:
+        return f"{base_reason} - excellent for interview practice"
+    else:
+        return base_reason
+
+
 if __name__ == "__main__":
     import uvicorn
 
     app = create_mobile_app()
-    uvicorn.run(app, host="0.0.0.0", port=8001, reload=True)
+    uvicorn.run(app, host="0.0.0.0", port=8001, reload=True)  # nosec B104

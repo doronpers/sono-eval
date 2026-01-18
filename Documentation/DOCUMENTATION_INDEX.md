@@ -3,13 +3,14 @@
 **Complete catalog of all Sono-Eval documentation, organized by purpose and
 category.**
 
-**Last Updated**: 2026-01-10
-**Version**: 0.1.0
+**Last Updated**: 2026-01-15
+**Version**: 0.1.1
 
 ---
 
 ## 📚 Navigation
 
+- **[Start Here](START_HERE.md)** - Single landing page for first-time readers
 - **[Documentation Hub](README.md)** - Start here for role-based navigation
 - **[Quick Start Guide](Guides/QUICK_START.md)** - Get running in 5 minutes
 - **[Architecture Overview](Core/concepts/architecture.md)** - System design and
@@ -19,7 +20,7 @@ category.**
 
 ## Core Documentation (Essential References)
 
-**Location**: `Documentation/Core/`
+**Location**: `documentation/Core/`
 
 ### Concepts
 
@@ -39,7 +40,7 @@ category.**
 
 ## Guides (How-To Documentation)
 
-**Location**: `Documentation/Guides/`
+**Location**: `documentation/Guides/`
 
 ### Getting Started
 
@@ -69,17 +70,53 @@ category.**
 
 - **[Candidate Guide](Guides/resources/candidate-guide.md)** - Welcome guide for
   candidates
-- **[Learning Resources](Guides/resources/learning.md)** - Tutorials and
-  educational content
+- **[Learning Resources](Guides/resources/learning.md)** - Core concepts and
+  tutorials
 - **[Examples](Guides/resources/examples/README.md)** - Practical code examples
 
-**Total Guide Files**: 10 files
+**Total Guide Files**: 20 files
+
+---
+
+## Learning Resources (Beginner-Friendly Guides)
+
+**Location**: `documentation/Learning/`
+
+### Philosophy & Framework
+
+- **[Dark Horse Approach](Learning/Philosophy/dark-horse-approach.md)** - Individualized learning framework
+- **[Micro-Motives Framework](Learning/Philosophy/micro-motives-framework.md)** - Understanding what energizes learners
+
+### Learning Paths
+
+- **[Complete Beginner Path](Learning/Paths/complete-beginner-path.md)** - Month-by-month roadmap for absolute beginners
+- **[Technical Leader Learning](Learning/Paths/technical-leader-learning.md)** - Path for managers learning to code
+
+### Exercises
+
+- **[Discover Your Micro-Motives](Learning/Exercises/discover-your-micro-motives.md)** - Self-discovery exercise
+
+### Templates
+
+- **[Learning Journal](Learning/Templates/learning-journal.md)** - Progress tracking template
+- **[Pull Request Description](Learning/Templates/pull-request-description.md)** - PR template
+- **[Project README](Learning/Templates/project-readme.md)** - README template
+
+### Guides
+
+- **[GitHub Basics](Learning/Guides/github-basics/)** - Beginner-friendly GitHub documentation
+- **[AI Tools](Learning/Guides/ai-tools/)** - AI coding tools guide
+- **[Workflow Building](Learning/Guides/workflow-building/)** - Personal workflow development
+
+**Total Learning Files**: 30+ files
+
+**See**: [Learning Resources Overview](Learning/README.md) for complete index
 
 ---
 
 ## Reports (Status & Reviews)
 
-**Location**: `Documentation/Reports/`
+**Location**: `documentation/Reports/`
 
 - **[Design Audit](Reports/DESIGN_AUDIT.md)** - Dieter Rams design principles
   audit
@@ -93,20 +130,20 @@ category.**
 - **[Port Allocation Fix](Reports/FIX_PORT_ALLOCATION.md)** - Port allocation
   troubleshooting and fix
 
-**Total Report Files**: 2 files
+**Total Report Files**: 13 files
 
 ---
 
 ## Governance (Standards & Maintenance)
 
-**Location**: `Documentation/Governance/`
+**Location**: `documentation/Governance/`
 
 - **[Documentation Organization Standards](Governance/DOCUMENTATION_ORGANIZATION_STANDARDS.md)**
   - Guidelines for maintaining documentation structure
 - **[Maintenance Notes](Governance/MAINTENANCE.md)** - Documentation maintenance
   procedures
 
-**Total Governance Files**: 2 files
+**Total Governance Files**: 5 files
 
 ---
 
@@ -125,16 +162,25 @@ category.**
 
 ---
 
+## Landing Documentation
+
+**Location**: `documentation/`
+
+- **[Start Here](START_HERE.md)** - Single landing page for first-time readers
+
+---
+
 ## Documentation Statistics
 
 | Category | File Count | Status |
 |----------|------------|--------|
 | Core | 3 | ✅ Complete |
-| Guides | 9 | ✅ Complete |
-| Reports | 2 | ✅ Complete |
-| Governance | 2 | ✅ Complete |
+| Guides | 20 | ✅ Complete |
+| Reports | 13 | ✅ Complete |
+| Governance | 5 | ✅ Complete |
 | Root | 4 | ✅ Complete |
-| **Total** | **20** | ✅ Organized |
+| Landing | 1 | ✅ Complete |
+| **Total** | **46** | ✅ Organized |
 
 ---
 
@@ -144,9 +190,10 @@ category.**
 
 **For Candidates**:
 
-1. Start with [Candidate Guide](Guides/resources/candidate-guide.md)
-2. Read [Quick Start](Guides/QUICK_START.md)
-3. Check [FAQ](Guides/faq.md) for questions
+1. Start with [Start Here](START_HERE.md)
+2. Continue with [Candidate Guide](Guides/resources/candidate-guide.md)
+3. Read [Quick Start](Guides/QUICK_START.md)
+4. Check [FAQ](Guides/faq.md) for questions
 
 **For Users**:
 
@@ -233,5 +280,5 @@ Documentation maintenance procedures are documented in
 
 ---
 
-**Version**: 0.1.0
-**Last Updated**: January 10, 2026
+**Version**: 0.1.1
+**Last Updated**: January 15, 2026

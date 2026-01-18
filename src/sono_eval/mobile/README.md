@@ -3,6 +3,7 @@
 ## 🚀 Quick Start
 
 ### Start the Server
+
 ```bash
 # Using Docker (recommended)
 ./launcher.sh start
@@ -12,12 +13,14 @@ python -m sono_eval.api.main
 ```
 
 ### Access Mobile Interface
+
 Open in your mobile browser:
-```
+
+```text
 http://localhost:8000/mobile
 ```
 
-## 📱 Features
+## 📱 Features (Optional Companion)
 
 - **Mobile-optimized UI** - Designed for touchscreens
 - **Step-by-step guidance** - Clear instructions at each stage
@@ -37,7 +40,8 @@ http://localhost:8000/mobile
 ## 🛠️ Development
 
 ### File Structure
-```
+
+```text
 mobile/
 ├── app.py              # FastAPI application
 ├── templates/          # Jinja2 HTML templates
@@ -55,6 +59,7 @@ mobile/
 ### API Endpoints
 
 **Pages:**
+
 - `GET /mobile/` - Home page
 - `GET /mobile/start` - Getting started
 - `GET /mobile/paths` - Path selection
@@ -62,20 +67,27 @@ mobile/
 - `GET /mobile/results` - Results
 
 **API:**
+
 - `POST /mobile/api/mobile/assess` - Submit assessment
 - `GET /mobile/api/mobile/explain/{path}` - Get path details
+- `GET /mobile/api/mobile/recommendations` - Get path recommendations
+- `POST /mobile/api/mobile/track` - Submit interaction events
+- `GET /mobile/api/mobile/easter-eggs` - List available easter eggs
 
 ## 📖 Full Documentation
 
-See [docs/mobile-companion.md](../../docs/mobile-companion.md) for complete documentation.
+See [documentation/Guides/mobile-companion.md](../../documentation/Guides/mobile-companion.md)
+for complete documentation.
 
 ## 🎨 Customization
 
-Edit templates in `templates/` and styles in `static/style.css` to customize the appearance and content.
+Edit templates in `templates/` and styles in `static/style.css` to customize the
+appearance and content.
 
 ## 🧪 Testing
 
 Run tests with:
+
 ```bash
 pytest tests/test_mobile.py
 ```

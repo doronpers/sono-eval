@@ -87,7 +87,7 @@ full explainability and transparency.
 
 **Files Created**:
 
-- `Documentation/Guides/user-guide/configuration-presets.md` - Complete presets guide
+- `documentation/Guides/user-guide/configuration-presets.md` - Complete presets guide
 
 **Impact**: Configuration is now much more valuable with 8 optimized presets
 covering all common use cases.
@@ -179,8 +179,8 @@ covering all common use cases.
 ## Files Created
 
 1. `src/sono_eval/utils/errors.py` - Standardized error handling system
-2. `Documentation/Reports/DESIGN_AUDIT_2026.md` - Comprehensive audit report
-3. `Documentation/Guides/user-guide/configuration-presets.md` - Configuration
+2. `documentation/Reports/DESIGN_AUDIT_2026.md` - Comprehensive audit report
+3. `documentation/Guides/user-guide/configuration-presets.md` - Configuration
    presets guide
 4. `DESIGN_ENHANCEMENT_SUMMARY.md` - This summary document
 
@@ -201,10 +201,10 @@ covering all common use cases.
 ### Documentation Files (6)
 
 1. `README.md`
-2. `Documentation/Core/concepts/architecture.md`
-3. `Documentation/Guides/user-guide/configuration.md`
-4. `Documentation/README.md`
-5. `Documentation/DOCUMENTATION_INDEX.md`
+2. `documentation/Core/concepts/architecture.md`
+3. `documentation/Guides/user-guide/configuration.md`
+4. `documentation/README.md`
+5. `documentation/DOCUMENTATION_INDEX.md`
 6. `CHANGELOG.md`
 
 ---

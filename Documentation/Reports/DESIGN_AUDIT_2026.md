@@ -97,7 +97,7 @@ and better error recovery.
 **Files Modified**:
 
 - `README.md` - Enhanced structure and visual presentation
-- `Documentation/Core/concepts/architecture.md` - Added Mermaid diagrams
+- `documentation/Core/concepts/architecture.md` - Added Mermaid diagrams
 - `src/sono_eval/mobile/templates/base.html` - Added accessibility attributes
 - `src/sono_eval/cli/main.py` - Enhanced visual output
 
@@ -122,7 +122,7 @@ appearance.
 **Files Modified**:
 
 - `README.md` - Improved structure and clarity
-- `Documentation/Core/concepts/architecture.md` - Added visual diagrams
+- `documentation/Core/concepts/architecture.md` - Added visual diagrams
 - `src/sono_eval/cli/main.py` - Enhanced help text and examples
 - `src/sono_eval/utils/errors.py` - Created standardized error system
 
@@ -370,7 +370,7 @@ evaluations.
 
 **Files Modified**:
 
-- `Documentation/Core/concepts/architecture.md`
+- `documentation/Core/concepts/architecture.md`
 
 **Impact**: Architecture is now easier to understand visually.
 
@@ -414,7 +414,7 @@ evaluations.
 ### Documentation Files
 
 1. `README.md` - Visual and structural improvements
-2. `Documentation/Core/concepts/architecture.md` - Added Mermaid diagrams
+2. `documentation/Core/concepts/architecture.md` - Added Mermaid diagrams
 
 ---
 
@@ -654,7 +654,7 @@ full explainability.
 
 - `src/sono_eval/utils/config.py` - Expanded presets
 - `src/sono_eval/cli/main.py` - Added preset commands
-- `Documentation/Guides/user-guide/configuration-presets.md` - NEW
+- `documentation/Guides/user-guide/configuration-presets.md` - NEW
   comprehensive guide
 
 **Impact**: Configuration is now much more valuable with 8 optimized presets

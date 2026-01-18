@@ -1,6 +1,10 @@
 # ✅ Sono-Eval is Ready for Preview
 
-All critical issues have been fixed. You can now run and preview Sono-Eval as a real user.
+**Primary experience**: desktop, individual workflows.
+**Optional companion**: mobile-friendly guided assessment.
+
+All critical issues have been fixed. You can now run and preview Sono-Eval as a
+real user.
 
 ## 🔧 What Was Fixed
 
@@ -62,7 +66,7 @@ sono-eval server start
 
 ## 🎯 Test as a User
 
-### 1. **Web Interface** (Mobile Companion)
+### 1. **Web Interface** (Optional Mobile Companion)
 
 1. Open: <http://localhost:8000/mobile/>
 2. Click "Let's Get Started"
@@ -192,13 +196,14 @@ python3 verify_setup.py
 
 - **Setup Issues**: See [SETUP_CHECKLIST.md](SETUP_CHECKLIST.md)
 - **Quick Start**: See [QUICK_START.md](QUICK_START.md)
-- **Troubleshooting**: See [Documentation/Guides/troubleshooting.md](Documentation/Guides/troubleshooting.md)
-- **Full Documentation**: See [Documentation/README.md](Documentation/README.md)
+- **Troubleshooting**: See [troubleshooting.md](troubleshooting.md)
+- **Full Documentation**: See [../README.md](../README.md)
 
 ---
 
 ## ✨ You're All Set
 
-Everything is ready. Just follow the quick start steps above and you'll be previewing Sono-Eval in minutes!
+Everything is ready. Just follow the quick start steps above and you'll be
+previewing Sono-Eval in minutes!
 
 **Happy assessing!** 🎯

@@ -1,7 +1,5 @@
 # Changelog
 
-<!-- markdownlint-disable MD024 -->
-
 All notable changes to Sono-Eval will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
@@ -11,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
+- **Added**
 
 - **Hybrid Assessment Engine** (`src/sono_eval/assessment/engine.py`)
   - Support for combining heuristics + ML models
@@ -39,7 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `sono-eval config apply-preset` - Apply preset configuration
   - Export preset to .env file format
 
-### Changed
+- **Changed**
 
 - **Assessment Engine** (`src/sono_eval/assessment/engine.py`)
   - Enhanced to support hybrid heuristics + ML approach
@@ -48,7 +46,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Enhanced explanations showing both analysis types
   - Metadata includes assessment mode (hybrid/heuristic)
 
-### Added
+- **Added**
 
 - **Standardized Error Handling System** (`src/sono_eval/utils/errors.py`)
   - Consistent error response format
@@ -61,17 +59,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Standard preset for development
   - Production preset for deployment
 
-- **Architecture Diagrams** (`Documentation/Core/concepts/architecture.md`)
+- **Architecture Diagrams** (`documentation/Core/concepts/architecture.md`)
   - Mermaid diagrams for system architecture
   - Data flow diagrams
   - Component relationship visualizations
 
-- **Comprehensive Design Audit Report** (`Documentation/Reports/DESIGN_AUDIT_2026.md`)
+- **Comprehensive Design Audit Report** (`documentation/Reports/DESIGN_AUDIT_2026.md`)
   - Complete audit findings
   - All changes documented
   - Recommendations for future improvements
 
-### Changed
+- **Changed**
 
 - **Assessment Engine** (`src/sono_eval/assessment/engine.py`)
   - Replaced placeholder scoring with real content analysis
@@ -105,7 +103,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Better quick start section
   - More professional appearance
 
-### Improved
+- **Improved**
 
 - **Code Quality**
   - Removed all placeholder code
@@ -135,7 +133,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.0] - 2026-01-10
 
-### Added
+- **Added**
 
 - Initial release of Sono-Eval
 - Assessment engine with explainable scoring
@@ -153,7 +151,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Test suite with pytest
 - Configuration via environment variables
 
-### Features
+- **Features**
 
 - Evidence-based assessment with explanations
 - Confidence scoring for all evaluations
@@ -224,7 +222,7 @@ developer experience.
 
 **Documentation**:
 
-- Comprehensive documentation in `docs/` folder
+- Comprehensive documentation in `documentation/` folder
 - Quick Start Guide for rapid setup
 - Complete API and CLI references
 - Architecture and implementation details
@@ -299,7 +297,7 @@ Sono-Eval follows [Semantic Versioning](https://semver.org/):
 ## Links
 
 - **Repository**: <https://github.com/doronpers/sono-eval>
-- **Documentation**: [docs/README.md](docs/README.md)
+- **Documentation**: [documentation/README.md](documentation/README.md)
 - **Issues**: <https://github.com/doronpers/sono-eval/issues>
 - **Discussions**: <https://github.com/doronpers/sono-eval/discussions>
 

@@ -1,0 +1,79 @@
+# Gitleaks configuration for Sono-Eval
+# Scans for secrets and credentials in commits
+
+title = "Sono-Eval Gitleaks Configuration"
+
+[extend]
+# Use default gitleaks rules as baseline
+useDefault = true
+
+[allowlist]
+description = "Allowlist for Sono-Eval specific patterns"
+
+# Allow documented development-only credentials in docker-compose.yml
+paths = [
+    '''docker-compose\.yml''',
+    '''\.env\.example''',
+    '''documentation/.*''',
+]
+
+# Allow specific patterns that are safe/expected
+regexes = [
+    # Placeholder/example credentials clearly marked as insecure
+    '''postgres:postgres@postgres''',
+    '''admin/admin''',
+    '''change_this_secret_key_in_production''',
+    # Test fixtures and examples
+    '''test.*secret''',
+    '''example.*key''',
+    '''dummy.*password''',
+]
+
+# Ignore files/directories that don't need scanning
+[[rules]]
+description = "Ignore vendored code and caches"
+id = "ignore-paths"
+path = '''(venv/|venv-test/|node_modules/|\.mypy_cache/|\.pytest_cache/|__pycache__/|\.git/|models/cache/|data/memory/)'''
+
+[[rules]]
+description = "Block real environment files"
+id = "block-env-files"
+path = '''\.env$'''
+[[rules.entropies]]
+Min = "3.5"
+Max = "8"
+
+[[rules]]
+description = "Detect high-entropy strings in Python/YAML (likely secrets)"
+id = "high-entropy-strings"
+regex = '''['"][a-zA-Z0-9+/=]{32,}['"]'''
+[[rules.entropies]]
+Min = "4.5"
+Max = "8"
+path = '''.*\.(py|yml|yaml|json)$'''
+
+[[rules]]
+description = "AWS Access Keys"
+id = "aws-access-key"
+regex = '''AKIA[0-9A-Z]{16}'''
+
+[[rules]]
+description = "Private Keys"
+id = "private-key"
+regex = '''-----BEGIN (RSA |EC |OPENSSH |PGP )?PRIVATE KEY( BLOCK)?-----'''
+
+[[rules]]
+description = "GitHub Token"
+id = "github-token"
+regex = '''gh[pousr]_[0-9a-zA-Z]{36}'''
+
+[[rules]]
+description = "Slack Token"
+id = "slack-token"
+regex = '''xox[baprs]-[0-9]{10,13}-[0-9]{10,13}-[0-9a-zA-Z]{24,32}'''
+
+[[rules]]
+description = "API Keys in code (generic)"
+id = "api-key-generic"
+regex = '''(?i)(api[_-]?key|apikey|api[_-]?secret)[\s]*[=:]\s*['"][a-zA-Z0-9_\-]{16,}['"]'''
+path = '''.*\.(py|js|ts|json|yml|yaml)$'''

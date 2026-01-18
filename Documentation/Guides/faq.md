@@ -8,10 +8,12 @@ Common questions about Sono-Eval, answered clearly and completely.
 
 ### What is Sono-Eval and why am I using it?
 
-Sono-Eval is an assessment system designed to help you understand your strengths and identify growth areas. Unlike traditional tests, it:
+Sono-Eval is an assessment system designed to help you understand your
+strengths and identify growth areas. Unlike traditional tests, it:
 
 - **Explains its scoring** - You'll see exactly why you received each score
-- **Evaluates multiple dimensions** - Not just code quality, but design thinking, collaboration skills, and more
+- **Evaluates multiple dimensions** - Not just code quality, but design
+  thinking, collaboration skills, and more
 - **Provides actionable feedback** - Clear recommendations for improvement
 - **Tracks your growth** - See how you progress over time
 
@@ -38,7 +40,8 @@ Scores range from 0-100:
 - **40-59**: Developing - You're building skills, focus on the recommendations
 - **0-39**: Learning - This is an area to focus your study
 
-**Important**: Lower scores aren't failures—they're opportunities! The system tells you exactly what to improve.
+**Important**: Lower scores aren't failures—they're opportunities! The system
+tells you exactly what to improve.
 
 ### What are "micro-motives" and why do they matter?
 
@@ -141,7 +144,8 @@ Look at multiple dimensions:
 4. **Key Findings** - Specific observations
 5. **Trend Over Time** - Are they improving?
 
-**Pro Tip**: Two candidates with the same score might be very different! Look at the details.
+**Pro Tip**: Two candidates with the same score might be very different! Look at
+the details.
 
 ### What score should I expect from candidates?
 
@@ -153,7 +157,8 @@ Typical ranges by level:
 - **Senior**: 75-90 (strong across multiple areas)
 - **Staff+**: 85+ (excellence plus teaching others)
 
-**Important**: Scores depend on challenge difficulty. A 60 on a hard problem might be better than 80 on an easy one.
+**Important**: Scores depend on challenge difficulty. A 60 on a hard problem
+might be better than 80 on an easy one.
 
 ### Can I customize the assessment criteria?
 
@@ -382,7 +387,7 @@ Thank you for helping improve Sono-Eval!
 
 ## Best Practices
 
-### For Candidates
+### Best Practices for Candidates
 
 ✅ Read feedback carefully
 ✅ Focus on learning, not just scores

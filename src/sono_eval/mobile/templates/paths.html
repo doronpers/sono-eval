@@ -41,7 +41,7 @@
                     <p class="path-description">{{ path.description }}</p>
                     <div class="path-value" style="display: none;">
                         <p class="value-explanation">
-                            <strong>Why this matters:</strong> 
+                            <strong>Why this matters:</strong>
                             <span class="value-text" data-path="{{ path.id }}"></span>
                         </p>
                     </div>
@@ -117,7 +117,7 @@ const goals = JSON.parse(sessionStorage.getItem('goals') || '[]');
 // Personalized recommendations based on goals and experience
 function getRecommendations() {
     const recommendations = [];
-    
+
     if (goals.includes('strengths') || goals.includes('benchmark')) {
         recommendations.push('technical', 'design');
     }
@@ -127,39 +127,39 @@ function getRecommendations() {
     if (goals.includes('practice')) {
         recommendations.push('technical', 'collaboration');
     }
-    
+
     // Experience-based recommendations
     if (experience === 'beginner') {
         recommendations.push('technical', 'problem_solving');
     } else if (experience === 'advanced') {
         recommendations.push('design', 'collaboration');
     }
-    
+
     return [...new Set(recommendations)]; // Remove duplicates
 }
 
 // Show personalized recommendations
 function showRecommendations() {
     const recommended = getRecommendations();
-    
+
     if (recommended.length > 0 && (goals.length > 0 || experience !== 'intermediate')) {
         const tipBox = document.getElementById('personalized-tip');
         const recText = document.getElementById('recommendation-text');
-        
+
         const pathNames = recommended.map(p => {
             const pathCard = document.querySelector(`[data-path="${p}"]`);
             return pathCard ? pathCard.querySelector('.path-title').textContent : p;
         }).join(', ');
-        
+
         recText.textContent = `Based on your goals, consider: ${pathNames}`;
         tipBox.style.display = 'flex';
-        
+
         // Show recommended badges
         recommended.forEach(pathId => {
             const badge = document.querySelector(`.path-recommended[data-path="${pathId}"]`);
             if (badge) badge.style.display = 'block';
         });
-        
+
         // Show value explanations for recommended paths
         recommended.forEach(pathId => {
             const valueDiv = document.querySelector(`[data-path="${pathId}"] .path-value`);
@@ -170,17 +170,17 @@ function showRecommendations() {
             }
         });
     }
-    
+
     // Show value explanations for all paths on hover/click
     document.querySelectorAll('.path-card').forEach(card => {
         const pathId = card.dataset.path;
         const valueDiv = card.querySelector('.path-value');
         const valueText = card.querySelector('.value-text');
-        
+
         if (valueText && pathValues[pathId]) {
             valueText.textContent = pathValues[pathId];
         }
-        
+
         // Show value on card interaction
         card.addEventListener('mouseenter', function() {
             if (valueDiv && !valueDiv.style.display || valueDiv.style.display === 'none') {
@@ -193,7 +193,7 @@ function showRecommendations() {
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
     showRecommendations();
-    
+
     // Track path exploration
     document.querySelectorAll('.learn-more-button').forEach(button => {
         button.addEventListener('click', function(e) {
@@ -217,7 +217,7 @@ document.querySelectorAll('.path-checkbox').forEach(checkbox => {
         if (this.checked) {
             selectedPaths.add(pathId);
             pathCard.classList.add('selected');
-            
+
             // Track path selection
             if (window.sonoEvalTracking && window.sonoEvalTracking.trackEvent) {
                 window.sonoEvalTracking.trackEvent('path_selection', {
@@ -229,7 +229,7 @@ document.querySelectorAll('.path-checkbox').forEach(checkbox => {
         } else {
             selectedPaths.delete(pathId);
             pathCard.classList.remove('selected');
-            
+
             // Track path deselection
             if (window.sonoEvalTracking && window.sonoEvalTracking.trackEvent) {
                 window.sonoEvalTracking.trackEvent('path_selection', {
@@ -311,11 +311,11 @@ async function showPathDetails(event, pathId) {
         if (data.success) {
             const exp = data.explanation;
             const valueText = pathValues[pathId] || '';
-            
+
             modalBody.innerHTML = `
                 <h3>${exp.title}</h3>
                 <p class="modal-overview">${exp.overview}</p>
-                
+
                 ${valueText ? `<div class="modal-value-box">
                     <strong>Why this matters:</strong> ${valueText}
                 </div>` : ''}

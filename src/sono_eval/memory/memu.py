@@ -228,7 +228,7 @@ class MemUStorage:
         if not memory or node_id not in memory.nodes:
             return []
 
-        path = []
+        path: List[MemoryNode] = []
         current_id = node_id
 
         while current_id:
@@ -255,7 +255,7 @@ class MemUStorage:
         try:
             with open(file_path, "r") as f:
                 data = json.load(f)
-            memory = CandidateMemory.model_validate(data)
+            memory: CandidateMemory = CandidateMemory.model_validate(data)
             logger.debug(f"Loaded memory from {file_path}")
             return memory
         except Exception as e:

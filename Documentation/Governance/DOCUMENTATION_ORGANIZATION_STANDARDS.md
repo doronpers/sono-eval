@@ -1,6 +1,7 @@
 # Documentation Organization Standards
 
-**Purpose**: Guidelines for AI agents and developers to maintain clean, organized documentation structure across repositories.
+**Purpose**: Guidelines for AI agents and developers to maintain clean,
+organized documentation structure across repositories.
 
 **Last Updated**: 2026-01-10
 **Status**: Active Standard
@@ -56,12 +57,12 @@ Following Dieter Rams' "Less but Better" philosophy:
 
 ---
 
-## Documentation/ Directory Structure
+## documentation/ Directory Structure
 
 ### Recommended Organization
 
-```
-Documentation/
+```text
+documentation/
 ├── README.md                    # Documentation hub (navigation)
 ├── DOCUMENTATION_INDEX.md       # Complete index
 ├── Core/ or root files          # Essential references (5-7 files)
@@ -89,7 +90,7 @@ Documentation/
 ### File Limits by Category
 
 | Category | Target Count | Notes |
-|----------|--------------|-------|
+| --- | --- | --- |
 | Core docs | 5-7 files | Essential references only |
 | Guides | 5-10 files | Consolidate similar topics |
 | Reports | 2-3 core files | Use dated subfolders for historical |
@@ -132,7 +133,7 @@ Documentation/
 
 **Archive, don't delete:**
 
-```
+```text
 Archive/
 ├── Reports-Historical/          # Old code reviews, audits
 ├── Guides-Legacy-YYYY/          # Superseded guides
@@ -154,15 +155,15 @@ Archive/
 
 1. **README.md** (Root):
    - Quick start section
-   - Links to Documentation/
+   - Links to documentation/
    - Links to essential files
 
-2. **Documentation/README.md**:
+2. **documentation/README.md**:
    - Documentation hub
    - Role-based navigation
    - Recent updates section
 
-3. **Documentation/DOCUMENTATION_INDEX.md**:
+3. **documentation/DOCUMENTATION_INDEX.md**:
    - Complete catalog
    - Categorized by purpose
    - Kept current with structure
@@ -185,7 +186,7 @@ When reorganizing documentation in any repo:
 ### Phase 1: Survey
 
 - [ ] Count all markdown files at root
-- [ ] List all files in Documentation/
+- [ ] List all files in documentation/
 - [ ] Identify duplicate/overlapping content
 - [ ] Find superseded versions
 
@@ -206,8 +207,8 @@ When reorganizing documentation in any repo:
 ### Phase 4: Update Indices
 
 - [ ] Update root README.md
-- [ ] Update Documentation/README.md
-- [ ] Update DOCUMENTATION_INDEX.md
+- [ ] Update documentation/README.md
+- [ ] Update documentation/DOCUMENTATION_INDEX.md
 - [ ] Update cross-references
 - [ ] Test all navigation paths
 
@@ -226,33 +227,33 @@ When reorganizing documentation in any repo:
 
 **Code Reviews**:
 
-```
+```text
 Before:
 - CODE_REVIEW_2026-01-04.md
 - CODE_REVIEW_2026-01-08.md
 - CODE_REVIEW_2026-01-10.md
 
 After:
-- Documentation/Reports/CODE_REVIEW_LATEST.md (consolidated)
-- Documentation/Reports/CODE_REVIEW.md (navigation file)
-- Documentation/Archive/Reports-Historical/*.md (archived)
+- documentation/Reports/CODE_REVIEW_LATEST.md (consolidated)
+- documentation/Reports/CODE_REVIEW.md (navigation file)
+- documentation/Archive/Reports-Historical/*.md (archived)
 ```
 
 **Design Audits**:
 
-```
+```text
 Before:
 - DESIGN_AUDIT_REPORT.md
 - DESIGN_AUDIT_FINDINGS.md
 
 After:
-- Documentation/Reports/DESIGN_AUDIT_CONSOLIDATED.md
+- documentation/Reports/DESIGN_AUDIT_CONSOLIDATED.md
 - Archived originals
 ```
 
 **Setup Docs**:
 
-```
+```text
 Before:
 - VENV_SETUP.md
 - LAUNCHER_USAGE.md
@@ -291,7 +292,7 @@ After:
 **Initial setup:**
 
 1. Start with essential root files only (README, CONTRIBUTING)
-2. Create Documentation/ structure early
+2. Create documentation/ structure early
 3. Use dated subfolders from the start for reports
 4. Establish Archive/ at creation time
 
@@ -337,9 +338,11 @@ for guidelines on maintaining clean documentation structure.
 ## Version History
 
 | Version | Date | Changes |
-|---------|------|---------|
+| --- | --- | --- |
 | 1.0 | 2026-01-10 | Initial standard based on sonotheia-enhanced consolidation |
 
 ---
 
-**For AI Agents**: Reference this standard when organizing documentation in any repository. Follow the principles, apply the patterns, and maintain the structure over time.
+**For AI Agents**: Reference this standard when organizing documentation in any
+repository. Follow the principles, apply the patterns, and maintain the
+structure over time.

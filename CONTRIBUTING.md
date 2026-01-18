@@ -1,10 +1,122 @@
 # Contributing to Sono-Eval
 
-Thank you for your interest in contributing to Sono-Eval! This document provides guidelines and instructions for contributing.
+Thank you for your interest in contributing to Sono-Eval! This document
+provides guidelines and instructions for contributing.
+
+## Quick Start (No Terminal)
+
+New to contributing? Start here! You can make your first contribution entirely
+in your browser:
+
+1. **Fork the repository** (click "Fork" button on GitHub)
+2. **Edit a file in your fork**:
+   - Navigate to the file you want to edit
+   - Click the pencil icon (✏️) to edit
+   - Make your changes (try adding a note to README.md about your experience)
+   - Scroll down and click "Commit changes"
+3. **Open a pull request**:
+   - Click "Contribute" → "Open pull request" on your fork's main page
+   - Add a description of your changes
+   - Click "Create pull request"
+
+That's it! No command line needed.
+
+## Quick Start (Browser Dev Environment)
+
+Want to test changes before submitting? Use GitHub Codespaces:
+
+1. **Open in Codespaces**:
+   - Click "Code" → "Codespaces" → "Create codespace on main"
+   - Wait for environment to load (~2 minutes)
+2. **Start the server**:
+   - Open Terminal in VS Code web interface
+   - Run: `./launcher.sh start`
+   - Access `/docs` via the Ports tab
+3. **Make changes**:
+   - Edit files in the VS Code web interface
+   - Test in real-time using the `/docs` interface
+4. **Commit and open PR**:
+   - Use the Source Control tab in VS Code
+   - Commit your changes
+   - Click "Publish Branch" and create a PR
+
+## Quick Start (Local, Minimal Terminal)
+
+Prefer working locally? Here's the minimal setup:
+
+```bash
+# Clone your fork
+git clone https://github.com/YOUR_USERNAME/sono-eval.git
+cd sono-eval
+
+# Create virtual environment
+python3 -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+pip install -e ".[dev]"
+
+# Start development server
+./launcher.sh dev
+# OR manually: sono-eval server start --reload
+```
+
+### Testing Your Changes
+
+```bash
+# Run tests
+pytest
+
+# Format code
+black src/ tests/
+
+# Lint
+flake8 src/ tests/
+```
+
+## Suggested First Issues (Low Friction)
+
+Perfect for first-time contributors:
+
+- **Documentation**: Add a "What I saw in /docs" note to README
+- **Simple endpoint**: Add a log message to an existing endpoint
+- **Testing**: Write a test for a static JSON endpoint
+- **Samples**: Add example code submissions to `samples/`
+- **Typos**: Fix typos in documentation or code comments
+
+Look for issues labeled `good-first-issue` or `beginner-friendly`.
+
+## PR Checklist
+
+Before submitting your pull request:
+
+- [ ] Tests added/updated if logic changed (`pytest`)
+- [ ] Code formatted with `black`
+- [ ] No linting errors (`flake8`)
+- [ ] Documentation updated if needed
+- [ ] Tested locally (try the `/docs` interface)
+
+## Troubleshooting
+
+**Issue**: Port 8000 already in use
+**Solution**: `sono-eval server start --port 8001`
+
+**Issue**: Permission denied on launcher.sh
+**Solution**: `chmod +x launcher.sh`
+
+**Issue**: SSL certificate errors
+**Solution**: See `scripts/README.md` for SSL fix instructions
+
+**Issue**: Tests failing
+**Solution**: Make sure virtual environment is activated and dependencies are installed
+
+**Need help?** Open a GitHub Discussion or Issue - we're friendly to beginners!
 
 ## Code of Conduct
 
-We are committed to providing a welcoming and inclusive environment. Please be respectful and constructive in all interactions.
+We are committed to providing a welcoming and inclusive environment. Please be
+respectful and constructive in all interactions.
 
 ## How to Contribute
 
@@ -184,7 +296,7 @@ def test_assessment_engine_technical_path():
 
 ## Project Structure
 
-```
+```text
 sono-eval/
 ├── src/sono_eval/       # Source code
 │   ├── assessment/      # Assessment engine
@@ -196,7 +308,7 @@ sono-eval/
 ├── tests/               # Test suite
 │   ├── unit/            # Unit tests
 │   └── integration/     # Integration tests
-├── docs/                # Documentation
+├── documentation/       # Documentation
 ├── config/              # Configuration
 └── scripts/             # Utility scripts
 ```
@@ -219,7 +331,7 @@ We especially welcome contributions in:
 - Enhanced analytics dashboards
 - Integration with code platforms
 
-### Documentation
+### Documentation Contributions
 
 - Tutorials and guides
 - API examples
@@ -251,7 +363,8 @@ We especially welcome contributions in:
 
 ## License
 
-By contributing, you agree that your contributions will be licensed under the MIT License.
+By contributing, you agree that your contributions will be licensed under the
+MIT License.
 
 ---
 

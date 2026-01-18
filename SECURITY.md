@@ -2,7 +2,8 @@
 
 ## Supported Versions
 
-Currently, Sono-Eval is in **alpha** (version 0.1.0). Security updates are provided for:
+Currently, Sono-Eval is in **alpha** (version 0.1.0). Security updates are
+provided for:
 
 | Version | Supported          |
 | ------- | ------------------ |
@@ -13,7 +14,8 @@ Currently, Sono-Eval is in **alpha** (version 0.1.0). Security updates are provi
 
 **Please do NOT report security vulnerabilities through public GitHub issues.**
 
-Instead, please report them via email to: security@sono-eval.example (or create a private security advisory on GitHub)
+Instead, please report them via email to: <security@sono-eval.example>
+(or create a private security advisory on GitHub)
 
 When reporting a vulnerability, please include:
 
@@ -52,6 +54,7 @@ DATABASE_URL=postgresql://user:<strong-password>@host:5432/db
 ```
 
 Generate secure keys:
+
 ```bash
 # Generate SECRET_KEY
 python -c "import secrets; print(secrets.token_urlsafe(32))"
@@ -76,10 +79,12 @@ In production, the API automatically restricts CORS based on `ALLOWED_HOSTS`.
 #### 3. File Uploads
 
 **Current Limits**:
+
 - Max file size: 10MB (configurable via `MAX_UPLOAD_SIZE`)
 - Allowed extensions: py, js, ts, java, cpp, c, go, rs, rb
 
 **Recommendations**:
+
 - Use virus scanning for uploaded files
 - Store uploads in isolated storage
 - Validate file content, not just extensions
@@ -88,16 +93,19 @@ In production, the API automatically restricts CORS based on `ALLOWED_HOSTS`.
 #### 4. Database Security
 
 **SQLite** (default): Only for development
+
 - Not suitable for production
 - No concurrent write support
 - No user authentication
 
 **PostgreSQL** (recommended): For production
+
 ```bash
 DATABASE_URL=postgresql://user:password@localhost:5432/sono_eval
 ```
 
 Security checklist:
+
 - [ ] Use strong database passwords
 - [ ] Restrict database network access
 - [ ] Enable SSL/TLS connections
@@ -109,6 +117,7 @@ Security checklist:
 **Current State**: No authentication (alpha version)
 
 **Before Production**:
+
 - [ ] Implement API key authentication
 - [ ] Add rate limiting
 - [ ] Add request validation
@@ -117,6 +126,7 @@ Security checklist:
 - [ ] Implement RBAC (Role-Based Access Control)
 
 Example rate limiting (recommended):
+
 ```python
 # Add to requirements.txt: slowapi
 from slowapi import Limiter
@@ -134,6 +144,7 @@ async def create_assessment(...):
 #### 6. Network Security
 
 **Docker Deployment**:
+
 ```yaml
 # Production docker-compose.yml
 services:
@@ -141,7 +152,7 @@ services:
     networks:
       - internal
     # Don't expose ports directly
-  
+
   nginx:
     networks:
       - internal
@@ -151,6 +162,7 @@ services:
 ```
 
 **Firewall Rules**:
+
 - Only expose necessary ports
 - Use reverse proxy (nginx/traefik)
 - Enable HTTPS/TLS
@@ -167,7 +179,7 @@ from pydantic import BaseModel, Field, validator
 
 class AssessmentInput(BaseModel):
     candidate_id: str = Field(..., min_length=1, max_length=100)
-    
+
     @validator('candidate_id')
     def validate_candidate_id(cls, v):
         if not v.replace('_', '').replace('-', '').isalnum():
@@ -176,6 +188,7 @@ class AssessmentInput(BaseModel):
 ```
 
 **SQL Injection Prevention**: Use ORMs (SQLAlchemy) with parameterized queries
+
 ```python
 # GOOD: Using SQLAlchemy ORM
 candidate = session.query(Candidate).filter_by(id=candidate_id).first()
@@ -185,6 +198,7 @@ candidate = session.query(Candidate).filter_by(id=candidate_id).first()
 ```
 
 **Path Traversal Prevention**: Validate file paths
+
 ```python
 from pathlib import Path
 
@@ -197,6 +211,7 @@ def safe_path(base_dir: Path, user_path: str) -> Path:
 ```
 
 **XSS Prevention**: Escape user content in responses
+
 ```python
 from markupsafe import escape
 
@@ -210,6 +225,7 @@ async def get_candidate(candidate_id: str):
 #### 2. Dependency Security
 
 **Regular Updates**: Check for vulnerabilities
+
 ```bash
 # Install safety
 pip install safety
@@ -223,6 +239,7 @@ pip-audit
 ```
 
 **Known Issues**:
+
 - Review `requirements.txt` and `pyproject.toml` regularly
 - Update dependencies with security patches
 - Use `dependabot` for automated alerts
@@ -230,6 +247,7 @@ pip-audit
 #### 3. Secret Management
 
 **NEVER commit**:
+
 - API keys
 - Passwords
 - Private keys
@@ -237,6 +255,7 @@ pip-audit
 - Database credentials
 
 **Use**:
+
 - Environment variables
 - Secret management services (AWS Secrets Manager, HashiCorp Vault)
 - `.env.example` for documentation (without real values)
@@ -244,12 +263,14 @@ pip-audit
 #### 4. Logging and Monitoring
 
 **Do Log**:
+
 - Authentication attempts
 - Authorization failures
 - Input validation failures
 - System errors
 
 **Don't Log**:
+
 - Passwords
 - API keys
 - Personal identifiable information (PII)
@@ -285,34 +306,34 @@ logger.info(f"Login attempt: {username}:{password}")
 
 ### High Priority Issues
 
-4. **No Rate Limiting**: APIs can be abused
+1. **No Rate Limiting**: APIs can be abused
    - **Risk**: DoS attacks, resource exhaustion
    - **Mitigation**: Use reverse proxy with rate limiting
    - **Fix**: Planned for v0.2.0
 
-5. **No Input Sanitization**: File uploads not validated
+2. **No Input Sanitization**: File uploads not validated
    - **Risk**: Malicious file uploads
    - **Mitigation**: Restrict file extensions, scan uploads
    - **Fix**: Add content validation
 
-6. **Superset Default Credentials**: admin/admin
+3. **Superset Default Credentials**: admin/admin
    - **Risk**: Unauthorized access to analytics
    - **Mitigation**: Change immediately after setup
    - **Fix**: Force password change on first login
 
 ### Medium Priority Issues
 
-7. **HTTP Only**: No HTTPS enforcement
+1. **HTTP Only**: No HTTPS enforcement
    - **Risk**: Data transmitted in clear text
    - **Mitigation**: Use reverse proxy with TLS
    - **Fix**: Add HTTPS redirect option
 
-8. **No Audit Logging**: No record of who did what
+2. **No Audit Logging**: No record of who did what
    - **Risk**: Can't track security incidents
    - **Mitigation**: Enable web server logging
    - **Fix**: Planned for v0.2.0
 
-9. **Placeholder Assessment Logic**: Not real ML
+3. **Placeholder Assessment Logic**: Not real ML
    - **Risk**: Predictable outputs, gaming system
    - **Mitigation**: Document as alpha limitation
    - **Fix**: Implement real ML models
@@ -322,6 +343,7 @@ logger.info(f"Login attempt: {username}:{password}")
 Before deploying to production:
 
 ### Essential (Must Do)
+
 - [ ] Change `SECRET_KEY` from default
 - [ ] Change `SUPERSET_SECRET_KEY` from default
 - [ ] Set strong `REDIS_PASSWORD`
@@ -334,6 +356,7 @@ Before deploying to production:
 - [ ] Enable backup strategy
 
 ### Recommended (Should Do)
+
 - [ ] Implement API authentication
 - [ ] Add rate limiting
 - [ ] Enable audit logging
@@ -346,6 +369,7 @@ Before deploying to production:
 - [ ] Document incident response plan
 
 ### Optional (Nice to Have)
+
 - [ ] Enable Web Application Firewall (WAF)
 - [ ] Implement Content Security Policy (CSP)
 - [ ] Add security headers
@@ -356,6 +380,7 @@ Before deploying to production:
 ## Security Resources
 
 ### Tools
+
 - **OWASP ZAP**: Web application security scanner
 - **Bandit**: Python security linter
 - **Safety**: Dependency vulnerability scanner
@@ -363,6 +388,7 @@ Before deploying to production:
 - **Trivy**: Container vulnerability scanner
 
 ### References
+
 - [OWASP Top 10](https://owasp.org/www-project-top-ten/)
 - [Python Security Best Practices](https://python.readthedocs.io/en/latest/library/security_warnings.html)
 - [FastAPI Security](https://fastapi.tiangolo.com/tutorial/security/)
@@ -371,9 +397,9 @@ Before deploying to production:
 
 ## Contact
 
-For security concerns, contact: security@sono-eval.example
+For security concerns, contact: <security@sono-eval.example>
 
-For general issues: https://github.com/doronpers/sono-eval/issues
+For general issues: <https://github.com/doronpers/sono-eval/issues>
 
 ---
 

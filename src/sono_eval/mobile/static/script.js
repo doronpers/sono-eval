@@ -83,23 +83,23 @@ const progressMessages = {
 function updateProgress(current, total, page = null) {
     const progressBar = document.querySelector('.progress-fill');
     const progressContainer = document.querySelector('.progress-bar');
-    
+
     if (progressBar) {
         const percentage = (current / total) * 100;
         progressBar.style.width = `${percentage}%`;
-        
+
         // Update progress message if container exists
         if (page && progressMessages[page]) {
             const messages = progressMessages[page];
             const currentMessage = messages.find(m => percentage >= m.percent) || messages[messages.length - 1];
-            
+
             let messageElement = document.querySelector('.progress-message');
             if (!messageElement && progressContainer) {
                 messageElement = document.createElement('div');
                 messageElement.className = 'progress-message';
                 progressContainer.parentElement.insertBefore(messageElement, progressContainer.nextSibling);
             }
-            
+
             if (messageElement) {
                 messageElement.textContent = currentMessage.message;
             }
@@ -112,7 +112,7 @@ function trackLearningMilestone(milestoneName, data = {}) {
     if (window.sonoEvalTracking && window.sonoEvalTracking.trackMilestone) {
         window.sonoEvalTracking.trackMilestone(milestoneName, data);
     }
-    
+
     // Show contextual achievement
     showContextualAchievement(milestoneName, data);
 }
@@ -124,7 +124,7 @@ function showContextualAchievement(milestoneName, data) {
         'candidate_registered': 'Welcome! Your progress will be tracked.',
         'results_viewed': 'You\'ve completed an assessment! Check out your insights.',
     };
-    
+
     const message = achievements[milestoneName];
     if (message && window.sonoEval && window.sonoEval.showSuccess) {
         window.sonoEval.showSuccess(message);

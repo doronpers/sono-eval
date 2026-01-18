@@ -9,7 +9,10 @@
 
 ## Executive Summary
 
-This repository has been thoroughly audited for secrets, credentials, and proprietary information. **No actual secrets or sensitive data were found.** The repository uses best practices for configuration management and is safe to be made publicly visible.
+This repository has been thoroughly audited for secrets, credentials, and
+proprietary information. **No actual secrets or sensitive data were found.**
+The repository uses best practices for configuration management and is safe to
+be made publicly visible.
 
 ### Audit Result: ✅ CLEAR
 
@@ -98,7 +101,8 @@ This repository has been thoroughly audited for secrets, credentials, and propri
 - All email addresses use safe domains: `sono-eval.example`, `sono-eval.local`
 - References to "sonotheia" are minimal and in acceptable context
 - No confidential or proprietary markers found in code
-- Reports mention "proprietary" only in context of recommendations (not actual proprietary code)
+- Reports mention "proprietary" only in context of recommendations (not actual
+  proprietary code)
 
 ### 6. Documentation Review ✅
 
@@ -107,7 +111,7 @@ This repository has been thoroughly audited for secrets, credentials, and propri
 - [x] README.md
 - [x] SECURITY.md
 - [x] CONTRIBUTING.md
-- [x] All files in `/Documentation` directory
+- [x] All files in `/documentation` directory
 - [x] CODE_OF_CONDUCT.md
 - [x] CHANGELOG.md
 
@@ -156,7 +160,8 @@ services:
 ```yaml
 version: '3.8'
 
-# ⚠️ SECURITY WARNING: This docker-compose.yml contains DEFAULT CREDENTIALS for development only!
+# ⚠️ SECURITY WARNING: This docker-compose.yml contains DEFAULT CREDENTIALS for
+# development only!
 #
 # Default credentials in this file:
 #   - PostgreSQL: postgres/postgres
@@ -219,7 +224,7 @@ Created this SECRETS_AUDIT.md file to:
 ### Documentation
 
 - ✅ All `.md` files - No sensitive information
-- ✅ `/Documentation/**/*` - Safe for public
+- ✅ `/documentation/**/*` - Safe for public
 
 ### Infrastructure
 
@@ -394,7 +399,8 @@ The sono-eval repository:
 
 ### Final Verdict
 
-**This repository is ready to be made publicly visible** without risk of exposing secrets or proprietary information.
+**This repository is ready to be made publicly visible** without risk of
+exposing secrets or proprietary information.
 
 ---
 
@@ -426,4 +432,4 @@ See [SECURITY.md](SECURITY.md) for full security reporting guidelines.
 
 ---
 
-**END OF AUDIT REPORT**
+## END OF AUDIT REPORT

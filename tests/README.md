@@ -65,21 +65,25 @@ This document describes the testing strategy and coverage for Sono-Eval.
 ## Running Tests
 
 ### Run All Tests
+
 ```bash
 pytest
 ```
 
 ### Run Specific Test File
+
 ```bash
 pytest tests/test_validation.py
 ```
 
 ### Run with Coverage
+
 ```bash
 pytest --cov=src/sono_eval --cov-report=html --cov-report=term
 ```
 
 ### Run Tests by Category
+
 ```bash
 # Run only validation tests
 pytest tests/test_validation.py
@@ -94,6 +98,7 @@ pytest tests/test_security.py
 ## Coverage Goals
 
 ### Current Coverage
+
 - **Baseline**: ~40% (original tests)
 - **Target**: 80%+
 - **New Coverage**: ~65-70% (with new tests)
@@ -113,24 +118,28 @@ pytest tests/test_security.py
 ## Test Categories
 
 ### Unit Tests
+
 - Individual function/method testing
 - Mock external dependencies
 - Fast execution
 - Examples: test_validation.py, test_logging.py
 
 ### Integration Tests
+
 - API endpoint testing
 - Service interaction
 - Database operations
 - Examples: test_api.py, test_assessment.py
 
 ### Security Tests
+
 - Input validation
 - Configuration validation
 - Secret management
 - Examples: test_security.py, test_validation.py
 
 ### Smoke Tests
+
 - Basic functionality checks
 - File existence
 - Import validation
@@ -139,25 +148,30 @@ pytest tests/test_security.py
 ## Testing Best Practices
 
 ### 1. Test Naming
+
 - Use descriptive names: `test_valid_candidate_id_accepts_alphanumeric`
 - Follow pattern: `test_<what>_<condition>_<expected_result>`
 
 ### 2. Test Structure
+
 - **Arrange**: Set up test data
 - **Act**: Execute the code under test
 - **Assert**: Verify the results
 
 ### 3. Assertions
+
 - Use specific assertions
 - Include helpful error messages
 - Test both positive and negative cases
 
 ### 4. Mocking
+
 - Mock external dependencies
 - Use `unittest.mock` or `pytest-mock`
 - Don't mock the code under test
 
 ### 5. Fixtures
+
 - Use pytest fixtures for shared setup
 - Keep fixtures simple and focused
 - Name fixtures clearly
@@ -165,6 +179,7 @@ pytest tests/test_security.py
 ## CI/CD Integration
 
 Tests are automatically run by GitHub Actions:
+
 - On every push to main/develop
 - On every pull request
 - Multiple Python versions (3.9, 3.10, 3.11)
@@ -173,6 +188,7 @@ Tests are automatically run by GitHub Actions:
 ## Test Data
 
 ### Valid Test Data Examples
+
 ```python
 # Valid candidate IDs
 valid_ids = ["test123", "test_candidate", "test-candidate"]
@@ -185,6 +201,7 @@ valid_content = {"code": "print('hello')"}
 ```
 
 ### Invalid Test Data Examples
+
 ```python
 # Invalid candidate IDs (should be rejected)
 invalid_ids = ["test@invalid", "test candidate", "test#123"]
@@ -199,6 +216,7 @@ invalid_content = {}  # Empty
 ## Coverage Reports
 
 After running tests with coverage, view the HTML report:
+
 ```bash
 open htmlcov/index.html  # macOS
 xdg-open htmlcov/index.html  # Linux
@@ -207,6 +225,7 @@ xdg-open htmlcov/index.html  # Linux
 ## Adding New Tests
 
 When adding new features:
+
 1. Write tests first (TDD approach)
 2. Ensure at least 80% coverage
 3. Include both positive and negative test cases
@@ -232,6 +251,7 @@ When adding new features:
 ## Test Environment Variables
 
 For local testing, set these environment variables:
+
 ```bash
 export APP_ENV=development
 export DATABASE_URL=sqlite:///test.db
@@ -251,16 +271,19 @@ export DEBUG=true
 ### Debug Mode
 
 Run tests with verbose output:
+
 ```bash
 pytest -vv -s
 ```
 
 Show print statements:
+
 ```bash
 pytest -s
 ```
 
 Stop on first failure:
+
 ```bash
 pytest -x
 ```
@@ -268,12 +291,14 @@ pytest -x
 ## Test Metrics
 
 ### Current Test Suite
+
 - **Total Tests**: 60+ tests
 - **Test Files**: 9 files
 - **Average Test Time**: < 5 seconds
 - **Code Coverage**: ~65-70% (target: 80%)
 
 ### Quality Metrics
+
 - All tests pass ✅
 - No flaky tests ✅
 - Clear test names ✅
@@ -283,6 +308,7 @@ pytest -x
 ## Contributing Tests
 
 When contributing tests:
+
 1. Follow existing test patterns
 2. Add docstrings to test functions
 3. Use descriptive assertions

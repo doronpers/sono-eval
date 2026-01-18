@@ -10,13 +10,14 @@ from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 from time import time
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 from fastapi import FastAPI, File, HTTPException, Request, Response, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, validator
 from starlette.middleware.base import BaseHTTPMiddleware
 
+from sono_eval.assessment.dashboard import DashboardData
 from sono_eval.assessment.engine import AssessmentEngine
 from sono_eval.assessment.models import AssessmentInput, AssessmentResult
 from sono_eval.memory.memu import MemUStorage
@@ -66,6 +67,11 @@ assessment_engine: Optional[AssessmentEngine] = None
 memu_storage: Optional[MemUStorage] = None
 tag_generator: Optional[TagGenerator] = None
 config = get_config()
+API_VERSION = "0.1.1"
+CANDIDATE_ID_PATTERN = re.compile(r"^[a-zA-Z0-9_-]+$")
+CANDIDATE_ID_ERROR_MESSAGE = (
+    "candidate_id must contain only alphanumeric characters, dashes, and underscores"
+)
 
 
 @asynccontextmanager
@@ -138,7 +144,7 @@ def _validate_security_config():
 app = FastAPI(
     title="Sono-Eval API",
     description="Explainable Multi-Path Developer Assessment System",
-    version="0.1.1",
+    version=API_VERSION,
     lifespan=lifespan,
 )
 
@@ -172,10 +178,6 @@ mobile_app = create_mobile_app()
 app.mount("/mobile", mobile_app)
 
 
-# API Versioning - Define version prefix
-API_V1_PREFIX = "/api/v1"
-
-
 # Request/Response Models
 
 
@@ -189,10 +191,8 @@ class CandidateCreateRequest(BaseModel):
     def validate_candidate_id(cls, v):
         """Validate candidate_id format to prevent injection attacks."""
         # Allow only alphanumeric, dash, underscore
-        if not re.match(r"^[a-zA-Z0-9_-]+$", v):
-            raise ValueError(
-                "candidate_id must contain only alphanumeric characters, dashes, and underscores"
-            )
+        if not CANDIDATE_ID_PATTERN.match(v):
+            raise ValueError(CANDIDATE_ID_ERROR_MESSAGE)
         return v
 
 
@@ -209,6 +209,16 @@ class TagRequest(BaseModel):
         if "\x00" in v:
             raise ValueError("text contains invalid null bytes")
         return v
+
+
+def _validate_candidate_id(candidate_id: str, request_id: Optional[str] = None) -> None:
+    """Validate candidate_id format to prevent path traversal and injection."""
+    if not CANDIDATE_ID_PATTERN.match(candidate_id):
+        raise validation_error(
+            CANDIDATE_ID_ERROR_MESSAGE,
+            field="candidate_id",
+            request_id=request_id,
+        )
 
 
 # Health check caching (5 second cache to avoid expensive operations on every call)
@@ -471,7 +481,7 @@ async def root():
     health_data = await check_component_health(include_details=True)
     return HealthResponse(
         status="healthy" if health_data["healthy"] else "degraded",
-        version="0.1.1",
+        version=API_VERSION,
         timestamp=datetime.now(timezone.utc).isoformat(),
         components=health_data["components"],
         details=health_data.get("details"),
@@ -494,7 +504,7 @@ async def health_check(response: Response):
 
     return HealthResponse(
         status="healthy" if health_data["healthy"] else "unhealthy",
-        version="0.1.1",
+        version=API_VERSION,
         timestamp=datetime.now(timezone.utc).isoformat(),
         components=health_data["components"],
         details=None,  # No sensitive details in basic health check
@@ -518,7 +528,7 @@ async def health_check_v1(response: Response):
 
     return HealthResponse(
         status="healthy" if health_data["healthy"] else "unhealthy",
-        version="0.1.1",
+        version=API_VERSION,
         timestamp=datetime.now(timezone.utc).isoformat(),
         components=health_data["components"],
         details=health_data.get("details"),
@@ -529,7 +539,7 @@ async def health_check_v1(response: Response):
 async def status():
     """Detailed status information."""
     return {
-        "api_version": "0.1.0",
+        "api_version": API_VERSION,
         "assessment_engine_version": assessment_engine.version if assessment_engine else "unknown",
         "config": {
             "multi_path_tracking": config.assessment_multi_path_tracking,
@@ -598,6 +608,7 @@ async def get_assessment(request: Request, assessment_id: str, candidate_id: str
         Complete assessment result with scores and explanations
     """
     request_id = getattr(request.state, "request_id", None)
+    _validate_candidate_id(candidate_id, request_id=request_id)
 
     if not memu_storage:
         raise service_unavailable_error("Memory storage", request_id=request_id)
@@ -615,6 +626,61 @@ async def get_assessment(request: Request, assessment_id: str, candidate_id: str
                 return AssessmentResult.model_validate(assessment_result)
 
     raise not_found_error("Assessment", assessment_id, request_id=request_id)
+
+
+@app.get("/api/v1/assessments/{assessment_id}/dashboard")
+async def get_assessment_dashboard(
+    request: Request,
+    assessment_id: str,
+    candidate_id: str,
+    include_history: bool = False,
+):
+    """
+    Get visualization-ready dashboard data for an assessment.
+
+    Args:
+        assessment_id: Assessment identifier
+        candidate_id: Candidate identifier
+        include_history: Include historical trend data
+
+    Returns:
+        DashboardData with visualization-ready structures
+    """
+    request_id = getattr(request.state, "request_id", None)
+    _validate_candidate_id(candidate_id, request_id=request_id)
+
+    if not memu_storage:
+        raise service_unavailable_error("Memory storage", request_id=request_id)
+
+    memory = memu_storage.get_candidate_memory(candidate_id)
+    if not memory:
+        raise not_found_error("Candidate", candidate_id, request_id=request_id)
+
+    # Find the assessment
+    assessment_result = None
+    historical_results = []
+
+    for node in memory.nodes.values():
+        if node.metadata.get("type") == "assessment":
+            result_data = node.data.get("assessment_result")
+            if result_data:
+                result = AssessmentResult.model_validate(result_data)
+                if result.assessment_id == assessment_id:
+                    assessment_result = result
+                elif include_history:
+                    historical_results.append(result)
+
+    if not assessment_result:
+        raise not_found_error("Assessment", assessment_id, request_id=request_id)
+
+    # Sort historical by timestamp
+    historical_results.sort(key=lambda r: r.timestamp)
+
+    dashboard = DashboardData.from_assessment_result(
+        assessment_result, historical_results if include_history else None
+    )
+
+    return dashboard.model_dump(mode="json")
 
 
 # Candidate Management Endpoints
@@ -677,6 +743,7 @@ async def get_candidate(request: Request, candidate_id: str):
         Candidate memory structure
     """
     request_id = getattr(request.state, "request_id", None)
+    _validate_candidate_id(candidate_id, request_id=request_id)
 
     if not memu_storage:
         raise service_unavailable_error("Memory storage", request_id=request_id)
@@ -711,6 +778,7 @@ async def list_candidates(request: Request):
 async def delete_candidate(request: Request, candidate_id: str):
     """Delete a candidate."""
     request_id = getattr(request.state, "request_id", None)
+    _validate_candidate_id(candidate_id, request_id=request_id)
 
     if not memu_storage:
         raise service_unavailable_error("Memory storage", request_id=request_id)
@@ -720,6 +788,98 @@ async def delete_candidate(request: Request, candidate_id: str):
         raise not_found_error("Candidate", candidate_id, request_id=request_id)
 
     return {"status": "deleted", "candidate_id": candidate_id}
+
+
+@app.get("/api/v1/candidates/{candidate_id}/stats")
+async def get_candidate_stats(request: Request, candidate_id: str):
+    """
+    Get statistics and history summary for a candidate.
+
+    Returns aggregated statistics across all assessments.
+    """
+    request_id = getattr(request.state, "request_id", None)
+    _validate_candidate_id(candidate_id, request_id=request_id)
+
+    if not memu_storage:
+        raise service_unavailable_error("Memory storage", request_id=request_id)
+
+    memory = memu_storage.get_candidate_memory(candidate_id)
+    if not memory:
+        raise not_found_error("Candidate", candidate_id, request_id=request_id)
+
+    # Collect assessments
+    assessments = []
+    for node in memory.nodes.values():
+        if node.metadata.get("type") == "assessment":
+            result_data = node.data.get("assessment_result")
+            if result_data:
+                assessments.append(result_data)
+
+    if not assessments:
+        return {
+            "candidate_id": candidate_id,
+            "total_assessments": 0,
+            "message": "No assessments found",
+        }
+
+    # Calculate statistics
+    scores = [a.get("overall_score", 0) for a in assessments]
+    confidences = [a.get("confidence", 0) for a in assessments]
+
+    # Path frequency
+    path_scores: Dict[str, List[float]] = {}
+    for a in assessments:
+        for ps in a.get("path_scores", []):
+            path = ps.get("path", "unknown")
+            if path not in path_scores:
+                path_scores[path] = []
+            path_scores[path].append(ps.get("overall_score", 0))
+
+    path_averages = {path: sum(scores) / len(scores) for path, scores in path_scores.items()}
+
+    # Trend analysis
+    assessments.sort(key=lambda x: x.get("timestamp", ""))
+    recent_scores = scores[-3:] if len(scores) >= 3 else scores
+    older_scores = scores[:-3] if len(scores) > 3 else scores
+
+    recent_avg = sum(recent_scores) / len(recent_scores) if recent_scores else 0
+    older_avg = sum(older_scores) / len(older_scores) if older_scores else recent_avg
+
+    if recent_avg > older_avg + 5:
+        trend = "improving"
+    elif recent_avg < older_avg - 5:
+        trend = "declining"
+    else:
+        trend = "stable"
+
+    # Calculate standard deviation
+    if len(scores) > 1:
+        mean_score = sum(scores) / len(scores)
+        variance = sum((s - mean_score) ** 2 for s in scores) / len(scores)
+        std_dev = variance**0.5
+    else:
+        std_dev = 0.0
+
+    return {
+        "candidate_id": candidate_id,
+        "total_assessments": len(assessments),
+        "statistics": {
+            "average_score": sum(scores) / len(scores),
+            "best_score": max(scores),
+            "worst_score": min(scores),
+            "latest_score": scores[-1] if scores else 0,
+            "average_confidence": sum(confidences) / len(confidences),
+            "score_std_dev": std_dev,
+        },
+        "path_averages": path_averages,
+        "trend": {
+            "direction": trend,
+            "recent_average": recent_avg,
+            "historical_average": older_avg,
+        },
+        "first_assessment": assessments[0].get("timestamp") if assessments else None,
+        "last_assessment": assessments[-1].get("timestamp") if assessments else None,
+    }
 
 
 # Tagging Endpoints
@@ -776,7 +936,11 @@ async def upload_file(request: Request, file: UploadFile = File(...)):  # noqa: 
 
     try:
         # Security: Validate file extension
-        allowed_extensions = config.allowed_extensions.split(",")
+        allowed_extensions = [
+            ext.strip().lstrip(".").lower()
+            for ext in config.allowed_extensions.split(",")
+            if ext.strip()
+        ]
         file_ext = file.filename.split(".")[-1].lower() if "." in file.filename else ""
 
         if file_ext not in allowed_extensions:

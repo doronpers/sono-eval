@@ -17,7 +17,8 @@
 
 **File**: `src/sono_eval/api/main.py`
 
-- **Issue**: CORS allowed all origins (`allow_origins=["*"]`) which is insecure for production
+- **Issue**: CORS allowed all origins (`allow_origins=["*"]`) which is
+  insecure for production
 - **Fix**:
   - Made CORS origins configurable via `ALLOWED_HOSTS` environment variable
   - Properly parses comma-separated origins
@@ -68,7 +69,7 @@
 
 ### 6. ✅ Updated API Documentation
 
-**File**: `Documentation/Guides/user-guide/api-reference.md`
+**File**: `documentation/Guides/user-guide/api-reference.md`
 
 - **Issue**: Documentation didn't match actual health check response format
 - **Fix**:
@@ -95,7 +96,8 @@
 ## Security Improvements
 
 1. **CORS Configuration**: Now configurable and secure for production
-2. **Information Disclosure**: Removed sensitive paths and connection details from responses
+2. **Information Disclosure**: Removed sensitive paths and connection details
+   from responses
 3. **Error Handling**: Sanitized error messages prevent information leakage
 
 ## Performance Improvements
@@ -119,7 +121,7 @@
 ## Files Modified
 
 1. `src/sono_eval/api/main.py` - Main fixes
-2. `Documentation/Guides/user-guide/api-reference.md` - Documentation updates
+2. `documentation/Guides/user-guide/api-reference.md` - Documentation updates
 
 ## Backward Compatibility
 

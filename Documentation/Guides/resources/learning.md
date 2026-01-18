@@ -1,6 +1,7 @@
 # Learning Resources
 
-This guide provides resources to help you understand and use the Sono-Eval system effectively.
+This guide provides resources to help you understand and use the Sono-Eval
+system effectively.
 
 ## Core Concepts
 
@@ -41,7 +42,7 @@ This guide provides resources to help you understand and use the Sono-Eval syste
 
 ### 3. Dark Horse Model & Micro-Motives
 
-Based on the tex-assist-coding model, we track intrinsic motivations:
+Sono-Eval is built on individualized learning principles that recognize each person's unique path to excellence. We track intrinsic motivations through micro-motives:
 
 **Micro-Motives:**
 
@@ -53,7 +54,10 @@ Based on the tex-assist-coding model, we track intrinsic motivations:
 
 **Resources:**
 
-- [Dark Horse Theory](https://www.darkhorseinstitute.com/)
+- **[Dark Horse Approach](../../Learning/Philosophy/dark-horse-approach.md)** - Complete framework for individualized learning
+- **[Micro-Motives Framework](../../Learning/Philosophy/micro-motives-framework.md)** - Understanding what energizes you
+- **[Discover Your Micro-Motives Exercise](../../Learning/Exercises/discover-your-micro-motives.md)** - Self-discovery exercise
+- [Dark Horse Theory](https://www.darkhorseinstitute.com/) - Original research
 - Research on individualized learning paths
 
 ### 4. Semantic Tagging with T5
@@ -333,18 +337,18 @@ Create custom Superset dashboards for your needs:
 
 ### Common Issues
 
-**Issue: Low confidence scores**
+#### Issue: Low confidence scores
 
 - Solution: Provide more context and evidence in submissions
 - Check assessment configuration
 
-**Issue: Model loading errors**
+#### Issue: Model loading errors
 
 - Solution: Verify model cache directory permissions
 - Ensure sufficient disk space
 - Check internet connection for downloads
 
-**Issue: Memory storage errors**
+#### Issue: Memory storage errors
 
 - Solution: Check file permissions on storage path
 - Verify disk space

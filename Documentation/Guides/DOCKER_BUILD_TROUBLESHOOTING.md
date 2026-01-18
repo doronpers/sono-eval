@@ -309,7 +309,7 @@ CMD ["uvicorn", "sono_eval.api.main:app", "--host", "0.0.0.0", "--port", "8000"]
 
 Create `requirements-minimal.txt`:
 
-```
+```text
 fastapi==0.104.1
 uvicorn[standard]==0.24.0
 pydantic==2.5.0
@@ -355,9 +355,9 @@ Before building, ensure:
 ## Common Error Patterns
 
 | Error Pattern | Likely Cause | Quick Fix |
-|--------------|--------------|-----------|
+| --- | --- | --- |
 | `torch==2.8.0` | Old requirements.txt | Use updated requirements.txt |
-| `ModuleNotFoundError: jinja2` | Missing dependency | Already fixed in requirements.txt |
+| jinja2 Missing | Missing dependency | Fixed in requirements.txt |
 | `Killed` during pip install | Out of memory | Increase Docker memory |
 | `Connection timeout` | Network/PyTorch download | Retry or use pip cache |
 | `COPY failed` | Missing files | Check build context |

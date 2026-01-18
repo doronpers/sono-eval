@@ -1,12 +1,20 @@
 # Sono-Eval Documentation Hub
 
-Welcome to the Sono-Eval documentation. This is your single source of truth for understanding, installing, and using the system.
+Welcome to the Sono-Eval documentation. This is your single source of truth for
+understanding, installing, and using the system.
+
+**Primary experience**: desktop, single-user workflows.
+**Optional companion**: a mobile-friendly interface for guided assessments.
 
 ---
 
 ## 🗺️ Navigation by Role
 
-### 👋 For Candidates (Beta Testers)
+### 🚦 Start Here (Landing Guide)
+
+- **[Start Here](START_HERE.md)** - Single landing page for first-time readers
+
+### 👋 For Individuals (Desktop)
 
 1. **[Candidate Guide](Guides/resources/candidate-guide.md)** - Your starting point
 2. **[Quick Start](Guides/QUICK_START.md)** - Get running in 5 minutes
@@ -19,11 +27,23 @@ Welcome to the Sono-Eval documentation. This is your single source of truth for 
 3. **[Implementation Details](Core/development/implementation.md)** - Code dive
 4. **[Contributing](../CONTRIBUTING.md)** - How to help
 
-### 📊 For Evaluators & Architects
+### 📊 For Coaches (Optional)
 
 1. **[Assessment Path Guide](Guides/assessment-path-guide.md)** - What we measure
 2. **[API Reference](Guides/user-guide/api-reference.md)** - Integration points
 3. **[Glossary](Core/concepts/glossary.md)** - Terminology
+
+### 📱 Optional Mobile Companion
+
+1. **[Mobile Companion Guide](Guides/mobile-companion.md)** - Touch-friendly flow
+
+### 📖 Learning Resources
+
+1. **[Learning Resources](Learning/README.md)** - Beginner-friendly guides and learning paths
+   - Dark Horse Approach to individualized learning
+   - Complete beginner paths
+   - Micro-motives discovery exercises
+   - GitHub, AI tools, and workflow guides
 
 ---
 
@@ -49,6 +69,15 @@ Welcome to the Sono-Eval documentation. This is your single source of truth for 
 - **[Readiness Report](Reports/PUBLIC_READINESS_REPORT.md)** - Beta release status
 - **[Security Audit](Reports/SECURITY_AUDIT_SUMMARY.md)** - Security review summary
 - **[Secrets Audit](Reports/SECRETS_AUDIT.md)** - Credentials and PII check
+
+### Learning Resources
+
+- **[Learning Resources Overview](Learning/README.md)** - Complete learning resource index
+- **[Dark Horse Approach](Learning/Philosophy/dark-horse-approach.md)** - Individualized learning framework
+- **[Complete Beginner Path](Learning/Paths/complete-beginner-path.md)** - Month-by-month roadmap
+- **[GitHub Basics](Learning/Guides/github-basics/)** - Beginner-friendly GitHub guide
+- **[AI Tools Guide](Learning/Guides/ai-tools/)** - Using AI coding tools effectively
+- **[Workflow Building](Learning/Guides/workflow-building/)** - Personal workflow development
 
 ### Maintenance & Governance
 
@@ -77,4 +106,4 @@ Welcome to the Sono-Eval documentation. This is your single source of truth for 
 
 ---
 
-**Version**: 0.1.1 | **Last Updated**: January 13, 2026
+**Version**: 0.1.1 | **Last Updated**: January 15, 2026

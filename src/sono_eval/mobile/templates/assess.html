@@ -3,174 +3,105 @@
 {% set progress = 50 %}
 
 {% block content %}
-<div class="assess-screen">
-    <div class="section-header">
-        <span class="section-icon">📝</span>
-        <h2>Your Assessment</h2>
-        <p class="section-subtitle">
-            Complete the tasks below. You can skip and come back to any section.
-        </p>
-        <div class="guided-mode-toggle" id="guided-mode-toggle" style="display: none;">
-            <label class="toggle-label">
-                <input type="checkbox" id="guided-mode-checkbox" onchange="toggleGuidedMode(this.checked)">
-                <span>Guided Mode</span>
-                <span class="toggle-hint">Get helpful tips as you work</span>
-            </label>
+<div class="assessment-container" id="assessment-app">
+    <!-- Step Indicator -->
+    <div class="step-indicator" role="progressbar" aria-valuenow="1" aria-valuemin="1" aria-valuemax="3">
+        <div class="step active" data-step="1">
+            <span class="step-number">1</span>
+            <span class="step-label">Submit Code</span>
         </div>
-    </div>
-    
-    <div class="guided-tip" id="guided-tip" style="display: none;">
-        <p class="tip-icon">💡</p>
-        <div class="tip-content">
-            <strong>Tip:</strong> <span id="tip-text"></span>
+        <div class="step" data-step="2">
+            <span class="step-number">2</span>
+            <span class="step-label">Processing</span>
         </div>
-        <button class="tip-close" onclick="closeTip()">×</button>
+        <div class="step" data-step="3">
+            <span class="step-number">3</span>
+            <span class="step-label">Results</span>
+        </div>
     </div>
 
-    <div class="path-navigation">
-        <div class="nav-tabs" id="path-tabs">
+    <!-- Code Input Section -->
+    <div class="code-input-section" id="code-input">
+        <div class="input-method-toggle">
+            <button class="toggle-btn active" data-method="paste" type="button" aria-pressed="true">Paste Code</button>
+            <button class="toggle-btn" data-method="upload" type="button" aria-pressed="false">Upload File</button>
+        </div>
+
+        <!-- Paste Method -->
+        <div class="input-paste" id="paste-input">
+            <textarea
+                id="code-textarea"
+                class="code-editor"
+                placeholder="Paste your code here..."
+                aria-label="Code input"
+                spellcheck="false"
+            ></textarea>
+            <div class="char-count">
+                <span id="char-count">0</span> characters
+            </div>
+        </div>
+
+        <!-- Upload Method -->
+        <div class="input-upload hidden" id="upload-input">
+            <div class="upload-zone" id="drop-zone" role="button" tabindex="0" aria-label="File upload drop zone">
+                <span class="upload-icon">📄</span>
+                <p>Drag & drop a file here</p>
+                <p class="upload-hint">or click to browse</p>
+                <input type="file" id="file-input" accept=".py,.js,.ts,.java,.go,.rs,.rb,.cpp,.c,.cs" hidden aria-label="File input">
+            </div>
+            <div class="file-preview hidden" id="file-preview">
+                <span class="file-name"></span>
+                <button class="remove-file" type="button" aria-label="Remove file">×</button>
+            </div>
+        </div>
+
+        <!-- Validation Feedback -->
+        <div class="validation-feedback hidden" id="validation-feedback" role="alert">
+            <span class="feedback-icon"></span>
+            <span class="feedback-message"></span>
+        </div>
+    </div>
+
+    <!-- Path Selection (show selected paths from URL params) -->
+    <div class="selected-paths-summary">
+        <h4>Evaluating:</h4>
+        <div class="path-chips" id="path-chips">
             {% for path in selected_paths %}
-            <button
-                class="nav-tab {% if loop.first %}active{% endif %}"
-                data-path="{{ path }}"
-                onclick="switchPath('{{ path }}')"
-            >
-                {{ path|title }}
-            </button>
+            <span class="path-chip">{{ path|replace('_', ' ')|title }}</span>
             {% endfor %}
         </div>
     </div>
 
-    <form id="assessment-form" class="assessment-form">
-        <input type="hidden" name="candidate_id" value="{{ candidate_id }}">
-
-        {% for path in selected_paths %}
-        <div class="path-section {% if not loop.first %}hidden{% endif %}" data-path="{{ path }}">
-            <div class="section-intro">
-                <h3>{{ path|replace('_', ' ')|title }} Assessment</h3>
-                <p class="intro-text">
-                    This section focuses on your {{ path|replace('_', ' ') }} capabilities.
-                    Take your time and explain your thinking.
-                </p>
-                <div class="why-we-ask" data-path="{{ path }}">
-                    <button class="why-button" onclick="showWhyWeAsk('{{ path }}')">
-                        Why do we ask this?
-                    </button>
-                </div>
-            </div>
-
-            <!-- Code submission area -->
-            <div class="form-group">
-                <label class="form-label">
-                    <strong>Submit your code or solution</strong>
-                    <span class="help-text">
-                        Paste your code, describe your approach, or share a repository link
-                    </span>
-                </label>
-                <textarea
-                    name="content_{{ path }}"
-                    class="form-textarea"
-                    rows="10"
-                    placeholder="// Paste your code here or describe your solution...
-//
-// Example:
-// function calculateSum(numbers) {
-//     return numbers.reduce((sum, num) => sum + num, 0);
-// }"
-                    required
-                ></textarea>
-            </div>
-
-            <!-- Explanation area -->
-            <div class="form-group">
-                <label class="form-label">
-                    <strong>Explain your approach</strong>
-                    <span class="help-text">
-                        What was your thinking? What challenges did you face?
-                    </span>
-                </label>
-                <textarea
-                    name="explanation_{{ path }}"
-                    class="form-textarea"
-                    rows="5"
-                    placeholder="I chose this approach because...
-
-Key decisions:
-- ...
-- ...
-
-Challenges:
-- ...
-"
-                ></textarea>
-            </div>
-
-            <!-- Path-specific questions -->
-            {% if path == 'technical' %}
-            <div class="expandable-section">
-                <button type="button" class="expand-button" onclick="toggleExpand(this)">
-                    <span>Additional questions (optional)</span>
-                    <span class="expand-icon">▼</span>
-                </button>
-                <div class="expandable-content">
-                    <div class="form-group">
-                        <label class="form-label">How did you handle errors?</label>
-                        <textarea name="errors_{{ path }}" class="form-textarea" rows="3"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">How would you test this?</label>
-                        <textarea name="testing_{{ path }}" class="form-textarea" rows="3"></textarea>
-                    </div>
-                </div>
-            </div>
-            {% elif path == 'design' %}
-            <div class="expandable-section">
-                <button type="button" class="expand-button" onclick="toggleExpand(this)">
-                    <span>Additional questions (optional)</span>
-                    <span class="expand-icon">▼</span>
-                </button>
-                <div class="expandable-content">
-                    <div class="form-group">
-                        <label class="form-label">What alternative approaches did you consider?</label>
-                        <textarea name="alternatives_{{ path }}" class="form-textarea" rows="3"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">How would this scale?</label>
-                        <textarea name="scaling_{{ path }}" class="form-textarea" rows="3"></textarea>
-                    </div>
-                </div>
-            </div>
-            {% endif %}
-        </div>
-        {% endfor %}
-
-        <div class="navigation-buttons">
-            <button type="button" class="secondary-button" id="prev-button" onclick="previousPath()">
-                ← Previous
-            </button>
-            <button type="button" class="secondary-button" id="skip-button" onclick="skipSection()">
-                Skip
-            </button>
-            <button type="button" class="primary-button" id="next-button" onclick="nextPath()">
-                Next →
-            </button>
-            <button type="submit" class="primary-button" id="submit-button" style="display: none;">
-                Submit Assessment
-            </button>
-        </div>
-    </form>
-
-    <div class="progress-indicator">
-        <p>Section <span id="current-section">1</span> of {{ selected_paths|length }}</p>
+    <!-- Submit Section -->
+    <div class="submit-section">
+        <button class="primary-button submit-assessment" id="submit-btn" disabled type="button">
+            <span class="btn-text">Begin Assessment</span>
+            <span class="btn-loading hidden">
+                <span class="spinner"></span> Processing...
+            </span>
+        </button>
+        <p class="submit-hint">Assessment typically takes 10-30 seconds</p>
     </div>
-</div>
 
-<!-- Loading overlay -->
-<div id="loading-overlay" class="loading-overlay" style="display: none;">
-    <div class="loading-content">
-        <div class="spinner"></div>
-        <p>Processing your assessment...</p>
-        <p class="loading-subtext">This may take a few moments</p>
+    <!-- Processing State -->
+    <div class="processing-section hidden" id="processing-section">
+        <div class="processing-animation">
+            <div class="pulse-circle"></div>
+            <span class="processing-icon">🔍</span>
+        </div>
+        <h3>Analyzing Your Code</h3>
+        <div class="processing-steps">
+            <div class="proc-step" data-proc="parse">
+                <span class="proc-icon">⏳</span> Parsing code structure
+            </div>
+            <div class="proc-step" data-proc="evaluate">
+                <span class="proc-icon">⏳</span> Evaluating paths
+            </div>
+            <div class="proc-step" data-proc="generate">
+                <span class="proc-icon">⏳</span> Generating insights
+            </div>
+        </div>
+        <p class="processing-tip" id="processing-tip"></p>
     </div>
 </div>
 {% endblock %}
@@ -179,108 +110,187 @@ Challenges:
 <script>
 const candidateId = '{{ candidate_id }}';
 const selectedPaths = {{ selected_paths|tojson }};
-let currentPathIndex = 0;
+let currentMethod = 'paste';
+let uploadedFile = null;
+let codeContent = '';
 
-function switchPath(pathId) {
-    // Hide all sections
-    document.querySelectorAll('.path-section').forEach(section => {
-        section.classList.add('hidden');
+// Toggle between paste and upload
+document.querySelectorAll('.toggle-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const method = this.dataset.method;
+        currentMethod = method;
+
+        // Update buttons
+        document.querySelectorAll('.toggle-btn').forEach(b => {
+            b.classList.remove('active');
+            b.setAttribute('aria-pressed', 'false');
+        });
+        this.classList.add('active');
+        this.setAttribute('aria-pressed', 'true');
+
+        // Show/hide sections
+        document.getElementById('paste-input').classList.toggle('hidden', method !== 'paste');
+        document.getElementById('upload-input').classList.toggle('hidden', method !== 'upload');
+
+        // Validate
+        validateInput();
     });
+});
 
-    // Show selected section
-    const section = document.querySelector(`.path-section[data-path="${pathId}"]`);
-    if (section) {
-        section.classList.remove('hidden');
+// File upload handling
+const dropZone = document.getElementById('drop-zone');
+const fileInput = document.getElementById('file-input');
+const filePreview = document.getElementById('file-preview');
+
+dropZone.addEventListener('click', () => fileInput.click());
+dropZone.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        fileInput.click();
+    }
+});
+
+dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZone.classList.add('drag-over');
+});
+
+dropZone.addEventListener('dragleave', () => {
+    dropZone.classList.remove('drag-over');
+});
+
+dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('drag-over');
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+        handleFile(files[0]);
+    }
+});
+
+fileInput.addEventListener('change', (e) => {
+    if (e.target.files.length > 0) {
+        handleFile(e.target.files[0]);
+    }
+});
+
+function handleFile(file) {
+    // Validate file type
+    const allowedExts = ['.py', '.js', '.ts', '.java', '.go', '.rs', '.rb', '.cpp', '.c', '.cs'];
+    const fileExt = '.' + file.name.split('.').pop().toLowerCase();
+
+    if (!allowedExts.includes(fileExt)) {
+        showValidation('error', `File type ${fileExt} not supported. Allowed: ${allowedExts.join(', ')}`);
+        return;
     }
 
-    // Update active tab
-    document.querySelectorAll('.nav-tab').forEach(tab => {
-        tab.classList.remove('active');
-    });
-    const tab = document.querySelector(`.nav-tab[data-path="${pathId}"]`);
-    if (tab) {
-        tab.classList.add('active');
+    // Validate file size (10MB limit)
+    if (file.size > 10 * 1024 * 1024) {
+        showValidation('error', 'File too large. Maximum size: 10MB');
+        return;
     }
 
-    // Update current index
-    currentPathIndex = selectedPaths.indexOf(pathId);
-    updateNavigation();
+    uploadedFile = file;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        codeContent = e.target.result;
+        filePreview.querySelector('.file-name').textContent = file.name;
+        filePreview.classList.remove('hidden');
+        validateInput();
+    };
+    reader.onerror = () => {
+        showValidation('error', 'Error reading file');
+    };
+    reader.readAsText(file);
 }
 
-function updateNavigation() {
-    const prevButton = document.getElementById('prev-button');
-    const nextButton = document.getElementById('next-button');
-    const submitButton = document.getElementById('submit-button');
-    const currentSection = document.getElementById('current-section');
+document.querySelector('.remove-file').addEventListener('click', () => {
+    uploadedFile = null;
+    codeContent = '';
+    fileInput.value = '';
+    filePreview.classList.add('hidden');
+    validateInput();
+});
 
-    currentSection.textContent = currentPathIndex + 1;
+// Textarea input handling
+const codeTextarea = document.getElementById('code-textarea');
+const charCount = document.getElementById('char-count');
 
-    prevButton.style.display = currentPathIndex > 0 ? 'block' : 'none';
+codeTextarea.addEventListener('input', () => {
+    codeContent = codeTextarea.value;
+    charCount.textContent = codeContent.length;
+    validateInput();
+});
 
-    if (currentPathIndex < selectedPaths.length - 1) {
-        nextButton.style.display = 'block';
-        submitButton.style.display = 'none';
+// Validation
+function validateInput() {
+    const hasContent = currentMethod === 'paste'
+        ? codeTextarea.value.trim().length > 0
+        : uploadedFile !== null && codeContent.length > 0;
+
+    const submitBtn = document.getElementById('submit-btn');
+    submitBtn.disabled = !hasContent;
+
+    if (hasContent) {
+        hideValidation();
     } else {
-        nextButton.style.display = 'none';
-        submitButton.style.display = 'block';
+        showValidation('info', 'Please provide code to assess');
     }
 }
 
-function previousPath() {
-    if (currentPathIndex > 0) {
-        switchPath(selectedPaths[currentPathIndex - 1]);
-    }
+function showValidation(type, message) {
+    const feedback = document.getElementById('validation-feedback');
+    const icon = feedback.querySelector('.feedback-icon');
+    const msg = feedback.querySelector('.feedback-message');
+
+    feedback.classList.remove('hidden', 'error', 'success', 'info');
+    feedback.classList.add(type);
+    icon.textContent = type === 'error' ? '⚠️' : type === 'success' ? '✓' : 'ℹ️';
+    msg.textContent = message;
 }
 
-function nextPath() {
-    if (currentPathIndex < selectedPaths.length - 1) {
-        switchPath(selectedPaths[currentPathIndex + 1]);
-    }
-}
-
-function skipSection() {
-    if (confirm('Skip this section? You can come back to it later.')) {
-        nextPath();
-    }
-}
-
-function toggleExpand(button) {
-    const content = button.nextElementSibling;
-    const icon = button.querySelector('.expand-icon');
-
-    if (content.style.maxHeight) {
-        content.style.maxHeight = null;
-        icon.textContent = '▼';
-    } else {
-        content.style.maxHeight = content.scrollHeight + 'px';
-        icon.textContent = '▲';
-    }
+function hideValidation() {
+    const feedback = document.getElementById('validation-feedback');
+    feedback.classList.add('hidden');
 }
 
 // Form submission
-document.getElementById('assessment-form').addEventListener('submit', async function(e) {
-    e.preventDefault();
-
-    const formData = new FormData(this);
-    const content = {};
-    const personalization = {
-        experience: sessionStorage.getItem('experience') || 'intermediate',
-        goals: JSON.parse(sessionStorage.getItem('goals') || '[]')
-    };
-
-    // Collect all form data
-    for (let [key, value] of formData.entries()) {
-        if (key.startsWith('content_') || key.startsWith('explanation_') ||
-            key.startsWith('errors_') || key.startsWith('testing_') ||
-            key.startsWith('alternatives_') || key.startsWith('scaling_')) {
-            content[key] = value;
-        }
+document.getElementById('submit-btn').addEventListener('click', async function() {
+    if (!codeContent.trim()) {
+        showValidation('error', 'Please provide code to assess');
+        return;
     }
 
-    // Show loading
-    document.getElementById('loading-overlay').style.display = 'flex';
+    // Show processing state
+    document.getElementById('code-input').classList.add('hidden');
+    document.getElementById('processing-section').classList.remove('hidden');
+    this.disabled = true;
+
+    // Animate processing steps
+    const steps = document.querySelectorAll('.proc-step');
+    const tips = [
+        'Analyzing code structure and patterns...',
+        'Evaluating technical skills and best practices...',
+        'Generating personalized insights...'
+    ];
+
+    steps.forEach((step, index) => {
+        setTimeout(() => {
+            step.querySelector('.proc-icon').textContent = '✓';
+            step.classList.add('completed');
+            if (tips[index]) {
+                document.getElementById('processing-tip').textContent = tips[index];
+            }
+        }, (index + 1) * 2000);
+    });
 
     try {
+        // Prepare content
+        const content = {};
+        selectedPaths.forEach(path => {
+            content[`content_${path}`] = codeContent;
+        });
+
         const response = await fetch('/mobile/api/assess', {
             method: 'POST',
             headers: {
@@ -290,158 +300,39 @@ document.getElementById('assessment-form').addEventListener('submit', async func
                 candidate_id: candidateId,
                 paths: selectedPaths,
                 content: content,
-                personalization: personalization
+                personalization: {
+                    experience: sessionStorage.getItem('experience') || 'intermediate',
+                    goals: JSON.parse(sessionStorage.getItem('goals') || '[]')
+                }
             })
         });
 
         const result = await response.json();
 
         if (result.success) {
-            location.href = `/mobile/results?assessment_id=${result.assessment_id}`;
+            // Store result in sessionStorage for results page
+            sessionStorage.setItem('lastAssessmentResult', JSON.stringify(result.result));
+
+            // Redirect to results
+            window.location.href = `/mobile/results?assessment_id=${result.assessment_id}&candidate_id=${candidateId}`;
         } else {
-            document.getElementById('loading-overlay').style.display = 'none';
-            const errorMsg = result.error || 'Unknown error occurred';
-            const errorDetails = result.details || null;
-            if (window.sonoEval && window.sonoEval.showError) {
-                window.sonoEval.showError('Failed to process assessment: ' + errorMsg, errorDetails);
-            } else {
-                alert('Error processing assessment: ' + errorMsg);
-            }
+            // Show error
+            document.getElementById('processing-section').classList.add('hidden');
+            document.getElementById('code-input').classList.remove('hidden');
+            this.disabled = false;
+            showValidation('error', result.error || 'Assessment failed. Please try again.');
         }
     } catch (error) {
-        document.getElementById('loading-overlay').style.display = 'none';
-        if (window.sonoEval && window.sonoEval.showError) {
-            window.sonoEval.showError('Network error: ' + error.message);
-        } else {
-            alert('Error: ' + error.message);
-        }
+        document.getElementById('processing-section').classList.add('hidden');
+        document.getElementById('code-input').classList.remove('hidden');
+        this.disabled = false;
+        showValidation('error', 'Network error: ' + error.message);
+        console.error('Assessment submission error:', error);
     }
-}
+});
 
-// Guided mode functionality
-let guidedModeEnabled = false;
-const guidedTips = {
-    'technical': [
-        'Write code as if others will maintain it',
-        'Add comments only where logic is complex',
-        'Consider edge cases and error handling',
-        'Think about performance and scalability'
-    ],
-    'design': [
-        'Start by understanding the problem clearly',
-        'Consider multiple approaches before choosing',
-        'Think about how the system might evolve',
-        'Document your design decisions'
-    ],
-    'collaboration': [
-        'Write clear, self-documenting code',
-        'Include a README explaining your approach',
-        'Make your code reviewable by others',
-        'Consider how teammates would understand this'
-    ],
-    'problem_solving': [
-        'Break down complex problems into smaller parts',
-        'Think step by step through your approach',
-        'Consider efficiency and optimization',
-        'Test your assumptions and edge cases'
-    ]
-};
-
-function toggleGuidedMode(enabled) {
-    guidedModeEnabled = enabled;
-    localStorage.setItem('sono_eval_guided_mode', enabled.toString());
-    
-    if (enabled) {
-        showNextTip();
-    } else {
-        document.getElementById('guided-tip').style.display = 'none';
-    }
-    
-    // Track guided mode usage
-    if (window.sonoEvalTracking && window.sonoEvalTracking.trackEvent) {
-        window.sonoEvalTracking.trackEvent('guided_mode', {
-            action: enabled ? 'enabled' : 'disabled',
-        });
-    }
-}
-
-function showNextTip() {
-    if (!guidedModeEnabled) return;
-    
-    const currentPath = document.querySelector('.path-section:not(.hidden)')?.dataset.path;
-    if (!currentPath || !guidedTips[currentPath]) return;
-    
-    const tips = guidedTips[currentPath];
-    const tipIndex = Math.floor(Math.random() * tips.length);
-    const tip = tips[tipIndex];
-    
-    const tipElement = document.getElementById('guided-tip');
-    const tipText = document.getElementById('tip-text');
-    
-    if (tipElement && tipText) {
-        tipText.textContent = tip;
-        tipElement.style.display = 'flex';
-        
-        // Auto-hide after 8 seconds
-        setTimeout(() => {
-            if (guidedModeEnabled) {
-                tipElement.style.display = 'none';
-            }
-        }, 8000);
-    }
-}
-
-function closeTip() {
-    document.getElementById('guided-tip').style.display = 'none';
-    // Show next tip after a delay
-    setTimeout(showNextTip, 5000);
-}
-
-function showWhyWeAsk(path) {
-    const explanations = {
-        'technical': 'We assess technical skills to understand your coding abilities, problem-solving approach, and technical best practices. This helps identify your strengths and areas for growth.',
-        'design': 'Design thinking reveals how you approach problems, make architectural decisions, and consider system scalability. This shows your ability to think beyond just code.',
-        'collaboration': 'Collaboration skills are essential in team environments. We look at how well you communicate, document, and write code that others can understand and maintain.',
-        'problem_solving': 'Problem-solving shows your analytical thinking, debugging methodology, and approach to complex challenges. This reveals your thought process and creativity.'
-    };
-    
-    const explanation = explanations[path] || 'This assessment helps us understand your skills and provide personalized feedback.';
-    
-    if (window.sonoEval && window.sonoEval.showSuccess) {
-        window.sonoEval.showSuccess(`<strong>Why we ask this:</strong><br>${explanation}`);
-    } else {
-        alert(`Why we ask this:\n\n${explanation}`);
-    }
-}
-
-// Initialize guided mode on page load
+// Track assessment start
 document.addEventListener('DOMContentLoaded', function() {
-    const isFirstTime = !localStorage.getItem('sono_eval_assessment_completed');
-    const guidedModeToggle = document.getElementById('guided-mode-toggle');
-    
-    if (isFirstTime && guidedModeToggle) {
-        guidedModeToggle.style.display = 'block';
-        // Enable by default for first-time users
-        document.getElementById('guided-mode-checkbox').checked = true;
-        toggleGuidedMode(true);
-    } else if (guidedModeToggle) {
-        const saved = localStorage.getItem('sono_eval_guided_mode') === 'true';
-        document.getElementById('guided-mode-checkbox').checked = saved;
-        if (saved) {
-            toggleGuidedMode(true);
-        }
-    }
-    
-    // Show tips when user focuses on text areas
-    document.querySelectorAll('textarea').forEach(textarea => {
-        textarea.addEventListener('focus', function() {
-            if (guidedModeEnabled) {
-                setTimeout(showNextTip, 1000);
-            }
-        });
-    });
-    
-    // Track assessment start
     if (window.sonoEvalTracking && window.sonoEvalTracking.trackEvent) {
         window.sonoEvalTracking.trackEvent('assessment_started', {
             paths: selectedPaths,
@@ -455,24 +346,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Handle form submission errors
-document.getElementById('assessment-form').addEventListener('submit', async function(e) {
-    // This is already handled above, but we need to catch any unhandled errors
-    try {
-        // Form submission is handled in the existing submit handler above
-    } catch (error) {
-        document.getElementById('loading-overlay').style.display = 'none';
-        const errorMsg = error.message || 'Network error. Please check your connection and try again.';
-        if (window.sonoEval && window.sonoEval.showError) {
-            window.sonoEval.showError('Error submitting assessment', errorMsg);
-        } else {
-            alert('Error submitting assessment: ' + errorMsg);
-        }
-        console.error('Assessment submission error:', error);
-    }
-});
 
 // Initialize
-updateNavigation();
+validateInput();
 </script>
 {% endblock %}

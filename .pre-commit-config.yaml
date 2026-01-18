@@ -10,7 +10,6 @@ repos:
         args: [--markdown-linebreak-ext=md]
       - id: end-of-file-fixer
       - id: check-yaml
-        args: [--safe]
       - id: check-json
       - id: check-toml
       - id: check-added-large-files
@@ -40,7 +39,7 @@ repos:
     rev: 6.1.0
     hooks:
       - id: flake8
-        args: [--max-line-length=100, --extend-ignore=E203]
+        args: [--config=.flake8]
         additional_dependencies:
           - flake8-docstrings
           - flake8-bugbear
@@ -58,7 +57,7 @@ repos:
     hooks:
       - id: bandit
         args: [-c, pyproject.toml]
-        additional_dependencies: ["bandit[toml]"]
+        additional_dependencies: ["bandit[toml]", "pbr"]
         exclude: ^tests/
 
   # Python type checking with mypy
@@ -70,6 +69,8 @@ repos:
         additional_dependencies:
           - types-requests
           - types-PyYAML
+          - types-redis
+          - types-tabulate
 
   # Markdown linting
   - repo: https://github.com/igorshubovych/markdownlint-cli
@@ -111,8 +112,8 @@ ci:
 
     for more information, see https://pre-commit.ci
   autofix_prs: true
-  autoupdate_branch: ''
-  autoupdate_commit_msg: '[pre-commit.ci] pre-commit autoupdate'
+  autoupdate_branch: ""
+  autoupdate_commit_msg: "[pre-commit.ci] pre-commit autoupdate"
   autoupdate_schedule: weekly
   skip: [python-safety-dependencies-check]
   submodules: false

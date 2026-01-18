@@ -167,7 +167,7 @@ function toggleExpand(button) {
     } else {
         content.style.maxHeight = content.scrollHeight + 'px';
         icon.textContent = '▲';
-        
+
         // Track discovery interaction
         if (window.sonoEvalTracking && window.sonoEvalTracking.trackEvent) {
             window.sonoEvalTracking.trackEvent('discovery', {
@@ -182,14 +182,14 @@ function exploreDiscovery(button, discoveryId) {
     const card = button.closest('.discovery-card');
     const preview = card.querySelector('.discovery-preview');
     const content = card.querySelector('.discovery-content');
-    
+
     // Hide preview, show content
     preview.style.display = 'none';
     content.style.display = 'block';
-    
+
     // Smooth scroll to content
     content.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    
+
     // Track discovery
     if (window.sonoEvalTracking && window.sonoEvalTracking.trackEvent) {
         window.sonoEvalTracking.trackEvent('discovery', {
@@ -197,7 +197,7 @@ function exploreDiscovery(button, discoveryId) {
             discovery_id: discoveryId,
         });
     }
-    
+
     // Track milestone
     if (window.sonoEval && window.sonoEval.trackMilestone) {
         window.sonoEval.trackMilestone('discovery_explored', {

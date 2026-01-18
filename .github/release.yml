@@ -9,57 +9,57 @@ changelog:
     authors:
       - dependabot
       - github-actions
-  
+
   categories:
     - title: 🚀 New Features
       labels:
         - enhancement
         - feature
         - feat
-    
+
     - title: 🐛 Bug Fixes
       labels:
         - bug
         - fix
-    
+
     - title: 🔒 Security
       labels:
         - security
         - vulnerability
-    
+
     - title: 📚 Documentation
       labels:
         - documentation
         - docs
-    
+
     - title: ⚡ Performance
       labels:
         - performance
         - perf
         - optimization
-    
+
     - title: 🧪 Testing
       labels:
         - test
         - testing
-    
+
     - title: 🔧 Maintenance
       labels:
         - maintenance
         - chore
         - refactor
-    
+
     - title: 🏗️ Build & CI
       labels:
         - build
         - ci
         - github-actions
-    
+
     - title: 📦 Dependencies
       labels:
         - dependencies
         - deps
-    
+
     - title: Other Changes
       labels:
         - "*"

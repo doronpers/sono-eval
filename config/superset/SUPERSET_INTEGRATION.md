@@ -21,7 +21,8 @@ Apache Superset offers several advantages for sono-eval analytics:
 
 ### Key Benefits
 
-✅ **Open Source**: Apache 2.0 license (compatible with sono-eval's MIT license)  
+✅ **Open Source**: Apache 2.0 license (compatible with sono-eval's MIT
+   license)
 ✅ **Powerful Visualizations**: 40+ chart types, interactive dashboards  
 ✅ **SQL Support**: Native SQL Lab for custom queries  
 ✅ **Real-time Updates**: Configurable refresh rates  
@@ -48,7 +49,7 @@ Apache Superset offers several advantages for sono-eval analytics:
 
 ## Architecture
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │                    Sono-Eval System                          │
 │                                                              │
@@ -149,7 +150,8 @@ For each table, create a dataset:
 1. Go to **Data > Datasets**
 2. Click **+ Dataset**
 3. Select your database
-4. Select table: `assessments`, `path_scores`, `scoring_metrics`, `micro_motives`, `candidates`
+4. Select table: `assessments`, `path_scores`, `scoring_metrics`,
+   `micro_motives`, `candidates`
 5. Save each dataset
 
 ### Step 4: Import Dashboards

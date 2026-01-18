@@ -2,7 +2,9 @@
 
 ## Overview
 
-This document summarizes the complete implementation of the Sono-Eval explainable multi-path developer assessment system as specified in the requirements.
+This document summarizes the complete implementation of the Sono-Eval
+explainable multi-path developer assessment system as specified in the
+requirements.
 
 ## What Was Implemented
 
@@ -14,7 +16,8 @@ This document summarizes the complete implementation of the Sono-Eval explainabl
 
 - Explainable, evidence-based scoring with `Evidence` objects
 - Multi-path evaluation (Technical, Design, Collaboration, Problem-Solving, Communication)
-- Dark Horse micro-motive tracking (Mastery, Exploration, Collaboration, Innovation, Quality)
+- Dark Horse micro-motive tracking (Mastery, Exploration, Collaboration,
+  Innovation, Quality)
 - Confidence scoring for all assessments
 - Natural language explanations for all scores
 - Flexible assessment input supporting various submission types
@@ -22,7 +25,8 @@ This document summarizes the complete implementation of the Sono-Eval explainabl
 **Key Files**:
 
 - `engine.py` - Core assessment logic
-- `models.py` - Data structures (AssessmentResult, ScoringMetric, Evidence, MicroMotive, etc.)
+- `models.py` - Data structures (AssessmentResult, ScoringMetric, Evidence,
+  MicroMotive, etc.)
 
 **Usage Example**:
 
@@ -169,23 +173,16 @@ sono-eval server start
 - Celery async query support
 - Pre-configured database connections
 
-**Key Files**:
-
 - `superset_config.py` - Superset configuration
 - `README.md` - Setup and usage documentation
 
 ### ✅ 8. Docker & Docker Compose
-
-**Location**: Root directory
-
-**Features**:
 
 - Multi-container setup with:
   - Sono-Eval application (port 8000)
   - PostgreSQL database (port 5432)
   - Redis cache/queue (port 6379)
   - Apache Superset analytics (port 8088)
-- Health checks
 - Volume persistence
 - Network isolation
 - Production-ready configuration
@@ -200,13 +197,10 @@ sono-eval server start
 
 **Location**: `launcher.sh`
 
-**Features**:
-
 - Start/stop/restart all services
 - View service status and logs
 - Run CLI commands in containers
 - Setup development environment
-- Automatic .env creation from .env.example
 
 **Usage**:
 
@@ -214,24 +208,20 @@ sono-eval server start
 ./launcher.sh start      # Start all services
 ./launcher.sh status     # Check status
 ./launcher.sh logs       # View logs
-./launcher.sh cli assess --help
 ./launcher.sh dev        # Setup dev environment
 ```
 
 ### ✅ 10. Comprehensive Documentation
 
-**Files Created**:
-
 - `README.md` - Complete project documentation with:
   - Quick start guide
   - Feature descriptions
   - Usage examples (CLI, API, Docker)
-  - Configuration guide
   - Development setup
   - Architecture overview
 - `CONTRIBUTING.md` - Contribution guidelines
 - `LICENSE` - MIT License
-- `docs/learning-resources.md` - Educational resources including:
+- `documentation/Guides/resources/learning.md` - Educational resources including:
   - Core concepts (Explainable AI, Multi-Path Assessment, Dark Horse Model)
   - Getting started tutorials
   - Best practices
@@ -308,7 +298,7 @@ pytest --cov=src/sono_eval
 
 ### Data Flow
 
-```
+```text
 Input → Assessment Engine → Evidence Collection → Scoring → Explanation → Result
                 ↓
             MemU Storage (persistent)

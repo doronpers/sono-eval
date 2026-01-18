@@ -1,8 +1,9 @@
 """Tests for input validation in assessment models."""
 
-import json
+
 import pytest
 from pydantic import ValidationError
+
 from sono_eval.assessment.models import AssessmentInput, PathType
 
 
@@ -15,7 +16,7 @@ def test_valid_candidate_id():
         "test_123-456",
         "ABC123",
     ]
-    
+
     for candidate_id in valid_ids:
         assessment_input = AssessmentInput(
             candidate_id=candidate_id,
@@ -36,7 +37,7 @@ def test_invalid_candidate_id():
         "test/candidate",  # / not allowed
         "test\\candidate",  # \ not allowed
     ]
-    
+
     for candidate_id in invalid_ids:
         with pytest.raises(ValidationError) as exc_info:
             AssessmentInput(
@@ -58,7 +59,7 @@ def test_candidate_id_length_limits():
             content={"code": "print('hello')"},
             paths_to_evaluate=[PathType.TECHNICAL],
         )
-    
+
     # Too long
     long_id = "a" * 101
     with pytest.raises(ValidationError):
@@ -68,7 +69,7 @@ def test_candidate_id_length_limits():
             content={"code": "print('hello')"},
             paths_to_evaluate=[PathType.TECHNICAL],
         )
-    
+
     # Valid length
     valid_id = "a" * 100
     assessment_input = AssessmentInput(
@@ -83,7 +84,7 @@ def test_candidate_id_length_limits():
 def test_valid_submission_types():
     """Test that valid submission types are accepted."""
     valid_types = ["code", "project", "interview", "portfolio", "test"]
-    
+
     for submission_type in valid_types:
         assessment_input = AssessmentInput(
             candidate_id="test123",
@@ -122,7 +123,7 @@ def test_content_size_limit():
     """Test that overly large content is rejected."""
     # Create content larger than 10MB
     large_content = {"data": "x" * 11_000_000}
-    
+
     with pytest.raises(ValidationError) as exc_info:
         AssessmentInput(
             candidate_id="test123",
@@ -137,7 +138,7 @@ def test_valid_content_size():
     """Test that reasonable content size is accepted."""
     # Create content under 10MB
     content = {"code": "x" * 1000}
-    
+
     assessment_input = AssessmentInput(
         candidate_id="test123",
         submission_type="code",
