@@ -254,6 +254,70 @@ Sono-Eval helps with all three!
 
 ---
 
+## 🚀 Your First Assessment Walkthrough
+
+### Step 1: Welcome & Discovery
+When you first visit Sono-Eval, you'll see the welcome page. Take time to:
+- **Explore the discovery cards** - Click "Explore" to learn what makes Sono-Eval different
+- **Read the value hints** - Each section explains why it matters
+- **Try the mini-quiz** - Reflect on what you hope to learn
+
+**Why this matters:** Understanding the system helps you get more value from your assessment.
+
+### Step 2: Setup (If Needed)
+If you're setting up on your own machine:
+- **Use the interactive setup wizard** - Visit `/mobile/setup` for guided configuration
+- **Or use the CLI** - Run `sono-eval setup` for command-line setup
+- **Follow the checklist** - The wizard checks prerequisites automatically
+
+**Why this matters:** Proper setup ensures everything works smoothly.
+
+### Step 3: Start Your Assessment
+Click "Let's Get Started" and provide:
+- **Your identifier** - Use the same one each time to track progress
+- **Experience level** - Helps personalize feedback (optional)
+- **Your goals** - What you want to learn (optional, but helpful)
+
+**Why this matters:** Personalization helps you get more relevant feedback.
+
+### Step 4: Choose Your Paths
+Select 1-4 assessment paths:
+- **Read the descriptions** - Click "Learn more" on each path
+- **See recommendations** - Based on your goals, some paths may be recommended
+- **Check time estimates** - Each path takes 10-20 minutes
+- **Understand the value** - Hover over paths to see "Why this matters"
+
+**Why this matters:** Choosing relevant paths gives you focused, actionable feedback.
+
+### Step 5: Complete the Assessment
+For each path you selected:
+- **Use Guided Mode** - If it's your first time, enable guided mode for helpful tips
+- **Read "Why we ask this"** - Click the button to understand each section
+- **Take your time** - No rush, focus on quality
+- **Explain your thinking** - The explanation section is valuable
+
+**Why this matters:** Clear explanations help the system provide better feedback.
+
+### Step 6: Review Your Results
+After submission:
+- **Read the summary** - Understand your overall performance
+- **Explore each path** - See strengths and improvement areas
+- **Check recommendations** - These are your action items
+- **View insights** - Click "View Detailed Insights" for learning journey
+
+**Why this matters:** Understanding your results helps you create a growth plan.
+
+### Step 7: Take Action
+Use your feedback to:
+- **Focus on recommendations** - These are prioritized for you
+- **Follow the learning path** - Step-by-step guide to improvement
+- **Track progress** - Take another assessment later to see growth
+- **Explore discoveries** - Try pressing `?` or exploring hidden features
+
+**Why this matters:** Action on feedback is how you grow.
+
+---
+
 ## 📚 Resources
 
 ### Learning Resources

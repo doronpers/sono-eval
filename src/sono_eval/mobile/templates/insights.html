@@ -1,0 +1,237 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="insights-screen">
+    <div class="hero-section insights-hero">
+        <div class="hero-icon">📊</div>
+        <h2 class="hero-title">Your Learning Journey</h2>
+        <p class="hero-subtitle">Discover insights about your skills and growth</p>
+    </div>
+
+    <div class="insights-container" id="insights-container">
+        <div class="loading-results">
+            <div class="spinner"></div>
+            <p>Loading your insights...</p>
+        </div>
+    </div>
+
+    <div class="action-buttons" id="action-buttons" style="display: none;">
+        <button class="secondary-button" onclick="location.href='/mobile/results?assessment_id={{ assessment_id }}'">
+            ← Back to Results
+        </button>
+        <button class="primary-button" onclick="location.href='/mobile/'">
+            Take Another Assessment
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const assessmentId = '{{ assessment_id }}';
+
+async function loadInsights() {
+    try {
+        // In a real implementation, this would fetch from the API
+        await new Promise(resolve => setTimeout(resolve, 1500));
+
+        displayInsights();
+    } catch (error) {
+        document.getElementById('insights-container').innerHTML = `
+            <div class="error-message">
+                <p>Error loading insights. Please try again.</p>
+                <button class="primary-button" onclick="loadInsights()">Retry</button>
+            </div>
+        `;
+    }
+}
+
+function displayInsights() {
+    const container = document.getElementById('insights-container');
+    const actionButtons = document.getElementById('action-buttons');
+
+    // Sample insights data - in production, this would come from API
+    const insights = {
+        overall_trend: 'improving',
+        strongest_path: 'Technical',
+        growth_area: 'Design',
+        skill_distribution: {
+            technical: 82,
+            design: 65,
+            collaboration: 78,
+            problem_solving: 70
+        },
+        learning_path: [
+            {
+                step: 1,
+                title: 'Master Design Patterns',
+                description: 'Focus on architectural thinking and system design',
+                resources: ['Design Patterns book', 'System Design course'],
+                estimated_time: '2-3 weeks'
+            },
+            {
+                step: 2,
+                title: 'Improve Code Documentation',
+                description: 'Practice writing clear comments and README files',
+                resources: ['Documentation best practices', 'Code review exercises'],
+                estimated_time: '1-2 weeks'
+            },
+            {
+                step: 3,
+                title: 'Advanced Problem Solving',
+                description: 'Work on complex algorithms and edge cases',
+                resources: ['Algorithm practice platform', 'Problem-solving challenges'],
+                estimated_time: '3-4 weeks'
+            }
+        ],
+        comparisons: {
+            similar_profiles: 'You score higher than 75% of similar profiles in Technical skills',
+            industry_benchmark: 'Your overall score is above the industry average'
+        },
+        achievements: [
+            {
+                name: 'First Assessment',
+                description: 'Completed your first Sono-Eval assessment',
+                icon: '🎯'
+            },
+            {
+                name: 'Technical Excellence',
+                description: 'Scored above 80 in Technical path',
+                icon: '💪'
+            }
+        ]
+    };
+
+    container.innerHTML = `
+        <div class="insights-overview">
+            <div class="insight-card trend-card">
+                <h3>
+                    <span class="section-icon">📈</span>
+                    Your Progress Trend
+                </h3>
+                <div class="trend-indicator ${insights.overall_trend}">
+                    <span class="trend-icon">${insights.overall_trend === 'improving' ? '📈' : '📊'}</span>
+                    <div class="trend-text">
+                        <strong>${insights.overall_trend === 'improving' ? 'Improving' : 'Stable'}</strong>
+                        <p>Your skills are ${insights.overall_trend === 'improving' ? 'showing steady improvement' : 'maintaining a good level'}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="insight-card skill-distribution">
+                <h3>
+                    <span class="section-icon">🎯</span>
+                    Skill Distribution
+                </h3>
+                <div class="skill-bars">
+                    ${Object.entries(insights.skill_distribution).map(([path, score]) => `
+                        <div class="skill-bar-item">
+                            <div class="skill-label">
+                                <span>${path.charAt(0).toUpperCase() + path.slice(1).replace('_', ' ')}</span>
+                                <span class="skill-score">${score}/100</span>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-bar-fill" style="width: ${score}%"></div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        </div>
+
+        <div class="insight-card learning-path-card">
+            <h3>
+                <span class="section-icon">🛤️</span>
+                Your Personalized Learning Path
+            </h3>
+            <p class="learning-path-intro">
+                Based on your assessment results, here's a step-by-step plan to continue growing:
+            </p>
+            <div class="learning-path-steps">
+                ${insights.learning_path.map(step => `
+                    <div class="learning-step">
+                        <div class="step-number-large">${step.step}</div>
+                        <div class="step-content">
+                            <h4>${step.title}</h4>
+                            <p class="step-description">${step.description}</p>
+                            <div class="step-resources">
+                                <strong>Resources:</strong>
+                                <ul class="resources-list">
+                                    ${step.resources.map(resource => `<li>${resource}</li>`).join('')}
+                                </ul>
+                            </div>
+                            <div class="step-time">
+                                <span class="time-icon">⏱️</span>
+                                Estimated time: ${step.estimated_time}
+                            </div>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+
+        <div class="insight-card comparisons-card">
+            <h3>
+                <span class="section-icon">📊</span>
+                How You Compare
+            </h3>
+            <div class="comparison-items">
+                <div class="comparison-item">
+                    <span class="comparison-icon">👥</span>
+                    <div class="comparison-text">
+                        <strong>Similar Profiles</strong>
+                        <p>${insights.comparisons.similar_profiles}</p>
+                    </div>
+                </div>
+                <div class="comparison-item">
+                    <span class="comparison-icon">🏆</span>
+                    <div class="comparison-text">
+                        <strong>Industry Benchmark</strong>
+                        <p>${insights.comparisons.industry_benchmark}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="insight-card achievements-card">
+            <h3>
+                <span class="section-icon">🏅</span>
+                Your Achievements
+            </h3>
+            <div class="achievements-grid">
+                ${insights.achievements.map(achievement => `
+                    <div class="achievement-item">
+                        <span class="achievement-icon">${achievement.icon}</span>
+                        <div class="achievement-content">
+                            <strong>${achievement.name}</strong>
+                            <p>${achievement.description}</p>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+
+        <div class="info-box info-box-tip">
+            <p class="info-box-icon">💡</p>
+            <div class="info-box-content">
+                <strong>Pro Tip:</strong> Take assessments regularly to track your progress over time. 
+                Each assessment builds on the previous one to show your growth journey.
+            </div>
+        </div>
+    `;
+
+    actionButtons.style.display = 'flex';
+}
+
+// Track insights view
+document.addEventListener('DOMContentLoaded', function() {
+    if (window.sonoEvalTracking && window.sonoEvalTracking.trackEvent) {
+        window.sonoEvalTracking.trackEvent('insights_viewed', {
+            assessment_id: assessmentId || 'unknown',
+        });
+    }
+    
+    loadInsights();
+});
+</script>
+{% endblock %}

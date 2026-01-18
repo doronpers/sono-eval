@@ -122,6 +122,17 @@ def create_mobile_app() -> FastAPI:
             },
         )
 
+    @app.get("/setup", response_class=HTMLResponse)
+    async def mobile_setup(request: Request):
+        """Interactive setup wizard for remote candidates."""
+        return templates.TemplateResponse(
+            "setup.html",
+            {
+                "request": request,
+                "title": "Setup Your Environment",
+            },
+        )
+
     @app.get("/start", response_class=HTMLResponse)
     async def mobile_start(request: Request):
         """Start assessment - candidate information."""
@@ -182,6 +193,18 @@ def create_mobile_app() -> FastAPI:
             {
                 "request": request,
                 "title": "Your Results",
+                "assessment_id": assessment_id,
+            },
+        )
+
+    @app.get("/insights", response_class=HTMLResponse)
+    async def mobile_insights(request: Request, assessment_id: Optional[str] = None):
+        """Dedicated insights page with learning journey and recommendations."""
+        return templates.TemplateResponse(
+            "insights.html",
+            {
+                "request": request,
+                "title": "Your Insights",
                 "assessment_id": assessment_id,
             },
         )
@@ -332,8 +355,9 @@ def _get_recommendation_reason(path_id: str, goals: List[str], experience: Optio
     else:
         return base_reason
 
-    @app.post("/api/mobile/track")
-    async def track_interactions(batch: TrackingBatch):
+
+@app.post("/api/mobile/track")
+async def track_interactions(batch: TrackingBatch):
         """
         Track user interactions for analytics and personalization.
         
@@ -376,8 +400,9 @@ def _get_recommendation_reason(path_id: str, goals: List[str], experience: Optio
                 },
             )
 
-    @app.get("/api/mobile/easter-eggs")
-    async def list_easter_eggs():
+
+@app.get("/api/mobile/easter-eggs")
+async def list_easter_eggs():
         """List available easter eggs (for discovery documentation)."""
         registry = get_registry()
         eggs = registry.list_eggs()
@@ -387,6 +412,7 @@ def _get_recommendation_reason(path_id: str, goals: List[str], experience: Optio
             "count": len(eggs),
             "message": "Easter eggs are discoverable features that unlock valuable functionality",
         }
+
 
     @app.get("/mobile/advanced")
     async def advanced_features(request: Request):

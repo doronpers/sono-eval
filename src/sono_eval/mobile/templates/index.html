@@ -38,6 +38,26 @@
                     <span class="value-hint">💡 Specific recommendations you can use immediately</span>
                 </li>
             </ul>
+            <div class="mini-quiz" style="margin-top: 1.5rem; padding: 1rem; background: var(--bg-light); border-radius: 8px;">
+                <p style="font-weight: 600; margin-bottom: 0.75rem; color: var(--primary-color);">Quick Reflection:</p>
+                <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+                    What do you hope to learn from this assessment?
+                </p>
+                <div class="reflection-options" style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.5rem; border-radius: 4px; transition: background 0.2s;" onmouseover="this.style.background='var(--bg-light)'" onmouseout="this.style.background=''">
+                        <input type="radio" name="reflection" value="strengths" style="cursor: pointer;" onchange="saveReflection(this.value)">
+                        <span style="font-size: 0.9rem;">Identify my strengths</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.5rem; border-radius: 4px; transition: background 0.2s;" onmouseover="this.style.background='var(--bg-light)'" onmouseout="this.style.background=''">
+                        <input type="radio" name="reflection" value="improve" style="cursor: pointer;" onchange="saveReflection(this.value)">
+                        <span style="font-size: 0.9rem;">Find areas to improve</span>
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.5rem; border-radius: 4px; transition: background 0.2s;" onmouseover="this.style.background='var(--bg-light)'" onmouseout="this.style.background=''">
+                        <input type="radio" name="reflection" value="practice" style="cursor: pointer;" onchange="saveReflection(this.value)">
+                        <span style="font-size: 0.9rem;">Practice for interviews</span>
+                    </label>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -186,8 +206,33 @@ function exploreDiscovery(button, discoveryId) {
     }
 }
 
+// Save reflection choice and track it
+function saveReflection(value) {
+    // Save to session storage for personalization
+    const goals = JSON.parse(sessionStorage.getItem('goals') || '[]');
+    if (!goals.includes(value)) {
+        goals.push(value);
+        sessionStorage.setItem('goals', JSON.stringify(goals));
+    }
+    
+    // Track reflection choice
+    if (window.sonoEvalTracking && window.sonoEvalTracking.trackEvent) {
+        window.sonoEvalTracking.trackEvent('reflection', {
+            choice: value,
+            goals: goals,
+        });
+    }
+}
+
 // Track button clicks
 document.addEventListener('DOMContentLoaded', function() {
+    // Load saved reflection if any
+    const savedGoals = JSON.parse(sessionStorage.getItem('goals') || '[]');
+    savedGoals.forEach(goal => {
+        const radio = document.querySelector(`input[name="reflection"][value="${goal}"]`);
+        if (radio) radio.checked = true;
+    });
+    
     const startButton = document.querySelector('.primary-button');
     if (startButton) {
         startButton.addEventListener('click', function() {

@@ -8,7 +8,7 @@
     const TRACKING_ENABLED = true;
     const BATCH_INTERVAL = 5000; // 5 seconds
     const MAX_QUEUE_SIZE = 50;
-    const TRACKING_ENDPOINT = '/mobile/api/track';
+    const TRACKING_ENDPOINT = '/api/mobile/track';
 
     // Session management
     let sessionId = null;

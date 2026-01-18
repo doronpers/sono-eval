@@ -199,6 +199,12 @@ function displayResults() {
                 <strong>Want more insights?</strong> Take another assessment focusing on different areas to get a complete picture of your skills.
             </div>
         </div>
+
+        <div class="action-buttons" style="margin-top: 1.5rem;">
+            <button class="secondary-button" onclick="location.href='/mobile/insights?assessment_id=' + assessmentId">
+                View Detailed Insights →
+            </button>
+        </div>
     `;
 
     actionButtons.style.display = 'flex';
@@ -283,6 +289,54 @@ function shareResults() {
     }
 }
 
+// Check for export parameter
+function checkExportParam() {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('export') === 'json') {
+        // Export results as JSON
+        exportResultsAsJSON();
+    }
+}
+
+// Export results as JSON
+function exportResultsAsJSON() {
+    // In a real implementation, this would fetch actual results from API
+    const results = {
+        assessment_id: assessmentId,
+        timestamp: new Date().toISOString(),
+        overall_score: 78,
+        path_scores: [
+            {
+                path: 'Technical',
+                score: 82,
+                strengths: ['Clean code structure', 'Good error handling'],
+                improvements: ['Consider adding more inline comments']
+            }
+        ],
+        summary: "You've demonstrated strong technical skills with clean, well-structured code.",
+        recommendations: ['Focus on documenting complex logic', 'Practice with more edge cases']
+    };
+    
+    const dataStr = JSON.stringify(results, null, 2);
+    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `sono-eval-results-${assessmentId || 'assessment'}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    // Track export
+    if (window.sonoEvalTracking && window.sonoEvalTracking.trackEvent) {
+        window.sonoEvalTracking.trackEvent('results_exported', {
+            format: 'json',
+            assessment_id: assessmentId,
+        });
+    }
+}
+
 // Track results view
 document.addEventListener('DOMContentLoaded', function() {
     if (window.sonoEvalTracking && window.sonoEvalTracking.trackEvent) {
@@ -296,9 +350,12 @@ document.addEventListener('DOMContentLoaded', function() {
             assessment_id: assessmentId || 'unknown',
         });
     }
+    
+    // Check for export parameter
+    checkExportParam();
+    
+    // Load results on page load
+    loadResults();
 });
-
-// Load results on page load
-loadResults();
 </script>
 {% endblock %}

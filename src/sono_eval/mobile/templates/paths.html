@@ -305,7 +305,7 @@ async function showPathDetails(event, pathId) {
     }
 
     try {
-        const response = await fetch(`/mobile/api/explain/${pathId}`);
+        const response = await fetch(`/api/mobile/explain/${pathId}`);
         const data = await response.json();
 
         if (data.success) {

@@ -453,7 +453,15 @@ document.addEventListener('DOMContentLoaded', function() {
             paths: selectedPaths,
         });
     }
-});document.getElementById('loading-overlay').style.display = 'none';
+});
+
+// Handle form submission errors
+document.getElementById('assessment-form').addEventListener('submit', async function(e) {
+    // This is already handled above, but we need to catch any unhandled errors
+    try {
+        // Form submission is handled in the existing submit handler above
+    } catch (error) {
+        document.getElementById('loading-overlay').style.display = 'none';
         const errorMsg = error.message || 'Network error. Please check your connection and try again.';
         if (window.sonoEval && window.sonoEval.showError) {
             window.sonoEval.showError('Error submitting assessment', errorMsg);
