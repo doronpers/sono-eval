@@ -55,6 +55,11 @@ class Config(BaseSettings):
         default=True, alias="ASSESSMENT_MULTI_PATH_TRACKING"
     )
     dark_horse_mode: str = Field(default="enabled", alias="DARK_HORSE_MODE")
+    pattern_checks_enabled: bool = Field(default=True, alias="PATTERN_CHECKS_ENABLED")
+    pattern_penalty_low: float = Field(default=1.0, alias="PATTERN_PENALTY_LOW")
+    pattern_penalty_medium: float = Field(default=3.0, alias="PATTERN_PENALTY_MEDIUM")
+    pattern_penalty_high: float = Field(default=6.0, alias="PATTERN_PENALTY_HIGH")
+    pattern_penalty_max: float = Field(default=15.0, alias="PATTERN_PENALTY_MAX")
 
     # Superset Configuration
     superset_host: str = Field(default="localhost", alias="SUPERSET_HOST")

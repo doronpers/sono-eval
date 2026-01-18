@@ -6,9 +6,9 @@ and data structures. Good for testing TECHNICAL, DESIGN,
 and COLLABORATION paths.
 """
 
-from typing import List, Optional
 from dataclasses import dataclass
 from datetime import datetime
+from typing import List, Optional
 
 
 @dataclass
@@ -53,10 +53,7 @@ class TaskManager:
             raise ValueError("Title and description cannot be empty")
 
         task = Task(
-            id=self._next_id,
-            title=title,
-            description=description,
-            created_at=datetime.now()
+            id=self._next_id, title=title, description=description, created_at=datetime.now()
         )
         self.tasks.append(task)
         self._next_id += 1

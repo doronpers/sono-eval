@@ -1,6 +1,5 @@
 """Tests for input validation in assessment models."""
 
-
 import pytest
 from pydantic import ValidationError
 

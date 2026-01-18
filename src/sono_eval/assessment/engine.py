@@ -18,6 +18,12 @@ from sono_eval.assessment.models import (
     PathType,
     ScoringMetric,
 )
+from sono_eval.assessment.pattern_checks import (
+    PatternViolation,
+    calculate_pattern_penalty,
+    detect_pattern_violations,
+    violations_to_metadata,
+)
 from sono_eval.utils.config import get_config
 from sono_eval.utils.logger import get_logger
 
@@ -42,6 +48,14 @@ class AssessmentEngine:
         self.version = self.config.assessment_engine_version
         self.enable_explanations = self.config.assessment_enable_explanations
         self.multi_path_tracking = self.config.assessment_multi_path_tracking
+        self.pattern_checks_enabled = self.config.pattern_checks_enabled
+        self.pattern_penalty_weights = {
+            "low": self.config.pattern_penalty_low,
+            "medium": self.config.pattern_penalty_medium,
+            "high": self.config.pattern_penalty_high,
+            "critical": self.config.pattern_penalty_high,
+        }
+        self.pattern_penalty_max = self.config.pattern_penalty_max
         self._ml_model = None  # Lazy-loaded ML model for hybrid scoring
         self._use_ml = False  # Flag to enable ML when available
         logger.info(f"Initialized AssessmentEngine v{self.version}")
@@ -205,13 +219,25 @@ class AssessmentEngine:
         # Generate unique assessment ID
         assessment_id = f"assess_{int(time.time() * 1000)}"
 
+        submission_text = self._extract_text_content(assessment_input.content)
+        pattern_violations: List[PatternViolation] = []
+        pattern_penalty = 0.0
+        pattern_checks_active = (
+            self.pattern_checks_enabled and assessment_input.submission_type == "code"
+        )
+        if pattern_checks_active:
+            pattern_violations = detect_pattern_violations(submission_text)
+            pattern_penalty = calculate_pattern_penalty(
+                pattern_violations, self.pattern_penalty_weights, self.pattern_penalty_max
+            )
+
         # Evaluate each path
         path_scores = []
         all_motives = []
         all_confidences = []
 
         for path in assessment_input.paths_to_evaluate:
-            path_score = await self._evaluate_path(path, assessment_input)
+            path_score = await self._evaluate_path(path, assessment_input, pattern_violations)
             path_scores.append(path_score)
             all_motives.extend(path_score.motives)
             # Collect confidence from metrics
@@ -255,6 +281,12 @@ class AssessmentEngine:
             metadata={
                 "assessment_mode": "hybrid" if self._use_ml else "heuristic",
                 "ml_available": self._use_ml,
+                "pattern_checks": {
+                    "enabled": pattern_checks_active,
+                    "violation_count": len(pattern_violations),
+                    "penalty_points": pattern_penalty,
+                    "violations": violations_to_metadata(pattern_violations),
+                },
             },
         )
 
@@ -266,7 +298,12 @@ class AssessmentEngine:
 
         return result
 
-    async def _evaluate_path(self, path: PathType, input_data: AssessmentInput) -> PathScore:
+    async def _evaluate_path(
+        self,
+        path: PathType,
+        input_data: AssessmentInput,
+        pattern_violations: Optional[List[PatternViolation]] = None,
+    ) -> PathScore:
         """
         Evaluate a specific assessment path using hybrid approach.
 
@@ -275,7 +312,7 @@ class AssessmentEngine:
         logger.debug(f"Evaluating path: {path}")
 
         # Generate metrics for this path (heuristic-based)
-        metrics = self._generate_metrics_for_path(path, input_data)
+        metrics = self._generate_metrics_for_path(path, input_data, pattern_violations)
 
         # Get ML insights if available
         submission_text = self._extract_text_content(input_data.content)
@@ -377,7 +414,10 @@ class AssessmentEngine:
         return metrics
 
     def _generate_metrics_for_path(
-        self, path: PathType, input_data: AssessmentInput
+        self,
+        path: PathType,
+        input_data: AssessmentInput,
+        pattern_violations: Optional[List[PatternViolation]] = None,
     ) -> List[ScoringMetric]:
         """
         Generate scoring metrics for a specific path.
@@ -391,8 +431,11 @@ class AssessmentEngine:
 
         if path == PathType.TECHNICAL:
             # Analyze code quality
-            code_quality_score = self._analyze_code_quality(submission_text)
-            code_quality_evidence = self._generate_code_quality_evidence(submission_text)
+            code_quality_score = self._analyze_code_quality(submission_text, pattern_violations)
+            code_quality_evidence = self._generate_code_quality_evidence(
+                submission_text, pattern_violations
+            )
+            violation_count = len(pattern_violations or [])
 
             metrics.append(
                 ScoringMetric(
@@ -401,7 +444,7 @@ class AssessmentEngine:
                     score=code_quality_score,
                     weight=0.3,
                     evidence=code_quality_evidence,
-                    explanation=self._explain_code_quality(code_quality_score),
+                    explanation=self._explain_code_quality(code_quality_score, violation_count),
                     confidence=0.85,
                 )
             )
@@ -893,7 +936,9 @@ class AssessmentEngine:
 
         return "\n".join(text_parts)
 
-    def _analyze_code_quality(self, text: str) -> float:
+    def _analyze_code_quality(
+        self, text: str, pattern_violations: Optional[List[PatternViolation]] = None
+    ) -> float:
         """
         Analyze code quality using heuristics.
 
@@ -941,9 +986,14 @@ class AssessmentEngine:
         if len(non_empty_lines) > 0 and logic_density < 0.3:
             score -= 5  # Low logic density (too much whitespace/comments)
 
+        if pattern_violations and self.pattern_checks_enabled:
+            score -= self._calculate_pattern_penalty(pattern_violations)
+
         return min(100.0, max(0.0, score))
 
-    def _generate_code_quality_evidence(self, text: str) -> List[Evidence]:
+    def _generate_code_quality_evidence(
+        self, text: str, pattern_violations: Optional[List[PatternViolation]] = None
+    ) -> List[Evidence]:
         """Generate evidence for code quality."""
         evidence = []
 
@@ -967,16 +1017,57 @@ class AssessmentEngine:
                 )
             )
 
+        if pattern_violations and self.pattern_checks_enabled:
+            for violation in pattern_violations[:10]:
+                evidence.append(
+                    Evidence(
+                        type=EvidenceType.CODE_QUALITY,
+                        description=(
+                            f"Pattern violation: {violation.pattern} - " f"{violation.description}"
+                        ),
+                        source="pattern_checks",
+                        weight=self._pattern_violation_weight(violation.severity),
+                        metadata=violation.to_dict(),
+                    )
+                )
+
         return evidence
 
-    def _explain_code_quality(self, score: float) -> str:
+    def _calculate_pattern_penalty(self, violations: List[PatternViolation]) -> float:
+        """Calculate penalty points based on pattern violations."""
+        return calculate_pattern_penalty(
+            violations, self.pattern_penalty_weights, self.pattern_penalty_max
+        )
+
+    def _pattern_violation_weight(self, severity: str) -> float:
+        """Map violation severity to evidence weight."""
+        weights = {
+            "critical": 1.0,
+            "high": 0.9,
+            "medium": 0.7,
+            "low": 0.5,
+        }
+        return weights.get(severity, 0.6)
+
+    def _explain_code_quality(self, score: float, violation_count: int = 0) -> str:
         """Explain code quality score."""
+        pattern_note = ""
+        if violation_count > 0 and self.pattern_checks_enabled:
+            pattern_note = (
+                f" Pattern checks flagged {violation_count} potential issue"
+                f"{'s' if violation_count != 1 else ''}."
+            )
+
         if score >= 80:
-            return "Code demonstrates strong quality with good structure and practices"
+            return (
+                "Code demonstrates strong quality with good structure and practices" + pattern_note
+            )
         elif score >= 60:
-            return "Code shows solid fundamentals with room for improvement"
+            return "Code shows solid fundamentals with room for improvement" + pattern_note
         else:
-            return "Code quality could be enhanced with better structure and practices"
+            return (
+                "Code quality could be enhanced with better structure and practices" + pattern_note
+            )
 
     def _analyze_problem_solving(self, text: str) -> float:
         """Analyze problem-solving approach."""

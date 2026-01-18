@@ -1,7 +1,9 @@
 """Tests for the configuration system."""
 
 import os
+
 import pytest
+
 from sono_eval.utils.config import Config, get_config
 
 
@@ -13,6 +15,10 @@ def test_config_defaults():
     assert config.api_port == 8000
     assert config.assessment_enable_explanations is True
     assert config.assessment_multi_path_tracking is True
+    assert config.pattern_checks_enabled is True
+    assert config.pattern_penalty_low > 0
+    assert config.pattern_penalty_medium > config.pattern_penalty_low
+    assert config.pattern_penalty_high > config.pattern_penalty_medium
 
 
 def test_config_from_env(monkeypatch):
