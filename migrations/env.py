@@ -10,7 +10,7 @@ from sqlalchemy import engine_from_config, pool
 # Add the src directory to the path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
-from sono_eval.utils.config import get_config
+from sono_eval.utils.config import get_config  # noqa: E402
 
 # Alembic Config object
 config = context.config

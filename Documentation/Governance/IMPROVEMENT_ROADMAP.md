@@ -85,13 +85,13 @@ milestone.
    **Example**:
 
    ```python
-   from pydantic import validator, Field
+   from pydantic import Field, field_validator
    import re
 
    class CandidateCreateRequest(BaseModel):
        candidate_id: str = Field(..., min_length=1, max_length=100)
 
-       @validator('candidate_id')
+       @field_validator("candidate_id")
        def validate_id(cls, v):
            if not re.match(r'^[a-zA-Z0-9_-]+$', v):
                raise ValueError('Invalid candidate_id format')

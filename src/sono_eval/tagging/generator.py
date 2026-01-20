@@ -124,7 +124,7 @@ class TagGenerator:
         """
         if not self._initialized:
             # Use fallback heuristic tagging
-            return self._fallback_tagging(text, max_tags)
+            return self._fallback_tagging(text, max_tags, min_confidence)
 
         try:
             # Prepare input
@@ -169,9 +169,14 @@ class TagGenerator:
 
         except Exception as e:
             logger.error(f"Error generating tags: {e}")
-            return self._fallback_tagging(text, max_tags)
+            return self._fallback_tagging(text, max_tags, min_confidence)
 
-    def _fallback_tagging(self, text: str, max_tags: int) -> List[SemanticTag]:
+    def _fallback_tagging(
+        self,
+        text: str,
+        max_tags: int,
+        min_confidence: float = 0.5,
+    ) -> List[SemanticTag]:
         """
         Fallback heuristic tagging when model is not available.
 
@@ -190,7 +195,7 @@ class TagGenerator:
             "python": ("python", "language"),
             "javascript": ("javascript", "language"),
             "java": ("java", "language"),
-            "class": ("object-oriented", "pattern"),
+            "class": ("class", "pattern"),
             "function": ("functional", "pattern"),
             "async": ("asynchronous", "pattern"),
             "test": ("testing", "quality"),
@@ -222,6 +227,7 @@ class TagGenerator:
                 )
             )
 
+        tags = [t for t in tags if t.confidence >= min_confidence]
         return tags[:max_tags]
 
     def _infer_category(self, tag: str) -> str:

@@ -1,7 +1,7 @@
 """Tests for the tagging system."""
 
-import pytest
-from sono_eval.tagging.generator import TagGenerator, SemanticTag
+
+from sono_eval.tagging.generator import SemanticTag, TagGenerator
 
 
 def test_tag_generator_initialization():

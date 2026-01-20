@@ -15,9 +15,11 @@ This deliverable packages three high-impact improvements for Sono-Eval: mobile o
 ## 📦 Deliverables
 
 ### 1) Executive Analysis
+
 **File**: `Documentation/Reports/UX_ENHANCEMENT_ANALYSIS_2026-01-17.md`
 
 Highlights:
+
 - Prioritized UX issues with impact vs. effort
 - Success metrics and risk notes
 - Recommended execution order
@@ -25,16 +27,19 @@ Highlights:
 ### 2) Implementation Plans (Copy/Paste Ready)
 
 **Plan 1: Mobile Onboarding & Progressive Disclosure**  
+
 - **File**: `Documentation/Reports/IMPLEMENTATION_PLAN_1_MOBILE_UX.md`  
 - **Impact/Effort**: HIGH / MEDIUM (4–6h)  
 - **Key upgrades**: 4-value grid on welcome screen, step progress indicators with time estimates, quick-pick paths for new users, results page information hierarchy with collapsible evidence
 
 **Plan 2: API Error Responses & Developer Experience**  
+
 - **File**: `Documentation/Reports/IMPLEMENTATION_PLAN_2_API_ERRORS.md`  
 - **Impact/Effort**: HIGH / LOW (2–3h)  
 - **Key upgrades**: `help` payload for errors, HelpContext builders, health check troubleshooting hints, `/api/v1/errors` docs endpoint
 
 **Plan 3: Documentation Navigation & First-Time User Experience**  
+
 - **File**: `Documentation/Reports/IMPLEMENTATION_PLAN_3_DOC_NAVIGATION.md`  
 - **Impact/Effort**: HIGH / LOW (2–3h)  
 - **Key upgrades**: single CTA in README, visual START_HERE paths, SEARCH.md & NAVIGATION.md, streamlined CONTRIBUTING quickstarts

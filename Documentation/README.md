@@ -37,16 +37,6 @@ understanding, installing, and using the system.
 
 1. **[Mobile Companion Guide](Guides/mobile-companion.md)** - Touch-friendly flow
 
-### 📖 Optional Learning Resources
-
-> **Note**: These are optional educational resources for beginners. Core Sono-Eval documentation is above.
-
-1. **[Learning Resources](Learning/README.md)** - Beginner-friendly guides and learning paths
-   - Dark Horse Approach to individualized learning
-   - Complete beginner paths
-   - Micro-motives discovery exercises
-   - GitHub, AI tools, and workflow guides
-
 ---
 
 ## 📚 Complete Document Catalog
@@ -71,17 +61,6 @@ understanding, installing, and using the system.
 - **[Readiness Report](Reports/PUBLIC_READINESS_REPORT.md)** - Beta release status
 - **[Security Audit](Reports/SECURITY_AUDIT_SUMMARY.md)** - Security review summary
 - **[Secrets Audit](Reports/SECRETS_AUDIT.md)** - Credentials and PII check
-
-### Optional Learning Resources
-
-> **Note**: These resources are optional and primarily for beginners learning to code or use GitHub. Core Sono-Eval functionality documentation is in the sections above.
-
-- **[Learning Resources Overview](Learning/README.md)** - Complete learning resource index
-- **[Dark Horse Approach](Learning/Philosophy/dark-horse-approach.md)** - Individualized learning framework
-- **[Complete Beginner Path](Learning/Paths/complete-beginner-path.md)** - Month-by-month roadmap
-- **[GitHub Basics](Learning/Guides/github-basics/)** - Beginner-friendly GitHub guide
-- **[AI Tools Guide](Learning/Guides/ai-tools/)** - Using AI coding tools effectively
-- **[Workflow Building](Learning/Guides/workflow-building/)** - Personal workflow development
 
 ### Maintenance & Governance
 

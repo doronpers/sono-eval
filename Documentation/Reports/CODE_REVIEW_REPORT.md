@@ -501,9 +501,12 @@ src/sono_eval/
 1. **Configuration Management** ✅ Excellent
 
    ```python
+   from pydantic import ConfigDict
+   from pydantic_settings import BaseSettings
+
    # Centralized configuration
    class Config(BaseSettings):
-       # Environment-based, validated
+       model_config = ConfigDict(env_file=".env", case_sensitive=False)
    ```
 
 2. **Logging** ✅ Good

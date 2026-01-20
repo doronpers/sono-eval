@@ -1861,7 +1861,7 @@ body {
     .easter-egg-notification.show {
         transform: translateY(0);
     }
-    
+
     .wizard-navigation {
         flex-direction: column;
     }

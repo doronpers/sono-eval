@@ -110,13 +110,13 @@ function checkExportParam() {
 function exportResultsAsJSON() {
     // Get results from the results.js loaded data
     const resultsData = window.resultsData || {};
-    
+
     const exportData = {
         assessment_id: assessmentId,
         timestamp: new Date().toISOString(),
         ...resultsData
     };
-    
+
     const dataStr = JSON.stringify(exportData, null, 2);
     const dataBlob = new Blob([dataStr], { type: 'application/json' });
     const url = URL.createObjectURL(dataBlob);
@@ -127,7 +127,7 @@ function exportResultsAsJSON() {
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
-    
+
     // Track export
     if (window.sonoEvalTracking && window.sonoEvalTracking.trackEvent) {
         window.sonoEvalTracking.trackEvent('results_exported', {
@@ -144,13 +144,13 @@ document.addEventListener('DOMContentLoaded', function() {
             assessment_id: assessmentId || 'unknown',
         });
     }
-    
+
     if (window.sonoEval && window.sonoEval.trackMilestone) {
         window.sonoEval.trackMilestone('results_viewed', {
             assessment_id: assessmentId || 'unknown',
         });
     }
-    
+
     // Check for export parameter
     checkExportParam();
 });

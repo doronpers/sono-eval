@@ -47,7 +47,8 @@ OPERATIONS_FAILED=()
 backup_file() {
     local file="$1"
     if [ -f "$file" ]; then
-        local backup="${file}.bak.$(date +%s)"
+        local backup
+        backup="${file}.bak.$(date +%s)"
         if cp "$file" "$backup" 2>/dev/null; then
             echo "📦 Backed up $file to $backup"
         else

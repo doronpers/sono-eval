@@ -135,17 +135,20 @@ python verify_setup.py
 **Why this matters:** The interactive setup wizard guides you through configuration and validates your environment.
 
 **How to do it:**
+
 ```bash
 sono-eval setup
 ```
 
 **What happens:**
+
 - Interactive wizard checks your Python version
 - Verifies dependencies are installed
 - Guides you through configuration
 - Validates your setup
 
 **Or use the web interface:**
+
 1. Start the server (see Step 8)
 2. Visit `http://localhost:8000/mobile/setup`
 3. Follow the interactive wizard

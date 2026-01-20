@@ -11,6 +11,7 @@ Sono-Eval’s UX opportunities cluster in three areas: mobile onboarding decisio
 **Finding**: The mobile welcome screen asks users to expand three discovery cards plus a process accordion before reaching the CTA. This creates 5+ decisions before action. Additionally, path selection lacks a quick path for new users and the results page exposes all sections at once.
 
 **Evidence (current file locations + line references)**:
+
 - `src/sono_eval/mobile/templates/index.html` lines 11–134 contain three `.discovery-card` blocks and a separate `expandable-section` before the CTA.
 - `src/sono_eval/mobile/templates/results.html` lines 6–80 show scores, summary, scores chart, findings, strengths, motives, recommendations, and actions in a single linear flow.
 
@@ -23,6 +24,7 @@ Sono-Eval’s UX opportunities cluster in three areas: mobile onboarding decisio
 **Finding**: Error responses lack actionable guidance (examples, suggestions, documentation links). The current `ErrorResponse` model does not include a help field, and health checks do not surface troubleshooting hints for each component.
 
 **Evidence (current file locations + line references)**:
+
 - `src/sono_eval/utils/errors.py` lines 49–56 define `ErrorResponse` without a help payload.
 - `src/sono_eval/api/main.py` lines 230–534 implement health checks without troubleshooting guidance per component.
 
@@ -35,6 +37,7 @@ Sono-Eval’s UX opportunities cluster in three areas: mobile onboarding decisio
 **Finding**: The root README presents multiple competing CTAs (“Start Here”, “Quick Start”, “Documentation”, etc.), causing decision paralysis. CONTRIBUTING.md also contains overlapping quickstarts.
 
 **Evidence (current file locations + line references)**:
+
 - `README.md` lines 18–23 contain multiple competing “Start here / Quick Start / Documentation” CTAs.
 - `CONTRIBUTING.md` lines 6–64 define three overlapping quick-start paths.
 

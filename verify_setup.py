@@ -13,14 +13,14 @@ def check_python_version():
     version = sys.version_info
     if version.major == 3 and version.minor >= 9:
         print(f"✅ Python {version.major}.{version.minor}.{version.micro} (required: 3.9+)")
-        print(f"   💡 This version supports all Sono-Eval features")
-        print(f"   📚 Why this matters: Python 3.9+ enables modern features and better performance")
+        print("   💡 This version supports all Sono-Eval features")
+        print("   📚 Why this matters: Python 3.9+ enables modern features and better performance")
         return True
     else:
         print(f"❌ Python {version.major}.{version.minor}.{version.micro} (required: 3.9+)")
-        print(f"   💡 Update Python to access all features: https://www.python.org/downloads/")
+        print("   💡 Update Python to access all features: https://www.python.org/downloads/")
         print(
-            f"   📚 Why this matters: Newer Python versions provide better security and performance"
+            "   📚 Why this matters: Newer Python versions provide better security and performance"
         )
         return False
 
@@ -72,14 +72,14 @@ def check_env_file():
     env_example = Path(".env.example")
 
     if env_file.exists():
-        print(f"✅ .env file exists")
+        print("✅ .env file exists")
         return True
     elif env_example.exists():
-        print(f"⚠️  .env file missing (but .env.example exists)")
-        print(f"   Run: cp .env.example .env")
+        print("⚠️  .env file missing (but .env.example exists)")
+        print("   Run: cp .env.example .env")
         return False
     else:
-        print(f"❌ .env file missing (and no .env.example found)")
+        print("❌ .env file missing (and no .env.example found)")
         return False
 
 
@@ -109,22 +109,24 @@ def check_data_directories():
 def check_package_installation():
     """Check if sono-eval package is installed."""
     try:
-        import sono_eval
+        import sono_eval  # noqa: F401
 
-        print(f"✅ sono-eval package installed")
+        print("✅ sono-eval package installed")
         return True
     except ImportError:
-        print(f"⚠️  sono-eval package not installed")
-        print(f"   Run: pip install -e .")
+        print("⚠️  sono-eval package not installed")
+        print("   Run: pip install -e .")
         return False
 
 
 def check_docker():
     """Check if Docker is available."""
-    import subprocess
+    import subprocess  # nosec B404
 
     try:
-        result = subprocess.run(["docker", "--version"], capture_output=True, text=True, timeout=5)
+        result = subprocess.run(
+            ["docker", "--version"], capture_output=True, text=True, timeout=5
+        )  # nosec B603, B607
         if result.returncode == 0:
             version = result.stdout.strip()
             print(f"✅ Docker available: {version}")
@@ -132,7 +134,7 @@ def check_docker():
     except (FileNotFoundError, subprocess.TimeoutExpired):
         pass
 
-    print(f"⚠️  Docker not available (optional, but recommended)")
+    print("⚠️  Docker not available (optional, but recommended)")
     return False
 
 

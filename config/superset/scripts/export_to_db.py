@@ -17,10 +17,8 @@ Usage:
 """
 
 import argparse
-import json
 import logging
 import sys
-from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -31,18 +29,17 @@ from sqlalchemy.orm import sessionmaker
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent / "src"))
 
-from sono_eval.assessment.models import AssessmentResult, MicroMotive, PathScore, PathType
-from sono_eval.memory.memu import CandidateMemory, MemUStorage
-from sono_eval.utils.config import get_config
+from sono_eval.assessment.models import AssessmentResult  # noqa: E402
+from sono_eval.memory.memu import MemUStorage  # noqa: E402
 
 # Add database directory to path for imports
 database_dir = Path(__file__).parent.parent / "database"
 sys.path.insert(0, str(database_dir))
 
-from models import Assessment, Candidate
-from models import MicroMotive as DBMicroMotive
-from models import PathScore as DBPathScore
-from models import ScoringMetric
+from models import ScoringMetric  # type: ignore  # noqa: E402
+from models import Assessment, Candidate  # type: ignore  # noqa: E402
+from models import MicroMotive as DBMicroMotive  # type: ignore  # noqa: E402
+from models import PathScore as DBPathScore  # type: ignore  # noqa: E402
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
@@ -80,8 +77,8 @@ class AssessmentExporter:
         Returns:
             List of assessment data dictionaries
         """
-        logger.info(f"Loading assessments from memory storage...")
-        assessments = []
+        logger.info("Loading assessments from memory storage...")
+        assessments: List[Dict[str, Any]] = []
 
         # Initialize storage
         if storage_path:

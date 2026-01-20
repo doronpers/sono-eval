@@ -45,13 +45,13 @@ openssl rand -base64 42
 **ALWAYS validate user input**:
 
 ```python
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator
 import re
 
 class MyRequest(BaseModel):
     user_id: str = Field(..., min_length=1, max_length=100)
 
-    @validator('user_id')
+    @field_validator("user_id")
     def validate_user_id(cls, v):
         # Only allow alphanumeric, dash, underscore
         if not re.match(r'^[a-zA-Z0-9_-]+$', v):

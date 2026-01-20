@@ -1,9 +1,5 @@
 """Tests for the configuration system."""
 
-import os
-
-import pytest
-
 from sono_eval.utils.config import Config, get_config
 
 

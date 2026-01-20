@@ -72,7 +72,6 @@ mobile/
 - `GET /mobile/api/mobile/explain/{path}` - Get path details
 - `GET /mobile/api/mobile/recommendations` - Get path recommendations
 - `POST /mobile/api/mobile/track` - Submit interaction events
-- `GET /mobile/api/mobile/easter-eggs` - List available easter eggs
 
 ## 📖 Full Documentation
 

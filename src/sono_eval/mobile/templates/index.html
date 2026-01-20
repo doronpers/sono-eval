@@ -214,7 +214,7 @@ function saveReflection(value) {
         goals.push(value);
         sessionStorage.setItem('goals', JSON.stringify(goals));
     }
-    
+
     // Track reflection choice
     if (window.sonoEvalTracking && window.sonoEvalTracking.trackEvent) {
         window.sonoEvalTracking.trackEvent('reflection', {
@@ -232,7 +232,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const radio = document.querySelector(`input[name="reflection"][value="${goal}"]`);
         if (radio) radio.checked = true;
     });
-    
+
     const startButton = document.querySelector('.primary-button');
     if (startButton) {
         startButton.addEventListener('click', function() {

@@ -6,12 +6,12 @@ that can be visualized in Apache Superset dashboards.
 """
 
 from datetime import datetime
-from typing import Optional
+from typing import Any
 
-from sqlalchemy import JSON, Boolean, Column, DateTime, Float, Index, Integer, String, Text
+from sqlalchemy import JSON, Column, DateTime, Float, Index, Integer, String, Text
 from sqlalchemy.orm import declarative_base
 
-Base = declarative_base()
+Base: Any = declarative_base()
 
 
 class Assessment(Base):
@@ -50,7 +50,11 @@ class Assessment(Base):
     )
 
     def __repr__(self):
-        return f"<Assessment(id={self.assessment_id}, candidate={self.candidate_id}, score={self.overall_score})>"
+        """Return string representation."""
+        return (
+            f"<Assessment(id={self.assessment_id}, candidate={self.candidate_id}, "
+            f"score={self.overall_score})>"
+        )
 
 
 class PathScore(Base):
@@ -80,6 +84,7 @@ class PathScore(Base):
     )
 
     def __repr__(self):
+        """Return string representation."""
         return f"<PathScore(path={self.path_type}, score={self.score})>"
 
 
@@ -107,6 +112,7 @@ class ScoringMetric(Base):
     )
 
     def __repr__(self):
+        """Return string representation."""
         return f"<ScoringMetric(metric={self.metric_name}, score={self.score})>"
 
 
@@ -132,6 +138,7 @@ class MicroMotive(Base):
     )
 
     def __repr__(self):
+        """Return string representation."""
         return f"<MicroMotive(type={self.motive_type}, strength={self.strength})>"
 
 
@@ -157,4 +164,5 @@ class Candidate(Base):
     __table_args__ = (Index("idx_candidate_created", "created_at"),)
 
     def __repr__(self):
+        """Return string representation."""
         return f"<Candidate(id={self.candidate_id}, assessments={self.total_assessments})>"

@@ -159,27 +159,27 @@ const totalSteps = 4;
 
 function updateStep(step) {
     currentStep = step;
-    
+
     // Hide all steps
     document.querySelectorAll('.wizard-step').forEach(s => {
         s.classList.remove('active');
     });
-    
+
     // Show current step
     const currentStepEl = document.querySelector(`.wizard-step[data-step="${step}"]`);
     if (currentStepEl) {
         currentStepEl.classList.add('active');
     }
-    
+
     // Update navigation
     const prevButton = document.getElementById('prev-step');
     const nextButton = document.getElementById('next-step');
     const finishButton = document.getElementById('finish-step');
-    
+
     prevButton.style.display = step > 1 ? 'block' : 'none';
     nextButton.style.display = step < totalSteps ? 'block' : 'none';
     finishButton.style.display = step === totalSteps ? 'block' : 'none';
-    
+
     // Run step-specific initialization
     if (step === 1) {
         checkPrerequisites();
@@ -191,7 +191,7 @@ function updateStep(step) {
 function nextStep() {
     if (currentStep < totalSteps) {
         updateStep(currentStep + 1);
-        
+
         // Track progress
         if (window.sonoEvalTracking && window.sonoEvalTracking.trackEvent) {
             window.sonoEvalTracking.trackEvent('setup_progress', {
@@ -215,14 +215,14 @@ function checkPrerequisites() {
         document.getElementById('status-python').textContent = '✓ Found';
         document.getElementById('status-python').style.color = 'var(--success-color)';
     }, 1000);
-    
+
     // Check internet
     setTimeout(() => {
         document.getElementById('check-internet').checked = navigator.onLine;
         document.getElementById('status-internet').textContent = navigator.onLine ? '✓ Connected' : '✗ Offline';
         document.getElementById('status-internet').style.color = navigator.onLine ? 'var(--success-color)' : 'var(--error-color)';
     }, 1500);
-    
+
     // Check browser
     setTimeout(() => {
         const isModern = !!(window.fetch && window.Promise && document.querySelector);
@@ -235,7 +235,7 @@ function checkPrerequisites() {
 function runTests() {
     const resultsDiv = document.getElementById('test-results');
     resultsDiv.style.display = 'block';
-    
+
     // Simulate test results
     setTimeout(() => {
         resultsDiv.innerHTML = `
@@ -252,7 +252,7 @@ function runTests() {
                 <span class="test-text">Browser compatibility confirmed</span>
             </div>
         `;
-        
+
         // Track test completion
         if (window.sonoEvalTracking && window.sonoEvalTracking.trackEvent) {
             window.sonoEvalTracking.trackEvent('setup_test', {
@@ -271,11 +271,11 @@ function finishSetup() {
     // Save setup preferences
     const editor = document.getElementById('editor-select').value;
     const workDir = document.getElementById('work-dir').value;
-    
+
     localStorage.setItem('sono_eval_editor', editor);
     localStorage.setItem('sono_eval_work_dir', workDir);
     localStorage.setItem('sono_eval_setup_complete', 'true');
-    
+
     // Track setup completion
     if (window.sonoEval && window.sonoEval.trackMilestone) {
         window.sonoEval.trackMilestone('setup_completed', {
@@ -283,7 +283,7 @@ function finishSetup() {
             work_dir: workDir,
         });
     }
-    
+
     // Redirect to start page
     location.href = '/mobile/start';
 }
@@ -291,7 +291,7 @@ function finishSetup() {
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
     updateStep(1);
-    
+
     // Track setup start
     if (window.sonoEvalTracking && window.sonoEvalTracking.trackEvent) {
         window.sonoEvalTracking.trackEvent('setup_started', {});

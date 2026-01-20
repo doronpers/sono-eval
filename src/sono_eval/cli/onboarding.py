@@ -6,7 +6,6 @@ Provides guided first-run experience with step-by-step setup.
 
 import sys
 from pathlib import Path
-from typing import Optional
 
 import click
 from rich.console import Console
@@ -24,21 +23,18 @@ logger = get_logger(__name__)
 def print_welcome():
     """Print welcome message for first-time setup."""
     welcome_text = """
-    [bold cyan]Welcome to Sono-Eval![/bold cyan]
-
-    Let's get you set up for your first assessment.
-    This interactive setup will guide you through the process.
+    Sono-Eval Setup
+    ---------------
+    This process will configure your local environment for assessment.
     """
-    console.print(Panel(welcome_text, title="👋 Welcome", border_style="cyan"))
+    console.print(Panel(welcome_text, border_style="dim"))
 
 
 def check_python_version() -> bool:
     """Check if Python version is compatible."""
     version = sys.version_info
     if version.major >= 3 and version.minor >= 8:
-        console.print(
-            f"[green]✓[/green] Python {version.major}.{version.minor}.{version.micro} detected"
-        )
+        console.print(f"Python {version.major}.{version.minor}.{version.micro} detected")
         return True
     else:
         console.print(
@@ -62,9 +58,9 @@ def check_dependencies() -> bool:
     for package, name in required_packages:
         try:
             __import__(package)
-            console.print(f"[green]✓[/green] {name} installed")
+            console.print(f"✓ {name} installed")
         except ImportError:
-            console.print(f"[red]✗[/red] {name} not found")
+            console.print(f"✗ {name} not found")
             all_ok = False
 
     if not all_ok:
@@ -87,7 +83,7 @@ def setup_configuration() -> dict:
     console.print("[cyan]API Configuration[/cyan]")
     config["api_host"] = Prompt.ask(
         "API Host",
-        default="0.0.0.0",
+        default="0.0.0.0",  # nosec B104
         show_default=True,
     )
     config["api_port"] = int(
@@ -113,10 +109,11 @@ def setup_configuration() -> dict:
     if not storage_dir.exists():
         if Confirm.ask(f"\nCreate storage directory at {storage_path}?"):
             storage_dir.mkdir(parents=True, exist_ok=True)
-            console.print(f"[green]✓[/green] Created storage directory")
+            console.print("[green]✓[/green] Created storage directory")
         else:
             console.print(
-                "[yellow]⚠[/yellow] Storage directory not created. You may need to create it manually."
+                "[yellow]⚠[/yellow] Storage directory not created. "
+                "You may need to create it manually."
             )
 
     return config
@@ -177,7 +174,7 @@ def run_interactive_setup():
     # Step 3: Configuration
     console.print("\n[bold]Step 3: Configuration[/bold]")
     if Confirm.ask("\nWould you like to configure Sono-Eval now?", default=True):
-        config = setup_configuration()
+        setup_configuration()
         console.print("\n[green]✓[/green] Configuration complete")
         console.print(
             "\n[yellow]Note:[/yellow] Configuration values are stored in environment variables. "
@@ -199,8 +196,8 @@ def run_interactive_setup():
     # Final step: Next steps
     explain_next_steps()
 
-    console.print("\n[bold green]✓ Setup Complete![/bold green]")
-    console.print("\nYou're ready to start using Sono-Eval. Happy assessing! 🎉\n")
+    console.print("\nSetup Complete.")
+    console.print("You are ready to use Sono-Eval.\n")
 
 
 @click.command()

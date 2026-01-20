@@ -1015,9 +1015,9 @@ async def results_page(request: Request, session_id: Optional[str] = None):
     score_context = get_score_context(assessment_result.overall_score)
 
     return templates.TemplateResponse(
+        request,
         "results.html",
         {
-            "request": request,
             "result": assessment_result,
             "overall_score": assessment_result.overall_score,
             "top_strength": top_strength,

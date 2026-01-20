@@ -12,9 +12,7 @@ from sono_eval.assessment.pattern_checks import PatternViolation, calculate_patt
 
 
 class HeuristicScorer:
-    """
-    Handles heuristic-based scoring for different assessment paths.
-    """
+    """Handles heuristic-based scoring for different assessment paths."""
 
     def __init__(self, config):
         self.config = config
@@ -356,7 +354,9 @@ class HeuristicScorer:
                 evidence.append(
                     Evidence(
                         type=EvidenceType.CODE_QUALITY,
-                        description=f"Pattern violation: {violation.pattern} - {violation.description}",
+                        description=(
+                            f"Pattern violation: {violation.pattern} - " f"{violation.description}"
+                        ),
                         source="pattern_checks",
                         weight=weights.get(violation.severity, 0.6),
                         metadata=violation.to_dict(),

@@ -1,19 +1,8 @@
 # Sono-Eval
 
-## Explainable Multi-Path Developer Assessment System
-
-[![Python 3.13+](https://img.shields.io/badge/python-3.13+-blue.svg)](https://www.python.org/downloads/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-0.1.1-green.svg)](CHANGELOG.md)
-[![Security Audit](https://img.shields.io/badge/security-audited-green.svg)](documentation/Reports/SECRETS_AUDIT.md)
-[![Documentation](https://img.shields.io/badge/docs-complete-brightgreen.svg)](documentation/README.md)
-
-> A growth-oriented assessment platform for candidates. Understand your strengths,
-> track your progress, and get actionable feedback.
+> A growth-oriented assessment platform for candidates.
 >
-> ⚠️ **Active Development**: Sono-Eval is in **active development**.
-> Features are being added and refined, APIs may change, and the system
-> is not yet production-ready. Use at your own risk.
+> **Note**: This system is in active development. Features are subject to change.
 
 ## 🚀 Start Here
 
@@ -27,36 +16,24 @@
 
 ---
 
-## ⚡ Quick Start (2 Minutes)
+## ⚡ Quick Start
 
-### Try It Now (No Installation)
+> **📖 For complete setup instructions, see:** [Quick Start Guide](documentation/Guides/QUICK_START.md)
 
-**Option 1: GitHub Codespaces** (Recommended for first-time users)
-
-1. Click the green "Code" button above → "Codespaces" → "Create codespace"
-2. Wait ~2 minutes for environment to load
-3. In the terminal: `./launcher.sh start`
-4. Open the `/docs` port when prompted
-5. Try the `/health` endpoint to verify it works
-
-🎉 **Success!** You just ran Sono-Eval. Now try creating your first assessment in the `/docs` interface.
-
-**Option 2: Local Docker** (Requires Docker installed)
+**Quickest way to get started:**
 
 ```bash
+# Clone and start
 git clone https://github.com/doronpers/sono-eval.git
 cd sono-eval
 ./launcher.sh start
-# Open http://localhost:8000/docs
+
+# Access services
+# 📚 API Docs: http://localhost:8000/docs
+# 📊 Dashboard: http://localhost:8088 (admin/admin)
 ```
 
-**Option 3: Python Virtual Environment** (For developers)
-
-See the **[detailed installation guide](documentation/Guides/user-guide/installation.md)** for all options.
-
-### First Assessment (30 Seconds)
-
-Once running, try this:
+**Try your first assessment:**
 
 ```bash
 # Using the CLI
@@ -64,23 +41,9 @@ Once running, try this:
   --candidate-id demo \
   --content "def hello(): return 'world'" \
   --paths technical
-
-# Using curl
-curl -X POST http://localhost:8000/api/v1/assessments \
-  -H "Content-Type: application/json" \
-  -d '{
-    "candidate_id": "demo",
-    "submission_type": "code",
-    "content": {"code": "def hello(): return \"world\""},
-    "paths_to_evaluate": ["TECHNICAL"]
-  }'
 ```
 
-### What's Next?
-
-- **For individuals**: Try the [📱 mobile companion](documentation/Guides/mobile-companion.md) for a guided experience
-- **For developers**: Read the [🏗️ architecture overview](documentation/Core/concepts/architecture.md)
-- **For contributors**: Check the [🤝 contributing guide](CONTRIBUTING.md)
+For detailed instructions, troubleshooting, and all installation options, see the [Quick Start Guide](documentation/Guides/QUICK_START.md).
 
 ---
 
@@ -99,53 +62,6 @@ skills**. Unlike traditional tests that just give you a score, Sono-Eval:
 **For Individuals (Desktop)**: Think of it as a helpful coach, not just a grader.
 **For Coaches/Reviewers (Optional)**: Review results and growth trends when you
 choose to share them.
-
----
-
-## ⚡ Quick Start
-
-Get Sono-Eval running in **5 minutes**:
-
-### 🐳 Docker (Recommended)
-
-```bash
-# Clone and start
-git clone https://github.com/doronpers/sono-eval.git
-cd sono-eval
-./launcher.sh start
-
-# Access services
-# 📚 API Docs: http://localhost:8000/docs
-# 📊 Dashboard: http://localhost:8088 (admin/admin)
-# 📱 Mobile (optional companion): http://localhost:8000/mobile
-```
-
-### 🐍 Python Installation
-
-```bash
-# Setup
-git clone https://github.com/doronpers/sono-eval.git
-cd sono-eval
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-pip install -e .
-
-# Run your first assessment
-sono-eval assess run \
-  --candidate-id demo_user \
-  --content "def hello(): return 'world'" \
-  --paths technical
-```
-
-### 📖 Next Steps
-
-- **[Quick Start Guide](documentation/Guides/QUICK_START.md)** - Detailed
-  5-minute setup
-- **[Installation Guide](documentation/Guides/user-guide/installation.md)** - All
-  installation options
-- **[API Reference](documentation/Guides/user-guide/api-reference.md)** -
-  Complete API docs
 
 ---
 

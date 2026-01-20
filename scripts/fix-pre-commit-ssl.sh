@@ -45,6 +45,7 @@ TEMP_FILE=$(mktemp)
 while IFS= read -r line; do
     echo "$line"
     # Check if we're at the line that starts with "if [ -x "$INSTALL_PYTHON" ]; then"
+    # shellcheck disable=SC2016
     if echo "$line" | grep -q '^if \[ -x "\$INSTALL_PYTHON" \]; then$' || \
        echo "$line" | grep -q '^if \[ -x "$INSTALL_PYTHON" ]; then$'; then
         # Add the SSL certificate fix

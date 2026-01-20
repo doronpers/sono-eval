@@ -10,6 +10,7 @@ LABEL description="Explainable Multi-Path Developer Assessment System"
 WORKDIR /app
 
 # Install build dependencies
+# hadolint ignore=DL3008
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
@@ -26,6 +27,7 @@ FROM python:3.14-slim
 WORKDIR /app
 
 # Install only runtime dependencies
+# hadolint ignore=DL3008
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     && rm -rf /var/lib/apt/lists/* \

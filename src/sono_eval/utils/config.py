@@ -3,12 +3,14 @@
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-from pydantic import Field
+from pydantic import ConfigDict, Field
 from pydantic_settings import BaseSettings
 
 
 class Config(BaseSettings):
     """Application configuration loaded from environment variables."""
+
+    model_config = ConfigDict(env_file=".env", case_sensitive=False)
 
     # Application
     app_name: str = Field(default="sono-eval", alias="APP_NAME")
@@ -83,12 +85,6 @@ class Config(BaseSettings):
     # Batch Processing
     batch_size: int = Field(default=32, alias="BATCH_SIZE")
     max_concurrent_assessments: int = Field(default=4, alias="MAX_CONCURRENT_ASSESSMENTS")
-
-    class Config:  # noqa: D106
-        """Pydantic configuration."""
-
-        env_file = ".env"
-        case_sensitive = False
 
     def get_storage_path(self) -> Path:
         """Get the storage path for memory data."""

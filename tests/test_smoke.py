@@ -50,8 +50,8 @@ def test_documentation_exists():
 
     assert os.path.exists("README.md")
     assert os.path.exists("SECURITY.md")
-    assert os.path.exists("CODE_REVIEW_REPORT.md")
-    assert os.path.exists("IMPROVEMENT_ROADMAP.md")
-    assert os.path.exists("ASSESSMENT_SUMMARY.md")
-    assert os.path.exists("QUICK_REFERENCE.md")
+    assert os.path.exists("documentation/Reports/CODE_REVIEW_REPORT.md")
+    assert os.path.exists("ROADMAP.md")
+    assert os.path.exists("documentation/Reports/ASSESSMENT_SUMMARY.md")
+    assert os.path.exists("documentation/Guides/QUICK_REFERENCE.md")
     assert os.path.exists("CODE_OF_CONDUCT.md")

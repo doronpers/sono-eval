@@ -8,7 +8,7 @@ import json
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from sono_eval.tagging.generator import SemanticTag, TagGenerator
+from sono_eval.tagging.generator import TagGenerator
 from sono_eval.utils.config import get_config
 from sono_eval.utils.logger import get_logger
 
@@ -109,7 +109,7 @@ class TagStudioManager:
 
     def get_file(self, file_id: str) -> Optional[Dict[str, Any]]:
         """Get file metadata by ID."""
-        return self._index.get(file_id)
+        return self._index.get(file_id)  # type: ignore
 
     def search_by_tags(self, tags: List[str]) -> List[Dict[str, Any]]:
         """
@@ -122,7 +122,7 @@ class TagStudioManager:
             List of matching file entries
         """
         results = []
-        for file_id, file_data in self._index.items():
+        for _, file_data in self._index.items():
             file_tags = set(file_data.get("tags", []))
             if any(tag in file_tags for tag in tags):
                 results.append(file_data)
@@ -157,7 +157,7 @@ class TagStudioManager:
 
     def get_tag_statistics(self) -> Dict[str, int]:
         """Get statistics about tag usage."""
-        tag_counts = {}
+        tag_counts: Dict[str, int] = {}
         for file_data in self._index.values():
             for tag in file_data.get("tags", []):
                 tag_counts[tag] = tag_counts.get(tag, 0) + 1
@@ -184,7 +184,7 @@ class TagStudioManager:
         """Load the main index file."""
         if self.index_file.exists():
             with open(self.index_file, "r") as f:
-                return json.load(f)
+                return json.load(f)  # type: ignore
         return {}
 
     def _save_index(self) -> None:

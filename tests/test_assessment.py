@@ -91,7 +91,12 @@ async def test_assessment_has_micro_motives():
         candidate_id="test_candidate_004",
         submission_type="code",
         content={
-            "code": "# Well-documented function\ndef process(data):\n    '''Process data.'''\n    return data"
+            "code": (
+                "# Well-documented function\n"
+                "def process(data):\n"
+                "    '''Process data.'''\n"
+                "    return data"
+            )
         },
         paths_to_evaluate=[PathType.TECHNICAL],
     )

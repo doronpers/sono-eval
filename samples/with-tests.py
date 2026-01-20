@@ -70,13 +70,13 @@ def test_calculate_average():
     # Test error cases
     try:
         calculate_average([])
-        assert False, "Should raise ValueError for empty list"
+        raise AssertionError("Should have failed")
     except ValueError:
         pass
 
     try:
         calculate_average([1, "two", 3])
-        assert False, "Should raise TypeError for non-numeric input"
+        raise AssertionError("Should have failed")
     except TypeError:
         pass
 
@@ -93,7 +93,7 @@ def test_calculate_median():
     # Test error case
     try:
         calculate_median([])
-        assert False, "Should raise ValueError for empty list"
+        raise AssertionError("Should have failed")
     except ValueError:
         pass
 

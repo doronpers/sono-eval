@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator
 
 
 def _get_utc_now():
@@ -129,7 +129,7 @@ class AssessmentInput(BaseModel):
     paths_to_evaluate: List[PathType] = Field(default_factory=lambda: list(PathType))
     options: Dict[str, Any] = Field(default_factory=dict)
 
-    @validator("candidate_id")
+    @field_validator("candidate_id")
     def validate_candidate_id(cls, v):
         """Validate candidate_id to prevent injection attacks."""
         # Allow only alphanumeric, dash, underscore
@@ -139,15 +139,22 @@ class AssessmentInput(BaseModel):
             )
         return v
 
-    @validator("submission_type")
+    @field_validator("submission_type")
     def validate_submission_type(cls, v):
         """Validate submission_type."""
-        allowed_types = ["code", "project", "interview", "portfolio", "test"]
+        allowed_types = [
+            "code",
+            "project",
+            "interview",
+            "portfolio",
+            "test",
+            "mobile_interactive",
+        ]
         if v not in allowed_types:
             raise ValueError(f'submission_type must be one of: {", ".join(allowed_types)}')
         return v
 
-    @validator("content")
+    @field_validator("content")
     def validate_content(cls, v):
         """Validate content structure."""
         if not v:

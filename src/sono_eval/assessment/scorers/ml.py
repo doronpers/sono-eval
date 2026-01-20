@@ -8,9 +8,7 @@ logger = get_logger(__name__)
 
 
 class MLScorer:
-    """
-    Handles ML-based scoring and hybrid combination.
-    """
+    """Handles ML-based scoring and hybrid combination."""
 
     def __init__(self):
         self._ml_model = None
@@ -36,7 +34,7 @@ class MLScorer:
         if not self._use_ml or self._ml_model is None:
             return None
 
-        submission_text = extract_text_content(content)
+        extract_text_content(content)
 
         try:
             # Placeholder for ML inference

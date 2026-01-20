@@ -64,9 +64,7 @@ class AssessmentEngine:
         logger.info(f"Initialized AssessmentEngine v{self.version}")
 
     async def assess(self, assessment_input: AssessmentInput) -> AssessmentResult:
-        """
-        Perform comprehensive assessment with hybrid heuristics + ML approach.
-        """
+        """Perform comprehensive assessment with hybrid heuristics + ML approach."""
         start_time = time.time()
         logger.info(f"Starting assessment for candidate {assessment_input.candidate_id}")
 
@@ -149,7 +147,8 @@ class AssessmentEngine:
         logger.info(
             f"Assessment completed for {assessment_input.candidate_id}: "
             f"score={overall_score:.2f}, confidence={overall_confidence:.2%}, "
-            f"mode={'hybrid' if self.ml_scorer._use_ml else 'heuristic'}, time={processing_time:.2f}ms"
+            f"mode={'hybrid' if self.ml_scorer._use_ml else 'heuristic'}, "
+            f"time={processing_time:.2f}ms"
         )
 
         return result

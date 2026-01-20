@@ -14,7 +14,7 @@ from typing import Any, Dict, List, Optional
 
 from fastapi import FastAPI, File, HTTPException, Request, Response, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from sono_eval.assessment.dashboard import DashboardData
@@ -188,7 +188,7 @@ class CandidateCreateRequest(BaseModel):
     candidate_id: str = Field(..., min_length=1, max_length=100)
     initial_data: Optional[Dict] = None
 
-    @validator("candidate_id")
+    @field_validator("candidate_id")
     def validate_candidate_id(cls, v):
         """Validate candidate_id format to prevent injection attacks."""
         # Allow only alphanumeric, dash, underscore
@@ -203,7 +203,7 @@ class TagRequest(BaseModel):
     text: str = Field(..., min_length=1, max_length=100000)
     max_tags: int = Field(default=5, ge=1, le=20)
 
-    @validator("text")
+    @field_validator("text")
     def validate_text(cls, v):
         """Validate text content."""
         # Basic sanitization - remove null bytes
@@ -518,6 +518,12 @@ async def health_check(response: Response):
     )
 
 
+@app.options("/health")
+async def health_check_options() -> Response:
+    """Handle CORS preflight checks for the health endpoint."""
+    return Response(status_code=204)
+
+
 @app.get("/api/v1/health", response_model=HealthResponse)
 async def health_check_v1(response: Response):
     """
@@ -713,7 +719,7 @@ async def create_candidate(http_request: Request, request: CandidateCreateReques
     try:
         # Check if candidate already exists
         existing = memu_storage.get_candidate_memory(request.candidate_id)
-        if existing:
+        if existing and getattr(existing, "candidate_id", None) == request.candidate_id:
             raise create_error_response(
                 error_code=ErrorCode.DUPLICATE_RESOURCE,
                 message=f"Candidate '{request.candidate_id}' already exists",

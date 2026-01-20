@@ -1,9 +1,7 @@
-"""
-Dashboard data models for rich assessment visualization.
-"""
+"""Dashboard data models for rich assessment visualization."""
 
-from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional
+from datetime import datetime
+from typing import Dict, List, Optional
 
 from pydantic import BaseModel, Field
 
@@ -100,9 +98,7 @@ class DashboardData(BaseModel):
         result: AssessmentResult,
         historical_results: Optional[List[AssessmentResult]] = None,
     ) -> "DashboardData":
-        """
-        Transform AssessmentResult into visualization-ready DashboardData.
-        """
+        """Transform AssessmentResult into visualization-ready DashboardData."""
         # Calculate grade
         grade = cls._score_to_grade(result.overall_score)
 

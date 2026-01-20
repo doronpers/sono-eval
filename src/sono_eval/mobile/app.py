@@ -17,7 +17,6 @@ from pydantic import BaseModel, Field
 
 from sono_eval.assessment.engine import AssessmentEngine
 from sono_eval.assessment.models import AssessmentInput, PathType
-from sono_eval.mobile.easter_eggs import get_registry
 from sono_eval.utils.logger import get_logger
 
 logger = get_logger(__name__)
@@ -36,7 +35,7 @@ class MobileAssessmentState(BaseModel):
     selected_paths: List[PathType] = Field(default_factory=list)
     current_step: int = 0
     answers: Dict[str, str] = Field(default_factory=dict)
-    personalization: Dict[str, str] = Field(default_factory=dict)
+    personalization: Dict[str, Any] = Field(default_factory=dict)
 
 
 class MobilePathSelection(BaseModel):
@@ -52,7 +51,7 @@ class MobileSubmission(BaseModel):
     candidate_id: str
     paths: List[str]
     content: Dict[str, str]
-    personalization: Dict[str, str] = Field(default_factory=dict)
+    personalization: Dict[str, Any] = Field(default_factory=dict)
 
 
 class InteractionEvent(BaseModel):
@@ -117,9 +116,9 @@ def create_mobile_app() -> FastAPI:
     async def mobile_home(request: Request):
         """Mobile home page with welcome and explanation."""
         return templates.TemplateResponse(
+            request,
             "index.html",
             {
-                "request": request,
                 "title": "Welcome to Sono-Eval",
             },
         )
@@ -128,9 +127,9 @@ def create_mobile_app() -> FastAPI:
     async def mobile_setup(request: Request):
         """Interactive setup wizard for remote candidates."""
         return templates.TemplateResponse(
+            request,
             "setup.html",
             {
-                "request": request,
                 "title": "Setup Your Environment",
             },
         )
@@ -139,9 +138,9 @@ def create_mobile_app() -> FastAPI:
     async def mobile_start(request: Request):
         """Start assessment - candidate information."""
         return templates.TemplateResponse(
+            request,
             "start.html",
             {
-                "request": request,
                 "title": "Let's Get Started",
             },
         )
@@ -162,9 +161,9 @@ def create_mobile_app() -> FastAPI:
             )
 
         return templates.TemplateResponse(
+            request,
             "paths.html",
             {
-                "request": request,
                 "title": "Choose Your Focus Areas",
                 "candidate_id": candidate_id or "guest",
                 "paths": path_list,
@@ -180,9 +179,9 @@ def create_mobile_app() -> FastAPI:
         """Interactive assessment page."""
         selected_paths = paths.split(",") if paths else []
         return templates.TemplateResponse(
+            request,
             "assess.html",
             {
-                "request": request,
                 "title": "Your Assessment",
                 "candidate_id": candidate_id or "guest",
                 "selected_paths": selected_paths,
@@ -193,9 +192,9 @@ def create_mobile_app() -> FastAPI:
     async def mobile_results(request: Request, assessment_id: Optional[str] = None):
         """Results page with detailed feedback."""
         return templates.TemplateResponse(
+            request,
             "results.html",
             {
-                "request": request,
                 "title": "Your Results",
                 "assessment_id": assessment_id,
             },
@@ -205,9 +204,9 @@ def create_mobile_app() -> FastAPI:
     async def mobile_insights(request: Request, assessment_id: Optional[str] = None):
         """Dedicated insights page with learning journey and recommendations."""
         return templates.TemplateResponse(
+            request,
             "insights.html",
             {
-                "request": request,
                 "title": "Your Insights",
                 "assessment_id": assessment_id,
             },
@@ -239,23 +238,11 @@ def create_mobile_app() -> FastAPI:
                 },
             )
 
-            # Check for easter eggs in code
-            easter_eggs = []
-            code_content = submission.content.get("code", "")
-            if code_content:
-                from sono_eval.mobile.easter_eggs import check_code_for_eggs
-
-                easter_eggs = check_code_for_eggs(code_content)
-
             # Run assessment
             result = await assessment_engine.assess(assessment_input)
 
-            # Add easter egg info to result if discovered
+            # Mobile assessment result
             result_data = result.model_dump(mode="json")
-            if easter_eggs:
-                result_data["easter_eggs_discovered"] = easter_eggs
-                logger.info(f"Easter eggs discovered in assessment: {easter_eggs}")
-
             return {
                 "success": True,
                 "assessment_id": result.assessment_id,
@@ -356,7 +343,6 @@ def create_mobile_app() -> FastAPI:
                 # Log important events
                 if event.event_type in [
                     "page_view",
-                    "easter_egg_discovered",
                     "milestone",
                 ]:
                     logger.info(
@@ -389,18 +375,6 @@ def create_mobile_app() -> FastAPI:
                 },
             )
 
-    @app.get("/api/mobile/easter-eggs")
-    async def list_easter_eggs():
-        """List available easter eggs (for discovery documentation)."""
-        registry = get_registry()
-        eggs = registry.list_eggs()
-        return {
-            "success": True,
-            "eggs": eggs,
-            "count": len(eggs),
-            "message": "Easter eggs are discoverable features that unlock valuable functionality",
-        }
-
     @app.post("/api/mobile/session/store")
     async def store_session_data(data: Dict[str, Any]):
         """
@@ -419,9 +393,9 @@ def create_mobile_app() -> FastAPI:
         """Hidden advanced features page."""
         # Check if expert mode is unlocked
         return templates.TemplateResponse(
+            request,
             "advanced.html",
             {
-                "request": request,
                 "title": "Advanced Features",
             },
         )

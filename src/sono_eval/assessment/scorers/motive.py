@@ -12,9 +12,7 @@ from sono_eval.assessment.models import (
 
 
 class MicroMotiveScorer:
-    """
-    Handles Micro-Motive (Dark Horse) identification.
-    """
+    """Handles Micro-Motive (Dark Horse) identification."""
 
     def identify_micro_motives(
         self, path: PathType, input_data: AssessmentInput
