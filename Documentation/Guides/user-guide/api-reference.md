@@ -338,6 +338,177 @@ Get visualization-ready dashboard data for an assessment.
 curl "http://localhost:8000/api/v1/assessments/assess_1234567890/dashboard?candidate_id=candidate_001&include_history=true"
 ```
 
+#### `POST /api/v1/assessments/async`
+
+**NEW in v0.2.0**: Create an assessment asynchronously using the task queue.
+
+This endpoint queues the assessment for background processing and immediately
+returns a job ID. Use this for long-running assessments or batch processing.
+
+**Request Body:** Same as `POST /api/v1/assessments`
+
+```json
+{
+  "candidate_id": "candidate_001",
+  "submission_type": "code",
+  "content": {
+    "code": "def hello(): return 'world'"
+  },
+  "paths_to_evaluate": ["technical", "design"]
+}
+```
+
+**Response:**
+
+```json
+{
+  "job_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "assessment_id": "assess_1234567890",
+  "candidate_id": "candidate_001",
+  "status": "queued",
+  "message": "Assessment queued for processing",
+  "status_url": "/api/v1/assessments/jobs/a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+}
+```
+
+**Status Codes:**
+
+- `200 OK`: Assessment queued successfully
+- `400 Bad Request`: Invalid input data
+- `500 Internal Server Error`: Failed to queue assessment
+
+**Example:**
+
+```bash
+curl -X POST http://localhost:8000/api/v1/assessments/async \
+  -H "Content-Type: application/json" \
+  -d '{
+    "candidate_id": "candidate_001",
+    "submission_type": "code",
+    "content": {"code": "def hello(): return '\''world'\''"},
+    "paths_to_evaluate": ["technical"]
+  }'
+```
+
+**Benefits:**
+
+- **Non-blocking**: Returns immediately without waiting for assessment completion
+- **Scalable**: Multiple assessments can be processed in parallel by workers
+- **Reliable**: Automatic retry on failures with exponential backoff
+- **Trackable**: Monitor progress using the job status endpoint
+
+#### `GET /api/v1/assessments/jobs/{job_id}`
+
+**NEW in v0.2.0**: Get the status of an asynchronous assessment job.
+
+**Parameters:**
+
+- `job_id` (path) - Celery task ID returned from async assessment creation
+
+**Response States:**
+
+**Queued (PENDING):**
+
+```json
+{
+  "job_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "status": "PENDING",
+  "message": "Assessment is queued and waiting to start"
+}
+```
+
+**Processing (PROCESSING):**
+
+```json
+{
+  "job_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "status": "PROCESSING",
+  "assessment_id": "assess_1234567890",
+  "candidate_id": "candidate_001",
+  "progress": 50
+}
+```
+
+**Completed (SUCCESS):**
+
+```json
+{
+  "job_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "status": "completed",
+  "message": "Assessment completed successfully",
+  "result": {
+    "assessment_id": "assess_1234567890",
+    "candidate_id": "candidate_001",
+    "overall_score": 85.5,
+    "confidence": 0.9,
+    "path_scores": [...],
+    "micro_motives": [...],
+    "summary": "...",
+    "processing_time_ms": 1234.56
+  }
+}
+```
+
+**Failed (FAILURE):**
+
+```json
+{
+  "job_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "status": "failed",
+  "error": "Assessment validation failed",
+  "message": "Assessment failed with error"
+}
+```
+
+**Status Codes:**
+
+- `200 OK`: Job status retrieved successfully
+- `404 Not Found`: Job ID not found
+- `503 Service Unavailable`: Task queue system unavailable
+
+**Example:**
+
+```bash
+# Poll for job status
+curl http://localhost:8000/api/v1/assessments/jobs/a1b2c3d4-e5f6-7890-abcd-ef1234567890
+```
+
+**Polling Best Practices:**
+
+- Start with 1-second intervals
+- Increase to 5 seconds after 10 polls
+- Set maximum poll duration (e.g., 5 minutes)
+- Check for `completed` or `failed` status
+
+**Example Polling Script:**
+
+```bash
+#!/bin/bash
+JOB_ID="$1"
+MAX_ATTEMPTS=60
+POLL_INTERVAL=2
+
+for i in $(seq 1 $MAX_ATTEMPTS); do
+  STATUS=$(curl -s "http://localhost:8000/api/v1/assessments/jobs/$JOB_ID" | jq -r '.status')
+
+  if [ "$STATUS" = "completed" ]; then
+    echo "Assessment completed!"
+    curl -s "http://localhost:8000/api/v1/assessments/jobs/$JOB_ID" | jq '.result'
+    exit 0
+  elif [ "$STATUS" = "failed" ]; then
+    echo "Assessment failed!"
+    curl -s "http://localhost:8000/api/v1/assessments/jobs/$JOB_ID" | jq '.error'
+    exit 1
+  fi
+
+  echo "Status: $STATUS (attempt $i/$MAX_ATTEMPTS)"
+  sleep $POLL_INTERVAL
+done
+
+echo "Timeout waiting for assessment"
+exit 1
+```
+
 ---
 
 ### Candidate Endpoints

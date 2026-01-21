@@ -32,6 +32,17 @@ class Config(BaseSettings):
     redis_db: int = Field(default=0, alias="REDIS_DB")
     redis_password: Optional[str] = Field(default=None, alias="REDIS_PASSWORD")
 
+    # Celery Task Queue
+    celery_broker_url: str = Field(
+        default="redis://localhost:6379/1", alias="CELERY_BROKER_URL"
+    )
+    celery_result_backend: str = Field(
+        default="redis://localhost:6379/2", alias="CELERY_RESULT_BACKEND"
+    )
+    celery_task_always_eager: bool = Field(
+        default=False, alias="CELERY_TASK_ALWAYS_EAGER"
+    )
+
     # MemU Configuration
     memu_storage_path: str = Field(default="./data/memory", alias="MEMU_STORAGE_PATH")
     memu_max_depth: int = Field(default=5, alias="MEMU_MAX_DEPTH")
@@ -103,6 +114,20 @@ class Config(BaseSettings):
         path = Path(self.tagstudio_root)
         path.mkdir(parents=True, exist_ok=True)
         return path
+
+    def get_redis_url(self, db: int = 0) -> str:
+        """
+        Get Redis connection URL.
+
+        Args:
+            db: Redis database number (default: 0)
+
+        Returns:
+            Redis connection URL string
+        """
+        if self.redis_password:
+            return f"redis://:{self.redis_password}@{self.redis_host}:{self.redis_port}/{db}"
+        return f"redis://{self.redis_host}:{self.redis_port}/{db}"
 
     def validate_production_config(self) -> None:
         """
