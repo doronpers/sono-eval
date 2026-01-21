@@ -230,8 +230,10 @@ For the complete roadmap and TODO list, see [ROADMAP.md](ROADMAP.md).
 
 ### Next Release (v0.2.0)
 
+- [x] Asynchronous assessment processing with Celery task queue
+- [x] Job status tracking for long-running assessments
 - [ ] Real ML-based scoring (not placeholder)
-- [ ] Batch assessment processing
+- [ ] Batch assessment processing endpoint
 - [ ] Authentication system
 - [ ] Web UI for reviews
 - [ ] Enhanced analytics
@@ -255,17 +257,19 @@ See **[CHANGELOG.md](CHANGELOG.md)** for version history.
 - **T5** - Google's Text-to-Text Transfer Transformer
 - **PEFT** - Hugging Face Parameter-Efficient Fine-Tuning
 - **Apache Superset** - Modern data exploration platform
+- **Celery** - Distributed task queue for async processing
 
 ---
 
 ## 📊 Stats
 
-- **Lines of Code**: ~2,500
+- **Lines of Code**: ~3,000
 - **Documentation Pages**: 15+
 - **Test Coverage**: Core functionality tested
-- **Docker Services**: 4 containers
-- **API Endpoints**: 10+ REST endpoints
+- **Docker Services**: 5 containers (API, Celery Worker, PostgreSQL, Redis, Superset)
+- **API Endpoints**: 12+ REST endpoints (including async processing)
 - **CLI Commands**: 15+ commands
+- **Background Workers**: Celery task queue with auto-retry
 
 ---
 

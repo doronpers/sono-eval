@@ -23,6 +23,7 @@ from sono_eval.assessment.models import AssessmentInput, AssessmentResult
 from sono_eval.memory.memu import MemUStorage
 from sono_eval.mobile.app import create_mobile_app
 from sono_eval.tagging.generator import TagGenerator
+from sono_eval.tasks.assessment import process_assessment_task
 from sono_eval.utils.config import get_config
 from sono_eval.utils.errors import (
     ErrorCode,
@@ -604,6 +605,131 @@ async def create_assessment(request: Request, assessment_input: AssessmentInput)
         logger.error(f"Error creating assessment: {e}", exc_info=True)
         raise internal_error(
             "Failed to create assessment. Please try again or contact support.",
+            details={"error_type": type(e).__name__},
+            request_id=request_id,
+        )
+
+
+@app.post("/api/v1/assessments/async")
+async def create_assessment_async(request: Request, assessment_input: AssessmentInput):
+    """
+    Create an assessment asynchronously using the task queue.
+
+    This endpoint queues the assessment for background processing and
+    immediately returns a job ID that can be used to check status.
+
+    Args:
+        request: FastAPI request object (for request ID)
+        assessment_input: Assessment input data
+
+    Returns:
+        Job information with job_id and status
+    """
+    request_id = getattr(request.state, "request_id", None)
+
+    # Validate candidate exists
+    if memu_storage:
+        memory = memu_storage.get_candidate_memory(assessment_input.candidate_id)
+        if not memory:
+            # Auto-create candidate if not exists
+            logger.info(
+                f"Auto-creating candidate {assessment_input.candidate_id} for async assessment"
+            )
+            memu_storage.create_candidate_memory(assessment_input.candidate_id)
+
+    try:
+        # Generate unique assessment ID
+        assessment_id = f"assess_{int(time() * 1000)}"
+
+        # Queue the task
+        task = process_assessment_task.delay(
+            assessment_id, assessment_input.model_dump(mode="json")
+        )
+
+        logger.info(
+            f"Queued async assessment {assessment_id} for {assessment_input.candidate_id} "
+            f"(job_id: {task.id})"
+        )
+
+        return {
+            "job_id": task.id,
+            "assessment_id": assessment_id,
+            "candidate_id": assessment_input.candidate_id,
+            "status": "queued",
+            "message": "Assessment queued for processing",
+            "status_url": f"/api/v1/assessments/jobs/{task.id}",
+        }
+
+    except Exception as e:
+        logger.error(f"Error queuing async assessment: {e}", exc_info=True)
+        raise internal_error(
+            "Failed to queue assessment. Please try again.",
+            details={"error_type": type(e).__name__},
+            request_id=request_id,
+        )
+
+
+@app.get("/api/v1/assessments/jobs/{job_id}")
+async def get_assessment_job_status(request: Request, job_id: str):
+    """
+    Get the status of an asynchronous assessment job.
+
+    Args:
+        request: FastAPI request object (for request ID)
+        job_id: Celery task ID
+
+    Returns:
+        Job status and result (if completed)
+    """
+    request_id = getattr(request.state, "request_id", None)
+
+    try:
+        from celery.result import AsyncResult
+
+        task_result = AsyncResult(job_id)
+
+        response = {
+            "job_id": job_id,
+            "status": task_result.state,
+        }
+
+        if task_result.state == "PENDING":
+            response["message"] = "Assessment is queued and waiting to start"
+        elif task_result.state == "PROCESSING":
+            # Get custom state info if available
+            if task_result.info:
+                response.update(task_result.info)
+        elif task_result.state == "SUCCESS":
+            result_data = task_result.result
+            if result_data.get("job_status") == "completed":
+                response["status"] = "completed"
+                response["result"] = result_data
+                response["message"] = "Assessment completed successfully"
+            else:
+                response["status"] = "failed"
+                response["error"] = result_data.get("error", "Unknown error")
+                response["message"] = "Assessment failed"
+        elif task_result.state == "FAILURE":
+            response["status"] = "failed"
+            response["error"] = str(task_result.info)
+            response["message"] = "Assessment failed with error"
+        elif task_result.state == "RETRY":
+            response["message"] = "Assessment is being retried after a failure"
+            if task_result.info:
+                response["retry_info"] = str(task_result.info)
+        else:
+            response["message"] = f"Assessment is in state: {task_result.state}"
+
+        return response
+
+    except ImportError:
+        raise service_unavailable_error(
+            "Task queue system (Celery not available)", request_id=request_id
+        )
+    except Exception as e:
+        logger.error(f"Error retrieving job status: {e}", exc_info=True)
+        raise internal_error(
+            "Failed to retrieve job status",
             details={"error_type": type(e).__name__},
             request_id=request_id,
         )
