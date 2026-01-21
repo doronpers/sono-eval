@@ -6,12 +6,12 @@
 
 ## 🚀 Start Here
 
-**New to Sono-Eval?** → **[Get Started in 5 Minutes](documentation/START_HERE.md)**
+**New to Sono-Eval?** → **[Get Started in 5 Minutes](Documentation/START_HERE.md)**
 
 **Alternative paths:**
 
-- [View documentation hub](documentation/README.md) - Browse all docs
-- [Quick Start Guide](documentation/Guides/QUICK_START.md) - 5-minute setup
+- [View documentation hub](Documentation/README.md) - Browse all docs
+- [Quick Start Guide](Documentation/Guides/QUICK_START.md) - 5-minute setup
 - [Contributing guide](CONTRIBUTING.md) - Help us improve
 
 ---
@@ -43,7 +43,7 @@ cd sono-eval
   --paths technical
 ```
 
-For detailed instructions, troubleshooting, and all installation options, see the [Quick Start Guide](documentation/Guides/QUICK_START.md).
+For detailed instructions, troubleshooting, and all installation options, see the [Quick Start Guide](Documentation/Guides/QUICK_START.md).
 
 ---
 
@@ -75,18 +75,18 @@ choose to share them.
 
 🔍 **Deep Insights** • 📊 **Analytics** • ⚖️ **Fair Assessment** • 🚀 **Easy Setup**
 
-**See all features** → [Documentation Hub](documentation/README.md)
+**See all features** → [Documentation Hub](Documentation/README.md)
 
 ## 📚 Documentation
 
 **Popular pages:**
 
-- [Quick Start Guide](documentation/Guides/QUICK_START.md) - 5-minute setup
-- [API Reference](documentation/Guides/user-guide/api-reference.md) - REST API docs  
-- [CLI Reference](documentation/Guides/user-guide/cli-reference.md) - Command-line usage
-- [FAQ](documentation/Guides/faq.md) - Common questions
+- [Quick Start Guide](Documentation/Guides/QUICK_START.md) - 5-minute setup
+- [API Reference](Documentation/Guides/user-guide/api-reference.md) - REST API docs
+- [CLI Reference](Documentation/Guides/user-guide/cli-reference.md) - Command-line usage
+- [FAQ](Documentation/Guides/faq.md) - Common questions
 
-**[Browse all documentation →](documentation/README.md)**
+**[Browse all documentation →](Documentation/README.md)**
 
 ---
 
@@ -110,7 +110,7 @@ choose to share them.
 └─────────────────────────────────────────────────────────────┘
 ```
 
-See **[Architecture Overview](documentation/Core/concepts/architecture.md)** for
+See **[Architecture Overview](Documentation/Core/concepts/architecture.md)** for
 details.
 
 ---
@@ -170,7 +170,7 @@ result = await engine.assess(AssessmentInput(...))
 curl -X POST http://localhost:8000/api/v1/assessments -H "Content-Type: application/json" -d '{...}'
 ```
 
-**See [API Reference](documentation/Guides/user-guide/api-reference.md) and [CLI Reference](documentation/Guides/user-guide/cli-reference.md) for complete examples.**
+**See [API Reference](Documentation/Guides/user-guide/api-reference.md) and [CLI Reference](Documentation/Guides/user-guide/cli-reference.md) for complete examples.**
 
 ---
 
@@ -203,12 +203,11 @@ You're free to use, modify, and distribute it. See the LICENSE file for details.
 
 ## 🆘 Getting Help
 
-- **📚 Documentation**: [documentation/README.md](documentation/README.md)
-- **❓ FAQ**: [documentation/Guides/faq.md](documentation/Guides/faq.md)
+- **📚 Documentation**: [Documentation/README.md](Documentation/README.md)
+- **❓ FAQ**: [Documentation/Guides/faq.md](Documentation/Guides/faq.md)
 - **🐛 Issues**: [GitHub Issues](https://github.com/doronpers/sono-eval/issues)
 - **💬 Discussions**:
   [GitHub Discussions](https://github.com/doronpers/sono-eval/discussions)
-- **📧 Email**: <support@sono-eval.example>
 
 ---
 
@@ -253,7 +252,7 @@ See **[CHANGELOG.md](CHANGELOG.md)** for version history.
 
 ## 🙏 Acknowledgments
 
-- **Dark Horse Model** - Based on tex-assist-coding research
+- **Dark Horse Model** - Based on research on intrinsic motivation
 - **T5** - Google's Text-to-Text Transfer Transformer
 - **PEFT** - Hugging Face Parameter-Efficient Fine-Tuning
 - **Apache Superset** - Modern data exploration platform
@@ -263,8 +262,8 @@ See **[CHANGELOG.md](CHANGELOG.md)** for version history.
 
 ## 📊 Stats
 
-- **Lines of Code**: ~3,000
-- **Documentation Pages**: 15+
+- **Lines of Code**: ~2,500
+- **Documentation Pages**: 100+
 - **Test Coverage**: Core functionality tested
 - **Docker Services**: 5 containers (API, Celery Worker, PostgreSQL, Redis, Superset)
 - **API Endpoints**: 12+ REST endpoints (including async processing)
@@ -275,16 +274,37 @@ See **[CHANGELOG.md](CHANGELOG.md)** for version history.
 
 Built with ❤️ by the Sono-Eval Team
 
-**Version**: 0.1.0 | **Last Updated**: January 2026 | **Status**: Active Development
+**Version**: 0.1.1 | **Last Updated**: January 2026 | **Status**: Active Development
 
 [⬆ Back to top](#sono-eval)
 
+## 📦 Standalone Version
+
+For beta testing or environments where Docker is not available, you can build a standalone executable:
+
+```bash
+# Build the standalone executable (requires Python 3.10+)
+pip install pyinstaller
+python scripts/build_standalone.py
+```
+
+**Running the Standalone Version:**
+
+The executable at `dist/sono-eval` is self-contained. It:
+
+- Uses local SQLite database (`sono_eval.db`)
+- Stores data in `./sono_eval_data/`
+- Does not require Docker or Redis
+
+```bash
+./dist/sono-eval assess run --candidate-id test --file solution.py --paths technical
+```
+
+---
+
 ## Agent Instructions
 
-> **CRITICAL**: All AI agents MUST read
-> [`AGENT_KNOWLEDGE_BASE.md`](AGENT_KNOWLEDGE_BASE.md) before performing any
-> tasks. It contains non-negotiable Patent, Security, and Design rules.
+For AI agents working on this repository:
 
-Additional resources:
-
-- [Agent Behavioral Standards](documentation/Governance/AGENT_BEHAVIORAL_STANDARDS.md)
+- [Agent Behavioral Standards](Documentation/Governance/AGENT_BEHAVIORAL_STANDARDS.md)
+- [Documentation Organization Standards](Documentation/Governance/DOCUMENTATION_ORGANIZATION_STANDARDS.md)

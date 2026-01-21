@@ -81,6 +81,12 @@ where = ["src"]
 [tool.black]
 line-length = 88
 target-version = ['py312']
+extend-exclude = '''
+/(
+  ^venv.*
+  | ^\.venv
+)/
+'''
 
 [tool.mypy]
 python_version = "3.13"
@@ -99,6 +105,7 @@ addopts = "-v --cov=src/sono_eval --cov-report=html --cov-report=term"
 [tool.isort]
 profile = "black"
 line_length = 88
+skip_glob = ["venv*", "env*", ".venv*"]
 
 [tool.bandit]
-exclude_dirs = ["tests"]
+exclude_dirs = ["tests", "venv", "venv-test", ".venv"]

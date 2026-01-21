@@ -4,14 +4,18 @@ You are an AI coding assistant working on the **Sono Eval** repository (evaluati
 
 ## CRITICAL: Read Before ANY Task
 
-Before starting any task, you MUST read and follow: `AGENT_KNOWLEDGE_BASE.md` in the repository root.
+Before starting any task, you MUST read and follow:
+1. `AGENT_KNOWLEDGE_BASE.md` in the repository root (prime directives, coding standards, testing requirements)
+2. `AGENTS.md` in the repository root (repository guidelines, linting protocols, common pitfalls, project structure)
 
-This file contains:
+These files contain:
 
 - Prime directives (patent compliance, security, design philosophy)
 - Coding standards (black, flake8, Pydantic)
-- Sensor development workflow
-- Testing requirements
+- Repository structure and module organization
+- Build, test, and development commands
+- Linting protocols and common pitfalls
+- Testing guidelines
 
 ## Quick Rules
 
@@ -20,16 +24,35 @@ This file contains:
 3. **Style**: `snake_case` for functions, `PascalCase` for classes
 4. **Security**: NEVER log API keys, PII, or raw audio bytes
 5. **Tests**: Run `pytest` before committing
-6. **IDE Setup**: Enable "Format on Save" and configure linter to use `.pre-commit-config.yaml` (see AGENT_KNOWLEDGE_BASE.md)
-7. **Bulk Operations**: Use `git diff --stat` to audit changes, then run `python3 -m compileall .` before committing (see AGENT_KNOWLEDGE_BASE.md)
+6. **Reasoning Logs**: After significant tasks (complex, architectural, refactoring, non-obvious bug fixes), create log entry at `feedback-loop/agent_reasoning_logs/logs/YYYY-MM-DD_sono-eval_task.md` (see template: `feedback-loop/agent_reasoning_logs/templates/reasoning_entry.md`)
+7. **IDE Setup**: Enable "Format on Save" and configure linter to use `.pre-commit-config.yaml` (see AGENT_KNOWLEDGE_BASE.md)
+8. **Bulk Operations**: Use `git diff --stat` to audit changes, then run `python3 -m compileall .` before committing (see AGENT_KNOWLEDGE_BASE.md)
 
 ## Key Commands
 
 ```bash
+make install         # Install dependencies
+make run             # Start API server
+make test            # Run pytest suite
+make format          # Format with Black
+make lint            # Run Flake8 checks
 black .              # Format
 flake8 .             # Lint
 pytest               # Test
 ```
+
+## Linting Protocols (from AGENTS.md)
+
+**Pre-emptive Formatting**: Always run `black .` and `flake8 .` *before* attempting to commit or finishing a task.
+
+**Common Issues**:
+- **E402**: When using `sys.path` hacks, put imports *after* the modification and add `# noqa: E402`
+- **F401**: Remove unused imports (or use `# noqa: F401` if needed)
+- **F541**: Remove `f` prefix from strings without placeholders
+- **E501**: `black` handles most line length, but wrap long strings/comments manually
+- **Test Files**: Don't delete imports when cleaning up blank lines
+
+**Script Permissions**: Ensure scripts with shebangs have executable permission (`chmod +x`)
 
 ## Audio Format
 

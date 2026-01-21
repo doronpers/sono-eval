@@ -40,17 +40,104 @@ check_env() {
     fi
 }
 
+# Function to check if a port is available
+is_port_available() {
+    local port=$1
+
+    # Check if port is in use by system processes (works on macOS and Linux)
+    if lsof -Pi :"$port" -sTCP:LISTEN -t >/dev/null 2>&1; then
+        return 1  # Port is in use
+    fi
+
+    # Check if port is in use by Docker containers
+    if docker ps --format '{{.Ports}}' 2>/dev/null | grep -q ":$port->"; then
+        return 1  # Port is in use by Docker
+    fi
+
+    # Try to bind to the port (most reliable check)
+    if command -v nc >/dev/null 2>&1; then
+        if nc -z localhost "$port" 2>/dev/null; then
+            return 1  # Port is in use
+        fi
+    fi
+
+    return 0  # Port is available
+}
+
+# Function to find an available port
+find_available_port() {
+    local start_port=${1:-8000}
+    local port=$start_port
+    local max_port=$((start_port + 100))  # Check up to 100 ports ahead
+
+    while [ "$port" -le $max_port ]; do
+        if is_port_available "$port"; then
+            echo "$port"
+            return 0
+        fi
+        port=$((port + 1))
+    done
+
+    # Fallback: return start_port if we can't find one (user will see error)
+    echo "$start_port"
+    return 1
+}
+
+# Function to get or set the API port
+get_api_port() {
+    local port_file=".sono-eval-port"
+
+    if [ -f "$port_file" ]; then
+        # Check if the stored port is still available
+        local stored_port
+        stored_port=$(cat "$port_file")
+        if is_port_available "$stored_port"; then
+            echo "$stored_port"
+            return 0
+        fi
+        # Port is in use, find a new one
+        rm -f "$port_file"
+    fi
+
+    # Find and store a new port
+    local new_port
+    new_port=$(find_available_port 8000)
+    echo "$new_port" > "$port_file"
+    echo "$new_port"
+}
+
 # START Services
 start_services() {
     check_env
+
+    # Get or find an available port
+    local api_port
+    api_port=$(get_api_port)
+    export SONO_EVAL_API_PORT=$api_port
+
     echo -e "${BLUE}🚀 Starting Sono-Eval services...${NC}"
+    echo -e "${CYAN}📍 Using API port: $api_port${NC}"
+
+    # Export port for docker-compose
+    export API_PORT=$api_port
     docker-compose up -d
+
+    # Wait a moment for services to start
+    sleep 2
+
+    # Verify the port is actually being used
+    local actual_port
+    actual_port=$(docker ps --format '{{.Ports}}' | grep sono-eval-app | sed -n 's/.*:\([0-9]*\)->8000.*/\1/p' | head -1)
+    if [ -n "$actual_port" ]; then
+        api_port=$actual_port
+        echo "$api_port" > .sono-eval-port
+    fi
 
     echo ""
     echo -e "${GREEN}✅ Services started successfully!${NC}"
     echo ""
-    echo -e "  • ${CYAN}API Server:${NC}     http://localhost:8000"
-    echo -e "  • ${CYAN}API Docs:${NC}       http://localhost:8000/docs"
+    echo -e "  • ${CYAN}API Server:${NC}     http://localhost:$api_port"
+    echo -e "  • ${CYAN}API Docs:${NC}       http://localhost:$api_port/docs"
     echo -e "  • ${CYAN}Superset:${NC}       http://localhost:8088"
     echo ""
     echo -e "${YELLOW}💡 Tip: Run './launcher.sh logs' to view logs${NC}"
@@ -60,6 +147,8 @@ start_services() {
 stop_services() {
     echo -e "${BLUE}🛑 Stopping Sono-Eval services...${NC}"
     docker-compose down
+    # Clean up port file when stopping
+    rm -f .sono-eval-port
     echo -e "${GREEN}✓ Services stopped${NC}"
 }
 
@@ -67,6 +156,17 @@ stop_services() {
 show_status() {
     echo -e "${BLUE}📊 Service Status:${NC}"
     docker-compose ps
+
+    # Show current API port if services are running
+    if docker ps --format '{{.Names}}' | grep -q "^sono-eval-app$"; then
+        local api_port
+        api_port=$(docker ps --format '{{.Ports}}' | grep sono-eval-app | sed -n 's/.*:\([0-9]*\)->8000.*/\1/p' | head -1)
+        if [ -n "$api_port" ]; then
+            echo ""
+            echo -e "${CYAN}📍 API is running on port: $api_port${NC}"
+            echo -e "   ${CYAN}URL:${NC} http://localhost:$api_port"
+        fi
+    fi
 }
 
 # LOGS

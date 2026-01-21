@@ -1,7 +1,7 @@
 """Dashboard data models for rich assessment visualization."""
 
 from datetime import datetime
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, Field
 
@@ -271,3 +271,246 @@ class DashboardData(BaseModel):
             "exploration": "Curiosity and willingness to investigate",
         }
         return descriptions.get(motive_type.lower(), "Underlying motivation pattern")
+
+    # Chart-ready data methods
+
+    def get_radar_chart_data(self) -> Dict[str, Any]:
+        """
+        Get data formatted for a radar/spider chart.
+
+        Returns:
+            Dictionary with labels and dataset for Chart.js radar chart
+        """
+        labels = []
+        data = []
+        background_colors = []
+
+        for path_viz in self.path_scores:
+            labels.append(path_viz.label)
+            data.append(path_viz.score)
+            background_colors.append(path_viz.color)
+
+        return {
+            "type": "radar",
+            "labels": labels,
+            "datasets": [
+                {
+                    "label": "Path Scores",
+                    "data": data,
+                    "backgroundColor": f"rgba({self._hex_to_rgba(self.PATH_COLORS.get(PathType.TECHNICAL, '#3b82f6'), 0.2)})",  # noqa: E501
+                    "borderColor": f"rgb({self._hex_to_rgb(self.PATH_COLORS.get(PathType.TECHNICAL, '#3b82f6'))})",  # noqa: E501
+                    "borderWidth": 2,
+                    "pointBackgroundColor": background_colors,
+                    "pointBorderColor": "#fff",
+                    "pointHoverBackgroundColor": "#fff",
+                    "pointHoverBorderColor": background_colors,
+                }
+            ],
+            "options": {
+                "scales": {
+                    "r": {
+                        "beginAtZero": True,
+                        "max": 100,
+                        "ticks": {"stepSize": 20},
+                    }
+                },
+                "plugins": {"legend": {"display": False}},
+            },
+        }
+
+    def get_progress_ring_data(self) -> Dict[str, Any]:
+        """
+        Get data for progress ring/doughnut chart showing overall completion.
+
+        Returns:
+            Dictionary with data for Chart.js doughnut chart
+        """
+        score = self.overall_score
+        remaining = 100 - score
+
+        return {
+            "type": "doughnut",
+            "labels": ["Score", "Remaining"],
+            "datasets": [
+                {
+                    "data": [score, remaining],
+                    "backgroundColor": [
+                        self._get_score_color_hex(score),
+                        "#e5e7eb",  # gray for remaining
+                    ],
+                    "borderWidth": 0,
+                    "cutout": "75%",
+                }
+            ],
+            "options": {
+                "plugins": {
+                    "legend": {"display": False},
+                    "tooltip": {"enabled": False},
+                },
+                "rotation": -90,
+                "circumference": 180,
+            },
+        }
+
+    def get_path_breakdown_charts(self) -> List[Dict[str, Any]]:
+        """
+        Get individual breakdown charts for each path.
+
+        Returns:
+            List of chart configurations, one per path
+        """
+        charts = []
+
+        for path_viz in self.path_scores:
+            if not path_viz.breakdown:
+                continue
+
+            labels = [b.label for b in path_viz.breakdown]
+            data = [b.score for b in path_viz.breakdown]
+            colors = [b.color for b in path_viz.breakdown]
+
+            chart_data = {
+                "type": "bar",
+                "path": path_viz.path.value,
+                "labels": labels,
+                "datasets": [
+                    {
+                        "label": "Score",
+                        "data": data,
+                        "backgroundColor": colors,
+                        "borderRadius": 8,
+                    }
+                ],
+                "options": {
+                    "indexAxis": "y",  # Horizontal bars
+                    "scales": {
+                        "x": {"beginAtZero": True, "max": 100},
+                    },
+                    "plugins": {
+                        "legend": {"display": False},
+                    },
+                },
+            }
+            charts.append(chart_data)
+
+        return charts
+
+    def get_trend_chart_data(self) -> Optional[Dict[str, Any]]:
+        """
+        Get data for trend line chart showing score history.
+
+        Returns:
+            Dictionary with data for Chart.js line chart, or None if no trend data
+        """
+        if not self.trend_data:
+            return None
+
+        labels = [t.timestamp.strftime("%m/%d %H:%M") for t in self.trend_data]
+        data = [t.score for t in self.trend_data]
+
+        # Determine trend color
+        trend_color = (
+            "#22c55e"
+            if self.trend_direction == "improving"
+            else "#ef4444"
+            if self.trend_direction == "declining"
+            else "#6b7280"
+        )
+
+        return {
+            "type": "line",
+            "labels": labels,
+            "datasets": [
+                {
+                    "label": "Score Over Time",
+                    "data": data,
+                    "borderColor": trend_color,
+                    "backgroundColor": f"rgba({self._hex_to_rgba(trend_color, 0.1)})",
+                    "tension": 0.4,
+                    "fill": True,
+                    "pointRadius": 4,
+                    "pointHoverRadius": 6,
+                }
+            ],
+            "options": {
+                "scales": {
+                    "y": {"beginAtZero": True, "max": 100},
+                },
+                "plugins": {
+                    "legend": {"display": False},
+                },
+            },
+        }
+
+    def get_motive_chart_data(self) -> Optional[Dict[str, Any]]:
+        """
+        Get data for micro-motives bar chart.
+
+        Returns:
+            Dictionary with data for Chart.js horizontal bar chart, or None if no motives
+        """
+        if not self.motives:
+            return None
+
+        # Sort by strength
+        sorted_motives = sorted(self.motives, key=lambda m: m.strength, reverse=True)[:8]  # Top 8
+
+        labels = [m.label for m in sorted_motives]
+        data = [m.strength * 100 for m in sorted_motives]  # Convert to percentage
+        colors = [m.color for m in sorted_motives]
+
+        return {
+            "type": "bar",
+            "labels": labels,
+            "datasets": [
+                {
+                    "label": "Strength",
+                    "data": data,
+                    "backgroundColor": colors,
+                    "borderRadius": 8,
+                }
+            ],
+            "options": {
+                "indexAxis": "y",  # Horizontal bars
+                "scales": {
+                    "x": {"beginAtZero": True, "max": 100},
+                },
+                "plugins": {
+                    "legend": {"display": False},
+                },
+            },
+        }
+
+    @staticmethod
+    def _hex_to_rgb(hex_color: str) -> str:
+        """Convert hex color to RGB string."""
+        hex_color = hex_color.lstrip("#")
+        r, g, b = tuple(int(hex_color[i : i + 2], 16) for i in (0, 2, 4))
+        return f"{r}, {g}, {b}"
+
+    @staticmethod
+    def _hex_to_rgba(hex_color: str, alpha: float) -> str:
+        """Convert hex color to RGBA string."""
+        hex_color = hex_color.lstrip("#")
+        r, g, b = tuple(int(hex_color[i : i + 2], 16) for i in (0, 2, 4))
+        return f"{r}, {g}, {b}, {alpha}"
+
+    @staticmethod
+    def _get_score_color_hex(score: float) -> str:
+        """Get hex color for a score value."""
+        if score >= 85:
+            return "#22c55e"  # green
+        elif score >= 70:
+            return "#3b82f6"  # blue
+        elif score >= 60:
+            return "#f59e0b"  # amber
+        else:
+            return "#ef4444"  # red
+
+    PATH_COLORS = {
+        PathType.TECHNICAL: "#3b82f6",
+        PathType.DESIGN: "#8b5cf6",
+        PathType.COLLABORATION: "#22c55e",
+        PathType.PROBLEM_SOLVING: "#f59e0b",
+        PathType.COMMUNICATION: "#06b6d4",
+    }

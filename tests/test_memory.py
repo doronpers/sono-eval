@@ -1,6 +1,5 @@
 """Tests for the MemU storage system."""
 
-
 import pytest
 
 from sono_eval.memory.memu import MemUStorage

@@ -11,6 +11,7 @@ from rich.console import Console
 from sono_eval.cli.commands.assess import assess
 from sono_eval.cli.commands.candidate import candidate
 from sono_eval.cli.commands.server import server
+from sono_eval.cli.commands.session import session
 from sono_eval.cli.commands.setup import setup
 from sono_eval.cli.commands.tag import tag
 
@@ -30,6 +31,16 @@ cli.add_command(candidate)
 cli.add_command(server)
 cli.add_command(tag)
 cli.add_command(setup)
+cli.add_command(session)
+
+
+@cli.command()
+def repl():
+    """Start interactive REPL mode for guided assessments."""
+    from sono_eval.cli.repl import start_repl
+
+    start_repl()
+
 
 # Add interactive setup command if available (legacy compatibility)
 try:

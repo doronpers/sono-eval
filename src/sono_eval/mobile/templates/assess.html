@@ -22,9 +22,32 @@
 
     <!-- Code Input Section -->
     <div class="code-input-section" id="code-input">
-        <div class="input-method-toggle">
-            <button class="toggle-btn active" data-method="paste" type="button" aria-pressed="true">Paste Code</button>
-            <button class="toggle-btn" data-method="upload" type="button" aria-pressed="false">Upload File</button>
+        <div class="section-header-with-help">
+            <div class="input-method-toggle">
+                <button class="toggle-btn active" data-method="paste" type="button" aria-pressed="true">Paste Code</button>
+                <button class="toggle-btn" data-method="upload" type="button" aria-pressed="false">Upload File</button>
+            </div>
+            <button class="help-btn" onclick="showHelp('code-input-help')" title="Get help">
+                <span class="help-icon">?</span>
+            </button>
+        </div>
+
+        <!-- Contextual Help Card -->
+        <div class="help-card hidden" id="code-input-help">
+            <div class="help-header">
+                <span class="help-badge">💡 Tip</span>
+                <button class="help-close" onclick="hideHelp('code-input-help')">×</button>
+            </div>
+            <div class="help-content">
+                <p><strong>What kind of code should I submit?</strong></p>
+                <ul class="help-list">
+                    <li>Any working code you've written (function, class, or complete file)</li>
+                    <li>Real project code works best - shows your actual style</li>
+                    <li>50+ lines recommended for thorough analysis</li>
+                    <li>Include comments if you normally use them</li>
+                </ul>
+                <p class="help-note">Your code is analyzed privately and securely.</p>
+            </div>
         </div>
 
         <!-- Paste Method -->
@@ -347,7 +370,139 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
+// Help system functions
+function showHelp(helpId) {
+    const helpCard = document.getElementById(helpId);
+    if (helpCard) {
+        helpCard.classList.remove('hidden');
+
+        // Track help viewed
+        if (window.sonoEvalTracking && window.sonoEvalTracking.trackEvent) {
+            window.sonoEvalTracking.trackEvent('help_viewed', {
+                help_id: helpId,
+                page: 'assessment',
+            });
+        }
+    }
+}
+
+function hideHelp(helpId) {
+    const helpCard = document.getElementById(helpId);
+    if (helpCard) {
+        helpCard.classList.add('hidden');
+    }
+}
+
 // Initialize
 validateInput();
 </script>
+
+<style>
+/* Help system styles */
+.section-header-with-help {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.help-btn {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid var(--primary-color, #3b82f6);
+    background: white;
+    color: var(--primary-color, #3b82f6);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    transition: all 0.2s;
+}
+
+.help-btn:hover {
+    background: var(--primary-color, #3b82f6);
+    color: white;
+    transform: scale(1.1);
+}
+
+.help-card {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: #f0f9ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    animation: slideDown 0.3s ease;
+}
+
+.help-card.hidden {
+    display: none;
+}
+
+.help-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.help-badge {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #1e40af;
+}
+
+.help-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #6b7280;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+}
+
+.help-close:hover {
+    color: #1f2937;
+}
+
+.help-content p {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.9rem;
+}
+
+.help-list {
+    margin: 0.5rem 0;
+    padding-left: 1.25rem;
+    font-size: 0.875rem;
+    color: #374151;
+}
+
+.help-list li {
+    margin-bottom: 0.375rem;
+}
+
+.help-note {
+    font-size: 0.8125rem;
+    color: #6b7280;
+    font-style: italic;
+    margin-top: 0.75rem !important;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+</style>
 {% endblock %}

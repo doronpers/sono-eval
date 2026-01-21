@@ -400,6 +400,176 @@ def create_mobile_app() -> FastAPI:
             },
         )
 
+    @app.get("/api/mobile/visualization/dashboard/{assessment_id}")
+    async def get_dashboard_visualization(assessment_id: str):
+        """
+        Get complete dashboard visualization data for an assessment.
+
+        Returns chart-ready data structures for all visualizations.
+        """
+        try:
+            # In production, fetch from database
+            # For now, return mock data structure
+            # from sono_eval.assessment.dashboard import DashboardData
+
+            # Mock dashboard data
+            # In production: result = await fetch_assessment_result(assessment_id)
+            # dashboard = DashboardData.from_assessment_result(result)
+
+            return {
+                "success": True,
+                "assessment_id": assessment_id,
+                "message": "Dashboard data endpoint ready. Integrate with assessment storage.",
+            }
+        except Exception as e:
+            logger.error(f"Error generating dashboard visualization: {e}")
+            return JSONResponse(
+                status_code=500,
+                content={
+                    "success": False,
+                    "error": f"Failed to generate visualization data: {str(e)}",
+                },
+            )
+
+    @app.get("/api/mobile/visualization/radar/{assessment_id}")
+    async def get_radar_chart_data(assessment_id: str):
+        """Get radar chart data for path scores."""
+        try:
+            # Mock implementation
+            # In production: fetch result and generate chart data
+            return {
+                "success": True,
+                "chart_data": {
+                    "type": "radar",
+                    "labels": [
+                        "Technical",
+                        "Design",
+                        "Collaboration",
+                        "Problem Solving",
+                        "Communication",
+                    ],
+                    "datasets": [
+                        {
+                            "label": "Path Scores",
+                            "data": [75, 82, 68, 79, 85],
+                            "backgroundColor": "rgba(59, 130, 246, 0.2)",
+                            "borderColor": "rgb(59, 130, 246)",
+                        }
+                    ],
+                },
+            }
+        except Exception as e:
+            logger.error(f"Error generating radar chart: {e}")
+            return JSONResponse(status_code=500, content={"success": False, "error": str(e)})
+
+    @app.get("/api/mobile/visualization/progress/{assessment_id}")
+    async def get_progress_ring_data(assessment_id: str):
+        """Get progress ring data for overall score."""
+        try:
+            # Mock implementation
+            return {
+                "success": True,
+                "chart_data": {
+                    "type": "doughnut",
+                    "labels": ["Score", "Remaining"],
+                    "datasets": [
+                        {
+                            "data": [78, 22],
+                            "backgroundColor": ["#3b82f6", "#e5e7eb"],
+                        }
+                    ],
+                },
+            }
+        except Exception as e:
+            logger.error(f"Error generating progress ring: {e}")
+            return JSONResponse(status_code=500, content={"success": False, "error": str(e)})
+
+    @app.get("/api/mobile/visualization/breakdowns/{assessment_id}")
+    async def get_path_breakdowns(assessment_id: str):
+        """Get detailed breakdown charts for each path."""
+        try:
+            # Mock implementation
+            return {
+                "success": True,
+                "charts": [
+                    {
+                        "path": "technical",
+                        "type": "bar",
+                        "labels": [
+                            "Code Quality",
+                            "Testing",
+                            "Patterns",
+                            "Performance",
+                        ],
+                        "datasets": [
+                            {
+                                "label": "Score",
+                                "data": [80, 72, 85, 68],
+                                "backgroundColor": "#3b82f6",
+                            }
+                        ],
+                    }
+                ],
+            }
+        except Exception as e:
+            logger.error(f"Error generating breakdowns: {e}")
+            return JSONResponse(status_code=500, content={"success": False, "error": str(e)})
+
+    @app.get("/api/mobile/visualization/trend/{candidate_id}")
+    async def get_trend_data(candidate_id: str, limit: int = 10):
+        """Get trend chart data for candidate's assessment history."""
+        try:
+            # Mock implementation
+            # In production: fetch historical results for candidate
+            return {
+                "success": True,
+                "chart_data": {
+                    "type": "line",
+                    "labels": ["01/15", "01/16", "01/17", "01/18", "01/19"],
+                    "datasets": [
+                        {
+                            "label": "Score Over Time",
+                            "data": [68, 72, 75, 78, 82],
+                            "borderColor": "#22c55e",
+                            "backgroundColor": "rgba(34, 197, 94, 0.1)",
+                        }
+                    ],
+                },
+                "trend_direction": "improving",
+            }
+        except Exception as e:
+            logger.error(f"Error generating trend chart: {e}")
+            return JSONResponse(status_code=500, content={"success": False, "error": str(e)})
+
+    @app.get("/api/mobile/visualization/motives/{assessment_id}")
+    async def get_motives_chart_data(assessment_id: str):
+        """Get micro-motives visualization data."""
+        try:
+            # Mock implementation
+            return {
+                "success": True,
+                "chart_data": {
+                    "type": "bar",
+                    "labels": ["Mastery", "Quality", "Efficiency", "Innovation"],
+                    "datasets": [
+                        {
+                            "label": "Strength",
+                            "data": [85, 78, 72, 65],
+                            "backgroundColor": [
+                                "#3b82f6",
+                                "#22c55e",
+                                "#f59e0b",
+                                "#8b5cf6",
+                            ],
+                        }
+                    ],
+                },
+                "dominant_motive": "Mastery",
+            }
+        except Exception as e:
+            logger.error(f"Error generating motives chart: {e}")
+            return JSONResponse(status_code=500, content={"success": False, "error": str(e)})
+
     return app
 
 

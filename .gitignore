@@ -25,6 +25,8 @@ MANIFEST
 
 # Virtual environments
 venv/
+venv*/
+venv-test/
 env/
 ENV/
 env.bak/
@@ -87,3 +89,6 @@ temp/
 *.bak.*
 .env.*.local
 coverage/
+
+# Launcher port tracking
+.sono-eval-port

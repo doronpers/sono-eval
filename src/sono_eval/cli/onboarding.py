@@ -23,11 +23,39 @@ logger = get_logger(__name__)
 def print_welcome():
     """Print welcome message for first-time setup."""
     welcome_text = """
-    Sono-Eval Setup
-    ---------------
-    This process will configure your local environment for assessment.
+    [bold cyan]Welcome to Sono-Eval![/bold cyan]
+
+    [bold]About Sono-Eval:[/bold]
+    Sono-Eval is a growth-oriented assessment platform designed to help you
+    understand and improve your skills. Unlike traditional tests that just give
+    you a score, Sono-Eval provides:
+
+    • [green]Clear explanations[/green] for every score with concrete evidence
+    • [green]Multi-dimensional evaluation[/green] - not just code, but design,
+      collaboration, and problem-solving
+    • [green]Actionable feedback[/green] you can use immediately
+    • [green]Progress tracking[/green] over time with detailed history
+
+    [bold]The Evaluation Process:[/bold]
+    Our assessment system evaluates your work across multiple paths:
+
+    • [cyan]Technical[/cyan] - Code quality, architecture, best practices
+    • [cyan]Design[/cyan] - User experience, interface design, aesthetics
+    • [cyan]Collaboration[/cyan] - Teamwork, communication, code reviews
+    • [cyan]Problem Solving[/cyan] - Algorithm design, debugging, optimization
+    • [cyan]Communication[/cyan] - Documentation, clarity, explanation
+
+    Each assessment provides detailed scores, evidence, and recommendations
+    to help you grow. Your progress is tracked across sessions, allowing you
+    to see improvement over time.
+
+    [bold]Privacy & Data:[/bold]
+    All assessment data is stored locally on your machine. Your work and
+    results remain private unless you choose to share them.
+
+    Let's get started with the setup process!
     """
-    console.print(Panel(welcome_text, border_style="dim"))
+    console.print(Panel(welcome_text, border_style="cyan", title="[bold]Sono-Eval Setup[/bold]"))
 
 
 def check_python_version() -> bool:
@@ -132,10 +160,20 @@ def explain_next_steps():
         ("2", "View assessment results", "sono-eval assess get --assessment-id <id>"),
         (
             "3",
-            "Explore the mobile interface",
-            "Start the API: sono-eval api serve, then visit http://localhost:8000/mobile",
+            "View your assessment history",
+            "sono-eval candidate history --id your_id",
         ),
-        ("4", "Get help anytime", "sono-eval --help or sono-eval <command> --help"),
+        (
+            "4",
+            "Generate a comprehensive report",
+            "sono-eval candidate report --id your_id --output report.md",
+        ),
+        (
+            "5",
+            "Explore the mobile interface",
+            "Start the API: sono-eval server start, then visit http://localhost:8000/mobile",
+        ),
+        ("6", "Get help anytime", "sono-eval --help or sono-eval <command> --help"),
     ]
 
     table = Table(show_header=False, box=None, padding=(0, 2))
@@ -148,9 +186,11 @@ def explain_next_steps():
 
     console.print(table)
 
-    console.print(
-        "\n[yellow]💡 Tip:[/yellow] Use [cyan]sono-eval --help[/cyan] to see all available commands."
-    )
+    console.print("\n[yellow]💡 Tips:[/yellow]")
+    console.print("  • Use [cyan]sono-eval --help[/cyan] to see all available commands")
+    console.print("  • Your assessment data is saved automatically and persists across sessions")
+    console.print("  • Use [cyan]--output[/cyan] flag to save assessment results to a file")
+    console.print("  • Session reports are generated automatically at the end of each session")
 
 
 def run_interactive_setup():
