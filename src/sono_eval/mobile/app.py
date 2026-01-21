@@ -410,7 +410,7 @@ def create_mobile_app() -> FastAPI:
         try:
             # In production, fetch from database
             # For now, return mock data structure
-            from sono_eval.assessment.dashboard import DashboardData
+            # from sono_eval.assessment.dashboard import DashboardData
 
             # Mock dashboard data
             # In production: result = await fetch_assessment_result(assessment_id)
@@ -441,7 +441,13 @@ def create_mobile_app() -> FastAPI:
                 "success": True,
                 "chart_data": {
                     "type": "radar",
-                    "labels": ["Technical", "Design", "Collaboration", "Problem Solving", "Communication"],
+                    "labels": [
+                        "Technical",
+                        "Design",
+                        "Collaboration",
+                        "Problem Solving",
+                        "Communication",
+                    ],
                     "datasets": [
                         {
                             "label": "Path Scores",
@@ -489,7 +495,12 @@ def create_mobile_app() -> FastAPI:
                     {
                         "path": "technical",
                         "type": "bar",
-                        "labels": ["Code Quality", "Testing", "Patterns", "Performance"],
+                        "labels": [
+                            "Code Quality",
+                            "Testing",
+                            "Patterns",
+                            "Performance",
+                        ],
                         "datasets": [
                             {
                                 "label": "Score",
@@ -544,7 +555,12 @@ def create_mobile_app() -> FastAPI:
                         {
                             "label": "Strength",
                             "data": [85, 78, 72, 65],
-                            "backgroundColor": ["#3b82f6", "#22c55e", "#f59e0b", "#8b5cf6"],
+                            "backgroundColor": [
+                                "#3b82f6",
+                                "#22c55e",
+                                "#f59e0b",
+                                "#8b5cf6",
+                            ],
                         }
                     ],
                 },

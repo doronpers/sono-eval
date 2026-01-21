@@ -7,7 +7,6 @@ and exploring results.
 import asyncio
 import sys
 from pathlib import Path
-from typing import Optional
 
 from rich.console import Console
 from rich.prompt import Confirm, Prompt
@@ -206,7 +205,9 @@ class ReplSession:
                 "4": PathType.PROBLEM_SOLVING,
                 "5": PathType.COMMUNICATION,
             }
-            path_list = [path_map[p.strip()] for p in path_input.split(",") if p.strip() in path_map]
+            path_list = [
+                path_map[p.strip()] for p in path_input.split(",") if p.strip() in path_map
+            ]
 
         # Create assessment input
         assessment_input = AssessmentInput(
@@ -224,7 +225,9 @@ class ReplSession:
 
             try:
                 result = asyncio.run(self.engine.assess(assessment_input))
-                progress.update(task, advance=len(path_list) + 1, description="Assessment complete!")
+                progress.update(
+                    task, advance=len(path_list) + 1, description="Assessment complete!"
+                )
             except Exception as e:
                 ErrorFormatter.format_error(
                     error_type="Assessment Error",

@@ -278,7 +278,8 @@ def run(
             from rich.prompt import Confirm
 
             if Confirm.ask(
-                "\n[cyan]Would you like to save the raw results to a file?[/cyan]", default=False
+                "\n[cyan]Would you like to save the raw results to a file?[/cyan]",
+                default=False,
             ):
                 default_output = f"assessment_{result.assessment_id}.json"
                 from rich.prompt import Prompt

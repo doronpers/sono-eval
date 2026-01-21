@@ -447,11 +447,36 @@ class InteractiveFormatter:
         console.print("\n[bold]Select Assessment Paths:[/bold]\n")
 
         paths = [
-            ("technical", "⚙️", "Technical Skills & Practices", "Code quality, patterns, testing"),
-            ("design", "🎨", "System Design & Architecture", "Design decisions, scalability"),
-            ("collaboration", "🤝", "Collaboration & Teamwork", "Communication, code review"),
-            ("problem_solving", "🧩", "Problem Solving", "Debugging, optimization, analysis"),
-            ("communication", "💬", "Communication", "Documentation, clarity, expression"),
+            (
+                "technical",
+                "⚙️",
+                "Technical Skills & Practices",
+                "Code quality, patterns, testing",
+            ),
+            (
+                "design",
+                "🎨",
+                "System Design & Architecture",
+                "Design decisions, scalability",
+            ),
+            (
+                "collaboration",
+                "🤝",
+                "Collaboration & Teamwork",
+                "Communication, code review",
+            ),
+            (
+                "problem_solving",
+                "🧩",
+                "Problem Solving",
+                "Debugging, optimization, analysis",
+            ),
+            (
+                "communication",
+                "💬",
+                "Communication",
+                "Documentation, clarity, expression",
+            ),
         ]
 
         for _, icon, title, desc in paths:

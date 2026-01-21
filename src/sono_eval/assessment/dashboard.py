@@ -1,7 +1,7 @@
 """Dashboard data models for rich assessment visualization."""
 
 from datetime import datetime
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, Field
 
@@ -297,8 +297,8 @@ class DashboardData(BaseModel):
                 {
                     "label": "Path Scores",
                     "data": data,
-                    "backgroundColor": f"rgba({self._hex_to_rgba(self.PATH_COLORS.get(PathType.TECHNICAL, '#3b82f6'), 0.2)})",
-                    "borderColor": f"rgb({self._hex_to_rgb(self.PATH_COLORS.get(PathType.TECHNICAL, '#3b82f6'))})",
+                    "backgroundColor": f"rgba({self._hex_to_rgba(self.PATH_COLORS.get(PathType.TECHNICAL, '#3b82f6'), 0.2)})",  # noqa: E501
+                    "borderColor": f"rgb({self._hex_to_rgb(self.PATH_COLORS.get(PathType.TECHNICAL, '#3b82f6'))})",  # noqa: E501
                     "borderWidth": 2,
                     "pointBackgroundColor": background_colors,
                     "pointBorderColor": "#fff",
@@ -409,7 +409,13 @@ class DashboardData(BaseModel):
         data = [t.score for t in self.trend_data]
 
         # Determine trend color
-        trend_color = "#22c55e" if self.trend_direction == "improving" else "#ef4444" if self.trend_direction == "declining" else "#6b7280"
+        trend_color = (
+            "#22c55e"
+            if self.trend_direction == "improving"
+            else "#ef4444"
+            if self.trend_direction == "declining"
+            else "#6b7280"
+        )
 
         return {
             "type": "line",

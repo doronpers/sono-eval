@@ -6,7 +6,7 @@ import click
 from rich.console import Console
 from rich.panel import Panel
 from rich.progress import Progress, SpinnerColumn, TextColumn
-from rich.prompt import Confirm, Prompt
+from rich.prompt import Confirm
 from rich.table import Table
 
 from sono_eval.cli.formatters import WelcomeFormatter
@@ -124,7 +124,9 @@ def init(interactive: bool, quick: bool):
                 _install_dependencies(missing)
                 setup_status["dependencies"] = True
             else:
-                console.print("[dim]You can install later with: pip install -r requirements.txt[/dim]")
+                console.print(
+                    "[dim]You can install later with: pip install -r requirements.txt[/dim]"
+                )
         else:
             console.print("[dim]Run: pip install -r requirements.txt[/dim]")
     else:
@@ -211,7 +213,7 @@ def _install_dependencies(packages):
 
         try:
             # Use pip to install all requirements
-            result = subprocess.run(
+            subprocess.run(
                 ["pip", "install", "-r", "requirements.txt"],
                 capture_output=True,
                 text=True,
@@ -223,7 +225,9 @@ def _install_dependencies(packages):
 
         except subprocess.CalledProcessError as e:
             console.print(f"[red]✗ Installation failed: {e}[/red]")
-            console.print("[dim]You may need to install manually with: pip install -r requirements.txt[/dim]")
+            console.print(
+                "[dim]You may need to install manually with: pip install -r requirements.txt[/dim]"
+            )
         except FileNotFoundError:
             console.print("[red]✗ pip not found in PATH[/red]")
             console.print("[dim]Make sure pip is installed and accessible[/dim]")
@@ -268,7 +272,9 @@ def fibonacci(n):
             result = asyncio.run(engine.assess(assessment_input))
 
             progress.update(task, description="Test complete!")
-            console.print(f"[green]✓ Test assessment successful! Score: {result.overall_score:.1f}[/green]")
+            console.print(
+                f"[green]✓ Test assessment successful! Score: {result.overall_score:.1f}[/green]"
+            )
 
         except Exception as e:
             console.print(f"[yellow]⚠ Test assessment failed: {e}[/yellow]")

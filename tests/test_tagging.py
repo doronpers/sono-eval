@@ -1,6 +1,5 @@
 """Tests for the tagging system."""
 
-
 from sono_eval.tagging.generator import SemanticTag, TagGenerator
 
 
