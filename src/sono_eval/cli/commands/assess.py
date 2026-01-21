@@ -4,17 +4,14 @@ from typing import Optional, Tuple
 
 import click
 from rich.console import Console
-from rich.table import Table
 
 from sono_eval.assessment.engine import AssessmentEngine
 from sono_eval.assessment.models import AssessmentInput, PathType
-from sono_eval.cli.formatters import (
-    AssessmentFormatter,
-    ErrorFormatter,
-    ProgressFormatter,
-)
+from sono_eval.cli.formatters import AssessmentFormatter, ErrorFormatter, ProgressFormatter
+from sono_eval.utils.logger import get_logger
 
 console = Console()
+logger = get_logger(__name__)
 
 
 @click.group()
@@ -69,6 +66,24 @@ def run(
     """
     if not quiet:
         console.print(f"[bold blue]Running assessment for candidate: {candidate_id}[/bold blue]")
+
+        # Show personalized greeting if available
+        try:
+            from sono_eval.cli.personalization import PersonalizationEngine
+
+            personalizer = PersonalizationEngine(candidate_id)
+            greeting = personalizer.get_greeting_message()
+            console.print(f"[dim]{greeting}[/dim]\n")
+
+            # Show contextual insights
+            insights = personalizer.get_contextual_insights()
+            if insights:
+                console.print("[bold cyan]Insights from your history:[/bold cyan]")
+                for insight in insights[:2]:
+                    console.print(f"  • {insight}")
+                console.print()
+        except Exception as e:
+            logger.debug(f"Personalization greeting failed: {e}")
 
     # Get content
     try:
@@ -203,6 +218,51 @@ def run(
     if not quiet:
         AssessmentFormatter.format_complete_result(result, verbose=verbose)
 
+        # Personalized recommendations
+        try:
+            from sono_eval.cli.personalization import PersonalizationEngine
+
+            personalizer = PersonalizationEngine(candidate_id)
+            personalized_recs = personalizer.get_personalized_recommendations()
+            if personalized_recs:
+                console.print("\n[bold cyan]Personalized Recommendations:[/bold cyan]")
+                for rec in personalized_recs[:3]:
+                    console.print(f"  • [cyan]{rec}[/cyan]")
+        except Exception as e:
+            logger.debug(f"Personalized recommendations failed: {e}")
+
+    # Save assessment to memory for cross-session persistence
+    try:
+        from sono_eval.memory.memu import MemUStorage
+
+        storage = MemUStorage()
+
+        # Ensure candidate memory exists
+        memory = storage.get_candidate_memory(candidate_id)
+        if not memory:
+            memory = storage.create_candidate_memory(candidate_id)
+
+        # Add assessment as a memory node
+        root_id = memory.root_node.node_id
+        storage.add_memory_node(
+            candidate_id=candidate_id,
+            parent_id=root_id,
+            data={"assessment_result": result.model_dump(mode="json")},
+            metadata={"type": "assessment", "assessment_id": result.assessment_id},
+        )
+        logger.debug(f"Saved assessment {result.assessment_id} to memory")
+    except Exception as e:
+        logger.warning(f"Failed to save assessment to memory: {e}")
+
+    # Track assessment in session
+    try:
+        from sono_eval.cli.session_manager import get_session
+
+        session = get_session(candidate_id)
+        session.add_assessment(result.model_dump(mode="json"))
+    except Exception as e:
+        logger.debug(f"Failed to track assessment in session: {e}")
+
     # Save to file if requested
     if output:
         try:
@@ -212,7 +272,51 @@ def run(
                 console.print(f"\n[green]✓ Results saved to {output}[/green]")
         except Exception as e:
             console.print(f"[red]Error saving results: {e}[/red]")
+    elif not quiet:
+        # Offer to save if not already saved
+        try:
+            from rich.prompt import Confirm
+
+            if Confirm.ask(
+                "\n[cyan]Would you like to save the raw results to a file?[/cyan]", default=False
+            ):
+                default_output = f"assessment_{result.assessment_id}.json"
+                from rich.prompt import Prompt
+
+                save_path = Prompt.ask("Output file path", default=default_output)
+                try:
+                    with open(save_path, "w", encoding="utf-8") as f:
+                        json.dump(result.model_dump(mode="json"), f, indent=2, default=str)
+                    console.print(f"[green]✓ Results saved to {save_path}[/green]")
+                except Exception as e:
+                    console.print(f"[red]Error saving results: {e}[/red]")
+        except ImportError:
+            pass  # rich.prompt not available, skip
 
     if quiet:
         # In quiet mode, just print the score
         console.print(f"{result.overall_score:.2f}")
+    else:
+        # Auto-generate session report if this is the last assessment in session
+        try:
+            from sono_eval.cli.session_manager import get_session
+
+            session = get_session(candidate_id)
+            if len(session.assessments) >= 1:  # After first assessment
+                # Offer to generate session report
+                try:
+                    from rich.prompt import Confirm
+
+                    if Confirm.ask("\n[cyan]Generate session report?[/cyan]", default=False):
+                        report_data = session.generate_session_report()
+                        from sono_eval.cli.commands.session import format_session_report_as_markdown
+
+                        report_md = format_session_report_as_markdown(report_data)
+                        console.print("\n[bold cyan]Session Report:[/bold cyan]")
+                        from rich.markdown import Markdown
+
+                        console.print(Markdown(report_md))
+                except ImportError:
+                    pass  # rich.prompt not available
+        except Exception as e:
+            logger.debug(f"Session reporting failed: {e}")

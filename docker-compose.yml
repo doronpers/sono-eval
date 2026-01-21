@@ -1,4 +1,4 @@
-version: "3.8"
+# version: "3.8" # Removed - obsolete in newer Docker Compose versions
 
 # ⚠️ SECURITY WARNING: This docker-compose.yml contains DEFAULT CREDENTIALS for development only!
 #
@@ -23,7 +23,7 @@ services:
       dockerfile: Dockerfile
     container_name: sono-eval-app
     ports:
-      - "8001:8000" # Changed external port to 8001 to avoid conflict
+      - "${API_PORT:-8000}:8000" # Dynamic port assignment via API_PORT env var
     environment:
       - APP_ENV=development # Development setup with default credentials
       - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/sono_eval

@@ -274,6 +274,30 @@ Built with ❤️ by the Sono-Eval Team
 
 [⬆ Back to top](#sono-eval)
 
+## 📦 Standalone Version
+
+For beta testing or environments where Docker is not available, you can build a standalone executable:
+
+```bash
+# Build the standalone executable (requires Python 3.10+)
+pip install pyinstaller
+python scripts/build_standalone.py
+```
+
+**Running the Standalone Version:**
+
+The executable at `dist/sono-eval` is self-contained. It:
+
+- Uses local SQLite database (`sono_eval.db`)
+- Stores data in `./sono_eval_data/`
+- Does not require Docker or Redis
+
+```bash
+./dist/sono-eval assess run --candidate-id test --file solution.py --paths technical
+```
+
+---
+
 ## Agent Instructions
 
 For AI agents working on this repository:

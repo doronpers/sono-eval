@@ -87,3 +87,6 @@ temp/
 *.bak.*
 .env.*.local
 coverage/
+
+# Launcher port tracking
+.sono-eval-port

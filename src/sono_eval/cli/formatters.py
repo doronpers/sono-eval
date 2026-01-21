@@ -7,15 +7,12 @@ for a better developer experience in the CLI.
 from typing import Any, Dict, List, Optional
 
 from rich.console import Console
-from rich.layout import Layout
-from rich.live import Live
 from rich.panel import Panel
 from rich.progress import (
     BarColumn,
     MofNCompleteColumn,
     Progress,
     SpinnerColumn,
-    TaskID,
     TextColumn,
     TimeElapsedColumn,
 )
@@ -95,7 +92,9 @@ class AssessmentFormatter:
 
         # Confidence indicator
         confidence_pct = result.confidence * 100
-        confidence_color = "green" if confidence_pct >= 80 else "yellow" if confidence_pct >= 60 else "red"
+        confidence_color = (
+            "green" if confidence_pct >= 80 else "yellow" if confidence_pct >= 60 else "red"
+        )
         confidence_text = Text()
         confidence_text.append("Confidence: ", style="dim")
         confidence_text.append(f"{confidence_pct:.0f}%", style=confidence_color)
@@ -209,7 +208,13 @@ class AssessmentFormatter:
             motive_name = motive.motive_type.value.replace("_", " ").title()
 
             # Signal description (if available)
-            signal = motive.evidence[:40] + "..." if len(motive.evidence) > 40 else motive.evidence
+            # Signal description (if available)
+            evidence_text = (
+                ", ".join(motive.evidence)
+                if isinstance(motive.evidence, list)
+                else str(motive.evidence)
+            )
+            signal = evidence_text[:40] + "..." if len(evidence_text) > 40 else evidence_text
 
             table.add_row(motive_name, strength_display, signal)
 
@@ -390,12 +395,15 @@ class WelcomeFormatter:
     @staticmethod
     def show_welcome() -> None:
         """Display welcome message with quick start."""
-        banner = """
-[bold cyan]╔═══════════════════════════════════════════════════════╗[/bold cyan]
-[bold cyan]║[/bold cyan]  [bold white]Sono-Eval[/bold white] - Explainable Developer Assessment  [bold cyan]║[/bold cyan]
-[bold cyan]║[/bold cyan]  [dim]Multi-Path Evidence-Based Evaluation System[/dim]     [bold cyan]║[/bold cyan]
-[bold cyan]╚═══════════════════════════════════════════════════════╝[/bold cyan]
-"""
+        banner = (
+            "\n"
+            "[bold cyan]╔═══════════════════════════════════════════════════════╗[/bold cyan]\n"
+            "[bold cyan]║[/bold cyan]  [bold white]Sono-Eval[/bold white] - "
+            "Explainable Developer Assessment  [bold cyan]║[/bold cyan]\n"
+            "[bold cyan]║[/bold cyan]  [dim]Multi-Path Evidence-Based Evaluation System[/dim]     "
+            "[bold cyan]║[/bold cyan]\n"
+            "[bold cyan]╚═══════════════════════════════════════════════════════╝[/bold cyan]\n"
+        )
         console.print(banner)
 
     @staticmethod
@@ -424,7 +432,9 @@ class WelcomeFormatter:
 
         console.print(quick_start)
         console.print()
-        console.print("[dim]Tip: Use --verbose for detailed output, --quiet for minimal output[/dim]")
+        console.print(
+            "[dim]Tip: Use --verbose for detailed output, --quiet for minimal output[/dim]"
+        )
         console.print()
 
 
@@ -444,7 +454,7 @@ class InteractiveFormatter:
             ("communication", "💬", "Communication", "Documentation, clarity, expression"),
         ]
 
-        for path_id, icon, title, desc in paths:
+        for _, icon, title, desc in paths:
             console.print(f"{icon} [bold cyan]{title}[/bold cyan]")
             console.print(f"   [dim]{desc}[/dim]")
             console.print()
