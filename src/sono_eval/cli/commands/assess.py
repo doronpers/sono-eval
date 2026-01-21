@@ -8,6 +8,11 @@ from rich.table import Table
 
 from sono_eval.assessment.engine import AssessmentEngine
 from sono_eval.assessment.models import AssessmentInput, PathType
+from sono_eval.cli.formatters import (
+    AssessmentFormatter,
+    ErrorFormatter,
+    ProgressFormatter,
+)
 
 console = Console()
 
@@ -73,25 +78,31 @@ def run(
             with open(file, "r", encoding="utf-8") as f:
                 content_str = f.read()
             if not content_str.strip():
-                console.print("[red]Error: File is empty[/red]")
+                ErrorFormatter.format_file_error(file, "empty")
                 raise click.Abort()
             final_content = content_str
         elif not content:
-            console.print("[red]Error: Must provide either --file or --content[/red]")
-            console.print(
-                "[yellow]Hint: Use --file path/to/file.py or --content 'your code here'[/yellow]"
+            ErrorFormatter.format_validation_error(
+                field="content",
+                message="Must provide either --file or --content",
+                example="sono-eval assess run --candidate-id john_doe --file solution.py",
             )
             raise click.Abort()
         else:
             final_content = content
     except FileNotFoundError:
-        console.print(f"[red]Error: File not found: {file}[/red]")
+        ErrorFormatter.format_file_error(file, "not_found")
         raise click.Abort()
     except PermissionError:
-        console.print(f"[red]Error: Permission denied reading file: {file}[/red]")
+        ErrorFormatter.format_file_error(file, "permission")
         raise click.Abort()
     except Exception as e:
-        console.print(f"[red]Error reading file: {e}[/red]")
+        ErrorFormatter.format_error(
+            error_type="File Error",
+            message=f"Error reading file: {e}",
+            suggestions=["Check file accessibility and format"],
+            context={"file": file} if file else {},
+        )
         raise click.Abort()
 
     # Parse paths
@@ -132,75 +143,65 @@ def run(
         console.print(f"[red]Validation error: {e}[/red]")
         raise click.Abort()
 
-    # Run assessment
-    if not quiet:
-        console.print("[dim]Processing assessment...[/dim]")
-
+    # Run assessment with progress indicators
     try:
         engine = AssessmentEngine()
-        result = asyncio.run(engine.assess(assessment_input))
+
+        if not quiet:
+            # Show progress indicator
+            progress = ProgressFormatter.create_assessment_progress()
+            with progress:
+                task = progress.add_task(
+                    "Running assessment...",
+                    total=len(path_list) + 1,
+                )
+
+                # Simulate stages for progress tracking
+                progress.update(task, advance=0.5, description="Initializing assessment engine...")
+
+                # Run the actual assessment
+                result = asyncio.run(engine.assess(assessment_input))
+
+                progress.update(
+                    task,
+                    advance=len(path_list) + 0.5,
+                    description="Assessment complete!",
+                )
+        else:
+            result = asyncio.run(engine.assess(assessment_input))
+
     except Exception as e:
-        console.print(f"[red]Error running assessment: {e}[/red]")
         if verbose:
             import traceback
 
-            console.print(f"[dim]{traceback.format_exc()}[/dim]")
+            ErrorFormatter.format_error(
+                error_type="Assessment Error",
+                message=f"Error running assessment: {e}",
+                suggestions=[
+                    "Verify the content is valid for assessment",
+                    "Check that all required paths are valid",
+                    "Try running with --verbose for more details",
+                ],
+                context={
+                    "candidate_id": candidate_id,
+                    "paths": ", ".join(p.value for p in path_list),
+                    "traceback": traceback.format_exc(),
+                },
+            )
+        else:
+            ErrorFormatter.format_error(
+                error_type="Assessment Error",
+                message=f"Error running assessment: {e}",
+                suggestions=[
+                    "Verify the content is valid for assessment",
+                    "Try running with --verbose for detailed error information",
+                ],
+            )
         raise click.Abort()
 
-    # Display results
+    # Display results using new formatter
     if not quiet:
-        console.print("\n[bold green]✓ Assessment Complete![/bold green]")
-        console.print(f"Overall Score: [bold cyan]{result.overall_score:.2f}/100[/bold cyan]")
-        console.print(f"Confidence: [cyan]{result.confidence:.2%}[/cyan]")
-        if verbose:
-            console.print(
-                f"Processing Time: {result.processing_time_ms:.2f}ms"
-                if result.processing_time_ms
-                else ""
-            )
-        console.print(f"\n[bold]Summary:[/bold] {result.summary}")
-
-        # Path scores table
-        if result.path_scores:
-            console.print("\n[bold]Path Scores:[/bold]")
-            table = Table(show_header=True, header_style="bold cyan")
-            table.add_column("Path", style="cyan")
-            table.add_column("Score", justify="right", style="green")
-            table.add_column("Metrics", justify="right", style="dim")
-            table.add_column("Strengths", justify="right", style="dim")
-
-            for ps in result.path_scores:
-                score_color = (
-                    "green"
-                    if ps.overall_score >= 75
-                    else "yellow"
-                    if ps.overall_score >= 60
-                    else "red"
-                )
-                table.add_row(
-                    ps.path.value.replace("_", " ").title(),
-                    f"[{score_color}]{ps.overall_score:.1f}[/{score_color}]",
-                    str(len(ps.metrics)),
-                    str(len(ps.strengths)),
-                )
-            console.print(table)
-
-        # Key findings
-        if result.key_findings:
-            console.print("\n[bold]Key Findings:[/bold]")
-            for finding in result.key_findings:
-                console.print(f"  • {finding}")
-
-        # Recommendations
-        if result.recommendations:
-            console.print("\n[bold]Recommendations:[/bold]")
-            for rec in result.recommendations:
-                console.print(f"  • [yellow]{rec}[/yellow]")
-
-        if verbose and result.micro_motives:
-            console.print("\n[bold]Micro-Motives:[/bold]")
-            for motive in result.micro_motives:
-                console.print(f"  • {motive.motive_type.value}: {motive.strength:.2f} strength")
+        AssessmentFormatter.format_complete_result(result, verbose=verbose)
 
     # Save to file if requested
     if output:

@@ -31,6 +31,14 @@ cli.add_command(server)
 cli.add_command(tag)
 cli.add_command(setup)
 
+
+@cli.command()
+def repl():
+    """Start interactive REPL mode for guided assessments."""
+    from sono_eval.cli.repl import start_repl
+
+    start_repl()
+
 # Add interactive setup command if available (legacy compatibility)
 try:
     from sono_eval.cli.onboarding import setup as interactive_setup_command

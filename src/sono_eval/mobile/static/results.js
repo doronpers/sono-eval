@@ -136,7 +136,56 @@ class ResultsDisplay {
     }
 
     renderPathScores(pathScores) {
-        const container = document.getElementById('path-scores');
+        if (!pathScores || pathScores.length === 0) return;
+
+        // Use Chart.js radar chart if available
+        if (window.SonoCharts && window.SonoCharts.createRadarChart) {
+            const labels = pathScores.map(ps => this.formatPathName(ps.path));
+            const data = pathScores.map(ps => Number(ps.overall_score) || 0);
+
+            const chartData = {
+                labels: labels,
+                datasets: [{
+                    label: 'Path Scores',
+                    data: data,
+                    backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                    borderColor: 'rgb(59, 130, 246)',
+                }],
+                options: {}
+            };
+
+            try {
+                window.SonoCharts.createRadarChart('path-radar-chart', chartData);
+            } catch (e) {
+                console.error('Error creating radar chart:', e);
+                this.renderPathScoresFallback(pathScores);
+            }
+
+            // Also show detailed breakdowns if available
+            const breakdowns = pathScores.filter(ps => ps.metrics && ps.metrics.length > 0);
+            if (breakdowns.length > 0 && window.SonoCharts && window.SonoCharts.createPathBreakdownCharts) {
+                document.getElementById('path-breakdowns-section').style.display = 'block';
+
+                const chartsData = breakdowns.map(ps => ({
+                    path: ps.path,
+                    labels: ps.metrics.map(m => m.name),
+                    datasets: [{
+                        label: 'Score',
+                        data: ps.metrics.map(m => m.score),
+                        backgroundColor: ps.metrics.map(() => this.getScoreColor(ps.overall_score)),
+                    }],
+                    options: {}
+                }));
+
+                window.SonoCharts.createPathBreakdownCharts('path-breakdowns', chartsData);
+            }
+        } else {
+            this.renderPathScoresFallback(pathScores);
+        }
+    }
+
+    renderPathScoresFallback(pathScores) {
+        const container = document.getElementById('path-scores-table');
         container.innerHTML = '';
 
         pathScores.forEach((ps, index) => {
@@ -233,11 +282,67 @@ class ResultsDisplay {
     }
 
     renderMotives(motives) {
-        const section = document.getElementById('motives-section');
-        const chart = document.getElementById('motives-chart');
+        if (!motives || motives.length === 0) return;
 
+        const section = document.getElementById('motives-section');
         section.style.display = 'block';
+
+        // Use Chart.js if available
+        if (window.SonoCharts && window.SonoCharts.createHorizontalBarChart) {
+            const sortedMotives = motives
+                .sort((a, b) => b.strength - a.strength)
+                .slice(0, 8); // Top 8
+
+            const labels = sortedMotives.map(m =>
+                String(m.motive_type ?? '').replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
+            );
+            const data = sortedMotives.map(m => (Number(m.strength) || 0) * 100);
+            const colors = [
+                '#3b82f6', '#8b5cf6', '#22c55e', '#f59e0b',
+                '#06b6d4', '#ec4899', '#84cc16', '#f97316'
+            ];
+
+            const chartData = {
+                labels: labels,
+                datasets: [{
+                    label: 'Strength',
+                    data: data,
+                    backgroundColor: colors.slice(0, sortedMotives.length),
+                }],
+                options: {}
+            };
+
+            try {
+                window.SonoCharts.createHorizontalBarChart('motives-chart', chartData);
+
+                // Show dominant motive
+                if (sortedMotives.length > 0) {
+                    const dominant = sortedMotives[0];
+                    const dominantEl = document.getElementById('dominant-motive');
+                    if (dominantEl) {
+                        dominantEl.innerHTML = `
+                            <div class="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                                <p class="text-sm text-gray-600">Your dominant motive:</p>
+                                <p class="text-lg font-semibold text-blue-600 capitalize">
+                                    ${String(dominant.motive_type).replace(/_/g, ' ')}
+                                </p>
+                            </div>
+                        `;
+                    }
+                }
+            } catch (e) {
+                console.error('Error creating motives chart:', e);
+                this.renderMotivesFallback(motives);
+            }
+        } else {
+            this.renderMotivesFallback(motives);
+        }
+    }
+
+    renderMotivesFallback(motives) {
+        const chart = document.getElementById('motives-chart');
         chart.innerHTML = '';
+        chart.style.height = 'auto';
 
         motives.forEach(motive => {
             const bar = document.createElement('div');
