@@ -111,10 +111,10 @@ class MemUStorage:
         """
         # Optimization: Move accessed item to end of dict (LRU behavior)
         if candidate_id in self._cache:
-            memory = self._cache.pop(candidate_id)
-            self._cache[candidate_id] = memory
+            cached_memory = self._cache.pop(candidate_id)
+            self._cache[candidate_id] = cached_memory
             logger.debug(f"Retrieved {candidate_id} from cache (LRU)")
-            return memory
+            return cached_memory
 
         # Load from disk
         memory = self._load_memory(candidate_id)
@@ -234,7 +234,7 @@ class MemUStorage:
         while current_id:
             node = memory.nodes[current_id]
             path.insert(0, node)
-            current_id = node.parent_id
+            current_id = node.parent_id or ""  # Ensure string for loop check
 
         return path
 

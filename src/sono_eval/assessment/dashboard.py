@@ -1,7 +1,7 @@
 """Dashboard data models for rich assessment visualization."""
 
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, ClassVar, Dict, List, Optional
 
 from pydantic import BaseModel, Field
 
@@ -507,7 +507,7 @@ class DashboardData(BaseModel):
         else:
             return "#ef4444"  # red
 
-    PATH_COLORS = {
+    PATH_COLORS: ClassVar[Dict[PathType, str]] = {
         PathType.TECHNICAL: "#3b82f6",
         PathType.DESIGN: "#8b5cf6",
         PathType.COLLABORATION: "#22c55e",

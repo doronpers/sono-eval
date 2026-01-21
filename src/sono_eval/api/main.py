@@ -1082,7 +1082,8 @@ async def upload_file(request: Request, file: UploadFile = File(...)):  # noqa: 
             for ext in config.allowed_extensions.split(",")
             if ext.strip()
         ]
-        file_ext = file.filename.split(".")[-1].lower() if "." in file.filename else ""
+        filename = file.filename or ""
+        file_ext = filename.split(".")[-1].lower() if "." in filename else ""
 
         if file_ext not in allowed_extensions:
             allowed_str = ", ".join(allowed_extensions)
@@ -1098,7 +1099,7 @@ async def upload_file(request: Request, file: UploadFile = File(...)):  # noqa: 
 
         # Security: Sanitize filename to prevent path traversal
         # Strictly enforce Path().name to prevent directory traversal attacks
-        safe_filename = re.sub(r"[^a-zA-Z0-9._-]", "_", file.filename)
+        safe_filename = re.sub(r"[^a-zA-Z0-9._-]", "_", filename)
         safe_filename = Path(
             safe_filename
         ).name  # Remove any path components (prevents ../ attacks)

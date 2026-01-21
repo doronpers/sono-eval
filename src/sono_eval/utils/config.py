@@ -3,14 +3,14 @@
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-from pydantic import ConfigDict, Field
-from pydantic_settings import BaseSettings
+from pydantic import Field
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Config(BaseSettings):
     """Application configuration loaded from environment variables."""
 
-    model_config = ConfigDict(env_file=".env", case_sensitive=False)
+    model_config = SettingsConfigDict(env_file=".env", case_sensitive=False)
 
     # Application
     app_name: str = Field(default="sono-eval", alias="APP_NAME")

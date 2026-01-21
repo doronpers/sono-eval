@@ -106,10 +106,10 @@ def run(
         else:
             final_content = content
     except FileNotFoundError:
-        ErrorFormatter.format_file_error(file, "not_found")
+        ErrorFormatter.format_file_error(file or "unknown", "not_found")
         raise click.Abort()
     except PermissionError:
-        ErrorFormatter.format_file_error(file, "permission")
+        ErrorFormatter.format_file_error(file or "unknown", "permission")
         raise click.Abort()
     except Exception as e:
         ErrorFormatter.format_error(

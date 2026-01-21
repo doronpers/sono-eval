@@ -92,3 +92,7 @@ coverage/
 
 # Launcher port tracking
 .sono-eval-port
+
+# Local data
+data/memory/
+data/sessions/

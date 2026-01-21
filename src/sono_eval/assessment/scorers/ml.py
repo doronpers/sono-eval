@@ -142,7 +142,7 @@ class MLScorer:
                 ScoringMetric(
                     name="ML Pattern Recognition",
                     category="ml_insights",
-                    score=(ml_insights.get("score", 75.0) if "score" in ml_insights else None),
+                    score=float(ml_insights.get("score", 75.0)),
                     weight=0.2,
                     evidence=[
                         Evidence(

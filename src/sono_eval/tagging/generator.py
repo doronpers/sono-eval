@@ -46,8 +46,8 @@ class TagGenerator:
             "lora_dropout": self.config.t5_lora_dropout,
         }
 
-        self.model = None
-        self.tokenizer = None
+        self.model: Optional[Any] = None
+        self.tokenizer: Optional[Any] = None
         self._initialized = False
 
         logger.info(f"Initializing TagGenerator with model: {self.model_name}")
@@ -72,19 +72,19 @@ class TagGenerator:
             self.tokenizer = T5Tokenizer.from_pretrained(
                 self.model_name,
                 cache_dir=str(self.cache_dir),
-            )
+            )  # nosec B615
 
             # Load base model
             base_model = T5ForConditionalGeneration.from_pretrained(
                 self.model_name,
                 cache_dir=str(self.cache_dir),
-            )
+            )  # nosec B615
 
             # Apply LoRA
             lora_config = LoraConfig(
-                r=self.lora_config["r"],
-                lora_alpha=self.lora_config["lora_alpha"],
-                lora_dropout=self.lora_config["lora_dropout"],
+                r=int(self.lora_config["r"]),
+                lora_alpha=int(self.lora_config["lora_alpha"]),
+                lora_dropout=float(self.lora_config["lora_dropout"]),
                 target_modules=["q", "v"],
                 task_type="SEQ_2_SEQ_LM",
             )

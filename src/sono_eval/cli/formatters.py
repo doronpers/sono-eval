@@ -210,7 +210,7 @@ class AssessmentFormatter:
             # Signal description (if available)
             # Signal description (if available)
             evidence_text = (
-                ", ".join(motive.evidence)
+                ", ".join(str(e) for e in motive.evidence)
                 if isinstance(motive.evidence, list)
                 else str(motive.evidence)
             )

@@ -22,8 +22,8 @@ from sono_eval.assessment.pattern_checks import (
     detect_pattern_violations,
     violations_to_metadata,
 )
+from sono_eval.assessment.scorers.council_scorer import CouncilScorer
 from sono_eval.assessment.scorers.heuristic import HeuristicScorer
-from sono_eval.assessment.scorers.ml import MLScorer
 from sono_eval.assessment.scorers.motive import MicroMotiveScorer
 from sono_eval.utils.config import get_config
 from sono_eval.utils.logger import get_logger
@@ -50,7 +50,7 @@ class AssessmentEngine:
 
         # Initialize Scorers
         self.heuristic_scorer = HeuristicScorer(self.config)
-        self.ml_scorer = MLScorer()
+        self.council_scorer = CouncilScorer()
         self.motive_scorer = MicroMotiveScorer()
 
         self.dark_horse_enabled = self.config.dark_horse_mode.lower() in (
@@ -68,8 +68,8 @@ class AssessmentEngine:
         start_time = time.time()
         logger.info(f"Starting assessment for candidate {assessment_input.candidate_id}")
 
-        # Check for ML model availability
-        self.ml_scorer.load_model_if_available()
+        # Check for AI/Council availability
+        self.council_scorer.load_if_available()
 
         # Generate unique assessment ID
         assessment_id = f"assess_{int(time.time() * 1000)}"
@@ -133,8 +133,10 @@ class AssessmentEngine:
             engine_version=self.version,
             processing_time_ms=processing_time,
             metadata={
-                "assessment_mode": "hybrid" if self.ml_scorer._use_ml else "heuristic",
-                "ml_available": self.ml_scorer._use_ml,
+                "assessment_mode": "hybrid_council"
+                if self.council_scorer._available
+                else "heuristic",
+                "ml_available": self.council_scorer._available,
                 "pattern_checks": {
                     "enabled": pattern_checks_active,
                     "violation_count": len(pattern_violations),
@@ -147,7 +149,7 @@ class AssessmentEngine:
         logger.info(
             f"Assessment completed for {assessment_input.candidate_id}: "
             f"score={overall_score:.2f}, confidence={overall_confidence:.2%}, "
-            f"mode={'hybrid' if self.ml_scorer._use_ml else 'heuristic'}, "
+            f"mode={'hybrid_council' if self.council_scorer._available else 'heuristic'}, "
             f"time={processing_time:.2f}ms"
         )
 
@@ -167,10 +169,10 @@ class AssessmentEngine:
             path, input_data, pattern_violations
         )
 
-        # 2. ML Enhancement
-        ml_insights = self.ml_scorer.get_insights(input_data.content, path)
-        if ml_insights:
-            metrics = self.ml_scorer.enhance_metrics(metrics, ml_insights, path)
+        # 2. AI/Council Enhancement
+        council_insights = await self.council_scorer.get_insights(input_data.content, path)
+        if council_insights:
+            metrics = self.council_scorer.enhance_metrics(metrics, council_insights, path)
 
         # 3. Micro-Motives
         if self.dark_horse_enabled:

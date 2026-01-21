@@ -6,6 +6,7 @@ Provides guided first-run experience with step-by-step setup.
 
 import sys
 from pathlib import Path
+from typing import Any, Dict
 
 import click
 from rich.console import Console
@@ -105,7 +106,7 @@ def setup_configuration() -> dict:
     console.print("\n[bold]Configuration Setup[/bold]")
     console.print("We'll configure your Sono-Eval environment.\n")
 
-    config = {}
+    config: Dict[str, Any] = {}
 
     # API Configuration
     console.print("[cyan]API Configuration[/cyan]")
