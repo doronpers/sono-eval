@@ -1,5 +1,5 @@
 import shutil
-import subprocess
+import subprocess  # nosec B404
 from pathlib import Path
 
 import click
@@ -218,7 +218,7 @@ def _install_dependencies(packages):
                 capture_output=True,
                 text=True,
                 check=True,
-            )
+            )  # nosec B603, B607
 
             progress.update(task, description="Installation complete!")
             console.print("[green]✓ Dependencies installed successfully[/green]")

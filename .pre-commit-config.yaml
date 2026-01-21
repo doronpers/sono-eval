@@ -1,7 +1,16 @@
 # Pre-commit hooks configuration
 # See https://pre-commit.com for more information
 
+# Global exclude for all hooks
+exclude: ^(venv.+|env.+|\.venv|dist|build|target)/
+
 repos:
+  # Global exclude for all hooks
+  # Exclude virtual environments and other non-source directories
+  - repo: meta
+    hooks:
+      - id: identity
+        exclude: ^(venv.+|env.+|\.venv|dist|build|target)/
   # General file checks
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.5.0

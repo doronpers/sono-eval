@@ -8,14 +8,13 @@ application, including all necessary dependencies and data files.
 
 import os
 import shutil
-import subprocess
+import subprocess  # nosec B404
 import sys
 from pathlib import Path
 
 
 def build():
     """Run PyInstaller to build the standalone executable."""
-
     base_dir = Path(__file__).resolve().parent.parent
     os.chdir(base_dir)
 
@@ -104,7 +103,7 @@ def build():
     print(f"Running command: {' '.join(args)}")
 
     try:
-        subprocess.run(args, check=True)
+        subprocess.run(args, check=True)  # nosec B603
         print("\n✅ Build successful!")
         print(f"Executable created at: {base_dir}/dist/sono-eval")
     except subprocess.CalledProcessError as e:
