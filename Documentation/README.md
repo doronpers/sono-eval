@@ -20,6 +20,12 @@ understanding, installing, and using the system.
 2. **[Quick Start](Guides/QUICK_START.md)** - Get running in 5 minutes
 3. **[FAQ](Guides/faq.md)** - Common questions
 
+### 🧑‍💻 For Beginners
+
+1. **[GitHub Basics](Guides/github-basics/README.md)** - Learn GitHub from scratch
+2. **[AI Tools Guide](Guides/ai-tools/README.md)** - Using Claude, ChatGPT, and Copilot
+3. **[Workflow Building](Guides/workflow-building/README.md)** - Develop your process
+
 ### 🛠️ For Developers & Contributors
 
 1. **[Architecture Overview](Core/concepts/architecture.md)** - How it's built
@@ -89,4 +95,4 @@ understanding, installing, and using the system.
 
 ---
 
-**Version**: 0.1.1 | **Last Updated**: January 18, 2026
+**Version**: 0.1.1 | **Last Updated**: January 21, 2026

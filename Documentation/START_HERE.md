@@ -47,4 +47,4 @@ help you understand strengths and growth areas.
 
 ---
 
-**Version**: 0.1.1 | **Last Updated**: January 18, 2026
+**Version**: 0.1.1 | **Last Updated**: January 21, 2026

@@ -217,8 +217,6 @@ pre-commit install
 cp .env.example .env
 ```
 
-read_file
-
 ### Docker Development
 
 ```bash
