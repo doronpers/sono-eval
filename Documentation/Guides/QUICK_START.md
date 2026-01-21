@@ -234,7 +234,7 @@ See the [Configuration Guide](user-guide/configuration.md) for all options.
 - **[User Guide](user-guide/installation.md)** - Detailed installation and usage
 - **[API Reference](user-guide/api-reference.md)** - Complete API documentation
 - **[CLI Reference](user-guide/cli-reference.md)** - All CLI commands
-- **[Concepts](concepts/architecture.md)** - Understand the architecture
+- **[Architecture](../Core/concepts/architecture.md)** - Understand the architecture
 
 ### Try Advanced Features
 
@@ -246,7 +246,6 @@ See the [Configuration Guide](user-guide/configuration.md) for all options.
 ### Customize
 
 - **[Configuration](user-guide/configuration.md)** - Tune settings for your needs
-- **[Examples](resources/examples/)** - Practical code examples
 - **[API Integration](user-guide/api-reference.md)** - Integrate with your systems
 
 ---
@@ -357,4 +356,4 @@ Need help? Check the [documentation](README.md) or [open an issue](https://githu
 **Estimated Time**: 5 minutes
 **Difficulty**: Beginner
 **Next**: [User Guide](user-guide/installation.md) |
-[API Reference](user-guide/api-reference.md) | [Examples](resources/examples/)
+[API Reference](user-guide/api-reference.md) | [Architecture](../Core/concepts/architecture.md)

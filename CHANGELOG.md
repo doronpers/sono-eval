@@ -9,125 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- **Added**
+### In Development
 
-- **Hybrid Assessment Engine** (`src/sono_eval/assessment/engine.py`)
-  - Support for combining heuristics + ML models
-  - Enhanced explainability through hybrid approach
-  - ML insights integrated as additional evidence
-  - Structured for easy ML model integration
-  - Maintains heuristic dominance (60%) for explainability
-  - ML insights (40%) provide nuanced pattern recognition
+The following features are currently being developed:
 
-- **Enhanced Configuration Presets** (`src/sono_eval/utils/config.py`)
-  - Expanded from 3 to 8 presets:
-    - `quick_test`: Fast setup for quick testing
-    - `development`: Full-featured development environment
-    - `testing`: Optimized for running tests
-    - `staging`: Pre-production environment
-    - `production`: Production-ready configuration
-    - `high_performance`: Maximum performance settings
-    - `low_resource`: Minimal resource usage
-    - `ml_development`: ML model development and training
-  - Each preset optimized for specific use cases
-  - Comprehensive settings (workers, cache, concurrency, etc.)
+- Hybrid assessment engine combining heuristics with ML insights
+- Enhanced configuration presets for different deployment scenarios
+- Improved CLI experience with better feedback and guidance
+- Mobile companion interface improvements
 
-- **Configuration CLI Commands** (`src/sono_eval/cli/main.py`)
-  - `sono-eval config list-presets` - List all available presets
-  - `sono-eval config apply-preset` - Apply preset configuration
-  - Export preset to .env file format
-
-- **Changed**
-
-- **Assessment Engine** (`src/sono_eval/assessment/engine.py`)
-  - Enhanced to support hybrid heuristics + ML approach
-  - Better confidence calculation from metrics
-  - ML insights integrated into evidence
-  - Enhanced explanations showing both analysis types
-  - Metadata includes assessment mode (hybrid/heuristic)
-
-- **Added**
-
-- **Standardized Error Handling System** (`src/sono_eval/utils/errors.py`)
-  - Consistent error response format
-  - Standard error codes
-  - Request ID tracking support
-  - Helper functions for common error types
-
-- **Configuration Presets** (`src/sono_eval/utils/config.py`)
-  - Minimal preset for quick testing
-  - Standard preset for development
-  - Production preset for deployment
-
-- **Architecture Diagrams** (`documentation/Core/concepts/architecture.md`)
-  - Mermaid diagrams for system architecture
-  - Data flow diagrams
-  - Component relationship visualizations
-
-- **Comprehensive Design Audit Report** (`documentation/Reports/DESIGN_AUDIT_2026.md`)
-  - Complete audit findings
-  - All changes documented
-  - Recommendations for future improvements
-
-- **Changed**
-
-- **Assessment Engine** (`src/sono_eval/assessment/engine.py`)
-  - Replaced placeholder scoring with real content analysis
-  - Added 20+ analysis methods for different assessment dimensions
-  - Enhanced micro-motive identification to analyze actual content
-  - Improved evidence generation based on code patterns
-
-- **API Error Handling** (`src/sono_eval/api/main.py`)
-  - Standardized all error responses
-  - Enhanced error messages with actionable guidance
-  - Improved validation and security checks
-  - Added request ID tracking
-  - Fixed missing `Field` import
-
-- **CLI Enhancements** (`src/sono_eval/cli/main.py`)
-  - Enhanced all commands with better help text and examples
-  - Added quiet and verbose modes
-  - Improved error messages with hints
-  - Better table formatting and colors
-  - Enhanced file handling with encoding support
-
-- **Mobile Companion** (`src/sono_eval/mobile/`)
-  - Enhanced error handling with better messages
-  - Added accessibility attributes (ARIA labels, roles)
-  - Improved error display with details
-  - Better success/error feedback
-
-- **README** (`README.md`)
-  - Enhanced visual hierarchy
-  - Improved badges and presentation
-  - Better quick start section
-  - More professional appearance
-
-- **Improved**
-
-- **Code Quality**
-  - Removed all placeholder code
-  - Standardized error handling throughout
-  - Enhanced type hints and documentation
-  - Better code organization
-
-- **User Experience**
-  - Better error messages with actionable guidance
-  - Improved CLI help and examples
-  - Enhanced mobile accessibility
-  - Simplified configuration with presets
-
-- **Documentation**
-  - Added visual architecture diagrams
-  - Enhanced README structure
-  - Better code examples
-  - More comprehensive audit report
-
-- **Maintainability**
-  - Standardized patterns
-  - Better separation of concerns
-  - More maintainable code structure
-  - Consistent error handling
+See [ROADMAP.md](ROADMAP.md) for planned features and priorities.
 
 ---
 
@@ -167,103 +58,54 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Version 0.1.0 - Initial Release
 
-**Release Date**: January 10, 2026
+**Release Date**: January 2026
 
-This is the first alpha release of Sono-Eval, focusing on core functionality and
-developer experience.
+This is the first release of Sono-Eval, providing core assessment functionality
+and a foundation for future development.
 
 **Highlights**:
 
-- Complete assessment engine with explainable AI
-- Multi-path evaluation framework
-- Semantic tagging with transformer models
-- Hierarchical memory storage
-- Production-ready API and CLI
+- Multi-path assessment engine (Technical, Design, Collaboration, Problem-Solving, Communication)
+- Evidence-based scoring with explanations
+- CLI and REST API interfaces
 - Docker deployment support
+- Comprehensive documentation (100+ pages)
+- MemU hierarchical memory storage
+- Semantic tagging capabilities
+- Apache Superset dashboard integration
 
-**Target Users**:
-
-- Development teams evaluating candidates
-- Companies hiring interns and junior developers
-- Technical assessors seeking explainable results
-- Candidates wanting growth-oriented feedback
+**Current Status**: Active Development (Alpha)
 
 **Known Limitations**:
 
-- Assessment engine uses example/placeholder scoring (ML models need fine-tuning)
-- No authentication in default configuration
-- Single-server deployment only
-- Limited batch processing capabilities
-- No web UI for reviews
+- Assessment engine primarily heuristic-based (ML integration in progress)
+- No authentication system (development use only)
+- Single-server deployment
+- Limited batch processing
+- Mobile companion interface is basic
 
-**Next Steps** (Planned for 0.2.0):
-
-- Real ML-based assessment scoring
-- Batch assessment processing
-- Authentication and authorization
-- Web-based review interface
-- Enhanced analytics dashboards
-- Performance optimizations
-
-**Upgrade Path**:
-
-- First release, no upgrades needed
-
-**Breaking Changes**:
-
-- None (initial release)
+**For Production Use**: Please review [ROADMAP.md](ROADMAP.md) for security
+enhancements required before production deployment.
 
 **Dependencies**:
 
-- Python 3.9+
-- Docker & Docker Compose (for containerized deployment)
+- Python 3.13+
+- Docker & Docker Compose (optional, for containerized deployment)
 - PostgreSQL or SQLite (database)
 - Redis (caching, optional)
 
-**Documentation**:
-
-- Comprehensive documentation in `documentation/` folder
-- Quick Start Guide for rapid setup
-- Complete API and CLI references
-- Architecture and implementation details
-
-**Support**:
-
-- GitHub Issues for bugs and features
-- GitHub Discussions for questions
-- Email support available
-
 ---
 
-## Future Roadmap
+## Future Development
 
-### Version 0.2.0 (Planned)
+See [ROADMAP.md](ROADMAP.md) for planned features and development priorities.
 
-- Real ML-based scoring (not placeholder)
-- Batch assessment processing
-- Authentication system (API keys, OAuth2)
-- Web UI for assessment reviews
-- Enhanced Superset dashboards
-- Performance optimizations
-- Migration guides
+Key areas of focus:
 
-### Version 0.3.0 (Planned)
-
-- Advanced analytics features
-- Multi-language support
-- Plugin system for extensibility
-- Real-time collaboration features
-- Enhanced ML model fine-tuning tools
-- Integration with GitHub, GitLab
-
-### Version 1.0.0 (Planned)
-
-- Production-ready with extensive testing
-- Complete web interface
-- Enterprise features
-- High availability deployment
-- Comprehensive API v2
-- Mobile-friendly dashboards
+- Security hardening (authentication, rate limiting, input validation)
+- Real ML-based assessment engine
+- Comprehensive testing and quality assurance
+- Enhanced user interfaces and visualizations
 
 ---
 
@@ -297,10 +139,10 @@ Sono-Eval follows [Semantic Versioning](https://semver.org/):
 ## Links
 
 - **Repository**: <https://github.com/doronpers/sono-eval>
-- **Documentation**: [documentation/README.md](documentation/README.md)
+- **Documentation**: [Documentation/README.md](Documentation/README.md)
 - **Issues**: <https://github.com/doronpers/sono-eval/issues>
 - **Discussions**: <https://github.com/doronpers/sono-eval/discussions>
 
 ---
 
-**Last Updated**: January 10, 2026
+**Last Updated**: January 21, 2026
