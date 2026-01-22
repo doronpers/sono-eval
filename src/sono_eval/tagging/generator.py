@@ -98,7 +98,8 @@ class TagGenerator:
 
         except ImportError as e:
             logger.warning(
-                f"Model dependencies not available: {e}. " "Tag generator will use fallback mode."
+                f"Model dependencies not available: {e}. "
+                "Tag generator will use fallback mode."
             )
             self._initialized = False
         except Exception as e:
@@ -183,6 +184,7 @@ class TagGenerator:
         Args:
             text: Input text
             max_tags: Maximum tags to generate
+            min_confidence: Minimum confidence threshold
 
         Returns:
             List of heuristically generated tags
@@ -217,8 +219,8 @@ class TagGenerator:
                     )
                 )
 
-        # Add generic tag if nothing found
-        if not tags:
+        # Add generic tag if nothing found, but only if it meets threshold
+        if not tags and min_confidence <= 0.5:
             tags.append(
                 SemanticTag(
                     tag="code",
@@ -227,6 +229,7 @@ class TagGenerator:
                 )
             )
 
+        # Filter by confidence threshold
         tags = [t for t in tags if t.confidence >= min_confidence]
         return tags[:max_tags]
 

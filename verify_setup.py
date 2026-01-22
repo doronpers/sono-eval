@@ -5,20 +5,34 @@ Checks all prerequisites and configuration.
 """
 
 import sys
+import io
 from pathlib import Path
+
+# Fix encoding for Windows console to handle emojis
+if sys.platform == "win32":
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
+    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8")
 
 
 def check_python_version():
     """Check Python version."""
     version = sys.version_info
     if version.major == 3 and version.minor >= 9:
-        print(f"✅ Python {version.major}.{version.minor}.{version.micro} (required: 3.9+)")
+        print(
+            f"✅ Python {version.major}.{version.minor}.{version.micro} (required: 3.9+)"
+        )
         print("   💡 This version supports all Sono-Eval features")
-        print("   📚 Why this matters: Python 3.9+ enables modern features and better performance")
+        print(
+            "   📚 Why this matters: Python 3.9+ enables modern features and better performance"
+        )
         return True
     else:
-        print(f"❌ Python {version.major}.{version.minor}.{version.micro} (required: 3.9+)")
-        print("   💡 Update Python to access all features: https://www.python.org/downloads/")
+        print(
+            f"❌ Python {version.major}.{version.minor}.{version.micro} (required: 3.9+)"
+        )
+        print(
+            "   💡 Update Python to access all features: https://www.python.org/downloads/"
+        )
         print(
             "   📚 Why this matters: Newer Python versions provide better security and performance"
         )
@@ -43,7 +57,9 @@ def check_dependencies():
         except ImportError:
             print(f"❌ {module} - {desc} (MISSING)")
             print(f"   💡 Install with: pip install {module}")
-            print(f"   📚 Why this matters: {desc} is essential for Sono-Eval to function properly")
+            print(
+                f"   📚 Why this matters: {desc} is essential for Sono-Eval to function properly"
+            )
             missing.append(module)
 
     return len(missing) == 0
@@ -180,7 +196,9 @@ def main():
         print("  • Optional companion: [cyan]http://localhost:8000/mobile[/cyan]")
         print()
         print("💡 Tip: Use [cyan]sono-eval setup interactive[/cyan] for guided setup")
-        print("💡 Or visit [cyan]http://localhost:8000/mobile/setup[/cyan] for web-based setup")
+        print(
+            "💡 Or visit [cyan]http://localhost:8000/mobile/setup[/cyan] for web-based setup"
+        )
         return 0
     else:
         print(f"❌ {len(failed)} CRITICAL CHECK(S) FAILED:")

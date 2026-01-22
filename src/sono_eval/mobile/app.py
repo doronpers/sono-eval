@@ -80,7 +80,7 @@ def load_mobile_config() -> Dict[str, Any]:
         return {"paths": {}}
 
     try:
-        with open(CONFIG_PATH, "r") as f:
+        with open(CONFIG_PATH, "r", encoding="utf-8") as f:
             from typing import cast
 
             return cast(Dict[str, Any], yaml.safe_load(f))
@@ -350,7 +350,9 @@ def create_mobile_app() -> FastAPI:
                 recommendations.extend(["design", "collaboration"])
 
             # Remove duplicates and filter to valid paths
-            recommendations = list(dict.fromkeys([r for r in recommendations if r in paths_config]))
+            recommendations = list(
+                dict.fromkeys([r for r in recommendations if r in paths_config])
+            )
 
             # Build recommendation details
             recommended_paths = []
@@ -361,7 +363,9 @@ def create_mobile_app() -> FastAPI:
                         "id": path_id,
                         "name": path_info.get("title", path_id.title()),
                         "icon": path_info.get("icon", "📝"),
-                        "reason": _get_recommendation_reason(path_id, goals_list, experience),
+                        "reason": _get_recommendation_reason(
+                            path_id, goals_list, experience
+                        ),
                     }
                 )
 
@@ -389,6 +393,7 @@ def create_mobile_app() -> FastAPI:
                 # Log important events
                 if event.event_type in [
                     "page_view",
+                    "easter_egg_discovered",
                     "milestone",
                 ]:
                     logger.info(
@@ -420,6 +425,20 @@ def create_mobile_app() -> FastAPI:
                     "error": "Tracking failed but request processed",
                 },
             )
+
+    @app.get("/api/mobile/easter-eggs")
+    async def list_easter_eggs():
+        """List available easter eggs (for discovery documentation)."""
+        from sono_eval.mobile.easter_eggs import get_registry
+
+        registry = get_registry()
+        eggs = registry.list_eggs()
+        return {
+            "success": True,
+            "eggs": eggs,
+            "count": len(eggs),
+            "message": "Easter eggs are discoverable features that unlock valuable functionality",
+        }
 
     @app.post("/api/mobile/session/store")
     async def store_session_data(data: Dict[str, Any]):
@@ -506,7 +525,9 @@ def create_mobile_app() -> FastAPI:
             }
         except Exception as e:
             logger.error(f"Error generating radar chart: {e}")
-            return JSONResponse(status_code=500, content={"success": False, "error": str(e)})
+            return JSONResponse(
+                status_code=500, content={"success": False, "error": str(e)}
+            )
 
     @app.get("/api/mobile/visualization/progress/{assessment_id}")
     async def get_progress_ring_data(assessment_id: str):
@@ -528,7 +549,9 @@ def create_mobile_app() -> FastAPI:
             }
         except Exception as e:
             logger.error(f"Error generating progress ring: {e}")
-            return JSONResponse(status_code=500, content={"success": False, "error": str(e)})
+            return JSONResponse(
+                status_code=500, content={"success": False, "error": str(e)}
+            )
 
     @app.get("/api/mobile/visualization/breakdowns/{assessment_id}")
     async def get_path_breakdowns(assessment_id: str):
@@ -559,7 +582,9 @@ def create_mobile_app() -> FastAPI:
             }
         except Exception as e:
             logger.error(f"Error generating breakdowns: {e}")
-            return JSONResponse(status_code=500, content={"success": False, "error": str(e)})
+            return JSONResponse(
+                status_code=500, content={"success": False, "error": str(e)}
+            )
 
     @app.get("/api/mobile/visualization/trend/{candidate_id}")
     async def get_trend_data(candidate_id: str, limit: int = 10):
@@ -585,7 +610,9 @@ def create_mobile_app() -> FastAPI:
             }
         except Exception as e:
             logger.error(f"Error generating trend chart: {e}")
-            return JSONResponse(status_code=500, content={"success": False, "error": str(e)})
+            return JSONResponse(
+                status_code=500, content={"success": False, "error": str(e)}
+            )
 
     @app.get("/api/mobile/visualization/motives/{assessment_id}")
     async def get_motives_chart_data(assessment_id: str):
@@ -614,12 +641,16 @@ def create_mobile_app() -> FastAPI:
             }
         except Exception as e:
             logger.error(f"Error generating motives chart: {e}")
-            return JSONResponse(status_code=500, content={"success": False, "error": str(e)})
+            return JSONResponse(
+                status_code=500, content={"success": False, "error": str(e)}
+            )
 
     return app
 
 
-def _get_recommendation_reason(path_id: str, goals: List[str], experience: Optional[str]) -> str:
+def _get_recommendation_reason(
+    path_id: str, goals: List[str], experience: Optional[str]
+) -> str:
     """Generate a reason for why a path is recommended."""
     reasons = {
         "technical": "Helps you understand your coding skills and technical practices",

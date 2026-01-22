@@ -17,13 +17,16 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, field_validator
 from starlette.middleware.base import BaseHTTPMiddleware
 
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+
 from sono_eval.assessment.dashboard import DashboardData
 from sono_eval.assessment.engine import AssessmentEngine
 from sono_eval.assessment.models import AssessmentInput, AssessmentResult
 from sono_eval.auth.dependencies import get_current_user
 from sono_eval.auth.routes import router as auth_router
 from sono_eval.auth.users import User
-from sono_eval.memory.memu import MemUStorage
+from sono_eval.memory import MemUStorage, get_storage
 from sono_eval.middleware.circuit_breaker import circuit_breaker_pool
 from sono_eval.middleware.performance import PerformanceLoggingMiddleware
 from sono_eval.middleware.rate_limiter import RateLimitMiddleware
@@ -38,6 +41,7 @@ from sono_eval.utils.error_help import (
     service_help,
     validation_help,
 )
+from sono_eval.auth import engine, Base
 from sono_eval.utils.errors import (
     ErrorCode,
     create_error_response,
@@ -47,7 +51,12 @@ from sono_eval.utils.errors import (
     service_unavailable_error,
     validation_error,
 )
-from sono_eval.utils.logger import get_logger
+from sono_eval.utils.logger import (
+    get_logger,
+    set_request_context,
+    clear_request_context,
+)
+from sono_eval.api.limiter import limiter
 
 logger = get_logger(__name__)
 
@@ -57,11 +66,41 @@ class RequestIDMiddleware(BaseHTTPMiddleware):
     """Middleware to add unique request ID to each request."""
 
     async def dispatch(self, request: Request, call_next):
-        """Add request ID and process request."""
+        """Add request ID and process request with logging context."""
         request_id = request.headers.get("X-Request-ID", str(uuid.uuid4()))
         request.state.request_id = request_id
+
+        # Set logging context for the current task/request
+        set_request_context(request_id=request_id)
+
+        try:
+            response = await call_next(request)
+            response.headers["X-Request-ID"] = request_id
+            return response
+        finally:
+            # Always clear context after request finishes/fails
+            clear_request_context()
+
+
+class PerformanceMetricsMiddleware(BaseHTTPMiddleware):
+    """Middleware to log request performance metrics."""
+
+    async def dispatch(self, request: Request, call_next):
+        """Track and log request duration."""
+        start_time = time()
         response = await call_next(request)
-        response.headers["X-Request-ID"] = request_id
+        duration_ms = (time() - start_time) * 1000
+
+        # Log performance metric if not a health check or documentation
+        if not request.url.path.endswith(
+            ("/health", "/docs", "/redoc", "/openapi.json")
+        ):
+            logger.info(
+                f"{request.method} {request.url.path} completed in "
+                f"{duration_ms:.2f}ms with status {response.status_code}",
+                extra={"duration_ms": duration_ms},
+            )
+
         return response
 
 
@@ -101,8 +140,11 @@ async def lifespan(app: FastAPI):
     _validate_security_config()
     config.validate_production_config()
 
+    # Initialize Database Tables
+    Base.metadata.create_all(bind=engine)
+
     assessment_engine = AssessmentEngine()
-    memu_storage = MemUStorage()
+    memu_storage = get_storage()
     tag_generator = TagGenerator()
 
     logger.info("API server initialized")
@@ -156,7 +198,9 @@ def _validate_security_config() -> None:
                 f"{config.app_env}. Change this immediately."
             )
         else:
-            logger.warning("WARNING: Using default SUPERSET_SECRET_KEY (development only)")
+            logger.warning(
+                "WARNING: Using default SUPERSET_SECRET_KEY (development only)"
+            )
 
     # Validate allowed hosts - REQUIRED in production
     if is_production:
@@ -177,6 +221,9 @@ def _validate_security_config() -> None:
     logger.info(f"Security configuration validated for {config.app_env} environment")
 
 
+# Initialize Rate Limiter
+# Initialize Rate Limiter
+
 app = FastAPI(
     title="Sono-Eval API",
     description="Explainable Multi-Path Developer Assessment System",
@@ -184,8 +231,15 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+# Add Security Headers Middleware
+app.add_middleware(SecurityHeadersMiddleware)
+
 # Add Request ID middleware (must be first to track all requests)
 app.add_middleware(RequestIDMiddleware)
+app.add_middleware(PerformanceMetricsMiddleware)
 
 # Add performance logging middleware
 app.add_middleware(PerformanceLoggingMiddleware, slow_request_threshold_ms=1000)
@@ -200,24 +254,19 @@ app.add_middleware(
 # Add Security Headers middleware (outermost layer for headers)
 app.add_middleware(SecurityHeadersMiddleware, mode=config.app_env)
 
-# Include Routers
-app.include_router(auth_router, prefix="/api/v1/auth", tags=["auth"])
-
-# CORS middleware - origins configured from ALLOWED_HOSTS
-# Security: Startup validation ensures proper configuration in production/staging
-allowed_origins = (
-    [origin.strip() for origin in config.allowed_hosts.split(",")]
-    if config.allowed_hosts and config.allowed_hosts != "*"
-    else ["*"]
-)
+# CORS Configuration
+origins = config.cors_allowed_origins.split(",")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins,
-    allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_origins=origins,
+    allow_credentials=config.cors_allow_credentials,
+    allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Include Routers
+app.include_router(auth_router, prefix=API_V1_PREFIX)
 
 # Mount mobile companion app
 mobile_app = create_mobile_app()
@@ -293,7 +342,10 @@ async def check_component_health(include_details: bool = True) -> Dict[str, Any]
 
     # Check cache first
     current_time = time()
-    if _health_check_cache and (current_time - _health_check_cache_time) < _HEALTH_CHECK_CACHE_TTL:
+    if (
+        _health_check_cache
+        and (current_time - _health_check_cache_time) < _HEALTH_CHECK_CACHE_TTL
+    ):
         cached_result = _health_check_cache.copy()
         # If cached result has details but we don't want them, remove them
         if not include_details and "details" in cached_result:
@@ -414,7 +466,9 @@ async def check_component_health(include_details: bool = True) -> Dict[str, Any]
                 else:
                     components["database"] = "degraded"
                     if include_details:
-                        details["database"] = {"error": "Database directory not accessible"}
+                        details["database"] = {
+                            "error": "Database directory not accessible"
+                        }
                     overall_healthy = False
             else:
                 components["database"] = "operational"
@@ -520,23 +574,27 @@ async def check_component_health(include_details: bool = True) -> Dict[str, Any]
     if include_details:
         troubleshooting: Dict[str, str] = {}
         if components.get("assessment") != "operational":
-            troubleshooting[
-                "assessment"
-            ] = "Restart the server to reinitialize the assessment engine."
+            troubleshooting["assessment"] = (
+                "Restart the server to reinitialize the assessment engine."
+            )
         if components.get("memory") != "operational":
             troubleshooting["memory"] = "Verify storage path exists and is writable."
         if components.get("tagging") != "operational":
-            troubleshooting["tagging"] = "Ensure model cache exists or run with fallback tagging."
+            troubleshooting["tagging"] = (
+                "Ensure model cache exists or run with fallback tagging."
+            )
         if components.get("database") != "operational":
-            troubleshooting["database"] = "Check database URL and ensure the path is accessible."
+            troubleshooting["database"] = (
+                "Check database URL and ensure the path is accessible."
+            )
         if components.get("redis") != "operational":
-            troubleshooting[
-                "redis"
-            ] = "Redis is optional; install redis-py and ensure Redis is running."
+            troubleshooting["redis"] = (
+                "Redis is optional; install redis-py and ensure Redis is running."
+            )
         if components.get("filesystem") != "operational":
-            troubleshooting[
-                "filesystem"
-            ] = "Confirm storage/cache/tagstudio directories are writable."
+            troubleshooting["filesystem"] = (
+                "Confirm storage/cache/tagstudio directories are writable."
+            )
 
         if troubleshooting:
             details["troubleshooting"] = troubleshooting
@@ -698,7 +756,8 @@ async def readiness_check():
     # Check if all critical components are operational
     critical_components = ["assessment", "memory"]
     all_critical_operational = all(
-        health_data["components"].get(comp) == "operational" for comp in critical_components
+        health_data["components"].get(comp) == "operational"
+        for comp in critical_components
     )
 
     if all_critical_operational:
@@ -982,7 +1041,10 @@ async def get_assessment(request: Request, assessment_id: str, candidate_id: str
         if node.metadata.get("type") == "assessment":
             # Check if this node contains the assessment result
             assessment_result = node.data.get("assessment_result")
-            if assessment_result and assessment_result.get("assessment_id") == assessment_id:
+            if (
+                assessment_result
+                and assessment_result.get("assessment_id") == assessment_id
+            ):
                 return AssessmentResult.model_validate(assessment_result)
 
     raise not_found_error(
@@ -1111,7 +1173,9 @@ async def create_candidate(
                 request_id=request_id,
             )
 
-        memory = memu_storage.create_candidate_memory(request.candidate_id, request.initial_data)
+        memory = memu_storage.create_candidate_memory(
+            request.candidate_id, request.initial_data
+        )
         return {
             "candidate_id": memory.candidate_id,
             "created": memory.last_updated,
@@ -1251,7 +1315,9 @@ async def get_candidate_stats(request: Request, candidate_id: str):
                 path_scores[path] = []
             path_scores[path].append(ps.get("overall_score", 0))
 
-    path_averages = {path: sum(scores) / len(scores) for path, scores in path_scores.items()}
+    path_averages = {
+        path: sum(scores) / len(scores) for path, scores in path_scores.items()
+    }
 
     # Trend analysis
     assessments.sort(key=lambda x: x.get("timestamp", ""))

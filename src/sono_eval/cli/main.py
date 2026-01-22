@@ -33,6 +33,14 @@ cli.add_command(tag)
 cli.add_command(setup)
 cli.add_command(session)
 
+# Add interactive setup command to the existing setup group
+try:
+    from sono_eval.cli.onboarding import setup as interactive_setup_command
+
+    setup.add_command(interactive_setup_command, name="interactive")
+except ImportError:
+    pass
+
 
 @cli.command()
 def repl():

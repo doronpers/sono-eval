@@ -7,7 +7,7 @@ name = "sono-eval"
 version = "0.1.1"
 description = "Explainable multi-path developer assessment system with semantic tagging and analytics"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.12"
 license = {text = "MIT"}
 authors = [
     {name = "Sono-Eval Team"}
@@ -46,7 +46,9 @@ dependencies = [
     "kombu>=5.3.0",
     "council-ai>=2.0.0",
     "textstat>=0.7.3",
-    "shared-ai-utils>=0.1.0",
+    "passlib[bcrypt]>=1.7.4",
+    "python-jose[cryptography]>=3.3.0",
+    "slowapi>=0.1.9",
 ]
 
 [project.optional-dependencies]

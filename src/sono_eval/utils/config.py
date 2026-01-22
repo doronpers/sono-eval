@@ -83,6 +83,22 @@ class Config(BaseSettings):
     secret_key: str = Field(default="your-secret-key-here-change-in-production", alias="SECRET_KEY")
     allowed_hosts: str = Field(default="localhost,127.0.0.1", alias="ALLOWED_HOSTS")
 
+    # Auth
+    jwt_algorithm: str = Field(default="HS256", alias="JWT_ALGORITHM")
+    access_token_expire_minutes: int = Field(default=30, alias="ACCESS_TOKEN_EXPIRE_MINUTES")
+    api_key_prefix: str = Field(default="se_", alias="API_KEY_PREFIX")
+
+    # Rate Limiting
+    rate_limit_enabled: bool = Field(default=True, alias="RATE_LIMIT_ENABLED")
+    rate_limit_default: str = Field(default="100/minute", alias="RATE_LIMIT_DEFAULT")
+
+    # CORS
+    cors_allowed_origins: str = Field(
+        default="http://localhost:3000,http://localhost:8000",
+        alias="CORS_ALLOWED_ORIGINS",
+    )
+    cors_allow_credentials: bool = Field(default=True, alias="CORS_ALLOW_CREDENTIALS")
+
     # File Upload
     max_upload_size: int = Field(default=10485760, alias="MAX_UPLOAD_SIZE")
     allowed_extensions: str = Field(

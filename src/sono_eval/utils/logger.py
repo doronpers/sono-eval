@@ -3,10 +3,31 @@
 import json
 import logging
 import sys
+from contextvars import ContextVar
 from datetime import datetime, timezone
 from typing import Any, Dict, Optional
 
 from sono_eval.utils.config import get_config
+
+# Context variables for logging
+REQUEST_ID_CTX: ContextVar[Optional[str]] = ContextVar("request_id", default=None)
+USER_ID_CTX: ContextVar[Optional[str]] = ContextVar("user_id", default=None)
+
+
+def set_request_context(
+    request_id: Optional[str] = None, user_id: Optional[str] = None
+):
+    """Set logging context variables."""
+    if request_id:
+        REQUEST_ID_CTX.set(request_id)
+    if user_id:
+        USER_ID_CTX.set(user_id)
+
+
+def clear_request_context():
+    """Clear logging context variables."""
+    REQUEST_ID_CTX.set(None)
+    USER_ID_CTX.set(None)
 
 
 class StructuredFormatter(logging.Formatter):
@@ -24,11 +45,20 @@ class StructuredFormatter(logging.Formatter):
             "line": record.lineno,
         }
 
+        # Automatically add context from contextvars
+        request_id = REQUEST_ID_CTX.get()
+        user_id = USER_ID_CTX.get()
+
+        if request_id:
+            log_data["request_id"] = request_id
+        if user_id:
+            log_data["user_id"] = user_id
+
         # Add exception info if present
         if record.exc_info:
             log_data["exception"] = self.formatException(record.exc_info)
 
-        # Add extra fields if present
+        # Allow record-specific overrides
         if hasattr(record, "request_id"):
             log_data["request_id"] = record.request_id
         if hasattr(record, "user_id"):
@@ -39,7 +69,9 @@ class StructuredFormatter(logging.Formatter):
         return json.dumps(log_data)
 
 
-def get_logger(name: str, level: Optional[str] = None, structured: bool = False) -> logging.Logger:
+def get_logger(
+    name: str, level: Optional[str] = None, structured: bool = False
+) -> logging.Logger:
     """
     Get a configured logger instance.
 

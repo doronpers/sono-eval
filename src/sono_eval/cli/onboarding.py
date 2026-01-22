@@ -56,14 +56,18 @@ def print_welcome():
 
     Let's get started with the setup process!
     """
-    console.print(Panel(welcome_text, border_style="cyan", title="[bold]Sono-Eval Setup[/bold]"))
+    console.print(
+        Panel(welcome_text, border_style="cyan", title="[bold]Sono-Eval Setup[/bold]")
+    )
 
 
 def check_python_version() -> bool:
     """Check if Python version is compatible."""
     version = sys.version_info
     if version.major >= 3 and version.minor >= 8:
-        console.print(f"Python {version.major}.{version.minor}.{version.micro} detected")
+        console.print(
+            f"[green]✓[/green] Python {version.major}.{version.minor}.{version.micro} detected"
+        )
         return True
     else:
         console.print(
@@ -141,8 +145,7 @@ def setup_configuration() -> dict:
             console.print("[green]✓[/green] Created storage directory")
         else:
             console.print(
-                "[yellow]⚠[/yellow] Storage directory not created. "
-                "You may need to create it manually."
+                "[yellow]⚠[/yellow] Storage directory not created. You may need to create it manually."
             )
 
     return config
@@ -189,9 +192,15 @@ def explain_next_steps():
 
     console.print("\n[yellow]💡 Tips:[/yellow]")
     console.print("  • Use [cyan]sono-eval --help[/cyan] to see all available commands")
-    console.print("  • Your assessment data is saved automatically and persists across sessions")
-    console.print("  • Use [cyan]--output[/cyan] flag to save assessment results to a file")
-    console.print("  • Session reports are generated automatically at the end of each session")
+    console.print(
+        "  • Your assessment data is saved automatically and persists across sessions"
+    )
+    console.print(
+        "  • Use [cyan]--output[/cyan] flag to save assessment results to a file"
+    )
+    console.print(
+        "  • Session reports are generated automatically at the end of each session"
+    )
 
 
 def run_interactive_setup():
@@ -201,14 +210,18 @@ def run_interactive_setup():
     # Step 1: Check Python version
     console.print("\n[bold]Step 1: Checking Python Version[/bold]")
     if not check_python_version():
-        console.print("\n[red]Setup cannot continue. Please install Python 3.8 or higher.[/red]")
+        console.print(
+            "\n[red]Setup cannot continue. Please install Python 3.8 or higher.[/red]"
+        )
         sys.exit(1)
 
     # Step 2: Check dependencies
     console.print("\n[bold]Step 2: Checking Dependencies[/bold]")
     deps_ok = check_dependencies()
     if not deps_ok:
-        if not Confirm.ask("\nContinue setup anyway? (You can install dependencies later)"):
+        if not Confirm.ask(
+            "\nContinue setup anyway? (You can install dependencies later)"
+        ):
             console.print("[yellow]Setup cancelled.[/yellow]")
             sys.exit(0)
 
@@ -232,13 +245,15 @@ def run_interactive_setup():
         console.print(f"[green]✓[/green] Storage path: {cfg.memu_storage_path}")
     except Exception as e:
         console.print(f"[yellow]⚠[/yellow] Configuration validation warning: {e}")
-        console.print("[dim]You can continue, but some features may not work correctly.[/dim]")
+        console.print(
+            "[dim]You can continue, but some features may not work correctly.[/dim]"
+        )
 
     # Final step: Next steps
     explain_next_steps()
 
-    console.print("\nSetup Complete.")
-    console.print("You are ready to use Sono-Eval.\n")
+    console.print("\n[bold green]✓ Setup Complete![/bold green]")
+    console.print("\nYou're ready to start using Sono-Eval. Happy assessing! 🎉\n")
 
 
 @click.command()
@@ -274,5 +289,7 @@ def setup(skip_checks: bool):
     except Exception as e:
         logger.error(f"Setup error: {e}", exc_info=True)
         console.print(f"\n[red]Error during setup: {e}[/red]")
-        console.print("[yellow]You can try running setup again or configure manually.[/yellow]")
+        console.print(
+            "[yellow]You can try running setup again or configure manually.[/yellow]"
+        )
         sys.exit(1)
