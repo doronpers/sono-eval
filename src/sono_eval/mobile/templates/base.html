@@ -19,7 +19,17 @@
                 <button class="back-button" onclick="history.back()" aria-label="Go back">← Back</button>
                 {% endif %}
             </div>
-            {% if progress is defined %}
+            {% if current_step is defined and current_step > 0 %}
+            <div class="stepper">
+                <div class="step {% if current_step >= 1 %}active{% endif %}" title="Setup">1</div>
+                <div class="step-line {% if current_step >= 2 %}active{% endif %}"></div>
+                <div class="step {% if current_step >= 2 %}active{% endif %}" title="Start">2</div>
+                <div class="step-line {% if current_step >= 3 %}active{% endif %}"></div>
+                <div class="step {% if current_step >= 3 %}active{% endif %}" title="Paths">3</div>
+                <div class="step-line {% if current_step >= 4 %}active{% endif %}"></div>
+                <div class="step {% if current_step >= 4 %}active{% endif %}" title="Assess">4</div>
+            </div>
+            {% elif progress is defined %}
             <div class="progress-bar">
                 <div class="progress-fill" style="width: {{ progress }}%"></div>
             </div>

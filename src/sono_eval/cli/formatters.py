@@ -4,7 +4,10 @@ This module provides enhanced formatting utilities using the Rich library
 for a better developer experience in the CLI.
 """
 
-from typing import Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Any, Dict, List, Optional
+
+if TYPE_CHECKING:
+    from sono_eval.cli.error_recovery import RecoverableError
 
 from rich.console import Console
 from rich.panel import Panel
@@ -385,8 +388,74 @@ class ErrorFormatter:
             error_type="File Error",
             message=message,
             suggestions=suggestions,
-            context={"file": file_path},
+            context={" file": file_path},
         )
+
+    @staticmethod
+    def format_recoverable_error(error: "RecoverableError") -> None:  # noqa: F821
+        """
+        Format and display a RecoverableError with recovery suggestions.
+
+        Args:
+            error: RecoverableError instance with recovery actions
+        """
+        from sono_eval.cli.error_recovery import ErrorSeverity
+
+        # Choose colors based on severity
+        severity_colors = {
+            ErrorSeverity.INFO: "blue",
+            ErrorSeverity.WARNING: "yellow",
+            ErrorSeverity.ERROR: "red",
+            ErrorSeverity.FATAL: "bold red",
+        }
+        severity_icons = {
+            ErrorSeverity.INFO: "ℹ️",
+            ErrorSeverity.WARNING: "⚠️",
+            ErrorSeverity.ERROR: "❌",
+            ErrorSeverity.FATAL: "🔥",
+        }
+
+        color = severity_colors.get(error.severity, "red")
+        icon = severity_icons.get(error.severity, "❌")
+
+        # Error panel
+        error_panel = Panel(
+            f"[{color}]{error.message}[/{color}]",
+            title=(
+                f"[bold {color}]{icon} "
+                f"{error.error_type.replace('_', ' ').title()}[/bold {color}]"
+            ),
+            border_style=color,
+        )
+        console.print()
+        console.print(error_panel)
+
+        # Context information
+        if error.context:
+            console.print("\n[bold]Context:[/bold]")
+            for key, value in error.context.items():
+                if value is not None:  # Skip None values
+                    console.print(f"  • {key}: [cyan]{value}[/cyan]")
+
+        # Recovery actions
+        if error.recovery_actions:
+            console.print("\n[bold yellow]💡 Recovery Actions:[/bold yellow]")
+            for i, action in enumerate(error.recovery_actions, 1):
+                console.print(f"  {i}. {action}")
+
+        # Retry command
+        if error.retry_command:
+            console.print("\n[bold green]🔄 Retry with:[/bold green]")
+            console.print(f"  [cyan]{error.retry_command}[/cyan]")
+
+        # Fatal error warning
+        if error.is_fatal:
+            console.print(
+                "\n[bold red]⚠️  This is a fatal error that cannot be automatically recovered."
+                "[/bold red]"
+            )
+
+        console.print()
 
 
 class WelcomeFormatter:

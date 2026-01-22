@@ -133,17 +133,63 @@ class ReplSession:
         if args:
             file_path = Path(args)
             if not file_path.exists():
-                ErrorFormatter.format_file_error(args, "not_found")
+                from sono_eval.cli.error_recovery import file_not_found_error
+
+                error = file_not_found_error(str(file_path))
+                ErrorFormatter.format_recoverable_error(error)
+                return
+
+            # Check file size (limit to 1MB)
+            if file_path.stat().st_size > 1_000_000:
+                from sono_eval.cli.error_recovery import validation_error
+
+                error = validation_error(
+                    field="File",
+                    message=(
+                        f"File is too large ({file_path.stat().st_size / 1024:.1f} KB). "
+                        "Limit is 1MB."
+                    ),
+                )
+                ErrorFormatter.format_recoverable_error(error)
                 return
 
             try:
                 with open(file_path, "r", encoding="utf-8") as f:
                     content = f.read()
-            except Exception as e:
-                ErrorFormatter.format_error(
-                    error_type="File Error",
-                    message=f"Error reading file: {e}",
+
+                if not content.strip():
+                    from sono_eval.cli.error_recovery import validation_error
+
+                    error = validation_error(
+                        field="File Content",
+                        message="File is empty",
+                        example="def hello(): return 'world'",
+                    )
+                    ErrorFormatter.format_recoverable_error(error)
+                    return
+
+            except UnicodeDecodeError:
+                from sono_eval.cli.error_recovery import ErrorSeverity, RecoverableError
+
+                error = RecoverableError(
+                    error_type="encoding_error",
+                    message="Could not decode file content (not UTF-8)",
+                    recovery_actions=[
+                        "Ensure the file is a text file",
+                        "Save the file with UTF-8 encoding",
+                    ],
+                    severity=ErrorSeverity.ERROR,
+                    context={"file": str(file_path)},
                 )
+                ErrorFormatter.format_recoverable_error(error)
+                return
+            except Exception as e:
+                from sono_eval.cli.error_recovery import file_not_found_error
+
+                error = file_not_found_error(
+                    str(file_path), suggestions=[f"System error: {str(e)}"]
+                )
+                ErrorFormatter.format_recoverable_error(error)
                 return
         else:
             # Ask for file path
@@ -154,17 +200,40 @@ class ReplSession:
                 file_path = Path(file_path_str)
 
                 if not file_path.exists():
-                    ErrorFormatter.format_file_error(file_path_str, "not_found")
+                    from sono_eval.cli.error_recovery import file_not_found_error
+
+                    error = file_not_found_error(file_path_str)
+                    ErrorFormatter.format_recoverable_error(error)
+
+                    # Interactive retry
+                    if Confirm.ask("Try again?", default=True):
+                        return self.cmd_assess("")
+                    return
+
+                # Check file size (limit to 1MB)
+                if file_path.stat().st_size > 1_000_000:
+                    from sono_eval.cli.error_recovery import validation_error
+
+                    error = validation_error(
+                        field="File",
+                        message=(
+                            f"File is too large ({file_path.stat().st_size / 1024:.1f} KB). "
+                            "Limit is 1MB."
+                        ),
+                    )
+                    ErrorFormatter.format_recoverable_error(error)
                     return
 
                 try:
                     with open(file_path, "r", encoding="utf-8") as f:
                         content = f.read()
                 except Exception as e:
-                    ErrorFormatter.format_error(
-                        error_type="File Error",
-                        message=f"Error reading file: {e}",
+                    from sono_eval.cli.error_recovery import file_not_found_error
+
+                    error = file_not_found_error(
+                        str(file_path), suggestions=[f"Reading error: {str(e)}"]
                     )
+                    ErrorFormatter.format_recoverable_error(error)
                     return
             else:
                 console.print("[bold]Enter content (Ctrl+D when done):[/bold]")
@@ -229,10 +298,10 @@ class ReplSession:
                     task, advance=len(path_list) + 1, description="Assessment complete!"
                 )
             except Exception as e:
-                ErrorFormatter.format_error(
-                    error_type="Assessment Error",
-                    message=f"Error running assessment: {e}",
-                )
+                from sono_eval.cli.error_recovery import internal_error
+
+                error = internal_error(e, context=f"Assessment failed for {self.current_candidate}")
+                ErrorFormatter.format_recoverable_error(error)
                 return
 
         # Store result

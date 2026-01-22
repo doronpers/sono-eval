@@ -17,9 +17,11 @@ from pydantic import BaseModel, Field
 
 from sono_eval.assessment.engine import AssessmentEngine
 from sono_eval.assessment.models import AssessmentInput, PathType
+from sono_eval.mobile.session import MobileSessionManager
 from sono_eval.utils.logger import get_logger
 
 logger = get_logger(__name__)
+session_manager = MobileSessionManager()
 
 # Get the mobile module directory
 MOBILE_DIR = Path(__file__).parent
@@ -115,39 +117,77 @@ def create_mobile_app() -> FastAPI:
     @app.get("/", response_class=HTMLResponse)
     async def mobile_home(request: Request):
         """Mobile home page with welcome and explanation."""
-        return templates.TemplateResponse(
+        # Get or create session
+        session_id = request.cookies.get("session_id")
+        if not session_id or not session_manager.get_session(session_id):
+            session_id = session_manager.create_session()
+
+        session = session_manager.get_session(session_id)
+
+        response = templates.TemplateResponse(
             request,
             "index.html",
             {
                 "title": "Welcome to Sono-Eval",
+                "current_step": session.current_step if session else 0,
             },
         )
+
+        # Set persistent cookie
+        if request.cookies.get("session_id") != session_id:
+            response.set_cookie(
+                key="session_id",
+                value=session_id,
+                max_age=30 * 24 * 60 * 60,  # 30 days
+                httponly=True,
+                samesite="lax",
+            )
+
+        return response
 
     @app.get("/setup", response_class=HTMLResponse)
     async def mobile_setup(request: Request):
         """Interactive setup wizard for remote candidates."""
+        session_id = request.cookies.get("session_id")
+        if session_id:
+            session_manager.update_step(session_id, 1)
+
         return templates.TemplateResponse(
             request,
             "setup.html",
             {
                 "title": "Setup Your Environment",
+                "current_step": 1,
             },
         )
 
     @app.get("/start", response_class=HTMLResponse)
     async def mobile_start(request: Request):
         """Start assessment - candidate information."""
+        session_id = request.cookies.get("session_id")
+        if session_id:
+            session_manager.update_step(session_id, 2)
+
         return templates.TemplateResponse(
             request,
             "start.html",
             {
                 "title": "Let's Get Started",
+                "current_step": 2,
             },
         )
 
     @app.get("/paths", response_class=HTMLResponse)
     async def mobile_paths(request: Request, candidate_id: Optional[str] = None):
         """Path selection with explanations."""
+        # Update session
+        session_id = request.cookies.get("session_id")
+        if session_id:
+            session_manager.update_step(session_id, 3)
+            # If candidate ID provided, link it
+            if candidate_id:
+                session_manager.link_candidate(session_id, candidate_id)
+
         path_list = []
         for path_id, path_info in config.get("paths", {}).items():
             path_list.append(
@@ -167,6 +207,7 @@ def create_mobile_app() -> FastAPI:
                 "title": "Choose Your Focus Areas",
                 "candidate_id": candidate_id or "guest",
                 "paths": path_list,
+                "current_step": 3,
             },
         )
 
@@ -177,6 +218,10 @@ def create_mobile_app() -> FastAPI:
         paths: Optional[str] = None,
     ):
         """Interactive assessment page."""
+        session_id = request.cookies.get("session_id")
+        if session_id:
+            session_manager.update_step(session_id, 4)
+
         selected_paths = paths.split(",") if paths else []
         return templates.TemplateResponse(
             request,
@@ -185,6 +230,7 @@ def create_mobile_app() -> FastAPI:
                 "title": "Your Assessment",
                 "candidate_id": candidate_id or "guest",
                 "selected_paths": selected_paths,
+                "current_step": 4,
             },
         )
 
