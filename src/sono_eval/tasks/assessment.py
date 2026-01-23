@@ -10,7 +10,7 @@ from typing import Any, Dict
 from celery import Task
 
 from sono_eval.assessment.engine import AssessmentEngine
-from sono_eval.assessment.models import AssessmentInput, AssessmentResult
+from sono_eval.assessment.models import AssessmentInput
 from sono_eval.memory.memu import MemUStorage
 from sono_eval.tasks.celery_app import celery_app
 from sono_eval.utils.logger import get_logger
@@ -53,9 +53,7 @@ class AssessmentTask(Task):
     max_retries=3,
     default_retry_delay=60,  # Retry after 60 seconds
 )
-def process_assessment_task(
-    self, assessment_id: str, input_data: Dict[str, Any]
-) -> Dict[str, Any]:
+def process_assessment_task(self, assessment_id: str, input_data: Dict[str, Any]) -> Dict[str, Any]:
     """
     Process an assessment asynchronously.
 
@@ -124,7 +122,7 @@ def process_assessment_task(
             )
 
         # Convert result to dict for Celery
-        result_dict = result.model_dump(mode="json")
+        result_dict: Dict[str, Any] = result.model_dump(mode="json")
         result_dict["job_status"] = "completed"
 
         logger.info(
@@ -136,9 +134,7 @@ def process_assessment_task(
         return result_dict
 
     except Exception as exc:
-        logger.error(
-            f"Error processing assessment {assessment_id}: {exc}", exc_info=True
-        )
+        logger.error(f"Error processing assessment {assessment_id}: {exc}", exc_info=True)
 
         # Retry with exponential backoff
         if self.request.retries < self.max_retries:

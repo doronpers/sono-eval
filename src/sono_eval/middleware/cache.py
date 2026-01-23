@@ -3,7 +3,7 @@
 import hashlib
 import json
 from functools import wraps
-from typing import Any, Callable, Dict, Optional
+from typing import Any, Callable, Optional
 
 from sono_eval.utils.logger import get_logger
 
@@ -11,7 +11,7 @@ logger = get_logger(__name__)
 
 # Simple in-memory cache for demonstration
 _cache: dict[str, tuple[Any, float]] = {}
-_cache_ttl: Dict[str, float] = {}
+_cache_ttl: dict[str, float] = {}
 
 
 def cache_key(*args: Any, **kwargs: Any) -> str:
