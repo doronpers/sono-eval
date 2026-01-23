@@ -24,6 +24,7 @@ from sono_eval.assessment.pattern_checks import (
 )
 from sono_eval.assessment.scorers.council_scorer import CouncilScorer
 from sono_eval.assessment.scorers.heuristic import HeuristicScorer
+from sono_eval.assessment.scorers.ml import MLScorer
 from sono_eval.assessment.scorers.motive import MicroMotiveScorer
 from sono_eval.utils.config import get_config
 from sono_eval.utils.logger import get_logger
@@ -50,6 +51,7 @@ class AssessmentEngine:
 
         # Initialize Scorers
         self.heuristic_scorer = HeuristicScorer(self.config)
+        self.ml_scorer = MLScorer()
         self.council_scorer = CouncilScorer()
         self.motive_scorer = MicroMotiveScorer()
 
@@ -70,6 +72,9 @@ class AssessmentEngine:
 
         # Check for AI/Council availability
         self.council_scorer.load_if_available()
+
+        # Load ML model (CodeBERT or fallback to AST)
+        self.ml_scorer.load_model_if_available()
 
         # Generate unique assessment ID
         assessment_id = f"assess_{int(time.time() * 1000)}"
@@ -133,10 +138,10 @@ class AssessmentEngine:
             engine_version=self.version,
             processing_time_ms=processing_time,
             metadata={
-                "assessment_mode": "hybrid_council"
-                if self.council_scorer._available
-                else "heuristic",
-                "ml_available": self.council_scorer._available,
+                "assessment_mode": self._determine_assessment_mode(),
+                "ml_model_available": self.ml_scorer._use_trained_model,
+                "ml_model_version": self.ml_scorer.model_version,
+                "council_available": self.council_scorer._available,
                 "pattern_checks": {
                     "enabled": pattern_checks_active,
                     "violation_count": len(pattern_violations),
@@ -149,7 +154,7 @@ class AssessmentEngine:
         logger.info(
             f"Assessment completed for {assessment_input.candidate_id}: "
             f"score={overall_score:.2f}, confidence={overall_confidence:.2%}, "
-            f"mode={'hybrid_council' if self.council_scorer._available else 'heuristic'}, "
+            f"mode={self._determine_assessment_mode()}, "
             f"time={processing_time:.2f}ms"
         )
 
@@ -169,12 +174,17 @@ class AssessmentEngine:
             path, input_data, pattern_violations
         )
 
-        # 2. AI/Council Enhancement
+        # 2. ML Model Enhancement (CodeBERT or AST)
+        ml_insights = self.ml_scorer.get_insights(input_data.content, path)
+        if ml_insights:
+            metrics = self.ml_scorer.enhance_metrics(metrics, ml_insights, path)
+
+        # 3. AI/Council Enhancement
         council_insights = await self.council_scorer.get_insights(input_data.content, path)
         if council_insights:
             metrics = self.council_scorer.enhance_metrics(metrics, council_insights, path)
 
-        # 3. Micro-Motives
+        # 4. Micro-Motives
         if self.dark_horse_enabled:
             motives = self.motive_scorer.identify_micro_motives(path, input_data)
         else:
@@ -193,6 +203,17 @@ class AssessmentEngine:
             strengths=strengths,
             areas_for_improvement=improvements,
         )
+
+    def _determine_assessment_mode(self) -> str:
+        """Determine the current assessment mode based on available scorers."""
+        modes = []
+        if self.ml_scorer._use_trained_model:
+            modes.append("ml")
+        if self.council_scorer._available:
+            modes.append("council")
+        if modes:
+            return "hybrid_" + "_".join(modes)
+        return "heuristic"
 
     # --- Aggregation Helpers ---
     # Kept in engine as they aggregate results from scorers

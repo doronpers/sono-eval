@@ -9,78 +9,108 @@ from sono_eval.assessment.scorers.ml_utils import (
     calculate_confidence_from_evidence,
     extract_docstrings_and_comments,
 )
+from sono_eval.assessment.scorers.model_loader import get_model_loader
 from sono_eval.utils.logger import get_logger
 
 logger = get_logger(__name__)
 
 
 class MLScorer:
-    """Handles ML-based scoring and hybrid combination using AST and code analysis."""
+    """Handles ML-based scoring with trained CodeBERT model and AST analysis."""
 
     def __init__(self):
-        self._ml_model = None
-        self._use_ast_analysis = True  # Always available
+        self._model_loader = get_model_loader()
+        self._use_ast_analysis = True  # Always available as fallback
+        self._use_trained_model = False  # Set when trained model loads
 
     def load_model_if_available(self) -> bool:
         """
-        Attempt to load ML model.
+        Attempt to load trained ML model (CodeBERT).
 
-        Currently uses AST-based analysis as the lightweight "ML" approach.
-        Future: Could load sentence-transformers or custom trained models.
+        Falls back to AST-based analysis if model unavailable.
         """
-        if self._ml_model is not None:
+        # Try to load trained model
+        if self._model_loader.load():
+            self._use_trained_model = True
+            logger.info(f"Using trained ML model: {self._model_loader.model_version}")
             return True
 
-        # For now, use AST + readability analysis (always available)
+        # Fall back to AST-only analysis
         self._use_ast_analysis = True
-        logger.info("Using AST-based code analysis (lightweight ML approach)")
+        self._use_trained_model = False
+        logger.info("Using AST-based code analysis (model unavailable)")
         return True
 
-    def get_insights(self, content: Any, path: PathType) -> Optional[Dict[str, Any]]:
-        """Get ML model insights using AST and readability analysis."""
-        if not self._use_ast_analysis:
-            return None
+    @property
+    def model_version(self) -> str:
+        """Get the ML model version."""
+        if self._use_trained_model:
+            version: str = str(self._model_loader.model_version)
+            return version
+        return "ast-only"
 
+    def get_insights(self, content: Any, path: PathType) -> Optional[Dict[str, Any]]:
+        """Get ML model insights using trained model and/or AST analysis."""
         text = extract_text_content(content)
         if not text:
             return None
 
         try:
-            # Analyze code complexity
+            # 1. AST-based analysis (always available)
             complexity_metrics = CodeComplexityAnalyzer.analyze(text)
-
-            # Analyze naming conventions
             naming_metrics = NamingConventionValidator.analyze(text)
-
-            # Analyze documentation readability
             docs_text = extract_docstrings_and_comments(text)
             readability_metrics = ReadabilityAnalyzer.analyze(docs_text)
 
-            # Calculate aggregated score
+            # Calculate AST-based scores
             complexity_score = self._score_complexity(complexity_metrics)
             naming_score = naming_metrics.get("consistency", 0.5) * 100
             readability_score = self._score_readability(readability_metrics)
+            ast_score = (complexity_score + naming_score + readability_score) / 3
 
-            # Combine scores
-            overall_score = (complexity_score + naming_score + readability_score) / 3
+            # 2. Trained model scoring (if available)
+            model_score = None
+            model_confidence = 0.0
+            model_details = None
+            if self._use_trained_model:
+                model_result = self._model_loader.get_code_quality_score(text)
+                if model_result:
+                    model_score = model_result["score"]
+                    model_confidence = model_result["confidence"]
+                    model_details = model_result
+
+            # 3. Combine scores (model + AST hybrid)
+            if model_score is not None:
+                # Weighted combination: 40% model, 60% AST
+                overall_score = (model_score * 0.4) + (ast_score * 0.6)
+                evidence_count = (
+                    len(complexity_metrics) + len(naming_metrics) + len(readability_metrics) + 1
+                )
+                confidence = (model_confidence * 0.4) + (
+                    calculate_confidence_from_evidence(evidence_count - 1) * 0.6
+                )
+                analysis_mode = "hybrid_ml"
+            else:
+                overall_score = ast_score
+                evidence_count = (
+                    len(complexity_metrics) + len(naming_metrics) + len(readability_metrics)
+                )
+                confidence = calculate_confidence_from_evidence(evidence_count)
+                analysis_mode = "ast_only"
 
             # Determine pattern based on metrics
             pattern = self._identify_pattern(complexity_metrics, naming_metrics)
-
-            # Calculate confidence based on evidence count
-            evidence_count = (
-                len(complexity_metrics) + len(naming_metrics) + len(readability_metrics)
-            )
-            confidence = calculate_confidence_from_evidence(evidence_count)
 
             return {
                 "pattern": pattern,
                 "confidence": confidence,
                 "score": overall_score,
+                "analysis_mode": analysis_mode,
+                "model_version": self.model_version,
                 "details": (
                     f"Code complexity analysis: {len(complexity_metrics)} metrics. "
                     f"Naming consistency: {naming_metrics.get('consistency', 0):.1%}. "
-                    f"Documentation quality analyzed."
+                    f"Analysis mode: {analysis_mode}."
                 ),
                 "recommendations": self._generate_recommendations(
                     complexity_metrics, naming_metrics, readability_metrics
@@ -89,10 +119,11 @@ class MLScorer:
                     "complexity": complexity_metrics,
                     "naming": naming_metrics,
                     "readability": readability_metrics,
+                    "model": model_details,
                 },
             }
         except Exception as e:
-            logger.debug(f"AST analysis failed: {e}")
+            logger.debug(f"ML analysis failed: {e}")
             return None
 
     def _score_complexity(self, metrics: Dict[str, float]) -> float:
