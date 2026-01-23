@@ -3,7 +3,7 @@
 **Complete catalog of all Sono-Eval documentation, organized by purpose and
 category.**
 
-**Last Updated**: 2026-01-15
+**Last Updated**: 2026-01-22
 **Version**: 0.1.1
 
 ---
@@ -12,6 +12,8 @@ category.**
 
 - **[Start Here](START_HERE.md)** - Single landing page for first-time readers
 - **[Documentation Hub](README.md)** - Start here for role-based navigation
+- **[Search Guide](SEARCH.md)** - Find docs by keyword
+- **[Navigation Map](NAVIGATION.md)** - Visual site map
 - **[Quick Start Guide](Guides/QUICK_START.md)** - Get running in 5 minutes
 - **[Architecture Overview](Core/concepts/architecture.md)** - System design and
   components
@@ -56,6 +58,7 @@ category.**
 
 - **[CLI Reference](Guides/user-guide/cli-reference.md)** - Complete
   command-line interface documentation
+- **[Production Deployment](PRODUCTION_DEPLOYMENT.md)** - Production-readiness guide, rate limiting, circuit breakers, Kubernetes deployment
 - **[API Reference](Guides/user-guide/api-reference.md)** - REST API endpoints
   and usage
 - **[Assessment Path Guide](Guides/assessment-path-guide.md)** - Complete guide
@@ -143,6 +146,8 @@ Historical and internal documentation that has been superseded or is no longer n
 **Location**: `documentation/`
 
 - **[Start Here](START_HERE.md)** - Single landing page for first-time readers
+- **[Search Guide](SEARCH.md)** - Keyword-based doc finder
+- **[Navigation Map](NAVIGATION.md)** - Visual doc map
 
 ---
 
@@ -155,8 +160,8 @@ Historical and internal documentation that has been superseded or is no longer n
 | Reports | 13 | ✅ Complete |
 | Governance | 5 | ✅ Complete |
 | Root | 4 | ✅ Complete |
-| Landing | 1 | ✅ Complete |
-| **Total** | **46** | ✅ Organized |
+| Landing | 3 | ✅ Complete |
+| **Total** | **48** | ✅ Organized |
 
 ---
 
@@ -257,4 +262,4 @@ Documentation maintenance procedures are documented in
 ---
 
 **Version**: 0.1.1
-**Last Updated**: January 18, 2026
+**Last Updated**: January 22, 2026

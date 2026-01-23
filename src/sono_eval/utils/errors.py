@@ -6,7 +6,7 @@ Provides consistent error response format and error codes.
 
 from typing import Any, Dict, Optional
 
-from fastapi import HTTPException, status
+from fastapi import HTTPException, status  # type: ignore
 from pydantic import BaseModel
 
 
@@ -46,6 +46,14 @@ class ErrorCode:
     INVALID_FILE_TYPE = "INVALID_FILE_TYPE"
 
 
+class ErrorHelp(BaseModel):
+    """Helpful guidance for API clients."""
+
+    valid_examples: Optional[list[Dict[str, Any]]] = None
+    suggestion: Optional[str] = None
+    docs_url: Optional[str] = None
+
+
 class ErrorResponse(BaseModel):
     """Standard error response format."""
 
@@ -54,6 +62,7 @@ class ErrorResponse(BaseModel):
     message: str
     details: Optional[Dict[str, Any]] = None
     request_id: Optional[str] = None
+    help: Optional[ErrorHelp] = None
 
 
 def create_error_response(
@@ -62,6 +71,7 @@ def create_error_response(
     status_code: int = status.HTTP_400_BAD_REQUEST,
     details: Optional[Dict[str, Any]] = None,
     request_id: Optional[str] = None,
+    help: Optional[ErrorHelp] = None,
 ) -> HTTPException:
     """
     Create a standardized HTTP exception with error response.
@@ -72,16 +82,27 @@ def create_error_response(
         status_code: HTTP status code
         details: Optional additional error details
         request_id: Optional request ID for tracking
+        help: Optional error help information
 
     Returns:
         HTTPException with standardized error response
     """
+    # Enhance with recovery if help not provided
+    if not help:
+        try:
+            from sono_eval.utils.error_recovery import create_enhanced_error_help
+
+            help = create_enhanced_error_help(error_code, details)
+        except ImportError:
+            pass  # Fallback to basic error if recovery not available
+
     error_response = ErrorResponse(
         error=True,
         error_code=error_code,
         message=message,
         details=details,
         request_id=request_id,
+        help=help,
     )
 
     return HTTPException(
@@ -95,6 +116,7 @@ def validation_error(
     field: Optional[str] = None,
     details: Optional[Dict[str, Any]] = None,
     request_id: Optional[str] = None,
+    help: Optional[ErrorHelp] = None,
 ) -> HTTPException:
     """Create a validation error response."""
     error_details = details or {}
@@ -107,6 +129,7 @@ def validation_error(
         status_code=status.HTTP_400_BAD_REQUEST,
         details=error_details,
         request_id=request_id,
+        help=help,
     )
 
 
@@ -114,6 +137,7 @@ def not_found_error(
     resource_type: str,
     resource_id: Optional[str] = None,
     request_id: Optional[str] = None,
+    help: Optional[ErrorHelp] = None,
 ) -> HTTPException:
     """Create a not found error response."""
     message = f"{resource_type} not found"
@@ -126,6 +150,7 @@ def not_found_error(
         status_code=status.HTTP_404_NOT_FOUND,
         details={"resource_type": resource_type, "resource_id": resource_id},
         request_id=request_id,
+        help=help,
     )
 
 
@@ -133,6 +158,7 @@ def internal_error(
     message: str = "An internal error occurred",
     details: Optional[Dict[str, Any]] = None,
     request_id: Optional[str] = None,
+    help: Optional[ErrorHelp] = None,
 ) -> HTTPException:
     """Create an internal server error response."""
     return create_error_response(
@@ -141,12 +167,14 @@ def internal_error(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         details=details,
         request_id=request_id,
+        help=help,
     )
 
 
 def service_unavailable_error(
     service: str,
     request_id: Optional[str] = None,
+    help: Optional[ErrorHelp] = None,
 ) -> HTTPException:
     """Create a service unavailable error response."""
     return create_error_response(
@@ -155,6 +183,7 @@ def service_unavailable_error(
         status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
         details={"service": service},
         request_id=request_id,
+        help=help,
     )
 
 
@@ -163,6 +192,7 @@ def file_upload_error(
     error_type: str = ErrorCode.INVALID_FILE_TYPE,
     details: Optional[Dict[str, Any]] = None,
     request_id: Optional[str] = None,
+    help: Optional[ErrorHelp] = None,
 ) -> HTTPException:
     """Create a file upload error response."""
     return create_error_response(
@@ -171,4 +201,5 @@ def file_upload_error(
         status_code=status.HTTP_400_BAD_REQUEST,
         details=details,
         request_id=request_id,
+        help=help,
     )

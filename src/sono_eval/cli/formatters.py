@@ -314,6 +314,16 @@ class ErrorFormatter:
         context: Optional[Dict[str, Any]] = None,
     ) -> None:
         """Format and display an error with suggestions."""
+        # Try to use shared-ai-utils error recovery if available
+        if not suggestions:
+            try:
+                from shared_ai_utils.errors import ErrorRecovery
+
+                recovery = ErrorRecovery(error_type, context or {})
+                suggestions = recovery.get_suggestions()
+            except ImportError:
+                pass  # Use provided suggestions or none
+
         # Error panel
         error_panel = Panel(
             f"[red]{message}[/red]",

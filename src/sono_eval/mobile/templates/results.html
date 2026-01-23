@@ -2,6 +2,10 @@
 
 {% block content %}
 <div class="results-container" id="results-app">
+    <div class="step-progress">
+        <span class="step-pill">Step 4/4</span>
+        <span class="step-label">Review results • 2–5 min</span>
+    </div>
     <!-- Results Header -->
     <div class="results-header">
         <div class="score-circle" id="overall-score">
@@ -30,69 +34,6 @@
         <p class="summary-text" id="summary-text"></p>
     </div>
 
-    <!-- Path Scores Visualization -->
-    <div class="results-section">
-        <h3 class="section-title">📊 Path Scores</h3>
-        <div class="path-scores-chart" id="path-scores">
-            <!-- Radar Chart -->
-            <div class="chart-container mb-6" style="max-width: 500px; margin: 0 auto;">
-                <canvas id="path-radar-chart"></canvas>
-            </div>
-            <!-- Path Scores Table (fallback) -->
-            <div id="path-scores-table"></div>
-        </div>
-    </div>
-
-    <!-- Path Breakdowns -->
-    <div class="results-section" id="path-breakdowns-section" style="display: none;">
-        <h3 class="section-title">📈 Detailed Breakdowns</h3>
-        <div id="path-breakdowns"></div>
-    </div>
-
-    <!-- Key Findings -->
-    <div class="results-section">
-        <h3 class="section-title">🔍 Key Findings</h3>
-        <ul class="findings-list" id="findings-list"></ul>
-    </div>
-
-    <!-- Strengths & Improvements -->
-    <div class="results-section dual-column">
-        <div class="column strengths">
-            <h4><span class="icon">💪</span> Strengths</h4>
-            <ul class="strength-list" id="strengths-list"></ul>
-        </div>
-        <div class="column improvements">
-            <h4><span class="icon">🎯</span> Areas to Improve</h4>
-            <ul class="improvement-list" id="improvements-list"></ul>
-        </div>
-    </div>
-
-    <!-- Micro-Motives (if available) -->
-    <div class="results-section" id="motives-section" style="display: none;">
-        <h3 class="section-title">🧠 Your Micro-Motives</h3>
-        <p class="motives-intro mb-4">These reveal what drives your approach:</p>
-        <div class="chart-container" style="height: 300px;">
-            <canvas id="motives-chart"></canvas>
-        </div>
-        <div class="dominant-motive mt-4" id="dominant-motive"></div>
-    </div>
-
-    <!-- Trend Chart (if historical data) -->
-    <div class="results-section" id="trend-section" style="display: none;">
-        <h3 class="section-title">📈 Your Progress</h3>
-        <div class="trend-indicator mb-3" id="trend-indicator"></div>
-        <div class="chart-container" style="height: 250px;">
-            <canvas id="trend-chart"></canvas>
-        </div>
-    </div>
-
-    <!-- Recommendations -->
-    <div class="results-section">
-        <h3 class="section-title">💡 Recommendations</h3>
-        <div class="recommendations-list" id="recommendations-list"></div>
-    </div>
-
-    <!-- Action Buttons -->
     <div class="results-actions">
         <button class="secondary-button" onclick="downloadResults()">
             <span>📥</span> Download Report
@@ -100,6 +41,74 @@
         <button class="primary-button" onclick="startNewAssessment()">
             <span>🔄</span> New Assessment
         </button>
+    </div>
+
+    <div class="results-section">
+        <button class="details-toggle" type="button" onclick="toggleDetailsSection(this)">
+            <span>Evidence & Details</span>
+            <span class="toggle-icon">▼</span>
+        </button>
+        <div class="details-content" style="display: none;">
+            <!-- Path Scores Visualization -->
+            <div class="results-section">
+                <h3 class="section-title">📊 Path Scores</h3>
+                <div class="path-scores-chart" id="path-scores">
+                    <div class="chart-container mb-6" style="max-width: 500px; margin: 0 auto;">
+                        <canvas id="path-radar-chart"></canvas>
+                    </div>
+                    <div id="path-scores-table"></div>
+                </div>
+            </div>
+
+            <!-- Path Breakdowns -->
+            <div class="results-section" id="path-breakdowns-section" style="display: none;">
+                <h3 class="section-title">📈 Detailed Breakdowns</h3>
+                <div id="path-breakdowns"></div>
+            </div>
+
+            <!-- Key Findings -->
+            <div class="results-section">
+                <h3 class="section-title">🔍 Key Findings</h3>
+                <ul class="findings-list" id="findings-list"></ul>
+            </div>
+
+            <!-- Strengths & Improvements -->
+            <div class="results-section dual-column">
+                <div class="column strengths">
+                    <h4><span class="icon">💪</span> Strengths</h4>
+                    <ul class="strength-list" id="strengths-list"></ul>
+                </div>
+                <div class="column improvements">
+                    <h4><span class="icon">🎯</span> Areas to Improve</h4>
+                    <ul class="improvement-list" id="improvements-list"></ul>
+                </div>
+            </div>
+
+            <!-- Micro-Motives (if available) -->
+            <div class="results-section" id="motives-section" style="display: none;">
+                <h3 class="section-title">🧠 Your Micro-Motives</h3>
+                <p class="motives-intro mb-4">These reveal what drives your approach:</p>
+                <div class="chart-container" style="height: 300px;">
+                    <canvas id="motives-chart"></canvas>
+                </div>
+                <div class="dominant-motive mt-4" id="dominant-motive"></div>
+            </div>
+
+            <!-- Trend Chart (if historical data) -->
+            <div class="results-section" id="trend-section" style="display: none;">
+                <h3 class="section-title">📈 Your Progress</h3>
+                <div class="trend-indicator mb-3" id="trend-indicator"></div>
+                <div class="chart-container" style="height: 250px;">
+                    <canvas id="trend-chart"></canvas>
+                </div>
+            </div>
+
+            <!-- Recommendations -->
+            <div class="results-section">
+                <h3 class="section-title">💡 Recommendations</h3>
+                <div class="recommendations-list" id="recommendations-list"></div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -132,6 +141,15 @@ function checkExportParam() {
     if (urlParams.get('export') === 'json') {
         exportResultsAsJSON();
     }
+}
+
+function toggleDetailsSection(button) {
+    const content = button.nextElementSibling;
+    const icon = button.querySelector('.toggle-icon');
+    const isOpen = content.style.display === 'block';
+
+    content.style.display = isOpen ? 'none' : 'block';
+    icon.textContent = isOpen ? '▼' : '▲';
 }
 
 // Export results as JSON (complements results.js)

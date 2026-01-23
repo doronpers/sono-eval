@@ -6,13 +6,7 @@
 
 ## 🚀 Start Here
 
-**New to Sono-Eval?** → **[Get Started in 5 Minutes](Documentation/START_HERE.md)**
-
-**Alternative paths:**
-
-- [View documentation hub](Documentation/README.md) - Browse all docs
-- [Quick Start Guide](Documentation/Guides/QUICK_START.md) - 5-minute setup
-- [Contributing guide](CONTRIBUTING.md) - Help us improve
+**[Start Here →](documentation/START_HERE.md)**
 
 ---
 
@@ -43,7 +37,7 @@ cd sono-eval
   --paths technical
 ```
 
-For detailed instructions, troubleshooting, and all installation options, see the [Quick Start Guide](Documentation/Guides/QUICK_START.md).
+For detailed instructions, troubleshooting, and all installation options, see the [Quick Start Guide](documentation/Guides/QUICK_START.md).
 
 ---
 
@@ -75,18 +69,18 @@ choose to share them.
 
 🔍 **Deep Insights** • 📊 **Analytics** • ⚖️ **Fair Assessment** • 🚀 **Easy Setup**
 
-**See all features** → [Documentation Hub](Documentation/README.md)
+**See all features** → [Documentation Hub](documentation/README.md)
 
 ## 📚 Documentation
 
 **Popular pages:**
 
-- [Quick Start Guide](Documentation/Guides/QUICK_START.md) - 5-minute setup
-- [API Reference](Documentation/Guides/user-guide/api-reference.md) - REST API docs
-- [CLI Reference](Documentation/Guides/user-guide/cli-reference.md) - Command-line usage
-- [FAQ](Documentation/Guides/faq.md) - Common questions
+- [Quick Start Guide](documentation/Guides/QUICK_START.md) - 5-minute setup
+- [API Reference](documentation/Guides/user-guide/api-reference.md) - REST API docs
+- [CLI Reference](documentation/Guides/user-guide/cli-reference.md) - Command-line usage
+- [FAQ](documentation/Guides/faq.md) - Common questions
 
-**[Browse all documentation →](Documentation/README.md)**
+**[Browse all documentation →](documentation/README.md)**
 
 ---
 
@@ -110,7 +104,7 @@ choose to share them.
 └─────────────────────────────────────────────────────────────┘
 ```
 
-See **[Architecture Overview](Documentation/Core/concepts/architecture.md)** for
+See **[Architecture Overview](documentation/Core/concepts/architecture.md)** for
 details.
 
 ---
@@ -170,7 +164,7 @@ result = await engine.assess(AssessmentInput(...))
 curl -X POST http://localhost:8000/api/v1/assessments -H "Content-Type: application/json" -d '{...}'
 ```
 
-**See [API Reference](Documentation/Guides/user-guide/api-reference.md) and [CLI Reference](Documentation/Guides/user-guide/cli-reference.md) for complete examples.**
+**See [API Reference](documentation/Guides/user-guide/api-reference.md) and [CLI Reference](documentation/Guides/user-guide/cli-reference.md) for complete examples.**
 
 ---
 
@@ -203,8 +197,8 @@ You're free to use, modify, and distribute it. See the LICENSE file for details.
 
 ## 🆘 Getting Help
 
-- **📚 Documentation**: [Documentation/README.md](Documentation/README.md)
-- **❓ FAQ**: [Documentation/Guides/faq.md](Documentation/Guides/faq.md)
+- **📚 Documentation**: [documentation/README.md](documentation/README.md)
+- **❓ FAQ**: [documentation/Guides/faq.md](documentation/Guides/faq.md)
 - **🐛 Issues**: [GitHub Issues](https://github.com/doronpers/sono-eval/issues)
 - **💬 Discussions**:
   [GitHub Discussions](https://github.com/doronpers/sono-eval/discussions)
@@ -306,5 +300,5 @@ The executable at `dist/sono-eval` is self-contained. It:
 
 For AI agents working on this repository:
 
-- [Agent Behavioral Standards](Documentation/Governance/AGENT_BEHAVIORAL_STANDARDS.md)
-- [Documentation Organization Standards](Documentation/Governance/DOCUMENTATION_ORGANIZATION_STANDARDS.md)
+- [Agent Behavioral Standards](documentation/Governance/AGENT_BEHAVIORAL_STANDARDS.md)
+- [Documentation Organization Standards](documentation/Governance/DOCUMENTATION_ORGANIZATION_STANDARDS.md)

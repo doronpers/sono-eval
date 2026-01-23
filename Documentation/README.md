@@ -8,6 +8,14 @@ understanding, installing, and using the system.
 
 ---
 
+## 🔍 Quick Navigation
+
+- **Start Here**: [START_HERE.md](START_HERE.md)
+- **Search Guide**: [SEARCH.md](SEARCH.md)
+- **Navigation Map**: [NAVIGATION.md](NAVIGATION.md)
+
+---
+
 ## 🗺️ Navigation by Role
 
 ### 🚦 Start Here (Landing Guide)

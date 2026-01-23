@@ -8,114 +8,26 @@
         <p class="hero-subtitle">Your personalized skill assessment companion</p>
     </div>
 
-    <div class="info-card discovery-card" data-discovery="what-makes-different">
-        <div class="info-header">
-            <span class="info-icon">✨</span>
-            <h3>What Makes This Different?</h3>
+    <div class="value-grid" role="list">
+        <div class="value-item" role="listitem">
+            <span class="value-icon">✨</span>
+            <h3>Explained Scores</h3>
+            <p>See evidence for every score—no black boxes.</p>
         </div>
-        <div class="discovery-preview">
-            <p class="discovery-teaser">Unlike traditional tests, Sono-Eval helps you understand and grow.</p>
-            <button class="explore-button" onclick="exploreDiscovery(this, 'what-makes-different')">
-                Explore <span class="button-arrow">→</span>
-            </button>
+        <div class="value-item" role="listitem">
+            <span class="value-icon">🎯</span>
+            <h3>Choose Your Focus</h3>
+            <p>Pick 1–4 skills that matter most to you.</p>
         </div>
-        <div class="discovery-content" style="display: none;">
-            <ul class="info-list">
-                <li>
-                    <strong>Explanatory:</strong> Understand every score with clear evidence
-                    <span class="value-hint">💡 You'll see exactly why you received each score</span>
-                </li>
-                <li>
-                    <strong>Interactive:</strong> Engage with the content at your own pace
-                    <span class="value-hint">💡 No time pressure - learn as you go</span>
-                </li>
-                <li>
-                    <strong>Personalized:</strong> Choose which areas you want to focus on
-                    <span class="value-hint">💡 Focus on what matters most to you</span>
-                </li>
-                <li>
-                    <strong>Growth-focused:</strong> Get actionable feedback to improve
-                    <span class="value-hint">💡 Specific recommendations you can use immediately</span>
-                </li>
-            </ul>
-            <div class="mini-quiz" style="margin-top: 1.5rem; padding: 1rem; background: var(--bg-light); border-radius: 8px;">
-                <p style="font-weight: 600; margin-bottom: 0.75rem; color: var(--primary-color);">Quick Reflection:</p>
-                <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
-                    What do you hope to learn from this assessment?
-                </p>
-                <div class="reflection-options" style="display: flex; flex-direction: column; gap: 0.5rem;">
-                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.5rem; border-radius: 4px; transition: background 0.2s;" onmouseover="this.style.background='var(--bg-light)'" onmouseout="this.style.background=''">
-                        <input type="radio" name="reflection" value="strengths" style="cursor: pointer;" onchange="saveReflection(this.value)">
-                        <span style="font-size: 0.9rem;">Identify my strengths</span>
-                    </label>
-                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.5rem; border-radius: 4px; transition: background 0.2s;" onmouseover="this.style.background='var(--bg-light)'" onmouseout="this.style.background=''">
-                        <input type="radio" name="reflection" value="improve" style="cursor: pointer;" onchange="saveReflection(this.value)">
-                        <span style="font-size: 0.9rem;">Find areas to improve</span>
-                    </label>
-                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.5rem; border-radius: 4px; transition: background 0.2s;" onmouseover="this.style.background='var(--bg-light)'" onmouseout="this.style.background=''">
-                        <input type="radio" name="reflection" value="practice" style="cursor: pointer;" onchange="saveReflection(this.value)">
-                        <span style="font-size: 0.9rem;">Practice for interviews</span>
-                    </label>
-                </div>
-            </div>
+        <div class="value-item" role="listitem">
+            <span class="value-icon">⏱️</span>
+            <h3>10–90 Minutes</h3>
+            <p>Complete one area or a full profile at your pace.</p>
         </div>
-    </div>
-
-    <div class="info-card discovery-card" data-discovery="time-commitment">
-        <div class="info-header">
-            <span class="info-icon">⏱️</span>
-            <h3>How Long Does It Take?</h3>
-        </div>
-        <div class="discovery-preview">
-            <p class="discovery-teaser">You're in control of your time investment.</p>
-            <button class="explore-button" onclick="exploreDiscovery(this, 'time-commitment')">
-                Explore <span class="button-arrow">→</span>
-            </button>
-        </div>
-        <div class="discovery-content" style="display: none;">
-            <p class="info-text">
-                You're in control! Choose 1-4 focus areas, each taking 10-20 minutes.
-                You can complete them all at once or come back later.
-            </p>
-            <div class="time-breakdown">
-                <div class="time-item">
-                    <strong>1 area:</strong> 10-20 minutes
-                    <span class="value-hint">Quick insight into one skill dimension</span>
-                </div>
-                <div class="time-item">
-                    <strong>2-3 areas:</strong> 30-60 minutes
-                    <span class="value-hint">Comprehensive view of your strengths</span>
-                </div>
-                <div class="time-item">
-                    <strong>All areas:</strong> 60-90 minutes
-                    <span class="value-hint">Complete profile with full insights</span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="info-card discovery-card" data-discovery="privacy">
-        <div class="info-header">
-            <span class="info-icon">🔒</span>
-            <h3>Your Privacy Matters</h3>
-        </div>
-        <div class="discovery-preview">
-            <p class="discovery-teaser">Your data is yours. We're transparent about how we use it.</p>
-            <button class="explore-button" onclick="exploreDiscovery(this, 'privacy')">
-                Explore <span class="button-arrow">→</span>
-            </button>
-        </div>
-        <div class="discovery-content" style="display: none;">
-            <p class="info-text">
-                Your responses are used only for assessment. We explain our reasoning
-                and you can see exactly why you received each score.
-            </p>
-            <ul class="privacy-list">
-                <li>✅ No account required to try it out</li>
-                <li>✅ Your code and responses stay private</li>
-                <li>✅ We explain every score with evidence</li>
-                <li>✅ You control what you share</li>
-            </ul>
+        <div class="value-item" role="listitem">
+            <span class="value-icon">📈</span>
+            <h3>Actionable Growth</h3>
+            <p>Get specific next steps to improve.</p>
         </div>
     </div>
 
@@ -124,32 +36,63 @@
             Let's Get Started
             <span class="button-arrow">→</span>
         </button>
-        <p class="cta-subtext">
-            No account needed to try it out
-        </p>
+        <p class="cta-subtext">No account needed • 10–90 minutes</p>
     </div>
 
-    <div class="expandable-section">
-        <button class="expand-button" onclick="toggleExpand(this)">
-            <span>Learn more about the process</span>
-            <span class="expand-icon">▼</span>
+    <div class="details-section">
+        <button class="details-toggle" onclick="toggleDetails(this)">
+            <span>How it works</span>
+            <span class="toggle-icon">▼</span>
         </button>
-        <div class="expandable-content">
-            <h4>The Assessment Process</h4>
-            <ol class="process-list">
-                <li>
-                    <strong>Choose Your Focus:</strong> Select 1-4 skill areas to assess
-                </li>
-                <li>
-                    <strong>Complete Tasks:</strong> Interactive exercises tailored to your selections
-                </li>
-                <li>
-                    <strong>Get Detailed Feedback:</strong> See your scores with clear explanations
-                </li>
-                <li>
-                    <strong>Grow Your Skills:</strong> Receive specific recommendations
-                </li>
-            </ol>
+        <div class="details-content" style="display: none;">
+            <div class="detail-block">
+                <h4>The Assessment Process</h4>
+                <ol class="process-list">
+                    <li>
+                        <strong>Choose Your Focus:</strong> Select 1–4 skill areas
+                    </li>
+                    <li>
+                        <strong>Complete Tasks:</strong> Share your code and reasoning
+                    </li>
+                    <li>
+                        <strong>See Results:</strong> Scores backed by evidence
+                    </li>
+                    <li>
+                        <strong>Grow Your Skills:</strong> Actionable recommendations
+                    </li>
+                </ol>
+            </div>
+            <div class="detail-block">
+                <h4>Privacy</h4>
+                <ul class="privacy-list">
+                    <li>✅ No account required</li>
+                    <li>✅ Your code and responses stay private</li>
+                    <li>✅ Transparent scoring</li>
+                    <li>✅ You control what you share</li>
+                </ul>
+            </div>
+            <div class="detail-block">
+                <div class="mini-quiz">
+                    <p class="mini-quiz-title">Quick Reflection (optional)</p>
+                    <p class="mini-quiz-text">
+                        What do you hope to learn from this assessment?
+                    </p>
+                    <div class="reflection-options">
+                        <label>
+                            <input type="radio" name="reflection" value="strengths" onchange="saveReflection(this.value)">
+                            <span>Identify my strengths</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="reflection" value="improve" onchange="saveReflection(this.value)">
+                            <span>Find areas to improve</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="reflection" value="practice" onchange="saveReflection(this.value)">
+                            <span>Practice for interviews</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -157,51 +100,18 @@
 
 {% block extra_js %}
 <script>
-function toggleExpand(button) {
+function toggleDetails(button) {
     const content = button.nextElementSibling;
-    const icon = button.querySelector('.expand-icon');
+    const icon = button.querySelector('.toggle-icon');
+    const isOpen = content.style.display === 'block';
 
-    if (content.style.maxHeight) {
-        content.style.maxHeight = null;
-        icon.textContent = '▼';
-    } else {
-        content.style.maxHeight = content.scrollHeight + 'px';
-        icon.textContent = '▲';
+    content.style.display = isOpen ? 'none' : 'block';
+    icon.textContent = isOpen ? '▼' : '▲';
 
-        // Track discovery interaction
-        if (window.sonoEvalTracking && window.sonoEvalTracking.trackEvent) {
-            window.sonoEvalTracking.trackEvent('discovery', {
-                action: 'expanded',
-                section: 'process',
-            });
-        }
-    }
-}
-
-function exploreDiscovery(button, discoveryId) {
-    const card = button.closest('.discovery-card');
-    const preview = card.querySelector('.discovery-preview');
-    const content = card.querySelector('.discovery-content');
-
-    // Hide preview, show content
-    preview.style.display = 'none';
-    content.style.display = 'block';
-
-    // Smooth scroll to content
-    content.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-
-    // Track discovery
     if (window.sonoEvalTracking && window.sonoEvalTracking.trackEvent) {
         window.sonoEvalTracking.trackEvent('discovery', {
-            action: 'explored',
-            discovery_id: discoveryId,
-        });
-    }
-
-    // Track milestone
-    if (window.sonoEval && window.sonoEval.trackMilestone) {
-        window.sonoEval.trackMilestone('discovery_explored', {
-            discovery: discoveryId,
+            action: isOpen ? 'collapsed' : 'expanded',
+            section: 'how_it_works',
         });
     }
 }

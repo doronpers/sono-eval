@@ -219,3 +219,28 @@ def test_candidate_creation_with_invalid_id(client):
     )
 
     assert response.status_code == 422  # Validation error
+
+
+def test_errors_reference_endpoint(client):
+    """Test that error reference endpoint returns known codes."""
+    response = client.get("/api/v1/errors")
+
+    assert response.status_code == 200
+    data = response.json()
+
+    assert "errors" in data
+    assert any(item["error_code"] == "VALIDATION_ERROR" for item in data["errors"])
+
+
+def test_candidate_id_validation_help_payload(client):
+    """Test that validation errors include help payloads."""
+    response = client.get(
+        "/api/v1/assessments/assess_123?candidate_id=bad@id",
+    )
+
+    assert response.status_code == 400
+    payload = response.json().get("detail", {})
+
+    assert payload.get("error_code") == "VALIDATION_ERROR"
+    assert "help" in payload
+    assert payload["help"].get("docs_url") == "/api/v1/errors#validation"

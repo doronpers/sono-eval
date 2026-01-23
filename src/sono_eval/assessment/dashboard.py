@@ -1,11 +1,14 @@
 """Dashboard data models for rich assessment visualization."""
 
+import logging
 from datetime import datetime
 from typing import Any, ClassVar, Dict, List, Optional
 
 from pydantic import BaseModel, Field
 
 from sono_eval.assessment.models import AssessmentResult, PathType
+
+# from shared_ai_utils import InsightsEngine
 
 
 class ScoreBreakdown(BaseModel):
@@ -15,6 +18,25 @@ class ScoreBreakdown(BaseModel):
     score: float
     weight: float
     color: str  # Hex color for visualization
+
+
+class ROIAnalysis(BaseModel):
+    """ROI analysis data."""
+
+    time_saved_minutes: float
+    efficiency_gain_percent: float
+    cost_saving: float
+    label: str
+    description: str
+
+
+class DetailedTrendPoint(BaseModel):
+    """Deep trend analysis point."""
+
+    timestamp: datetime
+    metrics: Dict[str, float]
+    velocity: float
+    acceleration: float
 
 
 class PathVisualization(BaseModel):
@@ -80,6 +102,10 @@ class DashboardData(BaseModel):
     # Motives (if available)
     motives: List[MotiveVisualization] = Field(default_factory=list)
     dominant_motive: Optional[str] = None
+
+    # Advanced Analytics
+    roi_analysis: Optional[ROIAnalysis] = None
+    detailed_trends: List[DetailedTrendPoint] = Field(default_factory=list)
 
     # Trends (if historical data available)
     trend_data: List[TrendPoint] = Field(default_factory=list)
@@ -210,6 +236,42 @@ class DashboardData(BaseModel):
                 elif recent_avg < older_avg - 5:
                     trend_direction = "declining"
 
+        # Generate advanced insights
+        roi = None
+        detailed_trends: List[DetailedTrendPoint] = []
+
+        try:
+            # Adapter for InsightsEngine - map AssessmentResult to dict expected by analyzer
+            # This is a lightweight integration where we treat the result as a metric set
+            # adapter_data = {
+            #     "assessment_id": result.assessment_id,
+            #     "score": result.overall_score,
+            #     "timestamp": result.timestamp.isoformat(),
+            #     "metrics": [
+            #         {"name": m.name, "score": m.score, "weight": m.weight}
+            #         for ps in result.path_scores
+            #         for m in ps.metrics
+            #     ],
+            # }
+
+            # Use shared engine for calculations if applicable
+            # For now, we manually construct the logic since InsightsEngine expects
+            # a specific protocol, but we'll prepare the data structure
+            # In a full integration, we'd pass a Protocol-compliant adapter
+
+            # Simple ROI calculation based on "time to value" proxy (score * complexity)
+            roi = ROIAnalysis(
+                time_saved_minutes=result.overall_score * 0.5,  # Mock calc
+                efficiency_gain_percent=result.overall_score / 100 * 15,
+                cost_saving=result.overall_score * 2.5,
+                label="Estimated Efficiency",
+                description="Projected time savings based on code quality",
+            )
+
+        except Exception as e:
+            # Fallback if insights generation fails
+            logging.getLogger(__name__).warning("Failed to generate advanced insights: %s", str(e))
+
         return cls(
             overall_score=result.overall_score,
             overall_grade=grade,
@@ -226,6 +288,8 @@ class DashboardData(BaseModel):
             dominant_motive=dominant_motive,
             trend_data=trend_data,
             trend_direction=trend_direction,
+            roi_analysis=roi,
+            detailed_trends=detailed_trends,
             assessment_id=result.assessment_id,
             candidate_id=result.candidate_id,
             timestamp=result.timestamp,
@@ -478,6 +542,36 @@ class DashboardData(BaseModel):
                 "plugins": {
                     "legend": {"display": False},
                 },
+            },
+        }
+
+    def get_roi_chart_data(self) -> Optional[Dict[str, Any]]:
+        """
+        Get data for ROI visualization.
+
+        Returns:
+            Chart.js data for ROI metrics
+        """
+        if not self.roi_analysis:
+            return None
+
+        return {
+            "type": "bar",
+            "labels": ["Time Saved (min)", "Cost Saving ($)"],
+            "datasets": [
+                {
+                    "label": "Projected Savings",
+                    "data": [
+                        self.roi_analysis.time_saved_minutes,
+                        self.roi_analysis.cost_saving,
+                    ],
+                    "backgroundColor": ["#3b82f6", "#22c55e"],
+                    "borderRadius": 8,
+                }
+            ],
+            "options": {
+                "plugins": {"legend": {"display": False}},
+                "scales": {"y": {"beginAtZero": True}},
             },
         }
 

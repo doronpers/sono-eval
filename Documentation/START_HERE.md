@@ -1,50 +1,27 @@
-# Start Here: Sono-Eval Landing Guide
+# Start Here
 
-Welcome to **Sono-Eval** — a standalone, beginner-friendly introduction to
-assessment, problem-solving, and resourcefulness. This page is a short landing
-guide that points you to the right place without duplicating content.
+Welcome! Choose the path that matches your goal:
 
----
+| Path | Best for | Time | Link |
+| --- | --- | --- | --- |
+| 🚀 **Try** | First-time users | 5–10 min | [Quick Try](Guides/QUICK_START.md) |
+| 📚 **Learn** | Understand the system | 15–20 min | [User Guide](Guides/user-guide/installation.md) |
+| 🛠️ **Build** | Contribute or extend | 30–45 min | [Contributor Path](../CONTRIBUTING.md) |
 
-## ✅ Choose your path
+## Quick Navigation
 
-### 👋 I'm a candidate or learner
+- **API Reference**: [API Reference](Guides/user-guide/api-reference.md)
+- **Install Options**: [Installation Guide](Guides/user-guide/installation.md)
+- **CLI Usage**: [CLI Reference](Guides/user-guide/cli-reference.md)
+- **Mobile Companion**: [Mobile Companion](Guides/mobile-companion.md)
+- **Assessment Paths**: [Assessment Path Guide](Guides/assessment-path-guide.md)
 
-Start with the **[Candidate Guide](Guides/resources/candidate-guide.md)**. It
-explains the experience, expectations, and how to get meaningful feedback.
+## Reading Times
 
-**New to coding or GitHub?** Check out our **[Learning Resources](Learning/README.md)**:
-
-- Complete beginner learning paths
-- GitHub basics guide
-- AI tools tutorials
-- Micro-motives discovery exercises
-
-### 🧭 I want a fast demo
-
-Use the **[Quick Start](Guides/QUICK_START.md)** for a 5‑minute setup and your
-first assessment.
-
-### 🧰 I’m contributing or customizing
-
-Read the **[Architecture Overview](Core/concepts/architecture.md)** and then the
-**[Contributing Guide](../CONTRIBUTING.md)**.
+- Quick Try: ~5–10 minutes
+- Learn the system: ~15–20 minutes
+- Build + Contribute: ~30–45 minutes
 
 ---
 
-## 📚 Full documentation hub
-
-If you want everything in one place, go to the
-**[Documentation Hub](README.md)**.
-
----
-
-## 🧠 What this project is
-
-Sono‑Eval is a **standalone introductory experience** that doubles as a skills
-and problem‑solving test. It provides explainable, multi‑path assessments that
-help you understand strengths and growth areas.
-
----
-
-**Version**: 0.1.1 | **Last Updated**: January 21, 2026
+**Version**: 0.1.1 | **Last Updated**: January 22, 2026

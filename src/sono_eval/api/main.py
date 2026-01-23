@@ -21,10 +21,19 @@ from sono_eval.assessment.dashboard import DashboardData
 from sono_eval.assessment.engine import AssessmentEngine
 from sono_eval.assessment.models import AssessmentInput, AssessmentResult
 from sono_eval.memory.memu import MemUStorage
+from sono_eval.middleware.circuit_breaker import circuit_breaker_pool
+from sono_eval.middleware.performance import PerformanceLoggingMiddleware
+from sono_eval.middleware.rate_limiter import RateLimitMiddleware
 from sono_eval.mobile.app import create_mobile_app
 from sono_eval.tagging.generator import TagGenerator
 from sono_eval.tasks.assessment import process_assessment_task
 from sono_eval.utils.config import get_config
+from sono_eval.utils.error_help import (
+    file_upload_help,
+    not_found_help,
+    service_help,
+    validation_help,
+)
 from sono_eval.utils.errors import (
     ErrorCode,
     create_error_response,
@@ -153,6 +162,16 @@ app = FastAPI(
 # Add Request ID middleware (must be first to track all requests)
 app.add_middleware(RequestIDMiddleware)
 
+# Add performance logging middleware
+app.add_middleware(PerformanceLoggingMiddleware, slow_request_threshold_ms=1000)
+
+# Add rate limiting middleware (production: 60 req/min, 1000 req/hour)
+app.add_middleware(
+    RateLimitMiddleware,
+    max_requests_per_minute=60 if config.app_env == "production" else 600,
+    max_requests_per_hour=1000 if config.app_env == "production" else 10000,
+)
+
 # CORS middleware - local implementation
 allowed_origins = (
     [origin.strip() for origin in config.allowed_hosts.split(",")]
@@ -220,6 +239,12 @@ def _validate_candidate_id(candidate_id: str, request_id: Optional[str] = None) 
             CANDIDATE_ID_ERROR_MESSAGE,
             field="candidate_id",
             request_id=request_id,
+            help=validation_help(
+                "candidate_id",
+                {"candidate_id": "demo_user"},
+                "/api/v1/errors#validation",
+                "Use only letters, numbers, dashes, and underscores.",
+            ),
         )
 
 
@@ -467,6 +492,37 @@ async def check_component_health(include_details: bool = True) -> Dict[str, Any]
         logger.error(f"Filesystem health check error: {e}")
         overall_healthy = False
 
+    if include_details:
+        troubleshooting: Dict[str, str] = {}
+        if components.get("assessment") != "operational":
+            troubleshooting[
+                "assessment"
+            ] = "Restart the server to reinitialize the assessment engine."
+        if components.get("memory") != "operational":
+            troubleshooting["memory"] = "Verify storage path exists and is writable."
+        if components.get("tagging") != "operational":
+            troubleshooting["tagging"] = "Ensure model cache exists or run with fallback tagging."
+        if components.get("database") != "operational":
+            troubleshooting["database"] = "Check database URL and ensure the path is accessible."
+        if components.get("redis") != "operational":
+            troubleshooting[
+                "redis"
+            ] = "Redis is optional; install redis-py and ensure Redis is running."
+        if components.get("filesystem") != "operational":
+            troubleshooting[
+                "filesystem"
+            ] = "Confirm storage/cache/tagstudio directories are writable."
+
+        if troubleshooting:
+            details["troubleshooting"] = troubleshooting
+
+    # Add circuit breaker status
+    cb_status = circuit_breaker_pool.get_status()
+    if cb_status:
+        components["circuit_breakers"] = "operational"
+        if include_details:
+            details["circuit_breakers"] = cb_status
+
     result: Dict[str, Any] = {"components": components, "healthy": overall_healthy}
     if include_details:
         result["details"] = details
@@ -549,6 +605,118 @@ async def health_check_v1(response: Response):
     )
 
 
+@app.get("/api/v1/errors")
+async def error_reference():
+    """Minimal reference for common error codes and examples."""
+    return {
+        "errors": [
+            {
+                "error_code": ErrorCode.VALIDATION_ERROR,
+                "message": "Input validation failed",
+                "help": validation_help(
+                    "candidate_id",
+                    {"candidate_id": "demo_user"},
+                    "/api/v1/errors#validation",
+                ).model_dump(exclude_none=True),
+            },
+            {
+                "error_code": ErrorCode.NOT_FOUND,
+                "message": "Resource not found",
+                "help": not_found_help(
+                    "candidate",
+                    {"candidate_id": "demo_user"},
+                    "/api/v1/errors#not-found",
+                ).model_dump(exclude_none=True),
+            },
+        ]
+    }
+
+
+@app.get("/api/v1/status/system")
+async def system_status():
+    """
+    Comprehensive system status for monitoring and diagnostics.
+
+    Includes circuit breaker states, rate limiting info, and component health.
+    """
+    health_data = await check_component_health(include_details=True)
+
+    return {
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "version": API_VERSION,
+        "environment": config.app_env,
+        "health": {
+            "status": "healthy" if health_data["healthy"] else "degraded",
+            "components": health_data["components"],
+            "details": health_data.get("details", {}),
+        },
+        "circuit_breakers": circuit_breaker_pool.get_status(),
+        "configuration": {
+            "rate_limit_per_minute": 60 if config.app_env == "production" else 600,
+            "rate_limit_per_hour": 1000 if config.app_env == "production" else 10000,
+            "request_timeout": "30s",
+            "cache_enabled": True,
+            "performance_logging": True,
+        },
+    }
+
+
+@app.get("/api/v1/status/readiness")
+async def readiness_check():
+    """
+    Kubernetes-style readiness probe.
+
+    Returns 200 if service is ready to accept traffic, 503 otherwise.
+    """
+    health_data = await check_component_health(include_details=False)
+
+    # Check if all critical components are operational
+    critical_components = ["assessment", "memory"]
+    all_critical_operational = all(
+        health_data["components"].get(comp) == "operational" for comp in critical_components
+    )
+
+    if all_critical_operational:
+        return {"status": "ready", "timestamp": datetime.now(timezone.utc).isoformat()}
+    else:
+        from fastapi import HTTPException
+
+        raise HTTPException(
+            status_code=503,
+            detail={
+                "status": "not_ready",
+                "message": "Critical components not operational",
+                "components": health_data["components"],
+            },
+        )
+
+
+@app.get("/api/v1/status/liveness")
+async def liveness_check():
+    """
+    Kubernetes-style liveness probe.
+
+    Returns 200 if service is alive (even if degraded), 503 if completely broken.
+    """
+    try:
+        health_data = await check_component_health(include_details=False)
+        # Service is considered alive if at least one component is operational
+        if any(v == "operational" for v in health_data["components"].values()):
+            return {"status": "alive", "timestamp": datetime.now(timezone.utc).isoformat()}
+    except Exception as e:
+        logger.error(f"Liveness check failed: {e}")
+
+    from fastapi import HTTPException
+
+    raise HTTPException(
+        status_code=503,
+        detail={
+            "status": "dead",
+            "message": "Service is not responding",
+        },
+    )
+
+
 @app.get("/status")
 async def status():
     """Detailed status information."""
@@ -581,7 +749,11 @@ async def create_assessment(request: Request, assessment_input: AssessmentInput)
     request_id = getattr(request.state, "request_id", None)
 
     if not assessment_engine:
-        raise service_unavailable_error("Assessment engine", request_id=request_id)
+        raise service_unavailable_error(
+            "Assessment engine",
+            request_id=request_id,
+            help=service_help("assessment engine", "/api/v1/errors#service"),
+        )
 
     try:
         result = await assessment_engine.assess(assessment_input)
@@ -724,7 +896,9 @@ async def get_assessment_job_status(request: Request, job_id: str):
 
     except ImportError:
         raise service_unavailable_error(
-            "Task queue system (Celery not available)", request_id=request_id
+            "Task queue system (Celery not available)",
+            request_id=request_id,
+            help=service_help("task queue", "/api/v1/errors#service"),
         )
     except Exception as e:
         logger.error(f"Error retrieving job status: {e}", exc_info=True)
@@ -752,11 +926,24 @@ async def get_assessment(request: Request, assessment_id: str, candidate_id: str
     _validate_candidate_id(candidate_id, request_id=request_id)
 
     if not memu_storage:
-        raise service_unavailable_error("Memory storage", request_id=request_id)
+        raise service_unavailable_error(
+            "Memory storage",
+            request_id=request_id,
+            help=service_help("memory storage", "/api/v1/errors#service"),
+        )
 
     memory = memu_storage.get_candidate_memory(candidate_id)
     if not memory:
-        raise not_found_error("Candidate", candidate_id, request_id=request_id)
+        raise not_found_error(
+            "Candidate",
+            candidate_id,
+            request_id=request_id,
+            help=not_found_help(
+                "candidate",
+                {"candidate_id": "demo_user"},
+                "/api/v1/errors#not-found",
+            ),
+        )
 
     # Search nodes for assessment data
     for node in memory.nodes.values():
@@ -766,7 +953,16 @@ async def get_assessment(request: Request, assessment_id: str, candidate_id: str
             if assessment_result and assessment_result.get("assessment_id") == assessment_id:
                 return AssessmentResult.model_validate(assessment_result)
 
-    raise not_found_error("Assessment", assessment_id, request_id=request_id)
+    raise not_found_error(
+        "Assessment",
+        assessment_id,
+        request_id=request_id,
+        help=not_found_help(
+            "assessment",
+            {"assessment_id": "assess_1234567890"},
+            "/api/v1/errors#not-found",
+        ),
+    )
 
 
 @app.get("/api/v1/assessments/{assessment_id}/dashboard")
@@ -791,11 +987,24 @@ async def get_assessment_dashboard(
     _validate_candidate_id(candidate_id, request_id=request_id)
 
     if not memu_storage:
-        raise service_unavailable_error("Memory storage", request_id=request_id)
+        raise service_unavailable_error(
+            "Memory storage",
+            request_id=request_id,
+            help=service_help("memory storage", "/api/v1/errors#service"),
+        )
 
     memory = memu_storage.get_candidate_memory(candidate_id)
     if not memory:
-        raise not_found_error("Candidate", candidate_id, request_id=request_id)
+        raise not_found_error(
+            "Candidate",
+            candidate_id,
+            request_id=request_id,
+            help=not_found_help(
+                "candidate",
+                {"candidate_id": "demo_user"},
+                "/api/v1/errors#not-found",
+            ),
+        )
 
     # Find the assessment
     assessment_result = None
@@ -812,7 +1021,16 @@ async def get_assessment_dashboard(
                     historical_results.append(result)
 
     if not assessment_result:
-        raise not_found_error("Assessment", assessment_id, request_id=request_id)
+        raise not_found_error(
+            "Assessment",
+            assessment_id,
+            request_id=request_id,
+            help=not_found_help(
+                "assessment",
+                {"assessment_id": "assess_1234567890"},
+                "/api/v1/errors#not-found",
+            ),
+        )
 
     # Sort historical by timestamp
     historical_results.sort(key=lambda r: r.timestamp)
@@ -840,7 +1058,11 @@ async def create_candidate(http_request: Request, request: CandidateCreateReques
     request_id = getattr(http_request.state, "request_id", None)
 
     if not memu_storage:
-        raise service_unavailable_error("Memory storage", request_id=request_id)
+        raise service_unavailable_error(
+            "Memory storage",
+            request_id=request_id,
+            help=service_help("memory storage", "/api/v1/errors#service"),
+        )
 
     try:
         # Check if candidate already exists
@@ -891,7 +1113,16 @@ async def get_candidate(request: Request, candidate_id: str):
 
     memory = memu_storage.get_candidate_memory(candidate_id)
     if not memory:
-        raise not_found_error("Candidate", candidate_id, request_id=request_id)
+        raise not_found_error(
+            "Candidate",
+            candidate_id,
+            request_id=request_id,
+            help=not_found_help(
+                "candidate",
+                {"candidate_id": "demo_user"},
+                "/api/v1/errors#not-found",
+            ),
+        )
 
     return memory.model_dump(mode="json")
 
@@ -926,7 +1157,16 @@ async def delete_candidate(request: Request, candidate_id: str):
 
     success = memu_storage.delete_candidate_memory(candidate_id)
     if not success:
-        raise not_found_error("Candidate", candidate_id, request_id=request_id)
+        raise not_found_error(
+            "Candidate",
+            candidate_id,
+            request_id=request_id,
+            help=not_found_help(
+                "candidate",
+                {"candidate_id": "demo_user"},
+                "/api/v1/errors#not-found",
+            ),
+        )
 
     return {"status": "deleted", "candidate_id": candidate_id}
 
@@ -1039,7 +1279,11 @@ async def generate_tags(http_request: Request, request: TagRequest):
     request_id = getattr(http_request.state, "request_id", None)
 
     if not tag_generator:
-        raise service_unavailable_error("Tag generator", request_id=request_id)
+        raise service_unavailable_error(
+            "Tag generator",
+            request_id=request_id,
+            help=service_help("tag generator", "/api/v1/errors#service"),
+        )
 
     try:
         tags = tag_generator.generate_tags(request.text, max_tags=request.max_tags)
@@ -1095,6 +1339,11 @@ async def upload_file(request: Request, file: UploadFile = File(...)):  # noqa: 
                     "allowed_extensions": allowed_extensions,
                 },
                 request_id=request_id,
+                help=file_upload_help(
+                    max_size_mb=config.max_upload_size / 1024 / 1024,
+                    extensions=allowed_extensions,
+                    docs_url="/api/v1/errors#file-upload",
+                ),
             )
 
         # Security: Sanitize filename to prevent path traversal
@@ -1119,6 +1368,11 @@ async def upload_file(request: Request, file: UploadFile = File(...)):  # noqa: 
                     "max_size_mb": config.max_upload_size / 1024 / 1024,
                 },
                 request_id=request_id,
+                help=file_upload_help(
+                    max_size_mb=max_size_mb,
+                    extensions=allowed_extensions,
+                    docs_url="/api/v1/errors#file-upload",
+                ),
             )
 
         # Try to decode as text
@@ -1130,6 +1384,11 @@ async def upload_file(request: Request, file: UploadFile = File(...)):  # noqa: 
                 error_type=ErrorCode.INVALID_FORMAT,
                 details={"encoding": "utf-8"},
                 request_id=request_id,
+                help=file_upload_help(
+                    max_size_mb=config.max_upload_size / 1024 / 1024,
+                    extensions=allowed_extensions,
+                    docs_url="/api/v1/errors#file-upload",
+                ),
             )
 
         # Generate tags

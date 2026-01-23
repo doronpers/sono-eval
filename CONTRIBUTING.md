@@ -3,77 +3,28 @@
 Thank you for your interest in contributing to Sono-Eval! This document
 provides guidelines and instructions for contributing.
 
-## Quick Start (No Terminal)
+## Quick Start
 
-New to contributing? Start here! You can make your first contribution entirely
-in your browser:
+Choose the path that matches your setup:
 
-1. **Fork the repository** (click "Fork" button on GitHub)
-2. **Edit a file in your fork**:
-   - Navigate to the file you want to edit
-   - Click the pencil icon (✏️) to edit
-   - Make your changes (try adding a note to README.md about your experience)
-   - Scroll down and click "Commit changes"
-3. **Open a pull request**:
-   - Click "Contribute" → "Open pull request" on your fork's main page
-   - Add a description of your changes
-   - Click "Create pull request"
+### 🌐 Browser (edit-only)
 
-That's it! No command line needed.
+1. Fork the repo on GitHub.
+2. Edit a file directly in the browser.
+3. Commit changes and open a PR.
 
-## Quick Start (Browser Dev Environment)
+### ☁️ Codespaces (full dev in browser)
 
-Want to test changes before submitting? Use GitHub Codespaces:
+1. Open Codespaces from the “Code” menu.
+2. Run `./launcher.sh start`.
+3. Make changes, commit, and publish your branch.
 
-1. **Open in Codespaces**:
-   - Click "Code" → "Codespaces" → "Create codespace on main"
-   - Wait for environment to load (~2 minutes)
-2. **Start the server**:
-   - Open Terminal in VS Code web interface
-   - Run: `./launcher.sh start`
-   - Access `/docs` via the Ports tab
-3. **Make changes**:
-   - Edit files in the VS Code web interface
-   - Test in real-time using the `/docs` interface
-4. **Commit and open PR**:
-   - Use the Source Control tab in VS Code
-   - Commit your changes
-   - Click "Publish Branch" and create a PR
+### 💻 Local (full control)
 
-## Quick Start (Local, Minimal Terminal)
-
-Prefer working locally? Here's the minimal setup:
-
-```bash
-# Clone your fork
-git clone https://github.com/YOUR_USERNAME/sono-eval.git
-cd sono-eval
-
-# Create virtual environment
-python3 -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-
-# Install dependencies
-pip install -r requirements.txt
-pip install -e ".[dev]"
-
-# Start development server
-./launcher.sh dev
-# OR manually: sono-eval server start --reload
-```
-
-### Testing Your Changes
-
-```bash
-# Run tests
-pytest
-
-# Format code
-black src/ tests/
-
-# Lint
-flake8 src/ tests/
-```
+1. Clone your fork.
+2. Run `python3 -m venv venv && source venv/bin/activate`.
+3. Install dependencies: `pip install -r requirements.txt`.
+4. Start dev server: `./launcher.sh dev`.
 
 ## Suggested First Issues (Low Friction)
 

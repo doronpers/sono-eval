@@ -10,6 +10,11 @@
         </p>
     </div>
 
+    <div class="step-progress">
+        <span class="step-pill">Step 2/4</span>
+        <span class="step-label">Pick focus areas • 1–2 min</span>
+    </div>
+
     <div class="info-box info-box-tip" id="personalized-tip" style="display: none;">
         <p class="info-box-icon">💡</p>
         <div class="info-box-content">
@@ -23,6 +28,13 @@
             <strong>Tip:</strong> Tap each card to learn more before selecting. You can choose multiple paths.
             <span class="value-hint">Each path takes 10-20 minutes and gives you specific insights</span>
         </div>
+    </div>
+
+    <div class="quick-pick">
+        <button type="button" class="secondary-button" onclick="applyQuickPick('starter')">
+            👶 New to coding? Pick a starter path
+        </button>
+        <p class="quick-pick-note">We’ll preselect Technical + Problem Solving.</p>
     </div>
 
     <form id="paths-form" class="paths-container">
@@ -265,6 +277,27 @@ function updateSelectionSummary() {
     } else {
         summary.style.display = 'none';
         continueButton.disabled = true;
+    }
+}
+
+function applyQuickPick(type) {
+    const quickPickMap = {
+        starter: ['technical', 'problem_solving'],
+    };
+
+    const picks = quickPickMap[type] || [];
+    document.querySelectorAll('.path-checkbox').forEach(checkbox => {
+        const pathId = checkbox.closest('.path-card').dataset.path;
+        checkbox.checked = picks.includes(pathId);
+        checkbox.dispatchEvent(new Event('change'));
+    });
+
+    if (window.sonoEvalTracking && window.sonoEvalTracking.trackEvent) {
+        window.sonoEvalTracking.trackEvent('paths', {
+            action: 'quick_pick',
+            type: type,
+            selected: picks,
+        });
     }
 }
 
