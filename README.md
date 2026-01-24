@@ -209,27 +209,20 @@ You're free to use, modify, and distribute it. See the LICENSE file for details.
 
 For the complete roadmap and TODO list, see [ROADMAP.md](ROADMAP.md).
 
-### Current (v0.1.1 - Active Development)
+### Current (v0.2.0 - Security & ML Release)
 
-- Explainable assessment engine (heuristic-first)
-- Multi-path evaluation
-- CLI and REST API
-- Docker deployment
-- Comprehensive documentation
-- Repaired assessment retrieval endpoint
-- Timezone-aware datetime handling
-- LRU cache eviction for memory storage
-- Enhanced security validation
+- **Authentication System**: JWT-based auth with user management
+- **Security Hardening**: Rate limiting, strict CORS, audit logging
+- **Real ML Assessment**: Hybrid scoring with CodeBERT/T5 integration
+- **Async Processing**: Celery task queue for long-running jobs
+- **Explainable Assessment**: Heuristic-first approach with ML insights
+- **Multi-path Evaluation**: Technical, design, and collaboration metrics
 
-### Next Release (v0.2.0)
+### Next Release (v0.3.0)
 
-- [x] Asynchronous assessment processing with Celery task queue
-- [x] Job status tracking for long-running assessments
-- [ ] Real ML-based scoring (not placeholder)
+- [ ] Web UI for reviews (React/Next.js)
 - [ ] Batch assessment processing endpoint
-- [ ] Authentication system
-- [ ] Web UI for reviews
-- [ ] Enhanced analytics
+- [ ] Enhanced analytics dashboard
 - [ ] Redis-backed memory storage for high concurrency
 
 ### Future
@@ -268,7 +261,7 @@ See **[CHANGELOG.md](CHANGELOG.md)** for version history.
 
 Built with ❤️ by the Sono-Eval Team
 
-**Version**: 0.1.1 | **Last Updated**: January 2026 | **Status**: Active Development
+**Version**: 0.2.0 | **Last Updated**: January 2026 | **Status**: Active Development
 
 [⬆ Back to top](#sono-eval)
 

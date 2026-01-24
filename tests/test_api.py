@@ -1,18 +1,31 @@
 """Tests for the API endpoints and middleware."""
 
+import sys
 from unittest.mock import MagicMock, patch
 
 import pytest
 from fastapi.testclient import TestClient
 
-from sono_eval.api.main import app
+# Mock celery before importing the app (celery is optional)
+sys.modules["celery"] = MagicMock()
+
+from sono_eval.api.main import app  # noqa: E402
 
 
 @pytest.fixture
 def client():
     """Create test client."""
+    from sono_eval.auth.dependencies import get_current_user
+    from sono_eval.auth.users import User
+
+    # Override auth to simulate logged-in user
+    app.dependency_overrides[get_current_user] = lambda: User(username="testuser")
+
     with TestClient(app) as client:
         yield client
+
+    # Clean up
+    app.dependency_overrides.clear()
 
 
 def test_health_endpoint(client):
@@ -205,7 +218,7 @@ def test_candidate_creation(mock_storage, client):
         json={"candidate_id": "test123", "initial_data": {"name": "Test User"}},
     )
 
-    assert response.status_code == 200
+    assert response.status_code == 201
 
 
 def test_candidate_creation_with_invalid_id(client):

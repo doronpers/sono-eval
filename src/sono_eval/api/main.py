@@ -10,9 +10,9 @@ from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 from time import time
-from typing import Any, Dict, List, Optional
+from typing import Annotated, Any, Dict, List, Optional
 
-from fastapi import FastAPI, File, HTTPException, Request, Response, UploadFile
+from fastapi import Depends, FastAPI, File, HTTPException, Request, Response, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, field_validator
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -20,10 +20,14 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from sono_eval.assessment.dashboard import DashboardData
 from sono_eval.assessment.engine import AssessmentEngine
 from sono_eval.assessment.models import AssessmentInput, AssessmentResult
+from sono_eval.auth.dependencies import get_current_user
+from sono_eval.auth.routes import router as auth_router
+from sono_eval.auth.users import User
 from sono_eval.memory.memu import MemUStorage
 from sono_eval.middleware.circuit_breaker import circuit_breaker_pool
 from sono_eval.middleware.performance import PerformanceLoggingMiddleware
 from sono_eval.middleware.rate_limiter import RateLimitMiddleware
+from sono_eval.middleware.security_headers import SecurityHeadersMiddleware
 from sono_eval.mobile.app import create_mobile_app
 from sono_eval.tagging.generator import TagGenerator
 from sono_eval.tasks.assessment import process_assessment_task
@@ -109,19 +113,24 @@ async def lifespan(app: FastAPI):
     logger.info("Shutting down Sono-Eval API server")
 
 
-def _validate_security_config():
+def _validate_security_config() -> None:
     """Validate security-critical configuration at startup."""
     DEFAULT_SECRETS = [
         "your-secret-key-here-change-in-production",
         "change_this_secret_key_in_production",
+        "",  # Empty string is also invalid
     ]
+
+    is_production = config.app_env == "production"
+    is_staging = config.app_env == "staging"
+    requires_secure_config = is_production or is_staging
 
     # Check for default secret key
     if config.secret_key in DEFAULT_SECRETS:
-        if config.app_env == "production":
+        if requires_secure_config:
             raise ValueError(
-                "CRITICAL SECURITY ERROR: SECRET_KEY is set to default value. "
-                "You MUST change this in production. Generate a secure key with: "
+                f"CRITICAL SECURITY ERROR: SECRET_KEY is set to default value in {config.app_env}. "
+                "You MUST change this. Generate a secure key with: "
                 "python -c 'import secrets; print(secrets.token_urlsafe(32))'"
             )
         else:
@@ -131,25 +140,41 @@ def _validate_security_config():
                 "python -c 'import secrets; print(secrets.token_urlsafe(32))'"
             )
 
+    # Validate SECRET_KEY length (minimum 32 characters for production)
+    if requires_secure_config and len(config.secret_key) < 32:
+        raise ValueError(
+            f"SECURITY ERROR: SECRET_KEY must be at least 32 characters in {config.app_env}. "
+            f"Current length: {len(config.secret_key)}. Generate a secure key with: "
+            "python -c 'import secrets; print(secrets.token_urlsafe(32))'"
+        )
+
     # Check Superset secret key
     if config.superset_secret_key in DEFAULT_SECRETS:
-        if config.app_env == "production":
+        if requires_secure_config:
             raise ValueError(
-                "CRITICAL SECURITY ERROR: SUPERSET_SECRET_KEY is set to default value. "
-                "Change this immediately in production."
+                f"CRITICAL SECURITY ERROR: SUPERSET_SECRET_KEY is set to default value in "
+                f"{config.app_env}. Change this immediately."
             )
         else:
             logger.warning("WARNING: Using default SUPERSET_SECRET_KEY (development only)")
 
-    # Validate allowed hosts in production
-    if config.app_env == "production":
+    # Validate allowed hosts - REQUIRED in production
+    if is_production:
         if not config.allowed_hosts or config.allowed_hosts == "*":
-            logger.warning(
-                "WARNING: ALLOWED_HOSTS not properly configured for production. "
-                "Set specific domains to prevent CORS attacks."
+            raise ValueError(
+                "CRITICAL SECURITY ERROR: ALLOWED_HOSTS must be configured in production. "
+                "Wildcard CORS is not allowed. Set specific domains: "
+                "ALLOWED_HOSTS=api.example.com,www.example.com"
             )
 
-    logger.info("Security configuration validated")
+    # Warning for staging without allowed hosts
+    if is_staging and (not config.allowed_hosts or config.allowed_hosts == "*"):
+        logger.warning(
+            "WARNING: ALLOWED_HOSTS not configured in staging. "
+            "Set specific domains before moving to production."
+        )
+
+    logger.info(f"Security configuration validated for {config.app_env} environment")
 
 
 app = FastAPI(
@@ -172,19 +197,19 @@ app.add_middleware(
     max_requests_per_hour=1000 if config.app_env == "production" else 10000,
 )
 
-# CORS middleware - local implementation
+# Add Security Headers middleware (outermost layer for headers)
+app.add_middleware(SecurityHeadersMiddleware, mode=config.app_env)
+
+# Include Routers
+app.include_router(auth_router, prefix="/api/v1/auth", tags=["auth"])
+
+# CORS middleware - origins configured from ALLOWED_HOSTS
+# Security: Startup validation ensures proper configuration in production/staging
 allowed_origins = (
     [origin.strip() for origin in config.allowed_hosts.split(",")]
     if config.allowed_hosts and config.allowed_hosts != "*"
     else ["*"]
 )
-
-if config.app_env == "production":
-    if not allowed_origins or "*" in allowed_origins:
-        logger.warning(
-            "WARNING: ALLOWED_HOSTS not properly configured for production. "
-            "Set specific domains to prevent CORS attacks."
-        )
 
 app.add_middleware(
     CORSMiddleware,
@@ -702,7 +727,10 @@ async def liveness_check():
         health_data = await check_component_health(include_details=False)
         # Service is considered alive if at least one component is operational
         if any(v == "operational" for v in health_data["components"].values()):
-            return {"status": "alive", "timestamp": datetime.now(timezone.utc).isoformat()}
+            return {
+                "status": "alive",
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+            }
     except Exception as e:
         logger.error(f"Liveness check failed: {e}")
 
@@ -735,7 +763,11 @@ async def status():
 
 # Assessment Endpoints
 @app.post("/api/v1/assessments", response_model=AssessmentResult)
-async def create_assessment(request: Request, assessment_input: AssessmentInput):
+async def create_assessment(
+    request: Request,
+    assessment_input: AssessmentInput,
+    current_user: Annotated[User, Depends(get_current_user)],
+):
     """
     Create a new assessment.
 
@@ -1038,13 +1070,16 @@ async def get_assessment_dashboard(
     dashboard = DashboardData.from_assessment_result(
         assessment_result, historical_results if include_history else None
     )
-
     return dashboard.model_dump(mode="json")
 
 
 # Candidate Management Endpoints
-@app.post("/api/v1/candidates")
-async def create_candidate(http_request: Request, request: CandidateCreateRequest):
+@app.post("/api/v1/candidates", status_code=201)
+async def create_candidate(
+    http_request: Request,
+    request: CandidateCreateRequest,
+    current_user: Annotated[User, Depends(get_current_user)],
+):
     """
     Create a new candidate in memory storage.
 
@@ -1265,7 +1300,11 @@ async def get_candidate_stats(request: Request, candidate_id: str):
 
 # Tagging Endpoints
 @app.post("/api/v1/tags/generate")
-async def generate_tags(http_request: Request, request: TagRequest):
+async def generate_tags(
+    http_request: Request,
+    request: TagRequest,
+    current_user: Annotated[User, Depends(get_current_user)],
+):
     """
     Generate semantic tags for text.
 

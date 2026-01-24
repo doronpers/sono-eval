@@ -24,7 +24,7 @@ milestone.
 
 **Timeline**: 2-4 weeks  
 **Owner**: Security Team  
-**Status**: Not Started
+**Status**: ✅ Complete (See [ROADMAP.md](../../../ROADMAP.md))
 
 #### Tasks
 
@@ -226,6 +226,7 @@ milestone.
 
 **Owner**: ML Team  
 **Priority**: CRITICAL
+**Status**: ✅ Complete (See [ROADMAP.md](../../../ROADMAP.md))
 
 #### ML Training Tasks
 

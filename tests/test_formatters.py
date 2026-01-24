@@ -1,18 +1,14 @@
 """Tests for CLI formatters."""
 
-from unittest.mock import MagicMock, patch
-
 import pytest
 from rich.panel import Panel
 from rich.table import Table
 
 from sono_eval.assessment.models import (
     AssessmentResult,
-    MetricScore,
-    MicroMotive,
-    MotiveType,
     PathScore,
     PathType,
+    ScoringMetric,
 )
 from sono_eval.cli.formatters import AssessmentFormatter, ErrorFormatter, ProgressFormatter
 
@@ -202,17 +198,17 @@ class TestAssessmentFormatter:
             PathScore(
                 path=PathType.TECHNICAL,
                 overall_score=85.0,
-                confidence=0.9,
                 metrics=[
-                    MetricScore(
+                    ScoringMetric(
                         name="code_quality",
-                        value=85.0,
+                        category="code",
+                        score=85.0,
                         weight=1.0,
-                        evidence=["Good patterns"],
+                        explanation="Good patterns observed",
                     )
                 ],
                 strengths=["Strong technical skills"],
-                areas_for_growth=["Could improve documentation"],
+                areas_for_improvement=["Could improve documentation"],
             )
         ]
 
@@ -226,18 +222,16 @@ class TestAssessmentFormatter:
             PathScore(
                 path=PathType.TECHNICAL,
                 overall_score=85.0,
-                confidence=0.9,
                 metrics=[],
                 strengths=["Technical strength"],
-                areas_for_growth=[],
+                areas_for_improvement=[],
             ),
             PathScore(
                 path=PathType.DESIGN,
                 overall_score=75.0,
-                confidence=0.8,
                 metrics=[],
                 strengths=["Design thinking"],
-                areas_for_growth=[],
+                areas_for_improvement=[],
             ),
         ]
 

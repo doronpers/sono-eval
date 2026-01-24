@@ -22,8 +22,52 @@ Interactive API documentation is available at:
 
 ## Authentication
 
-**Version 0.1.1**: No authentication required (development mode)
-**Production**: Will require API keys (coming soon)
+**Version 0.2.0**: JWT Authentication is required for core endpoints.
+
+### 1. Obtain Token
+
+To access protected resources, first obtain a JWT access token:
+
+#### `POST /api/v1/auth/token`
+
+**Request (Form Data):**
+
+- `username` (required)
+- `password` (required)
+
+**Response:**
+
+```json
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "token_type": "bearer"
+}
+```
+
+**Example:**
+
+```bash
+curl -X POST http://localhost:8000/api/v1/auth/token \
+  -F "username=admin" \
+  -F "password=secret"
+```
+
+### 2. Use Token
+
+Include the token in the `Authorization` header for subsequent requests:
+
+```
+Authorization: Bearer <your_access_token>
+```
+
+**Protected Endpoints:**
+
+- `POST /api/v1/assessments`
+- `POST /api/v1/candidates`
+- `POST /api/v1/tags/generate`
+- `POST /api/v1/files/upload`
+
+---
 
 ---
 
@@ -907,4 +951,4 @@ def assess_with_retry(data, max_retries=3):
 ---
 
 **Last Updated**: January 15, 2026
-**Version**: 0.1.1
+**Version**: 0.2.0

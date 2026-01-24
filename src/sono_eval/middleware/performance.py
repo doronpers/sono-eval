@@ -1,5 +1,6 @@
 """Request logging and performance monitoring middleware."""
 
+import logging
 import time
 from typing import Callable
 
@@ -41,14 +42,14 @@ class PerformanceLoggingMiddleware(BaseHTTPMiddleware):
             duration = time.time() - start_time
 
             # Log response
-            log_level = "warning" if duration > self.slow_request_threshold else "info"
+            log_level = logging.WARNING if duration > self.slow_request_threshold else logging.INFO
             log_message = (
                 f"Request completed: {request.method} {request.url.path} "
                 f"returned {response.status_code} in {duration:.3f}s"
             )
 
             logger.log(
-                getattr(logger, log_level),
+                log_level,
                 log_message,
                 extra={
                     "request_id": request_id,
