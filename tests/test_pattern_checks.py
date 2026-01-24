@@ -80,7 +80,7 @@ def test_default_pattern_rules_exist():
 
 def test_default_pattern_rules_structure():
     """Test that default pattern rules have correct structure."""
-    for pattern_name, rule in DEFAULT_PATTERN_RULES.items():
+    for _pattern_name, rule in DEFAULT_PATTERN_RULES.items():
         assert "regex" in rule
         assert "description" in rule
         assert "severity" in rule

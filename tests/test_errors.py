@@ -1,6 +1,5 @@
 """Tests for error handling utilities."""
 
-import pytest
 from fastapi import status
 
 from sono_eval.utils.errors import (

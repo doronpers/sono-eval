@@ -33,15 +33,11 @@ class Config(BaseSettings):
     redis_password: Optional[str] = Field(default=None, alias="REDIS_PASSWORD")
 
     # Celery Task Queue
-    celery_broker_url: str = Field(
-        default="redis://localhost:6379/1", alias="CELERY_BROKER_URL"
-    )
+    celery_broker_url: str = Field(default="redis://localhost:6379/1", alias="CELERY_BROKER_URL")
     celery_result_backend: str = Field(
         default="redis://localhost:6379/2", alias="CELERY_RESULT_BACKEND"
     )
-    celery_task_always_eager: bool = Field(
-        default=False, alias="CELERY_TASK_ALWAYS_EAGER"
-    )
+    celery_task_always_eager: bool = Field(default=False, alias="CELERY_TASK_ALWAYS_EAGER")
 
     # MemU Configuration
     memu_storage_path: str = Field(default="./data/memory", alias="MEMU_STORAGE_PATH")

@@ -21,7 +21,7 @@ jobs:
     permissions:
       contents: read
       packages: write
-    
+
     steps:
       - uses: actions/checkout@v4
 
@@ -63,7 +63,7 @@ jobs:
     environment:
       name: staging
       url: https://staging.sono-eval.example.com
-    
+
     steps:
       - name: Deploy to Staging
         run: |
@@ -82,7 +82,7 @@ jobs:
     environment:
       name: production
       url: https://sono-eval.example.com
-    
+
     steps:
       - name: Deploy to Production
         run: |
@@ -93,7 +93,7 @@ jobs:
           # - SSH to production server and pull new image
           # - Update kubernetes deployment
           # - Trigger cloud provider deployment
-          
+
       - name: Health Check
         run: |
           echo "Performing health check..."
