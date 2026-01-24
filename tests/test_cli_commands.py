@@ -1,7 +1,6 @@
 """Comprehensive tests for all CLI commands."""
 
 import json
-import tempfile
 from pathlib import Path
 from unittest.mock import MagicMock, Mock, patch
 
@@ -17,15 +16,6 @@ def runner():
     return CliRunner()
 
 
-@pytest.fixture
-def temp_file():
-    """Create a temporary file with code."""
-    with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False) as f:
-        f.write("def hello():\n    return 'world'\n")
-        yield f.name
-    Path(f.name).unlink(missing_ok=True)
-
-
 # ============================================================================
 # Assess Command Tests
 # ============================================================================
@@ -33,7 +23,7 @@ def temp_file():
 
 @patch("sono_eval.cli.commands.assess.AssessmentEngine")
 @patch("sono_eval.cli.commands.assess.asyncio.run")
-def test_assess_run_with_file(mock_asyncio_run, MockAssessmentEngine, runner, temp_file):
+def test_assess_run_with_file(mock_asyncio_run, MockAssessmentEngine, runner):
     """Test assess run with file input."""
     mock_result = MagicMock()
     mock_result.overall_score = 85.0
@@ -52,21 +42,26 @@ def test_assess_run_with_file(mock_asyncio_run, MockAssessmentEngine, runner, te
     }
     mock_asyncio_run.return_value = mock_result
 
-    result = runner.invoke(
-        cli,
-        [
-            "assess",
-            "run",
-            "--candidate-id",
-            "test_user",
-            "--file",
-            temp_file,
-            "--quiet",
-        ],
-    )
+    # Use isolated_filesystem to create file in test context
+    with runner.isolated_filesystem():
+        test_file = Path("test_submission.py")
+        test_file.write_text("def hello():\n    return 'world'\n")
 
-    assert result.exit_code == 0
-    assert "85.0" in result.output or "85" in result.output
+        result = runner.invoke(
+            cli,
+            [
+                "assess",
+                "run",
+                "--candidate-id",
+                "test_user",
+                "--file",
+                str(test_file),
+                "--quiet",
+            ],
+        )
+
+        assert result.exit_code == 0
+        assert "85.0" in result.output or "85" in result.output
 
 
 @patch("sono_eval.cli.commands.assess.AssessmentEngine")
@@ -142,7 +137,7 @@ def test_assess_run_missing_file(runner):
 
 @patch("sono_eval.cli.commands.assess.AssessmentEngine")
 @patch("sono_eval.cli.commands.assess.asyncio.run")
-def test_assess_run_with_output_file(mock_asyncio_run, MockAssessmentEngine, runner, temp_file):
+def test_assess_run_with_output_file(mock_asyncio_run, MockAssessmentEngine, runner):
     """Test assess run with output file."""
     mock_result = MagicMock()
     mock_result.overall_score = 80.0
@@ -161,6 +156,9 @@ def test_assess_run_with_output_file(mock_asyncio_run, MockAssessmentEngine, run
     mock_asyncio_run.return_value = mock_result
 
     with runner.isolated_filesystem():
+        test_file = Path("test_submission.py")
+        test_file.write_text("def hello():\n    return 'world'\n")
+
         result = runner.invoke(
             cli,
             [
@@ -169,7 +167,7 @@ def test_assess_run_with_output_file(mock_asyncio_run, MockAssessmentEngine, run
                 "--candidate-id",
                 "test_user",
                 "--file",
-                temp_file,
+                str(test_file),
                 "--output",
                 "results.json",
                 "--quiet",
@@ -609,7 +607,7 @@ def test_session_list(mock_get_config, runner):
 
 
 @patch("sono_eval.cli.commands.tag.TagGenerator")
-def test_tag_generate_with_file(MockGenerator, runner, temp_file):
+def test_tag_generate_with_file(MockGenerator, runner):
     """Test tag generate with file."""
     mock_generator = Mock()
     mock_tag = Mock()
@@ -620,18 +618,22 @@ def test_tag_generate_with_file(MockGenerator, runner, temp_file):
     mock_generator.generate_tags.return_value = [mock_tag]
     MockGenerator.return_value = mock_generator
 
-    result = runner.invoke(
-        cli,
-        [
-            "tag",
-            "generate",
-            "--file",
-            temp_file,
-        ],
-    )
+    with runner.isolated_filesystem():
+        test_file = Path("test_code.py")
+        test_file.write_text("def hello():\n    return 'world'\n")
 
-    assert result.exit_code == 0
-    mock_generator.generate_tags.assert_called_once()
+        result = runner.invoke(
+            cli,
+            [
+                "tag",
+                "generate",
+                "--file",
+                str(test_file),
+            ],
+        )
+
+        assert result.exit_code == 0
+        mock_generator.generate_tags.assert_called_once()
 
 
 @patch("sono_eval.cli.commands.tag.TagGenerator")
