@@ -112,7 +112,7 @@ def setup_configuration() -> dict:
     console.print("[cyan]API Configuration[/cyan]")
     config["api_host"] = Prompt.ask(
         "API Host",
-        default="0.0.0.0",  # nosec B104
+        default="0.0.0.0",  # nosec B104 - default value for Docker/local dev
         show_default=True,
     )
     config["api_port"] = int(

@@ -85,14 +85,14 @@ From `documentation/Guides/*`:
 
 - To other Guides: `../QUICK_START.md` (same level)
 - To Reports: `../Reports/ASSESSMENT_SUMMARY.md`
-- To Governance: `../Governance/IMPROVEMENT_ROADMAP.md`
+- To Governance: `../Governance/IMPLEMENTATION_GUIDE.md`
 - To Core: `../Core/concepts/architecture.md`
 
 From `documentation/Reports/*`:
 
 - To other Reports: `ASSESSMENT_SUMMARY.md` (same directory)
 - To Guides: `../Guides/QUICK_REFERENCE.md`
-- To Governance: `../Governance/IMPROVEMENT_ROADMAP.md`
+- To Governance: `../Governance/IMPLEMENTATION_GUIDE.md`
 - To root files: `../../SECURITY.md`
 
 ### File Name Case Sensitivity

@@ -47,6 +47,8 @@ dependencies = [
     "council-ai>=2.0.0",
     "textstat>=0.7.3",
     "shared-ai-utils>=0.1.0",
+    "reportlab>=4.0.0",
+    "locust>=2.20.0",
 ]
 
 [project.optional-dependencies]
@@ -111,4 +113,6 @@ line_length = 88
 skip_glob = ["venv*", "env*", ".venv*"]
 
 [tool.bandit]
-exclude_dirs = ["tests", "venv", "venv-test", ".venv"]
+exclude_dirs = ["tests", "venv", "venv-test", ".venv", "scripts"]
+# Note: scripts/ directory is excluded as it contains security audit tools
+# that intentionally use subprocess and other "risky" patterns

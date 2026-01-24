@@ -1,13 +1,4 @@
 {
-  "name": "frontend",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint"
-  },
   "dependencies": {
     "@tanstack/react-query": "^5.90.20",
     "axios": "^1.13.2",
@@ -30,5 +21,14 @@
     "prettier": "^3.8.1",
     "tailwindcss": "^4",
     "typescript": "^5"
-  }
+  },
+  "name": "frontend",
+  "private": true,
+  "scripts": {
+    "build": "next build",
+    "dev": "next dev",
+    "lint": "eslint",
+    "start": "next start"
+  },
+  "version": "0.1.0"
 }

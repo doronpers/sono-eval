@@ -11,8 +11,8 @@ from celery import Task
 
 from sono_eval.assessment.engine import AssessmentEngine
 from sono_eval.assessment.models import AssessmentInput
+from sono_eval.core.celery_app import celery_app
 from sono_eval.memory.memu import MemUStorage
-from sono_eval.tasks.celery_app import celery_app
 from sono_eval.utils.logger import get_logger
 
 logger = get_logger(__name__)

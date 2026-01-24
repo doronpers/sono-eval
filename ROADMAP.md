@@ -1,225 +1,100 @@
 # Sono-Eval - Roadmap & TODOs
 
-**Last Updated**: 2026-01-21
+**Last Updated**: 2026-01-24
 **Single Source of Truth**: This file contains all TODOs, planned features, and roadmap items.
 
-**Note**: This consolidates high-priority items. See `Documentation/Governance/IMPROVEMENT_ROADMAP.md` for detailed implementation guides and code examples.
+**Note**: This consolidates high-priority items. See `Documentation/Governance/IMPLEMENTATION_GUIDE.md` for detailed implementation guides and code examples.
 
 ---
 
 ## ✅ Recently Completed
 
-*No completed items to report yet.*
+- **v0.3.0 Web UI**: Full frontend implementation with Next.js, Dashboard, and Visualization. (2026-01-24)
+- **Security Hardening**: Authentication, Rate Limiting, Input Validation, CORS. (2026-01-23)
+- **ML Assessment Engine**: Hybrid scoring model with CodeBERT. (2026-01-23)
+- **Production Setup**: Docker, CI/CD, Monitoring basics. (2026-01-23)
 
 ---
 
-## 🔴 High Priority - Critical (Before Production Use)
+## 🚀 Upcoming Releases
 
-### Security Hardening
+### 📦 v0.4.0: Scalability & Backend Integration
 
-**Status**: Required for production deployment
+**Focus**: Performance, background processing, and full backend-frontend integration.
+**Status**: 🚧 Preparation
 
-#### 1. Authentication System
+#### 1. Batch Assessment Processing
 
-- **Status**: ✅ Complete (2026-01-23)
-- **Description**: Implemented JWT authentication, password hashing, and user management
-- **Details**: `src/sono_eval/auth/`
+- [ ] **API Endpoints**: `/api/v1/assessments/batch` for bulk submission.
+- [ ] **Celery Tasks**: Async workers for processing large batches without timeouts.
+- [ ] **State Management**: Tracking batch progress and partial failures.
 
-#### 2. Rate Limiting
+#### 2. Caching Layer (Redis)
 
-- **Status**: ✅ Complete (2026-01-23)
-- **Description**: In-memory rate limiting with Redis support structure
-- **Details**: `src/sono_eval/middleware/rate_limiter.py`
+- [ ] **Assessment Caching**: Cache common assessment results and ML model outputs.
+- [ ] **Rate Limiting Backend**: Move from memory to Redis for distributed limits.
+- [ ] **Session Store**: Redis-backed session management for scale.
 
-#### 3. Input Validation & Sanitization
+#### 3. Real-time Updates
 
-- **Status**: ✅ Complete (2026-01-23)
-- **Description**: Comprehensive Pydantic validators, size limits, XSS heuristics
-- **Details**: `src/sono_eval/assessment/models.py`
-
-#### 4. CORS Enforcement
-
-- **Status**: ✅ Complete (2026-01-23)
-- **Description**: Strict CORS enforcement in production, whitelisting
-- **Details**: `src/sono_eval/api/main.py`
-
-#### 5. Secret Validation
-
-- **Status**: ✅ Complete (2026-01-23)
-- **Description**: Startup validation for default/weak secrets
-- **Details**: `src/sono_eval/api/main.py`
-
-#### 6. Security Headers
-
-- **Status**: ✅ Complete (2026-01-23)
-- **Description**: HSTS, CSP, X-Frame-Options, X-Content-Type-Options
-- **Details**: `src/sono_eval/middleware/security_headers.py`
-
-#### 7. Audit Logging
-
-- **Status**: ✅ Complete (2026-01-23)
-- **Description**: Structured JSON logging for security events
-- **Details**: `src/sono_eval/utils/audit.py`
-
-#### 8. Security Audit
-
-- **Status**: ✅ Complete (2026-01-23)
-- **Description**: Automated Bandit scans and local audit script
-- **Details**: `scripts/security_audit.py`
+- [ ] **WebSocket Integration**: Live progress updates for batch jobs on the frontend.
 
 ---
 
-## 📦 Phase 4: Production Deployment Setup
+### 🧪 v0.5.0: Beta Candidate
 
-**Status**: ✅ Complete (2026-01-23)
+**Focus**: User experience polish, advanced reporting, and stability testing.
+**Status**: 📝 Planned
 
-### 1. Production Deployment Guide
+#### 1. Advanced Reporting
 
-- **Status**: ✅ Complete (2026-01-23)
-- **Description**: Comprehensive production deployment documentation
-- **Includes**:
-  - Environment configuration and security checklist
-  - Docker production setup and scaling
-  - Secrets management (environment variables, Docker secrets)
-  - HTTPS/TLS configuration with nginx
-  - Health checks and monitoring strategy
-  - Backup and recovery procedures
-  - Performance tuning and troubleshooting
-- **Details**: `Documentation/Guides/PRODUCTION_DEPLOYMENT.md`
+- [ ] **PDF Export**: Generate professional PDF reports of assessments.
+- [ ] **Deep Analytics**: Advanced filtering and trend analysis views.
 
-### 2. CI/CD Pipeline Enhancement
+#### 2. Load Testing & Stability
 
-- **Status**: ✅ Complete (2026-01-23)
-- **Description**: Automated deployment workflows
-- **Includes**:
-  - Docker image building and publishing to GHCR
-  - Automated deployment to staging/production
-  - Health check automation
-  - Rollback procedures
-- **Details**: `.github/workflows/deploy.yml`
+- [ ] **Load Testing**: Locust tests simulating 100+ concurrent users.
+- [ ] **Performance Tuning**: DB indexing and query optimization based on load test data.
+
+#### 3. User Acceptance
+
+- [ ] **Beta Testing Program**: Internal rollout to trusted users.
+- [ ] **Feedback Loop**: In-app feedback mechanism.
+
+#### 4. Documentation
+
+- [ ] **Enhanced API Docs**: Comprehensive examples and tutorials.
+- [ ] **User Guides**: Updated for Web UI workflows.
 
 ---
 
-## 🌐 Phase 5: Web UI Development
+### 🎉 v1.0.0: Production General Availability
 
-**Status**: ✅ Complete (Frontend) - 2026-01-24
+**Focus**: Security assurance, community readiness, and public launch.
+**Status**: 📝 Planned
 
-### 1. Next.js Frontend
+#### 1. Final Security Assurance
 
-- **Status**: ✅ Complete
-- **Description**: Modern web interface with TypeScript + TailwindCSS
-- **Components**:
-  - Homepage with features grid
-  - Assessments list and detail views
-  - Analytics dashboard with Chart.js
-  - Batch upload interface
-- **Details**: `frontend/` directory
+- [ ] **Third-Party Audit**: External review of security posture.
+- [ ] **Penetration Testing**: Targeted tests against production environment.
 
-### 2. Interactive Visualizations
+#### 2. Community Capabilities
 
-- **Status**: ✅ Complete
-- **Description**: Chart.js components for insights
-- **Charts**:
-  - Score distribution (bar chart)
-  - Path breakdown (doughnut chart)
-  - Trend analysis (line chart)
+- [ ] **Public Documentation Hub**: Final polish of all guides.
+- [ ] **Contributing Guidelines**: Detailed workflows for community PRs.
+- [ ] **Plugin System Architecture**: Initial design for community extensions.
 
-### 3. Backend Integration (Pending)
+#### 3. Launch
 
-- **Status**: 📝 TODO
-- **Description**: Batch processing API and Redis caching
-- **Items**:
-  - `/api/v1/assessments/batch` endpoints
-  - Celery batch processing tasks
-  - Redis-backed caching middleware
-
----
-
-## 🟡 Medium Priority - Core Functionality
-
-### Real ML Assessment Engine
-
-**Status**: ✅ Implemented (2026-01-23)
-
-#### 9. Model Selection & Training
-
-- **Status**: ✅ Complete
-- **Description**: Selected CodeBERT architecture with zero-shot approach
-- **Details**: `model_loader.py` implements lazy loading, caching, and AST fallback
-
-#### 10. Assessment Logic Implementation
-
-- **Status**: ✅ Complete
-- **Description**: Replaced placeholder scoring with trained model inference
-- **Details**: `MLScorer` now uses hybrid scoring (40% model + 60% AST)
-
-#### 11. Model Evaluation
-
-- **Status**: ✅ Complete
-- **Description**: 23 tests pass, no regressions
-- **Details**: New `test_ml_model_integration.py` with 10 integration tests
-
-### Comprehensive Testing
-
-**Status**: Ongoing
-
-#### 12. API Integration Tests
-
-- **Status**: 📝 TODO
-- **Description**: Test all endpoints, error conditions, authentication flows
-- **Details**: See `Documentation/Governance/IMPROVEMENT_ROADMAP.md`
-
-#### 13. Load Testing
-
-- **Status**: 📝 TODO
-- **Description**: Test with realistic workloads, identify and address bottlenecks
-- **Details**: See `Documentation/Governance/IMPROVEMENT_ROADMAP.md`
-
----
-
-## 🟢 Low Priority - Future Enhancements
-
-### Documentation
-
-#### 14. Enhanced API Documentation
-
-- **Status**: 📝 TODO
-- **Description**: Expand API reference with more examples and use cases
-
-### Features
-
-#### 15. Advanced Assessment Features
-
-- **Status**: 📝 TODO
-- **Description**: Additional assessment paths, custom scoring, configurable evaluation criteria
-
-### User Experience
-
-#### 16. Web UI for Results
-
-- **Status**: 📝 TODO
-- **Description**: Browser-based interface for viewing and analyzing assessment results
-
-#### 17. Batch Processing
-
-- **Status**: 📝 TODO
-- **Description**: Process multiple assessments in parallel
-
----
-
-## 📊 Progress Summary
-
-- **Completed**: 0 items
-- **High Priority (Critical)**: 8 items (security)
-- **Medium Priority (Core)**: 5 items (ML engine and testing)
-- **Low Priority (Future)**: 4 items (enhancements)
+- [ ] **Marketing Assets**: Screenshots, demo videos.
+- [ ] **Public Release**: GitHub release and announcement.
 
 ---
 
 ## 📝 Notes
 
-- **Detailed Implementation Guides**: See `Documentation/Governance/IMPROVEMENT_ROADMAP.md`
-- **Current Version**: 0.1.1 (Alpha)
+- **Detailed Implementation Guides**: See `Documentation/Governance/IMPLEMENTATION_GUIDE.md`
+- **Current Version**: 0.3.0 (Web UI implemented)
 - **Target**: Production-ready 1.0.0
 - **Changelog**: See `CHANGELOG.md` for release history
 - **Documentation**: See `Documentation/README.md` for all documentation

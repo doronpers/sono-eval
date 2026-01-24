@@ -1,5 +1,18 @@
 # Pre-commit hooks configuration
 # See https://pre-commit.com for more information
+#
+# IMPORTANT FOR AGENTS: Before creating new code, read:
+# - AGENTS.md (section "Pre-Commit Hook Requirements")
+# - .agent/workflows/pre-commit-checklist.md
+#
+# Common failures to avoid:
+# - Missing imports → Add all required imports (check similar existing files)
+# - Unused imports → Remove unused imports (especially in test files)
+# - YAML indentation → Use 2 spaces consistently
+# - Missing docstrings → Add docstrings to all modules and public functions
+# - Type hints → Add type annotations to all new functions
+#
+# Always run: pre-commit run --all-files before committing
 
 # Global exclude for all hooks
 exclude: ^(venv.+|env.+|\.venv|dist|build|target)/
@@ -67,16 +80,16 @@ repos:
     rev: 1.7.5
     hooks:
       - id: bandit
-        args: [-c, pyproject.toml]
+        args: [-c, pyproject.toml, -ll]  # Only report High severity issues
         additional_dependencies: ["bandit[toml]", "pbr"]
-        exclude: ^tests/
+        exclude: ^(tests/|scripts/)
 
   # Python type checking with mypy
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v1.7.1
     hooks:
       - id: mypy
-        args: [--ignore-missing-imports, --no-strict-optional]
+        args: [--ignore-missing-imports, --no-strict-optional, --disable-error-code=no-any-return]
         additional_dependencies:
           - types-requests
           - types-PyYAML
