@@ -8,6 +8,7 @@ from fastapi.testclient import TestClient
 
 # Mock celery before importing the app
 sys.modules["celery"] = MagicMock()
+sys.modules["celery.result"] = MagicMock()
 
 from sono_eval.api.main import app  # noqa: E402
 from sono_eval.assessment.models import AssessmentResult  # noqa: E402
@@ -48,10 +49,10 @@ def mock_memu_storage():
 # ============================================================================
 
 
-def test_root_endpoint_redirects(client):
-    """Test root endpoint redirects to dashboard."""
+def test_root_endpoint_returns_ok(client):
+    """Test root endpoint returns 200 OK."""
     response = client.get("/", follow_redirects=False)
-    assert response.status_code in [307, 308]  # Redirect
+    assert response.status_code == 200
 
 
 def test_health_endpoint_v1(client):
@@ -69,7 +70,7 @@ def test_status_endpoint(client):
     response = client.get("/status")
     assert response.status_code == 200
     data = response.json()
-    assert "status" in data
+    assert "api_version" in data
 
 
 def test_system_status_endpoint(client):
@@ -77,7 +78,8 @@ def test_system_status_endpoint(client):
     response = client.get("/api/v1/status/system")
     assert response.status_code == 200
     data = response.json()
-    assert "status" in data or "components" in data
+    assert "health" in data
+    assert "status" in data["health"]
 
 
 def test_readiness_endpoint(client):
@@ -221,9 +223,10 @@ def test_create_assessment_async(mock_storage, mock_task, client):
     assert data["status"] == "queued"
 
 
-@patch("sono_eval.api.main.AsyncResult")
+@patch("celery.result.AsyncResult")
 def test_get_assessment_job_status_pending(mock_async_result, client):
     """Test getting job status when pending."""
+    # Mock the import inside the endpoint function
     mock_result = Mock()
     mock_result.state = "PENDING"
     mock_result.info = None
@@ -236,9 +239,10 @@ def test_get_assessment_job_status_pending(mock_async_result, client):
     assert data["status"] == "PENDING"
 
 
-@patch("sono_eval.api.main.AsyncResult")
+@patch("celery.result.AsyncResult")
 def test_get_assessment_job_status_success(mock_async_result, client):
     """Test getting job status when completed."""
+    # Mock the import inside the endpoint function
     mock_result = Mock()
     mock_result.state = "SUCCESS"
     mock_result.result = {
@@ -340,6 +344,7 @@ def test_create_candidate(mock_storage, client):
     mock_memory = Mock(spec=CandidateMemory)
     mock_memory.candidate_id = "test_user"
     mock_memory.root_node = mock_root
+    mock_memory.last_updated = "2026-01-24T12:00:00Z"  # Add missing attribute
     mock_storage.create_candidate_memory.return_value = mock_memory
 
     response = client.post(
@@ -354,15 +359,20 @@ def test_create_candidate(mock_storage, client):
 @patch("sono_eval.api.main.memu_storage")
 def test_get_candidate(mock_storage, client):
     """Test getting candidate by ID."""
-    from sono_eval.memory.memu import CandidateMemory, MemoryNode
+    from sono_eval.memory.memu import MemoryNode
 
     mock_root = Mock(spec=MemoryNode)
     mock_root.node_id = "root_123"
     mock_root.model_dump = Mock(return_value={"node_id": "root_123", "data": {}})
 
-    mock_memory = Mock(spec=CandidateMemory)
+    mock_memory = Mock()
     mock_memory.candidate_id = "test_user"
     mock_memory.root_node = mock_root
+    # Mock model_dump to return a dict directly to avoid recursion issues with Pydantic
+    mock_memory.model_dump.return_value = {
+        "candidate_id": "test_user",
+        "root_node": {"node_id": "root_123", "data": {}},
+    }
     mock_storage.get_candidate_memory.return_value = mock_memory
 
     response = client.get("/api/v1/candidates/test_user")
