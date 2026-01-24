@@ -62,7 +62,10 @@ def test_ml_scorer_insights():
     assert insights is not None
     assert insights["score"] > 70
     assert "pattern" in insights
-    assert insights["pattern"] in ["clean_well_structured_code", "moderate_complexity_code"]
+    assert insights["pattern"] in [
+        "clean_well_structured_code",
+        "moderate_complexity_code",
+    ]
 
     # Test scoring complex code
     insights_bad = scorer.get_insights(SAMPLE_CODE_COMPLEX, "complex.py")

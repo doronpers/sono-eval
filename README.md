@@ -6,7 +6,7 @@
 
 ## 🚀 Start Here
 
-**[Start Here →](documentation/START_HERE.md)**
+**[Start Here →](documentation/START_HERE.md)** | **[Beta Welcome Guide (v0.5.0)](BETA_WELCOME.md)**
 
 ---
 
@@ -111,7 +111,7 @@ details.
 
 ## ⚠️ System Limits (Honesty Statement)
 
-**Current State (v0.1.1 - Active Development):**
+**Current State (v0.5.0 - Beta Release):**
 
 - **ML Integration**: Current "Hybrid" mode is primarily heuristic-driven.
   ML insights (T5/LoRA) are secondary and require high-compute
@@ -263,7 +263,7 @@ See **[CHANGELOG.md](CHANGELOG.md)** for version history.
 
 Built with ❤️ by the Sono-Eval Team
 
-**Version**: 0.2.0 | **Last Updated**: January 2026 | **Status**: Active Development
+**Version**: 0.5.0 | **Last Updated**: January 2026 | **Status**: Beta Release
 
 [⬆ Back to top](#sono-eval)
 

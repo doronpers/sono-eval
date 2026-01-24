@@ -260,7 +260,11 @@ def test_calculate_pattern_penalty_multiple_violations():
             pattern="pattern1", line=1, code="test", description="test", severity="low"
         ),
         PatternViolation(
-            pattern="pattern2", line=2, code="test", description="test", severity="medium"
+            pattern="pattern2",
+            line=2,
+            code="test",
+            description="test",
+            severity="medium",
         ),
         PatternViolation(
             pattern="pattern3", line=3, code="test", description="test", severity="high"
@@ -277,13 +281,25 @@ def test_calculate_pattern_penalty_duplicate_patterns():
     """Test that duplicate patterns are only counted once."""
     violations = [
         PatternViolation(
-            pattern="same_pattern", line=1, code="test1", description="test", severity="high"
+            pattern="same_pattern",
+            line=1,
+            code="test1",
+            description="test",
+            severity="high",
         ),
         PatternViolation(
-            pattern="same_pattern", line=2, code="test2", description="test", severity="high"
+            pattern="same_pattern",
+            line=2,
+            code="test2",
+            description="test",
+            severity="high",
         ),
         PatternViolation(
-            pattern="same_pattern", line=3, code="test3", description="test", severity="high"
+            pattern="same_pattern",
+            line=3,
+            code="test3",
+            description="test",
+            severity="high",
         ),
     ]
     severity_weights = {"high": 20.0}
@@ -297,7 +313,11 @@ def test_calculate_pattern_penalty_max_cap():
     """Test that penalty is capped at max_penalty."""
     violations = [
         PatternViolation(
-            pattern=f"pattern{i}", line=i, code="test", description="test", severity="high"
+            pattern=f"pattern{i}",
+            line=i,
+            code="test",
+            description="test",
+            severity="high",
         )
         for i in range(10)
     ]
@@ -364,10 +384,18 @@ def test_violations_to_metadata_multiple():
     """Test converting multiple violations to metadata."""
     violations = [
         PatternViolation(
-            pattern="pattern1", line=1, code="code1", description="desc1", severity="low"
+            pattern="pattern1",
+            line=1,
+            code="code1",
+            description="desc1",
+            severity="low",
         ),
         PatternViolation(
-            pattern="pattern2", line=2, code="code2", description="desc2", severity="high"
+            pattern="pattern2",
+            line=2,
+            code="code2",
+            description="desc2",
+            severity="high",
         ),
     ]
 

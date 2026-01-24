@@ -34,7 +34,8 @@ class BatchStatus(BaseModel):
 
 @router.post("/", response_model=BatchStatus, status_code=status.HTTP_202_ACCEPTED)
 async def submit_batch(
-    submission: BatchSubmission, current_user: User = Depends(get_current_user)  # noqa: B008
+    submission: BatchSubmission,
+    current_user: User = Depends(get_current_user),  # noqa: B008
 ):
     """Submit a batch of assessments for asynchronous processing."""
     # Create Celery tasks
@@ -43,13 +44,13 @@ async def submit_batch(
         # Convert input to dict for serialization
         task_input = item.model_dump(mode="json")
         # Add user context if needed
-        task_input["_user_id"] = str(current_user.id)
+        task_input["_user_id"] = str(current_user.username)
 
         # Create task signature
         tasks.append(process_assessment_task.s(task_input))
 
     # Create a group
-    job = celery_app.Group(tasks)
+    job = celery_app.group(tasks)
     result = job.apply_async()
     result.save()  # Ensure result is saved to backend
 

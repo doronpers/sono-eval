@@ -6,7 +6,7 @@ Provides guided first-run experience with step-by-step setup.
 
 import sys
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 import click
 from rich.console import Console
@@ -101,6 +101,23 @@ def check_dependencies() -> bool:
     return all_ok
 
 
+def _find_workspace_root() -> Optional[Path]:
+    """Find the workspace root directory."""
+    cwd = Path.cwd()
+    # Look for root markers
+    markers = [".git", "pyproject.toml", "setup.py"]
+
+    # Check current directory and parents
+    path = cwd
+    while path != path.parent:
+        for marker in markers:
+            if (path / marker).exists():
+                return path
+        path = path.parent
+
+    return None
+
+
 def setup_configuration() -> dict:
     """Interactive configuration setup."""
     console.print("\n[bold]Configuration Setup[/bold]")
@@ -125,7 +142,12 @@ def setup_configuration() -> dict:
 
     # Storage Configuration
     console.print("\n[cyan]Storage Configuration[/cyan]")
-    default_storage = str(Path.home() / ".sono-eval" / "storage")
+    # Use workspace-relative path as default
+    workspace_root = _find_workspace_root()
+    if workspace_root:
+        default_storage = str(workspace_root / ".workspace-config" / "sono-eval" / "storage")
+    else:
+        default_storage = str(Path.home() / ".sono-eval" / "storage")  # Legacy fallback
     storage_path = Prompt.ask(
         "Storage Path",
         default=default_storage,

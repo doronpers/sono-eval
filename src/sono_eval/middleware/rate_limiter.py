@@ -184,7 +184,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
             exclude_paths: Paths to exclude from rate limiting
             redis_url: Redis URL for distributed rate limiting (optional)
         """
-        super().__init__(app)
+        super().__init__(app)  # type: ignore
 
         # Get Redis URL from parameter or environment
         redis_url = redis_url or os.environ.get("RATE_LIMIT_REDIS_URL")
@@ -227,7 +227,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         """Check rate limits before processing request."""
         # Skip rate limiting for excluded paths
         if request.url.path in self.exclude_paths:
-            return await call_next(request)
+            return await call_next(request)  # type: ignore
 
         # Get client identifier (IP or X-Forwarded-For)
         forwarded_for = request.headers.get("X-Forwarded-For")
@@ -296,4 +296,4 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         response.headers["X-RateLimit-Remaining"] = str(remaining)
         response.headers["X-RateLimit-Backend"] = self.backend
 
-        return response
+        return response  # type: ignore

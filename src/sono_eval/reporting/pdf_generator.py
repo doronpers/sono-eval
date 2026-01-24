@@ -62,7 +62,12 @@ class PDFGenerator:
         """
         buffer = BytesIO()
         doc = SimpleDocTemplate(
-            buffer, pagesize=A4, rightMargin=72, leftMargin=72, topMargin=72, bottomMargin=72
+            buffer,
+            pagesize=A4,
+            rightMargin=72,
+            leftMargin=72,
+            topMargin=72,
+            bottomMargin=72,
         )
 
         elements = []
@@ -74,7 +79,8 @@ class PDFGenerator:
         )
         elements.append(
             Paragraph(
-                f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M')}", self.styles["Normal"]
+                f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M')}",
+                self.styles["Normal"],
             )
         )
         elements.append(Spacer(1, 0.5 * inch))
@@ -104,11 +110,11 @@ class PDFGenerator:
                 status = (
                     "Excellent"
                     if path_score.overall_score >= 90
-                    else "Good"
-                    if path_score.overall_score >= 70
-                    else "Fair"
-                    if path_score.overall_score >= 50
-                    else "Needs Improvement"
+                    else (
+                        "Good"
+                        if path_score.overall_score >= 70
+                        else ("Fair" if path_score.overall_score >= 50 else "Needs Improvement")
+                    )
                 )
                 data.append([path_score.path.title(), f"{path_score.overall_score:.1f}", status])
 

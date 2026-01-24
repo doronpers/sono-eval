@@ -93,4 +93,7 @@ def invalidate_cache(pattern: Optional[str] = None) -> None:
 
 def get_cache_stats() -> dict[str, Any]:
     """Get cache statistics."""
-    return {"cached_entries": len(_cache), "memory_usage_estimate": len(json.dumps(_cache))}
+    return {
+        "cached_entries": len(_cache),
+        "memory_usage_estimate": len(json.dumps(_cache)),
+    }

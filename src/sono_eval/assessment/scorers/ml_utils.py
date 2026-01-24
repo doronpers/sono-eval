@@ -9,7 +9,7 @@ import ast
 import re
 from typing import Dict, List
 
-import textstat
+import textstat  # type: ignore
 
 from sono_eval.utils.logger import get_logger
 
@@ -63,7 +63,6 @@ class _ComplexityVisitor(ast.NodeVisitor):
         self.current_nesting = 0
         self.function_count = 0
         self.class_count = 0
-        self.function_lengths: List[int] = []
         self.function_lengths: List[int] = []
 
     def visit_If(self, node):

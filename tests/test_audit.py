@@ -60,7 +60,10 @@ class TestAuditLogger:
     def test_log_auth_attempt_failure(self, mock_logger):
         """Test logging failed auth attempt."""
         log_auth_attempt(
-            user_id="user_123", success=False, ip_address="1.2.3.4", reason="invalid_password"
+            user_id="user_123",
+            success=False,
+            ip_address="1.2.3.4",
+            reason="invalid_password",
         )
 
         args = mock_logger.log.call_args
@@ -75,7 +78,10 @@ class TestAuditLogger:
     def test_log_access_denied(self, mock_logger):
         """Test logging access denied event."""
         log_access_denied(
-            user_id="user_123", resource="admin_panel", action="read", ip_address="1.2.3.4"
+            user_id="user_123",
+            resource="admin_panel",
+            action="read",
+            ip_address="1.2.3.4",
         )
 
         args = mock_logger.log.call_args

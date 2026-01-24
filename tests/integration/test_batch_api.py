@@ -4,6 +4,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from sono_eval.api.main import app
+from sono_eval.auth.dependencies import get_current_user
 from sono_eval.auth.users import User
 
 client = TestClient(app)
@@ -11,14 +12,18 @@ client = TestClient(app)
 
 @pytest.fixture
 def mock_celery():
-    with patch("sono_eval.core.celery_app.celery_app.Group") as mock_group:
+    with patch("sono_eval.api.routes.batch.celery_app") as mock_app:
         mock_job = MagicMock()
         mock_job.id = "test-batch-id"
         mock_result = MagicMock()
         mock_result.id = "test-batch-id"
         mock_job.apply_async.return_value = mock_result
-        mock_group.return_value = mock_job
-        yield mock_group
+        # Configure group() call to return the mock job
+        mock_app.group.return_value = mock_job
+        # support both .Group and .group to be safe
+        mock_app.Group.return_value = mock_job
+
+        yield mock_app
 
 
 @pytest.fixture
@@ -31,8 +36,11 @@ def mock_user_dependency():
         is_active=True,
         is_superuser=False,
     )
-    with patch("sono_eval.api.routes.batch.get_current_user", return_value=user):
-        yield
+    # Use dependency_overrides for FastAPI dependencies
+    app.dependency_overrides[get_current_user] = lambda: user
+    yield user
+    # Clean up
+    app.dependency_overrides = {}
 
 
 def test_submit_batch_assessment(mock_celery, mock_user_dependency):
