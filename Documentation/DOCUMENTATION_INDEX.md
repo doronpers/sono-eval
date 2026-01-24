@@ -58,9 +58,9 @@ category.**
 
 - **[CLI Reference](Guides/user-guide/cli-reference.md)** - Complete
   command-line interface documentation
-- **[Production Deployment](PRODUCTION_DEPLOYMENT.md)** - Production-readiness guide, rate limiting, circuit breakers, Kubernetes deployment
 - **[API Reference](Guides/user-guide/api-reference.md)** - REST API endpoints
   and usage
+- **[Production Deployment Guide](Guides/PRODUCTION_DEPLOYMENT.md)** - Comprehensive deployment guide for production environments
 - **[Assessment Path Guide](Guides/assessment-path-guide.md)** - Complete guide
   to all assessment paths
 
@@ -154,7 +154,7 @@ Historical and internal documentation that has been superseded or is no longer n
 ## Documentation Statistics
 
 | Category | File Count | Status |
-|---|---|---|
+| --- | --- | --- |
 | Core | 3 | ✅ Complete |
 | Guides | 20 | ✅ Complete |
 | Reports | 13 | ✅ Complete |

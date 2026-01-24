@@ -1,11 +1,16 @@
 """Tests for CLI formatters."""
 
-import pytest
+from unittest.mock import patch
+
 from rich.panel import Panel
 from rich.table import Table
 
 from sono_eval.assessment.models import (
     AssessmentResult,
+    Evidence,
+    EvidenceType,
+    MicroMotive,
+    MotiveType,
     PathScore,
     PathType,
     ScoringMetric,
@@ -150,6 +155,7 @@ class TestAssessmentFormatter:
         """Test that format_overall_score returns a Panel."""
         result = AssessmentResult(
             candidate_id="test_001",
+            assessment_id="assess_001",
             overall_score=85.0,
             confidence=0.9,
             summary="Good performance",
@@ -166,6 +172,7 @@ class TestAssessmentFormatter:
         """Test formatting with high confidence."""
         result = AssessmentResult(
             candidate_id="test_001",
+            assessment_id="assess_002",
             overall_score=90.0,
             confidence=0.95,
             summary="Excellent",
@@ -181,6 +188,7 @@ class TestAssessmentFormatter:
         """Test formatting with low confidence."""
         result = AssessmentResult(
             candidate_id="test_001",
+            assessment_id="assess_003",
             overall_score=70.0,
             confidence=0.5,
             summary="Moderate",
@@ -252,6 +260,7 @@ class TestAssessmentFormatter:
         """Test that format_findings returns a Panel."""
         result = AssessmentResult(
             candidate_id="test_001",
+            assessment_id="assess_004",
             overall_score=85.0,
             confidence=0.9,
             summary="Good",
@@ -268,6 +277,7 @@ class TestAssessmentFormatter:
         """Test formatting findings limits to top 5."""
         result = AssessmentResult(
             candidate_id="test_001",
+            assessment_id="assess_005",
             overall_score=85.0,
             confidence=0.9,
             summary="Good",
@@ -285,6 +295,7 @@ class TestAssessmentFormatter:
         """Test that format_micro_motives returns a Table."""
         result = AssessmentResult(
             candidate_id="test_001",
+            assessment_id="assess_006",
             overall_score=85.0,
             confidence=0.9,
             summary="Good",
@@ -295,7 +306,15 @@ class TestAssessmentFormatter:
                 MicroMotive(
                     motive_type=MotiveType.MASTERY,
                     strength=0.8,
-                    evidence=["Shows dedication to learning"],
+                    path_alignment=PathType.TECHNICAL,
+                    evidence=[
+                        Evidence(
+                            type=EvidenceType.CODE_QUALITY,
+                            description="Shows dedication to learning",
+                            source="test.py:10",
+                            weight=0.8,
+                        )
+                    ],
                 )
             ],
         )
@@ -308,6 +327,7 @@ class TestAssessmentFormatter:
         """Test formatting when no micro-motives exist."""
         result = AssessmentResult(
             candidate_id="test_001",
+            assessment_id="assess_007",
             overall_score=85.0,
             confidence=0.9,
             summary="Good",
@@ -327,13 +347,22 @@ class TestAssessmentFormatter:
             MicroMotive(
                 motive_type=MotiveType.MASTERY,
                 strength=0.8 - (i * 0.05),
-                evidence=[f"Evidence {i}"],
+                path_alignment=PathType.TECHNICAL,
+                evidence=[
+                    Evidence(
+                        type=EvidenceType.CODE_QUALITY,
+                        description=f"Evidence {i}",
+                        source=f"test.py:{i}",
+                        weight=0.8 - (i * 0.05),
+                    )
+                ],
             )
             for i in range(15)
         ]
 
         result = AssessmentResult(
             candidate_id="test_001",
+            assessment_id="assess_008",
             overall_score=85.0,
             confidence=0.9,
             summary="Good",
