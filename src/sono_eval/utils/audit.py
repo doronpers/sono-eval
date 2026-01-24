@@ -25,11 +25,14 @@ class AuditLogEncoder(json.JSONEncoder):
 
 def _emit_log(level: int, event_type: str, message: str, **kwargs):
     """Emit a structured log record."""
+    from sono_eval.utils.config import get_config
+
+    config = get_config()
     entry = {
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "event_type": event_type,
         "message": message,
-        "environment": "production",  # TODO: Fetch from config
+        "environment": config.app_env,
         **kwargs,
     }
 

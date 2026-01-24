@@ -209,21 +209,23 @@ You're free to use, modify, and distribute it. See the LICENSE file for details.
 
 For the complete roadmap and TODO list, see [ROADMAP.md](ROADMAP.md).
 
-### Current (v0.2.0 - Security & ML Release)
+### Current (v0.3.0 - Web UI Release)
 
+- **Web UI**: Modern Next.js interface with assessment views, analytics dashboard, and batch upload
+- **Interactive Analytics**: Chart.js visualizations for score distribution, path breakdown, and trends
+- **Assessment Detail Views**: Comprehensive score breakdowns, micro-motives, recommendations, and export
 - **Authentication System**: JWT-based auth with user management
 - **Security Hardening**: Rate limiting, strict CORS, audit logging
 - **Real ML Assessment**: Hybrid scoring with CodeBERT/T5 integration
 - **Async Processing**: Celery task queue for long-running jobs
 - **Explainable Assessment**: Heuristic-first approach with ML insights
-- **Multi-path Evaluation**: Technical, design, and collaboration metrics
 
-### Next Release (v0.3.0)
+### Next Release (v0.4.0)
 
-- [ ] Web UI for reviews (React/Next.js)
-- [ ] Batch assessment processing endpoint
-- [ ] Enhanced analytics dashboard
-- [ ] Redis-backed memory storage for high concurrency
+- [ ] Batch assessment processing backend (API endpoints + Celery tasks)
+- [ ] Redis-backed caching for improved performance
+- [ ] PDF export functionality for assessments
+- [ ] Real-time WebSocket updates for batch progress
 
 ### Future
 
