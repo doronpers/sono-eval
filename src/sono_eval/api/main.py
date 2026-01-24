@@ -204,7 +204,7 @@ app.add_middleware(SecurityHeadersMiddleware, mode=config.app_env)
 app.include_router(auth_router, prefix="/api/v1/auth", tags=["auth"])
 from sono_eval.api.routes.batch import router as batch_router  # noqa: E402
 
-app.include_router(batch_router, prefix="/api/v1", tags=["batch"])
+app.include_router(batch_router, prefix="/api/v1/assessments/batch", tags=["batch"])
 
 # CORS middleware - origins configured from ALLOWED_HOSTS
 # Security: Startup validation ensures proper configuration in production/staging

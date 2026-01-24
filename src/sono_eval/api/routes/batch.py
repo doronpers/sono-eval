@@ -10,7 +10,7 @@ from sono_eval.auth.users import User
 from sono_eval.core.celery_app import celery_app
 from sono_eval.tasks.assessment import process_assessment_task
 
-router = APIRouter(prefix="/assessments/batch", tags=["batch"])
+router = APIRouter(tags=["batch"])
 
 
 class BatchSubmission(BaseModel):
@@ -38,16 +38,21 @@ async def submit_batch(
     current_user: User = Depends(get_current_user),  # noqa: B008
 ):
     """Submit a batch of assessments for asynchronous processing."""
+    import time
+
     # Create Celery tasks
-    tasks = []
+    tasks: List[Any] = []
     for item in submission.items:
         # Convert input to dict for serialization
         task_input = item.model_dump(mode="json")
         # Add user context if needed
         task_input["_user_id"] = str(current_user.username)
 
-        # Create task signature
-        tasks.append(process_assessment_task.s(task_input))
+        # Generate unique assessment ID for this task
+        assessment_id = f"assess_{int(time.time() * 1000)}_{len(tasks)}"
+
+        # Create task signature - task expects (assessment_id, input_data)
+        tasks.append(process_assessment_task.s(assessment_id, task_input))
 
     # Create a group
     job = celery_app.group(tasks)

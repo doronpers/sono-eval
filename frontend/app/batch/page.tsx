@@ -1,27 +1,65 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Navigation } from '@/components/Navigation';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
-
-interface BatchStatus {
-    batchId: string;
-    totalCandidates: number;
-    completed: number;
-    failed: number;
-    status: 'processing' | 'completed' | 'failed';
-}
+import apiClient from '@/lib/api-client';
+import type { BatchStatus, AssessmentInput } from '@/types/assessment';
 
 export default function BatchPage() {
     const [file, setFile] = useState<File | null>(null);
     const [batchStatus, setBatchStatus] = useState<BatchStatus | null>(null);
     const [isUploading, setIsUploading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [pollInterval, setPollInterval] = useState<NodeJS.Timeout | null>(null);
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
             setFile(e.target.files[0]);
+            setError(null);
+        }
+    };
+
+    const parseFile = async (file: File): Promise<AssessmentInput[]> => {
+        const text = await file.text();
+        const items: AssessmentInput[] = [];
+
+        if (file.name.endsWith('.json')) {
+            const data = JSON.parse(text);
+            if (Array.isArray(data)) {
+                return data.map((item) => ({
+                    candidate_id: item.candidate_id || item.id || `candidate_${Date.now()}_${Math.random()}`,
+                    submission_type: item.submission_type || 'code',
+                    content: item.content || { code: item.code || item.text || '' },
+                    paths_to_evaluate: item.paths_to_evaluate || item.paths || ['TECHNICAL'],
+                    metadata: item.metadata,
+                }));
+            }
+            throw new Error('JSON file must contain an array of assessment items');
+        } else if (file.name.endsWith('.csv')) {
+            const lines = text.split('\n').filter((line) => line.trim());
+            const headers = lines[0].split(',').map((h) => h.trim());
+            const candidateIdIdx = headers.indexOf('candidate_id');
+            const contentIdx = headers.indexOf('content') || headers.indexOf('code') || headers.indexOf('text');
+
+            if (candidateIdIdx === -1 || contentIdx === -1) {
+                throw new Error('CSV must have candidate_id and content columns');
+            }
+
+            for (let i = 1; i < lines.length; i++) {
+                const values = lines[i].split(',').map((v) => v.trim());
+                items.push({
+                    candidate_id: values[candidateIdIdx] || `candidate_${i}`,
+                    submission_type: 'code',
+                    content: { code: values[contentIdx] || '' },
+                    paths_to_evaluate: ['TECHNICAL'],
+                });
+            }
+            return items;
+        } else {
+            throw new Error('Unsupported file format. Please use CSV or JSON.');
         }
     };
 
@@ -29,39 +67,101 @@ export default function BatchPage() {
         if (!file) return;
 
         setIsUploading(true);
+        setError(null);
 
-        // TODO: Implement actual API call to /api/v1/assessments/batch
-        // For now, simulate batch processing
-        setTimeout(() => {
-            setBatchStatus({
-                batchId: 'batch_' + Date.now(),
-                totalCandidates: 25,
-                completed: 0,
-                failed: 0,
-                status: 'processing',
+        try {
+            // Parse file
+            const items = await parseFile(file);
+
+            if (items.length === 0) {
+                throw new Error('No valid assessment items found in file');
+            }
+
+            if (items.length > 100) {
+                throw new Error('Maximum 100 items allowed per batch');
+            }
+
+            // Submit batch
+            const response = await apiClient.post('/api/v1/assessments/batch', {
+                items,
             });
+
+            const status: BatchStatus = response.data;
+            setBatchStatus(status);
             setIsUploading(false);
 
-            // Simulate progress
-            let progress = 0;
-            const interval = setInterval(() => {
-                progress += 5;
-                setBatchStatus(prev => prev ? {
-                    ...prev,
-                    completed: Math.min(progress, 25),
-                    status: progress >= 25 ? 'completed' : 'processing',
-                } : null);
-
-                if (progress >= 25) {
-                    clearInterval(interval);
-                }
-            }, 500);
-        }, 1000);
+            // Start polling for status
+            if (status.status === 'processing' || status.status === 'pending') {
+                startPolling(status.batch_id);
+            }
+        } catch (err) {
+            console.error('Batch upload failed:', err);
+            setError(err instanceof Error ? err.message : 'Failed to upload batch');
+            setIsUploading(false);
+        }
     };
 
+    const startPolling = (batchId: string) => {
+        // Clear any existing polling
+        if (pollInterval) {
+            clearInterval(pollInterval);
+        }
+
+        const interval = setInterval(async () => {
+            try {
+                const response = await apiClient.get(`/api/v1/assessments/batch/${batchId}`);
+                const status: BatchStatus = response.data;
+                setBatchStatus(status);
+
+                // Stop polling if completed or failed
+                if (status.status === 'completed' || status.status === 'failed') {
+                    clearInterval(interval);
+                    setPollInterval(null);
+                }
+            } catch (err) {
+                console.error('Failed to fetch batch status:', err);
+                clearInterval(interval);
+                setPollInterval(null);
+            }
+        }, 2000); // Poll every 2 seconds
+
+        setPollInterval(interval);
+    };
+
+    useEffect(() => {
+        // Cleanup polling on unmount
+        return () => {
+            if (pollInterval) {
+                clearInterval(pollInterval);
+            }
+        };
+    }, [pollInterval]);
+
     const handleDownloadResults = () => {
-        // TODO: Implement actual results download
-        alert('Results download would happen here');
+        if (!batchStatus || !batchStatus.results) {
+            alert('No results available to download');
+            return;
+        }
+
+        // Filter successful results
+        const successfulResults = batchStatus.results
+            .filter((r) => r.status === 'completed' && r.data)
+            .map((r) => r.data);
+
+        if (successfulResults.length === 0) {
+            alert('No successful results to download');
+            return;
+        }
+
+        // Create JSON blob
+        const json = JSON.stringify(successfulResults, null, 2);
+        const blob = new Blob([json], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `batch-results-${batchStatus.batch_id}-${new Date().toISOString().split('T')[0]}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
     };
 
     return (
@@ -129,6 +229,11 @@ export default function BatchPage() {
                                 {isUploading ? 'Uploading...' : 'Start Batch Assessment'}
                             </Button>
                         </div>
+                        {error && (
+                            <div className="mt-4 p-4 bg-red-50 rounded-lg">
+                                <p className="text-sm text-red-800">{error}</p>
+                            </div>
+                        )}
                     </CardContent>
                 </Card>
 
@@ -150,7 +255,7 @@ export default function BatchPage() {
                                     {batchStatus.status}
                                 </Badge>
                             </div>
-                            <CardDescription>Batch ID: {batchStatus.batchId}</CardDescription>
+                            <CardDescription>Batch ID: {batchStatus.batch_id}</CardDescription>
                         </CardHeader>
                         <CardContent>
                             <div className="space-y-4">
@@ -158,14 +263,14 @@ export default function BatchPage() {
                                     <div className="flex justify-between text-sm mb-2">
                                         <span className="text-gray-600">Progress</span>
                                         <span className="font-medium">
-                                            {batchStatus.completed} / {batchStatus.totalCandidates}
+                                            {batchStatus.completed} / {batchStatus.total}
                                         </span>
                                     </div>
                                     <div className="w-full bg-gray-200 rounded-full h-2">
                                         <div
                                             className="bg-blue-600 h-2 rounded-full transition-all duration-500"
                                             style={{
-                                                width: `${(batchStatus.completed / batchStatus.totalCandidates) * 100}%`,
+                                                width: `${(batchStatus.completed / batchStatus.total) * 100}%`,
                                             }}
                                         />
                                     </div>
@@ -174,7 +279,7 @@ export default function BatchPage() {
                                 <div className="grid grid-cols-3 gap-4">
                                     <div className="text-center p-3 bg-gray-50 rounded-lg">
                                         <p className="text-2xl font-bold text-gray-900">
-                                            {batchStatus.totalCandidates}
+                                            {batchStatus.total}
                                         </p>
                                         <p className="text-xs text-gray-600">Total</p>
                                     </div>
@@ -192,9 +297,9 @@ export default function BatchPage() {
                                     </div>
                                 </div>
 
-                                {batchStatus.status === 'completed' && (
+                                {batchStatus.status === 'completed' && batchStatus.results && (
                                     <Button onClick={handleDownloadResults} className="w-full">
-                                        Download Results
+                                        Download Results ({batchStatus.completed} items)
                                     </Button>
                                 )}
                             </div>

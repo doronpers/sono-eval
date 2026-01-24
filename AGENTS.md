@@ -142,3 +142,35 @@ pre-commit run --all-files
 - `scripts/` directory is excluded from bandit checks (contains security tools)
 - Bandit runs with `-ll` flag (only reports High severity issues)
 - Medium/Low severity issues in excluded directories or with nosec comments are acceptable
+
+## Planning & Roadmap Guidelines
+
+### Time Estimation Rule
+
+**Rule for Future Planning Agents**: When creating plans or roadmaps:
+
+1. **Do NOT include time estimates** (days, weeks, months) unless you have:
+   - Actual historical data from similar completed tasks in the same codebase
+   - Verified duration data from project management systems
+   - User-provided time constraints
+
+2. **Instead, use**:
+   - **Complexity indicators**: Low, Medium, High, Very High
+   - **Effort indicators**: Small, Medium, Large
+   - **Dependencies**: List blocking dependencies
+   - **Prerequisites**: What must be done first
+
+3. **If time estimates are requested**:
+   - Base them on similar completed tasks in the codebase
+   - Clearly state the assumptions and data sources
+   - Mark estimates as "rough" or "tentative"
+   - Prefer ranges over specific dates
+
+4. **Rationale**: Time estimates are highly variable and depend on:
+   - Developer experience and familiarity
+   - Unexpected technical challenges
+   - External dependencies
+   - Scope changes during implementation
+   - Context switching and interruptions
+
+This rule should be followed when updating `ROADMAP.md`, `BETA_REQUIREMENTS.md`, or any planning documents.
