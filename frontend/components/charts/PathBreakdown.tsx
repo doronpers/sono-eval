@@ -47,7 +47,7 @@ export function PathBreakdown({ data }: PathBreakdownProps) {
             },
             tooltip: {
                 callbacks: {
-                    label: function (context: any) {
+                    label: function (context: { label: string; parsed: number; dataIndex: number }) {
                         const label = context.label || '';
                         const value = context.parsed || 0;
                         const dataset = data[context.dataIndex];

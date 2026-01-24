@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import apiClient, { getErrorMessage } from '../api-client';
+import apiClient from '../api-client';
 import type { AssessmentResult, AssessmentListItem, PaginatedResponse } from '@/types/assessment';
 
 // Fetch all assessments with pagination

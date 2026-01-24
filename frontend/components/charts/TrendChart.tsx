@@ -59,7 +59,7 @@ export function TrendChart({ data }: TrendChartProps) {
             },
             tooltip: {
                 callbacks: {
-                    afterLabel: function (context: any) {
+                    afterLabel: function (context: { dataIndex: number }) {
                         const dataPoint = data[context.dataIndex];
                         return `${dataPoint.count} assessments`;
                     }
