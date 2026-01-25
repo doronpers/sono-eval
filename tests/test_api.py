@@ -1,6 +1,9 @@
 """Tests for the API endpoints and middleware."""
 
+<<<<<<< Updated upstream
 import sys
+=======
+>>>>>>> Stashed changes
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -103,7 +106,10 @@ def test_assessment_endpoint_with_valid_input(MockEngineClass, client):
         "metadata": {},
     }
 
+<<<<<<< Updated upstream
     mock_engine = MockEngineClass.return_value
+=======
+>>>>>>> Stashed changes
     # Make assess return an awaitable
     mock_engine.assess = AsyncMock(return_value=mock_result)
 

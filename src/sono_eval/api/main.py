@@ -139,6 +139,9 @@ async def lifespan(app: FastAPI):
     _validate_security_config()
     config.validate_production_config()
 
+    # Initialize Database Tables
+    Base.metadata.create_all(bind=engine)
+
     assessment_engine = AssessmentEngine()
     memu_storage = get_storage()
     tag_generator = TagGenerator()
@@ -194,6 +197,16 @@ def _validate_security_config() -> None:
                 f"{config.app_env}. Change this immediately."
             )
         else:
+<<<<<<< Updated upstream
+=======
+            logger.warning(
+                "WARNING: Using default SUPERSET_SECRET_KEY (development only)"
+            )
+
+    # Validate allowed hosts in production
+    if config.app_env == "production":
+        if not config.allowed_hosts or config.allowed_hosts == "*":
+>>>>>>> Stashed changes
             logger.warning(
                 "WARNING: Using default SUPERSET_SECRET_KEY (development only)"
             )
@@ -220,6 +233,9 @@ def _validate_security_config() -> None:
 # Initialize Rate Limiter
 # Initialize Rate Limiter
 
+# Initialize Rate Limiter
+# Initialize Rate Limiter
+
 app = FastAPI(
     title="Sono-Eval API",
     description="Explainable Multi-Path Developer Assessment System",
@@ -228,6 +244,7 @@ app = FastAPI(
 )
 
 app.state.limiter = limiter
+<<<<<<< Updated upstream
 
 
 async def rate_limit_handler(request: Request, exc: RateLimitExceeded) -> Response:
@@ -236,30 +253,16 @@ async def rate_limit_handler(request: Request, exc: RateLimitExceeded) -> Respon
 
 
 app.add_exception_handler(RateLimitExceeded, rate_limit_handler)
+=======
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+# Add Security Headers Middleware
+app.add_middleware(SecurityHeadersMiddleware)
+>>>>>>> Stashed changes
 
 # Add Request ID middleware (must be first to track all requests)
 app.add_middleware(RequestIDMiddleware)
 app.add_middleware(PerformanceMetricsMiddleware)
-
-# Add performance logging middleware
-app.add_middleware(PerformanceLoggingMiddleware, slow_request_threshold_ms=1000)
-
-# Add rate limiting middleware (production: 60 req/min, 1000 req/hour)
-app.add_middleware(
-    RateLimitMiddleware,
-    max_requests_per_minute=60 if config.app_env == "production" else 600,
-    max_requests_per_hour=1000 if config.app_env == "production" else 10000,
-)
-
-# Add Security Headers middleware (outermost layer for headers)
-# This middleware respects the app_env mode and allows unsafe-inline in development
-app.add_middleware(SecurityHeadersMiddleware, mode=config.app_env)
-
-# Include Routers
-app.include_router(auth_router, prefix="/api/v1/auth", tags=["auth"])
-from sono_eval.api.routes.batch import router as batch_router  # noqa: E402
-
-app.include_router(batch_router, prefix="/api/v1/assessments/batch", tags=["batch"])
 
 # CORS middleware - origins configured from ALLOWED_HOSTS
 # Security: Startup validation ensures proper configuration in production/staging

@@ -149,7 +149,9 @@ def setup_configuration() -> dict:
     # Use workspace-relative path as default
     workspace_root = _find_workspace_root()
     if workspace_root:
-        default_storage = str(workspace_root / ".workspace-config" / "sono-eval" / "storage")
+        default_storage = str(
+            workspace_root / ".workspace-config" / "sono-eval" / "storage"
+        )
     else:
         default_storage = str(Path.home() / ".sono-eval" / "storage")  # Legacy fallback
     storage_path = Prompt.ask(

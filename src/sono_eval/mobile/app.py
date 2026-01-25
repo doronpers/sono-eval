@@ -414,7 +414,11 @@ def create_mobile_app() -> FastAPI:
             logger.error(f"Error generating recommendations: {e}")
             return {"success": False, "recommendations": [], "count": 0}
 
+<<<<<<< Updated upstream
     @app.post("/api/track")
+=======
+    @app.post("/api/mobile/track")
+>>>>>>> Stashed changes
     async def track_interactions(batch: TrackingBatch):
         """
         Track user interactions for analytics and personalization.
@@ -462,6 +466,7 @@ def create_mobile_app() -> FastAPI:
                 },
             )
 
+<<<<<<< Updated upstream
     @app.get("/api/easter-eggs")
     async def list_easter_eggs():
         """List available easter eggs (for discovery documentation)."""
@@ -489,6 +494,33 @@ def create_mobile_app() -> FastAPI:
         # For now, return success and rely on client-side sessionStorage
         return {"success": True, "message": "Data acknowledged"}
 
+=======
+    @app.get("/api/mobile/easter-eggs")
+    async def list_easter_eggs():
+        """List available easter eggs (for discovery documentation)."""
+        registry = get_registry()
+        eggs = registry.list_eggs()
+        return {
+            "success": True,
+            "eggs": eggs,
+            "count": len(eggs),
+            "message": "Easter eggs are discoverable features that unlock valuable functionality",
+        }
+
+    @app.post("/api/mobile/session/store")
+    async def store_session_data(data: Dict[str, Any]):
+        """
+        Store assessment result in server-side session for retrieval.
+
+        This allows sharing results between pages without URL params.
+        In production, use Redis or database for session storage.
+        For now, return success and rely on client-side sessionStorage.
+        """
+        # In production, use Redis or database for session storage
+        # For now, return success and rely on client-side sessionStorage
+        return {"success": True, "message": "Data acknowledged"}
+
+>>>>>>> Stashed changes
     @app.get("/mobile/advanced")
     async def advanced_features(request: Request):
         """Hidden advanced features page."""
