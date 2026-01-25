@@ -737,7 +737,10 @@ def test_setup_init_quick(mock_confirm, runner):
     )
 
     # Should not fail, may exit early or show status
-    assert result.exit_code in [0, 1]  # May exit with error if checks fail, but command runs
+    assert result.exit_code in [
+        0,
+        1,
+    ]  # May exit with error if checks fail, but command runs
 
 
 @patch("sono_eval.cli.commands.setup.Confirm")

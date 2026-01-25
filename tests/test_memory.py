@@ -84,7 +84,9 @@ def test_get_node_path(temp_storage):
         "test_candidate_005", memory.root_node.node_id, data={"level": 1}
     )
 
-    child2 = temp_storage.add_memory_node("test_candidate_005", child1.node_id, data={"level": 2})
+    child2 = temp_storage.add_memory_node(
+        "test_candidate_005", child1.node_id, data={"level": 2}
+    )
 
     # Get path
     path = temp_storage.get_node_path("test_candidate_005", child2.node_id)
@@ -132,7 +134,9 @@ def test_max_depth_limit(temp_storage):
     nodes_created = []
 
     for i in range(temp_storage.max_depth + 2):
-        node = temp_storage.add_memory_node("test_candidate_007", current_id, data={"level": i + 1})
+        node = temp_storage.add_memory_node(
+            "test_candidate_007", current_id, data={"level": i + 1}
+        )
         if node:
             nodes_created.append(node)
             current_id = node.node_id

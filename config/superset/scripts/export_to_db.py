@@ -131,7 +131,11 @@ class AssessmentExporter:
             result = AssessmentResult.model_validate(assessment_data)
 
             # Create or update candidate
-            candidate = session.query(Candidate).filter_by(candidate_id=result.candidate_id).first()
+            candidate = (
+                session.query(Candidate)
+                .filter_by(candidate_id=result.candidate_id)
+                .first()
+            )
             if not candidate:
                 candidate = Candidate(
                     candidate_id=result.candidate_id,
@@ -159,8 +163,12 @@ class AssessmentExporter:
                     + result.overall_score
                 )
                 candidate.average_score = total_score / candidate.total_assessments
-                candidate.highest_score = max(candidate.highest_score, result.overall_score)
-                candidate.lowest_score = min(candidate.lowest_score, result.overall_score)
+                candidate.highest_score = max(
+                    candidate.highest_score, result.overall_score
+                )
+                candidate.lowest_score = min(
+                    candidate.lowest_score, result.overall_score
+                )
 
             # Create assessment record
             assessment = Assessment(
@@ -169,7 +177,9 @@ class AssessmentExporter:
                 timestamp=result.timestamp,
                 overall_score=result.overall_score,
                 confidence=result.confidence,
-                dominant_path=(result.dominant_path.value if result.dominant_path else None),
+                dominant_path=(
+                    result.dominant_path.value if result.dominant_path else None
+                ),
                 summary=result.summary,
                 key_findings=result.key_findings,
                 recommendations=result.recommendations,
@@ -250,7 +260,9 @@ class AssessmentExporter:
                     exported += 1
 
             session.commit()
-            logger.info(f"✓ Exported {exported}/{len(assessments)} assessments successfully")
+            logger.info(
+                f"✓ Exported {exported}/{len(assessments)} assessments successfully"
+            )
 
         except SQLAlchemyError as e:
             session.rollback()
@@ -264,7 +276,9 @@ class AssessmentExporter:
 
 def main():
     """Main entry point."""
-    parser = argparse.ArgumentParser(description="Export sono-eval assessments to database")
+    parser = argparse.ArgumentParser(
+        description="Export sono-eval assessments to database"
+    )
     parser.add_argument(
         "--format",
         choices=["sqlite", "postgresql"],

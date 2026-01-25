@@ -59,7 +59,9 @@ class RecoverableError:
 
 
 # Common error templates
-def validation_error(field: str, message: str, example: Optional[str] = None) -> RecoverableError:
+def validation_error(
+    field: str, message: str, example: Optional[str] = None
+) -> RecoverableError:
     """Create a validation error with recovery suggestions."""
     recovery_actions = [
         f"Check that {field} is provided correctly",
@@ -101,7 +103,9 @@ def file_not_found_error(
     )
 
 
-def connection_error(service: str, retry_command: Optional[str] = None) -> RecoverableError:
+def connection_error(
+    service: str, retry_command: Optional[str] = None
+) -> RecoverableError:
     """Create a connection error with retry suggestions."""
     return RecoverableError(
         error_type="connection",

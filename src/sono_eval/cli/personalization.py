@@ -47,7 +47,9 @@ class PersonalizationEngine:
 
         # Calculate statistics
         total_assessments = len(assessments)
-        scores = [a.get("overall_score", 0) for a in assessments if "overall_score" in a]
+        scores = [
+            a.get("overall_score", 0) for a in assessments if "overall_score" in a
+        ]
         average_score = sum(scores) / len(scores) if scores else 0.0
 
         # Analyze preferred paths
@@ -112,10 +114,16 @@ class PersonalizationEngine:
         recommendations = []
 
         if profile["total_assessments"] == 0:
-            recommendations.append("Start with a technical assessment to establish your baseline")
-            recommendations.append("Try different assessment paths to discover your strengths")
+            recommendations.append(
+                "Start with a technical assessment to establish your baseline"
+            )
+            recommendations.append(
+                "Try different assessment paths to discover your strengths"
+            )
         elif profile["total_assessments"] < 3:
-            recommendations.append("Continue building your assessment history for better insights")
+            recommendations.append(
+                "Continue building your assessment history for better insights"
+            )
             if profile["average_score"] < 70:
                 recommendations.append(
                     "Focus on the improvement areas identified in your assessments"
@@ -126,10 +134,14 @@ class PersonalizationEngine:
                     "Consider focusing on fundamental skills before advanced topics"
                 )
             elif profile["average_score"] > 85:
-                recommendations.append("Explore more challenging assessments to continue growing")
+                recommendations.append(
+                    "Explore more challenging assessments to continue growing"
+                )
 
             if profile["improvement_areas"]:
-                recommendations.append(f"Work on: {', '.join(profile['improvement_areas'][:2])}")
+                recommendations.append(
+                    f"Work on: {', '.join(profile['improvement_areas'][:2])}"
+                )
 
             if len(profile["preferred_paths"]) < 3:
                 recommendations.append(
@@ -163,14 +175,22 @@ class PersonalizationEngine:
 
         if profile["total_assessments"] > 0:
             if profile["average_score"] >= 80:
-                insights.append("Your consistently high scores show strong technical skills")
+                insights.append(
+                    "Your consistently high scores show strong technical skills"
+                )
             elif profile["average_score"] < 60:
-                insights.append("Focus on fundamentals - your scores show room for growth")
+                insights.append(
+                    "Focus on fundamentals - your scores show room for growth"
+                )
 
             if profile["strengths"]:
-                insights.append(f"Your strengths include: {', '.join(profile['strengths'][:2])}")
+                insights.append(
+                    f"Your strengths include: {', '.join(profile['strengths'][:2])}"
+                )
 
             if len(profile["preferred_paths"]) > 0:
-                insights.append(f"You've focused on: {', '.join(profile['preferred_paths'])}")
+                insights.append(
+                    f"You've focused on: {', '.join(profile['preferred_paths'])}"
+                )
 
         return insights

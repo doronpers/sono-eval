@@ -24,7 +24,9 @@ def show_cli_structure():
             "subcommands": {
                 "assess": {
                     "description": "Assessment commands",
-                    "commands": {"run": "Run an assessment with --candidate-id, --file, --paths"},
+                    "commands": {
+                        "run": "Run an assessment with --candidate-id, --file, --paths"
+                    },
                 },
                 "candidate": {
                     "description": "Candidate management",
@@ -41,7 +43,9 @@ def show_cli_structure():
                 },
                 "server": {
                     "description": "Server management",
-                    "commands": {"start": "Start the API server (--host, --port, --reload)"},
+                    "commands": {
+                        "start": "Start the API server (--host, --port, --reload)"
+                    },
                 },
                 "config": {
                     "description": "Configuration",

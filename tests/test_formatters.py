@@ -15,7 +15,11 @@ from sono_eval.assessment.models import (
     PathType,
     ScoringMetric,
 )
-from sono_eval.cli.formatters import AssessmentFormatter, ErrorFormatter, ProgressFormatter
+from sono_eval.cli.formatters import (
+    AssessmentFormatter,
+    ErrorFormatter,
+    ProgressFormatter,
+)
 
 
 class TestAssessmentFormatter:

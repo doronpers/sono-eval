@@ -6,7 +6,11 @@ from unittest.mock import patch
 
 import pytest
 
-from sono_eval.utils.audit import log_access_denied, log_auth_attempt, log_security_event
+from sono_eval.utils.audit import (
+    log_access_denied,
+    log_auth_attempt,
+    log_security_event,
+)
 
 
 class TestAuditLogger:
@@ -46,7 +50,9 @@ class TestAuditLogger:
 
     def test_log_auth_attempt_success(self, mock_logger):
         """Test logging successful auth attempt."""
-        log_auth_attempt(user_id="user_123", success=True, ip_address="1.2.3.4", method="oauth")
+        log_auth_attempt(
+            user_id="user_123", success=True, ip_address="1.2.3.4", method="oauth"
+        )
 
         args = mock_logger.log.call_args
         msg = args[0][1]
@@ -60,7 +66,10 @@ class TestAuditLogger:
     def test_log_auth_attempt_failure(self, mock_logger):
         """Test logging failed auth attempt."""
         log_auth_attempt(
-            user_id="user_123", success=False, ip_address="1.2.3.4", reason="invalid_password"
+            user_id="user_123",
+            success=False,
+            ip_address="1.2.3.4",
+            reason="invalid_password",
         )
 
         args = mock_logger.log.call_args
@@ -75,7 +84,10 @@ class TestAuditLogger:
     def test_log_access_denied(self, mock_logger):
         """Test logging access denied event."""
         log_access_denied(
-            user_id="user_123", resource="admin_panel", action="read", ip_address="1.2.3.4"
+            user_id="user_123",
+            resource="admin_panel",
+            action="read",
+            ip_address="1.2.3.4",
         )
 
         args = mock_logger.log.call_args

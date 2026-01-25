@@ -149,7 +149,9 @@ class ReadabilityAnalyzer:
                 "flesch_kincaid_grade": textstat.flesch_kincaid_grade(text),
                 "gunning_fog": textstat.gunning_fog(text),
                 "smog_index": textstat.smog_index(text),
-                "automated_readability_index": textstat.automated_readability_index(text),
+                "automated_readability_index": textstat.automated_readability_index(
+                    text
+                ),
             }
         except Exception as e:
             logger.debug(f"Readability analysis failed: {e}")
@@ -254,7 +256,9 @@ class _NamingVisitor(ast.NodeVisitor):
             self.pascal_case_count += 1
 
 
-def calculate_confidence_from_evidence(evidence_count: int, metric_variance: float = 0.0) -> float:
+def calculate_confidence_from_evidence(
+    evidence_count: int, metric_variance: float = 0.0
+) -> float:
     """
     Calculate confidence score based on evidence strength.
 

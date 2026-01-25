@@ -49,7 +49,9 @@ async def login_for_access_token(
         )
 
     # Log success
-    log_auth_attempt(user_id=user.username, success=True, ip_address="unknown", method="password")
+    log_auth_attempt(
+        user_id=user.username, success=True, ip_address="unknown", method="password"
+    )
 
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(

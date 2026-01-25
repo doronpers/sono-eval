@@ -41,7 +41,6 @@ from sono_eval.utils.error_help import (
     service_help,
     validation_help,
 )
-from sono_eval.auth import engine, Base
 from sono_eval.utils.errors import (
     ErrorCode,
     create_error_response,
@@ -140,9 +139,6 @@ async def lifespan(app: FastAPI):
     _validate_security_config()
     config.validate_production_config()
 
-    # Initialize Database Tables
-    Base.metadata.create_all(bind=engine)
-
     assessment_engine = AssessmentEngine()
     memu_storage = get_storage()
     tag_generator = TagGenerator()
@@ -232,7 +228,14 @@ app = FastAPI(
 )
 
 app.state.limiter = limiter
-app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+
+async def rate_limit_handler(request: Request, exc: RateLimitExceeded) -> Response:
+    """Wrapper for rate limit exceeded handler to satisfy type checkers."""
+    return _rate_limit_exceeded_handler(request, exc)
+
+
+app.add_exception_handler(RateLimitExceeded, rate_limit_handler)
 
 # Add Security Headers Middleware
 app.add_middleware(SecurityHeadersMiddleware)

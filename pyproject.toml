@@ -114,3 +114,14 @@ skip_glob = ["venv*", "env*", ".venv*"]
 
 [tool.bandit]
 exclude_dirs = ["tests", "venv", "venv-test", ".venv"]
+
+[tool.pyrefly]
+project-excludes = [
+    "build",
+    "dist",
+    "models",
+    "data",
+    "venv",
+    ".venv",
+    "**/__pycache__"
+]

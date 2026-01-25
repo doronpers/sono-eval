@@ -8,7 +8,10 @@ from sono_eval.assessment.models import (
     PathType,
     ScoringMetric,
 )
-from sono_eval.assessment.pattern_checks import PatternViolation, calculate_pattern_penalty
+from sono_eval.assessment.pattern_checks import (
+    PatternViolation,
+    calculate_pattern_penalty,
+)
 
 
 class HeuristicScorer:
@@ -279,7 +282,9 @@ class HeuristicScorer:
         text_lower = text.lower()
         lines = text.split("\n")
         non_empty_lines = [
-            line.strip() for line in lines if line.strip() and not line.strip().startswith("#")
+            line.strip()
+            for line in lines
+            if line.strip() and not line.strip().startswith("#")
         ]
 
         if "def " in text or "function " in text or "class " in text:
@@ -355,7 +360,8 @@ class HeuristicScorer:
                     Evidence(
                         type=EvidenceType.CODE_QUALITY,
                         description=(
-                            f"Pattern violation: {violation.pattern} - " f"{violation.description}"
+                            f"Pattern violation: {violation.pattern} - "
+                            f"{violation.description}"
                         ),
                         source="pattern_checks",
                         weight=weights.get(violation.severity, 0.6),
@@ -373,13 +379,17 @@ class HeuristicScorer:
             )
         if score >= 80:
             return (
-                "Code demonstrates strong quality with good structure and practices" + pattern_note
+                "Code demonstrates strong quality with good structure and practices"
+                + pattern_note
             )
         elif score >= 60:
-            return "Code shows solid fundamentals with room for improvement" + pattern_note
+            return (
+                "Code shows solid fundamentals with room for improvement" + pattern_note
+            )
         else:
             return (
-                "Code quality could be enhanced with better structure and practices" + pattern_note
+                "Code quality could be enhanced with better structure and practices"
+                + pattern_note
             )
 
     # ... (Other methods continue in same pattern)
@@ -389,7 +399,10 @@ class HeuristicScorer:
     def _analyze_problem_solving(self, text: str) -> float:
         score = 50.0
         text_lower = text.lower()
-        if any(w in text_lower for w in ["algorithm", "complexity", "optimize", "efficient"]):
+        if any(
+            w in text_lower
+            for w in ["algorithm", "complexity", "optimize", "efficient"]
+        ):
             score += 15
         if any(w in text_lower for w in ["loop", "iterate", "recursion", "recursive"]):
             score += 10
@@ -615,7 +628,9 @@ class HeuristicScorer:
         meaningful_names = sum(
             1
             for line in lines
-            if any(w in line.lower() for w in ["name", "value", "result", "data", "item"])
+            if any(
+                w in line.lower() for w in ["name", "value", "result", "data", "item"]
+            )
         )
         if meaningful_names > len(lines) / 10:
             score += 15
@@ -676,7 +691,9 @@ class HeuristicScorer:
     def _analyze_analytical_thinking(self, text: str) -> float:
         score = 50.0
         text_lower = text.lower()
-        if any(w in text_lower for w in ["analyze", "analysis", "break", "down", "step"]):
+        if any(
+            w in text_lower for w in ["analyze", "analysis", "break", "down", "step"]
+        ):
             score += 15
         if "logic" in text_lower or "reasoning" in text_lower:
             score += 10

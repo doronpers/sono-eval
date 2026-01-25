@@ -65,7 +65,9 @@ class PathScore(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     assessment_id = Column(String(255), nullable=False, index=True)
     candidate_id = Column(String(255), nullable=False, index=True)
-    path_type = Column(String(50), nullable=False, index=True)  # TECHNICAL, DESIGN, etc.
+    path_type = Column(
+        String(50), nullable=False, index=True
+    )  # TECHNICAL, DESIGN, etc.
     score = Column(Float, nullable=False, index=True)
     confidence = Column(Float, nullable=False)
 
@@ -107,7 +109,9 @@ class ScoringMetric(Base):
     timestamp = Column(DateTime, default=datetime.utcnow, index=True)
 
     __table_args__ = (
-        Index("idx_metric_assessment_path", "assessment_id", "path_type", "metric_name"),
+        Index(
+            "idx_metric_assessment_path", "assessment_id", "path_type", "metric_name"
+        ),
         Index("idx_metric_name_score", "metric_name", "score"),
     )
 
@@ -124,7 +128,9 @@ class MicroMotive(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     assessment_id = Column(String(255), nullable=False, index=True)
     candidate_id = Column(String(255), nullable=False, index=True)
-    motive_type = Column(String(50), nullable=False, index=True)  # MASTERY, EFFICIENCY, etc.
+    motive_type = Column(
+        String(50), nullable=False, index=True
+    )  # MASTERY, EFFICIENCY, etc.
     strength = Column(Float, nullable=False, index=True)  # 0.0 to 1.0
     evidence_count = Column(Integer, default=0)
 
@@ -165,4 +171,6 @@ class Candidate(Base):
 
     def __repr__(self):
         """Return string representation."""
-        return f"<Candidate(id={self.candidate_id}, assessments={self.total_assessments})>"
+        return (
+            f"<Candidate(id={self.candidate_id}, assessments={self.total_assessments})>"
+        )

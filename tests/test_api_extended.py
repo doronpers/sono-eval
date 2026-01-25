@@ -314,7 +314,9 @@ def test_get_assessment_dashboard(mock_storage, client):
     mock_storage.__bool__ = Mock(return_value=True)
     mock_storage.get_candidate_memory.return_value = mock_memory
 
-    response = client.get("/api/v1/assessments/assess_001/dashboard?candidate_id=test_user")
+    response = client.get(
+        "/api/v1/assessments/assess_001/dashboard?candidate_id=test_user"
+    )
 
     assert response.status_code == 200
     data = response.json()

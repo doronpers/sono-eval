@@ -13,7 +13,9 @@ class SonoEvalUser(HttpUser):
     def on_start(self):
         """Login and setup user session."""
         self.login()
-        self.candidate_id = f"load_test_user_{''.join(random.choices(string.ascii_lowercase, k=5))}"
+        self.candidate_id = (
+            f"load_test_user_{''.join(random.choices(string.ascii_lowercase, k=5))}"
+        )
 
     def login(self):
         """Authenticate with the API."""
@@ -41,7 +43,9 @@ class SonoEvalUser(HttpUser):
         payload = {
             "candidate_id": self.candidate_id,
             "submission_type": "code",
-            "content": {"code": "def fib(n): return n if n < 2 else fib(n-1) + fib(n-2)"},
+            "content": {
+                "code": "def fib(n): return n if n < 2 else fib(n-1) + fib(n-2)"
+            },
             "paths_to_evaluate": ["technical", "problem_solving"],
         }
         self.client.post("/api/v1/assessments", json=payload)

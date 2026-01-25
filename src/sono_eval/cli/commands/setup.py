@@ -21,7 +21,9 @@ def setup():
 
 
 @setup.command()
-@click.option("--interactive", is_flag=True, default=True, help="Run interactive setup wizard")
+@click.option(
+    "--interactive", is_flag=True, default=True, help="Run interactive setup wizard"
+)
 @click.option("--quick", is_flag=True, help="Quick setup with defaults")
 def init(interactive: bool, quick: bool):
     """
@@ -151,7 +153,9 @@ def init(interactive: bool, quick: bool):
             if create_env:
                 shutil.copy(env_example, env_file)
                 console.print("[green]✓ Created .env file[/green]")
-                console.print("[dim]You may want to edit .env to customize settings[/dim]")
+                console.print(
+                    "[dim]You may want to edit .env to customize settings[/dim]"
+                )
                 setup_status["config"] = True
         else:
             console.print("[dim]Run: cp .env.example .env[/dim]")
@@ -168,7 +172,9 @@ def init(interactive: bool, quick: bool):
         setup_db = Confirm.ask("Set up database now?", default=False)
         if setup_db:
             console.print("[dim]Database setup would run migrations here...[/dim]")
-            console.print("[yellow]Note: Database migrations are optional for basic usage[/yellow]")
+            console.print(
+                "[yellow]Note: Database migrations are optional for basic usage[/yellow]"
+            )
     else:
         console.print("[dim]Skipped in quick mode[/dim]")
 
@@ -278,7 +284,9 @@ def fibonacci(n):
 
         except Exception as e:
             console.print(f"[yellow]⚠ Test assessment failed: {e}[/yellow]")
-            console.print("[dim]This is not critical - you can still use Sono-Eval[/dim]")
+            console.print(
+                "[dim]This is not critical - you can still use Sono-Eval[/dim]"
+            )
 
 
 def _show_setup_summary(status):

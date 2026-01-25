@@ -53,7 +53,9 @@ class AssessmentTask(Task):
     max_retries=3,
     default_retry_delay=60,  # Retry after 60 seconds
 )
-def process_assessment_task(self, assessment_id: str, input_data: Dict[str, Any]) -> Dict[str, Any]:
+def process_assessment_task(
+    self, assessment_id: str, input_data: Dict[str, Any]
+) -> Dict[str, Any]:
     """
     Process an assessment asynchronously.
 
@@ -134,7 +136,9 @@ def process_assessment_task(self, assessment_id: str, input_data: Dict[str, Any]
         return result_dict
 
     except Exception as exc:
-        logger.error(f"Error processing assessment {assessment_id}: {exc}", exc_info=True)
+        logger.error(
+            f"Error processing assessment {assessment_id}: {exc}", exc_info=True
+        )
 
         # Retry with exponential backoff
         if self.request.retries < self.max_retries:

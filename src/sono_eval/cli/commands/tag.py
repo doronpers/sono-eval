@@ -21,7 +21,9 @@ def tag():
 @click.option("--max-tags", default=5, help="Maximum tags to generate (1-20)")
 @click.option("--quiet", is_flag=True, help="Quiet mode - just print tags")
 @click.option("--verbose", is_flag=True, help="Verbose mode - show details")
-def generate(file: Optional[str], text: Optional[str], max_tags: int, quiet: bool, verbose: bool):
+def generate(
+    file: Optional[str], text: Optional[str], max_tags: int, quiet: bool, verbose: bool
+):
     """
     Generate semantic tags for code or text.
 

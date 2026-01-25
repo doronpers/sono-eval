@@ -84,7 +84,10 @@ class MLScorer:
                 # Weighted combination: 40% model, 60% AST
                 overall_score = (model_score * 0.4) + (ast_score * 0.6)
                 evidence_count = (
-                    len(complexity_metrics) + len(naming_metrics) + len(readability_metrics) + 1
+                    len(complexity_metrics)
+                    + len(naming_metrics)
+                    + len(readability_metrics)
+                    + 1
                 )
                 confidence = (model_confidence * 0.4) + (
                     calculate_confidence_from_evidence(evidence_count - 1) * 0.6
@@ -93,7 +96,9 @@ class MLScorer:
             else:
                 overall_score = ast_score
                 evidence_count = (
-                    len(complexity_metrics) + len(naming_metrics) + len(readability_metrics)
+                    len(complexity_metrics)
+                    + len(naming_metrics)
+                    + len(readability_metrics)
                 )
                 confidence = calculate_confidence_from_evidence(evidence_count)
                 analysis_mode = "ast_only"
@@ -179,7 +184,9 @@ class MLScorer:
 
         complexity = complexity_metrics.get("cyclomatic_complexity", 1)
         if complexity > 15:
-            recommendations.append("Consider breaking down complex functions into smaller units")
+            recommendations.append(
+                "Consider breaking down complex functions into smaller units"
+            )
 
         nesting = complexity_metrics.get("nesting_depth", 0)
         if nesting > 4:
@@ -200,7 +207,9 @@ class MLScorer:
             recommendations.append("Simplify documentation for better readability")
 
         if not recommendations:
-            recommendations.append("Code quality is good; continue following best practices")
+            recommendations.append(
+                "Code quality is good; continue following best practices"
+            )
 
         return recommendations
 
@@ -253,7 +262,9 @@ class MLScorer:
         evidence_count = len(heuristic_evidence)
         confidence_str = f"{combined_confidence:.1%}"
 
-        ml_details = ml_insights.get("details", "AST-based code analysis") if ml_insights else ""
+        ml_details = (
+            ml_insights.get("details", "AST-based code analysis") if ml_insights else ""
+        )
 
         explanation = (
             f"Score combines heuristic analysis ({heuristic_str}) "

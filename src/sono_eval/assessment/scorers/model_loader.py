@@ -111,13 +111,16 @@ class ModelLoader:
 
             # Extract version from model config
             if hasattr(self._model, "config"):
-                self._model_version = getattr(self._model.config, "_name_or_path", self._model_name)
+                self._model_version = getattr(
+                    self._model.config, "_name_or_path", self._model_name
+                )
             else:
                 self._model_version = self._model_name
 
             self._loaded = True
             logger.info(
-                f"ML model loaded successfully: {self._model_version} " f"(cached at {CACHE_DIR})"
+                f"ML model loaded successfully: {self._model_version} "
+                f"(cached at {CACHE_DIR})"
             )
             return True
 
@@ -182,7 +185,9 @@ class ModelLoader:
                 probs = attention.mean(dim=1)  # Average across heads
                 entropy = -torch.sum(probs * torch.log(probs + 1e-10), dim=-1).mean()
                 # Normalize entropy to confidence (lower entropy = higher confidence)
-                confidence: float = max(0.5, min(1.0, 1.0 - (float(entropy.item()) / 5.0)))
+                confidence: float = max(
+                    0.5, min(1.0, 1.0 - (float(entropy.item()) / 5.0))
+                )
                 return confidence
         except Exception as e:
             logger.debug(f"Confidence calculation failed: {e}")

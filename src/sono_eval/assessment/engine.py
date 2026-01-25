@@ -68,7 +68,9 @@ class AssessmentEngine:
     async def assess(self, assessment_input: AssessmentInput) -> AssessmentResult:
         """Perform comprehensive assessment with hybrid heuristics + ML approach."""
         start_time = time.time()
-        logger.info(f"Starting assessment for candidate {assessment_input.candidate_id}")
+        logger.info(
+            f"Starting assessment for candidate {assessment_input.candidate_id}"
+        )
 
         # Check for AI/Council availability
         self.council_scorer.load_if_available()
@@ -99,7 +101,9 @@ class AssessmentEngine:
         all_confidences = []
 
         for path in assessment_input.paths_to_evaluate:
-            path_score = await self._evaluate_path(path, assessment_input, pattern_violations)
+            path_score = await self._evaluate_path(
+                path, assessment_input, pattern_violations
+            )
             path_scores.append(path_score)
             all_motives.extend(path_score.motives)
             # Collect confidence from metrics
@@ -180,9 +184,13 @@ class AssessmentEngine:
             metrics = self.ml_scorer.enhance_metrics(metrics, ml_insights, path)
 
         # 3. AI/Council Enhancement
-        council_insights = await self.council_scorer.get_insights(input_data.content, path)
+        council_insights = await self.council_scorer.get_insights(
+            input_data.content, path
+        )
         if council_insights:
-            metrics = self.council_scorer.enhance_metrics(metrics, council_insights, path)
+            metrics = self.council_scorer.enhance_metrics(
+                metrics, council_insights, path
+            )
 
         # 4. Micro-Motives
         if self.dark_horse_enabled:
@@ -232,7 +240,9 @@ class AssessmentEngine:
             return 0.0
         return sum(ps.overall_score for ps in path_scores) / len(path_scores)
 
-    def _determine_dominant_path(self, path_scores: List[PathScore]) -> Optional[PathType]:
+    def _determine_dominant_path(
+        self, path_scores: List[PathScore]
+    ) -> Optional[PathType]:
         if not path_scores:
             return None
         return max(path_scores, key=lambda ps: ps.overall_score).path
@@ -247,7 +257,9 @@ class AssessmentEngine:
             if m.score < 75.0
         ]
 
-    def _generate_summary(self, path_scores: List[PathScore], motives: List[MicroMotive]) -> str:
+    def _generate_summary(
+        self, path_scores: List[PathScore], motives: List[MicroMotive]
+    ) -> str:
         avg_score = self._calculate_overall_score(path_scores)
         top_path = self._determine_dominant_path(path_scores)
         summary = (
@@ -279,5 +291,7 @@ class AssessmentEngine:
         recommendations = []
         for ps in path_scores:
             if ps.areas_for_improvement:
-                recommendations.append(f"Focus on {ps.path.value}: {ps.areas_for_improvement[0]}")
+                recommendations.append(
+                    f"Focus on {ps.path.value}: {ps.areas_for_improvement[0]}"
+                )
         return recommendations

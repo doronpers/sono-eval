@@ -47,7 +47,9 @@ async def test_multi_path_assessment():
     assessment_input = AssessmentInput(
         candidate_id="test_candidate_002",
         submission_type="code",
-        content={"code": "class Calculator:\n    def add(self, a, b):\n        return a + b"},
+        content={
+            "code": "class Calculator:\n    def add(self, a, b):\n        return a + b"
+        },
         paths_to_evaluate=[PathType.TECHNICAL, PathType.DESIGN],
     )
 
@@ -66,7 +68,9 @@ async def test_assessment_has_evidence():
     assessment_input = AssessmentInput(
         candidate_id="test_candidate_003",
         submission_type="code",
-        content={"code": "def factorial(n): return 1 if n <= 1 else n * factorial(n-1)"},
+        content={
+            "code": "def factorial(n): return 1 if n <= 1 else n * factorial(n-1)"
+        },
         paths_to_evaluate=[PathType.TECHNICAL],
     )
 
@@ -104,7 +108,9 @@ async def test_assessment_has_micro_motives():
     result = await engine.assess(assessment_input)
 
     # Should have micro-motives tracked
-    assert len(result.micro_motives) >= 0  # May or may not have motives depending on content
+    assert (
+        len(result.micro_motives) >= 0
+    )  # May or may not have motives depending on content
 
 
 @pytest.mark.asyncio
@@ -281,4 +287,7 @@ async def test_assessment_pattern_violations_in_evidence():
 
     if violations:
         # At least one violation should have details
-        assert any("pattern" in str(v).lower() or "violation" in str(v).lower() for v in violations)
+        assert any(
+            "pattern" in str(v).lower() or "violation" in str(v).lower()
+            for v in violations
+        )

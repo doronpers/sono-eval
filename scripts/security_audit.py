@@ -54,7 +54,9 @@ def check_bandit() -> tuple:
         if high_issues:
             print("  ❌ HIGH severity issues:")
             for issue in high_issues:
-                print(f"    - {issue['filename']}:{issue['line_number']}: {issue['issue_text']}")
+                print(
+                    f"    - {issue['filename']}:{issue['line_number']}: {issue['issue_text']}"
+                )
             return False, {
                 "high": high_issues,
                 "medium": medium_issues,
@@ -84,7 +86,9 @@ def check_safety() -> tuple:
             return True, []
 
         results = json.loads(output)
-        vulns = results if isinstance(results, list) else results.get("vulnerabilities", [])
+        vulns = (
+            results if isinstance(results, list) else results.get("vulnerabilities", [])
+        )
 
         print(f"  ⚠️ Found {len(vulns)} vulnerable dependencies")
         for vuln in vulns[:5]:  # Show first 5

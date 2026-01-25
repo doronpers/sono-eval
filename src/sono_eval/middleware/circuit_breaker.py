@@ -40,12 +40,16 @@ class CircuitBreaker:
         self.last_failure_time: Optional[float] = None
         self.lock = asyncio.Lock()
 
-    async def call(self, func: Callable[..., Awaitable[Any]], *args: Any, **kwargs: Any) -> Any:
+    async def call(
+        self, func: Callable[..., Awaitable[Any]], *args: Any, **kwargs: Any
+    ) -> Any:
         """Execute function with circuit breaker protection."""
         async with self.lock:
             if self.state == CircuitState.OPEN:
                 if time.time() - self.last_failure_time > self.recovery_timeout:
-                    logger.info(f"Circuit breaker '{self.name}' transitioning to HALF_OPEN")
+                    logger.info(
+                        f"Circuit breaker '{self.name}' transitioning to HALF_OPEN"
+                    )
                     self.state = CircuitState.HALF_OPEN
                     self.success_count = 0
                 else:
@@ -74,7 +78,9 @@ class CircuitBreaker:
                 self.last_failure_time = time.time()
 
                 if self.state == CircuitState.HALF_OPEN:
-                    logger.warning(f"Circuit breaker '{self.name}' reopening (recovery failed)")
+                    logger.warning(
+                        f"Circuit breaker '{self.name}' reopening (recovery failed)"
+                    )
                     self.state = CircuitState.OPEN
                     self.success_count = 0
                 elif self.failure_count >= self.failure_threshold:

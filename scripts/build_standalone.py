@@ -73,7 +73,9 @@ def build():
     ]
 
     if args_cli.full:
-        print("Collecting ML dependencies (this will increase build size significantly)...")
+        print(
+            "Collecting ML dependencies (this will increase build size significantly)..."
+        )
         # Collect all data, binaries, and hidden imports for ML packages
         for package in [
             "torch",

@@ -56,7 +56,9 @@ class SessionManager:
     def _handle_sigint(self, signum, frame):
         """Handle SIGINT (Ctrl+C) with confirmation."""
         if self._exit_confirmation_enabled:
-            if Confirm.ask("\n[yellow]⚠[/yellow]  Exit Sono-Eval? This will end your session."):
+            if Confirm.ask(
+                "\n[yellow]⚠[/yellow]  Exit Sono-Eval? This will end your session."
+            ):
                 self.end_session()
                 sys.exit(0)
             else:
@@ -68,7 +70,9 @@ class SessionManager:
     def _handle_sigterm(self, signum, frame):
         """Handle SIGTERM with confirmation."""
         if self._exit_confirmation_enabled:
-            if Confirm.ask("\n[yellow]⚠[/yellow]  Exit Sono-Eval? This will end your session."):
+            if Confirm.ask(
+                "\n[yellow]⚠[/yellow]  Exit Sono-Eval? This will end your session."
+            ):
                 self.end_session()
                 sys.exit(0)
         else:
@@ -130,15 +134,17 @@ class SessionManager:
     def generate_session_report(self) -> Dict[str, Any]:
         """Generate a comprehensive session report."""
         duration = (self.end_time or datetime.now(timezone.utc)) - self.start_time
-        duration_str = (
-            f"{int(duration.total_seconds() // 60)}m {int(duration.total_seconds() % 60)}s"
-        )
+        duration_str = f"{int(duration.total_seconds() // 60)}m {int(duration.total_seconds() % 60)}s"
 
         # Calculate statistics
         total_assessments = len(self.assessments)
         avg_score = 0.0
         if total_assessments > 0:
-            scores = [a.get("overall_score", 0) for a in self.assessments if "overall_score" in a]
+            scores = [
+                a.get("overall_score", 0)
+                for a in self.assessments
+                if "overall_score" in a
+            ]
             if scores:
                 avg_score = sum(scores) / len(scores)
 

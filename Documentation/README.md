@@ -65,8 +65,9 @@ understanding, installing, and using the system.
 
 - **[Quick Start](Guides/QUICK_START.md)** - 5-minute setup
 - **[Installation](Guides/user-guide/installation.md)** - Platform-specific docs
-- **[Configuration](Guides/user-guide/configuration.md)** - Full settings guide
-- **[CLI Reference](Guides/user-guide/cli-reference.md)** - Command-line usage
+- [Configuration](Guides/user-guide/configuration.md) - Full settings guide
+- [Operations Guide](OPERATIONS_GUIDE.md) - Comprehensive command reference
+- [CLI Reference](Guides/user-guide/cli-reference.md) - Command-line usage
 - **[API Reference](Guides/user-guide/api-reference.md)** - REST API usage
 
 ### Reports & Audits

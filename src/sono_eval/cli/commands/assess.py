@@ -7,7 +7,11 @@ from rich.console import Console
 
 from sono_eval.assessment.engine import AssessmentEngine
 from sono_eval.assessment.models import AssessmentInput, PathType
-from sono_eval.cli.formatters import AssessmentFormatter, ErrorFormatter, ProgressFormatter
+from sono_eval.cli.formatters import (
+    AssessmentFormatter,
+    ErrorFormatter,
+    ProgressFormatter,
+)
 from sono_eval.utils.logger import get_logger
 
 console = Console()
@@ -34,7 +38,9 @@ def assess():
     multiple=True,
     help="Paths to evaluate (technical, design, collaboration, problem_solving, communication)",
 )
-@click.option("--output", type=click.Path(), help="Output file for results (JSON format)")
+@click.option(
+    "--output", type=click.Path(), help="Output file for results (JSON format)"
+)
 @click.option("--quiet", is_flag=True, help="Quiet mode - minimal output")
 @click.option("--verbose", is_flag=True, help="Verbose mode - detailed output")
 def run(
@@ -65,7 +71,9 @@ def run(
         sono-eval assess run --candidate-id john_doe --file solution.py --output results.json
     """
     if not quiet:
-        console.print(f"[bold blue]Running assessment for candidate: {candidate_id}[/bold blue]")
+        console.print(
+            f"[bold blue]Running assessment for candidate: {candidate_id}[/bold blue]"
+        )
 
         # Show personalized greeting if available
         try:
@@ -172,7 +180,9 @@ def run(
                 )
 
                 # Simulate stages for progress tracking
-                progress.update(task, advance=0.5, description="Initializing assessment engine...")
+                progress.update(
+                    task, advance=0.5, description="Initializing assessment engine..."
+                )
 
                 # Run the actual assessment
                 result = asyncio.run(engine.assess(assessment_input))
@@ -287,7 +297,9 @@ def run(
                 save_path = Prompt.ask("Output file path", default=default_output)
                 try:
                     with open(save_path, "w", encoding="utf-8") as f:
-                        json.dump(result.model_dump(mode="json"), f, indent=2, default=str)
+                        json.dump(
+                            result.model_dump(mode="json"), f, indent=2, default=str
+                        )
                     console.print(f"[green]✓ Results saved to {save_path}[/green]")
                 except Exception as e:
                     console.print(f"[red]Error saving results: {e}[/red]")
@@ -308,9 +320,13 @@ def run(
                 try:
                     from rich.prompt import Confirm
 
-                    if Confirm.ask("\n[cyan]Generate session report?[/cyan]", default=False):
+                    if Confirm.ask(
+                        "\n[cyan]Generate session report?[/cyan]", default=False
+                    ):
                         report_data = session.generate_session_report()
-                        from sono_eval.cli.commands.session import format_session_report_as_markdown
+                        from sono_eval.cli.commands.session import (
+                            format_session_report_as_markdown,
+                        )
 
                         report_md = format_session_report_as_markdown(report_data)
                         console.print("\n[bold cyan]Session Report:[/bold cyan]")

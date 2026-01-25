@@ -275,7 +275,9 @@ class ReplSession:
                 "5": PathType.COMMUNICATION,
             }
             path_list = [
-                path_map[p.strip()] for p in path_input.split(",") if p.strip() in path_map
+                path_map[p.strip()]
+                for p in path_input.split(",")
+                if p.strip() in path_map
             ]
 
         # Create assessment input
@@ -300,7 +302,9 @@ class ReplSession:
             except Exception as e:
                 from sono_eval.cli.error_recovery import internal_error
 
-                error = internal_error(e, context=f"Assessment failed for {self.current_candidate}")
+                error = internal_error(
+                    e, context=f"Assessment failed for {self.current_candidate}"
+                )
                 ErrorFormatter.format_recoverable_error(error)
                 return
 
@@ -324,7 +328,9 @@ class ReplSession:
             console.print(f"[green]✓ Current candidate set to: {args}[/green]")
         else:
             if self.current_candidate:
-                console.print(f"Current candidate: [cyan]{self.current_candidate}[/cyan]")
+                console.print(
+                    f"Current candidate: [cyan]{self.current_candidate}[/cyan]"
+                )
             else:
                 console.print("[yellow]No candidate set. Use: candidate <id>[/yellow]")
 

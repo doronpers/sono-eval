@@ -1,6 +1,5 @@
 """Tests for the ALL CLI commands."""
 
-
 from unittest.mock import MagicMock, patch
 
 import pytest

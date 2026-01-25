@@ -46,7 +46,9 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
 
         # HSTS only in production/staging to avoid locking out localhost dev
         if self.mode in ["production", "staging"]:
-            headers["Strict-Transport-Security"] = "max-age=63072000; includeSubDomains; preload"
+            headers["Strict-Transport-Security"] = (
+                "max-age=63072000; includeSubDomains; preload"
+            )
 
         for key, value in headers.items():
             # Don't overwrite if already set (e.g. by specific endpoint)

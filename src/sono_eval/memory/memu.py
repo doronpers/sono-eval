@@ -124,7 +124,9 @@ class MemUStorage:
                 iter_cache = iter(self._cache)
                 oldest_key = next(iter_cache)
                 del self._cache[oldest_key]
-                logger.debug(f"Evicted {oldest_key} from cache (LRU limit: {self.cache_limit})")
+                logger.debug(
+                    f"Evicted {oldest_key} from cache (LRU limit: {self.cache_limit})"
+                )
             # Add to cache (at end, making it most recently used)
             self._cache[candidate_id] = memory
 
@@ -189,7 +191,9 @@ class MemUStorage:
         logger.info(f"Added node {node_id} to {candidate_id}")
         return new_node
 
-    def update_memory_node(self, candidate_id: str, node_id: str, data: Dict[str, Any]) -> bool:
+    def update_memory_node(
+        self, candidate_id: str, node_id: str, data: Dict[str, Any]
+    ) -> bool:
         """
         Update data in an existing memory node.
 

@@ -37,7 +37,9 @@ class CouncilScorer:
             self._available = False
             return False
 
-    async def get_insights(self, content: Any, path: PathType) -> Optional[Dict[str, Any]]:
+    async def get_insights(
+        self, content: Any, path: PathType
+    ) -> Optional[Dict[str, Any]]:
         """
         Consult the council for insights on the provided content.
 
@@ -70,13 +72,16 @@ class CouncilScorer:
             result = await self._council.consult_async(query)
 
             # Extract score from synthesis if possible (naive regex extraction)
-            score_match = re.search(r"score[:\s]+(\d+)/100", result.synthesis, re.IGNORECASE)
+            score_match = re.search(
+                r"score[:\s]+(\d+)/100", result.synthesis, re.IGNORECASE
+            )
             score_est = float(score_match.group(1)) if score_match else None
 
             return {
                 "synthesis": result.synthesis,
                 "responses": [
-                    {"persona": r.persona.name, "content": r.content} for r in result.responses
+                    {"persona": r.persona.name, "content": r.content}
+                    for r in result.responses
                 ],
                 "score": score_est,
                 "confidence": 0.85,  # High confidence in AI council?

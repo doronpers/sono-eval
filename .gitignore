@@ -57,7 +57,7 @@ htmlcov/
 *.pth
 *.pt
 *.ckpt
-models/checkpoints/
+models/
 data/raw/
 data/processed/
 

@@ -22,7 +22,9 @@ def client():
 
 def test_login_flow(client):
     """Test login with valid credentials."""
-    response = client.post("/api/v1/auth/token", data={"username": "admin", "password": "secret"})
+    response = client.post(
+        "/api/v1/auth/token", data={"username": "admin", "password": "secret"}
+    )
     assert response.status_code == 200
     data = response.json()
     assert "access_token" in data
@@ -40,7 +42,9 @@ def test_login_invalid_credentials(client):
 
 def test_login_unknown_user(client):
     """Test login with unknown user."""
-    response = client.post("/api/v1/auth/token", data={"username": "unknown", "password": "pass"})
+    response = client.post(
+        "/api/v1/auth/token", data={"username": "unknown", "password": "pass"}
+    )
     assert response.status_code == 401
 
 
@@ -54,7 +58,9 @@ def test_protected_route_no_token(client):
 def test_protected_route_with_valid_token(client):
     """Test accessing protected route with valid token."""
     # Login first
-    login_res = client.post("/api/v1/auth/token", data={"username": "admin", "password": "secret"})
+    login_res = client.post(
+        "/api/v1/auth/token", data={"username": "admin", "password": "secret"}
+    )
     token = login_res.json()["access_token"]
 
     # Mock assessment engine to avoid actual processing logic failing

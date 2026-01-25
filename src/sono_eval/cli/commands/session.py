@@ -102,7 +102,9 @@ def session():
 
 
 @session.command()
-@click.option("--output", type=click.Path(), help="Output file for report (JSON or Markdown)")
+@click.option(
+    "--output", type=click.Path(), help="Output file for report (JSON or Markdown)"
+)
 @click.option(
     "--format",
     "output_format",

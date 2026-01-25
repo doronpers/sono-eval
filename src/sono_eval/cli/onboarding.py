@@ -145,7 +145,8 @@ def setup_configuration() -> dict:
             console.print("[green]✓[/green] Created storage directory")
         else:
             console.print(
-                "[yellow]⚠[/yellow] Storage directory not created. You may need to create it manually."
+                "[yellow]⚠[/yellow] Storage directory not created. "
+                "You may need to create it manually."
             )
 
     return config

@@ -28,7 +28,8 @@ def not_found_help(
     """Create help payload for not found errors."""
     return ErrorHelp(
         valid_examples=[example],
-        suggestion=suggestion or f"Confirm the {resource} exists or create it before retrying.",
+        suggestion=suggestion
+        or f"Confirm the {resource} exists or create it before retrying.",
         docs_url=docs_url,
     )
 

@@ -130,7 +130,9 @@ class DashboardData(BaseModel):
 
         # Confidence label
         confidence_label = (
-            "High" if result.confidence >= 0.8 else "Medium" if result.confidence >= 0.6 else "Low"
+            "High"
+            if result.confidence >= 0.8
+            else "Medium" if result.confidence >= 0.6 else "Low"
         )
 
         # Generate headline
@@ -167,7 +169,9 @@ class DashboardData(BaseModel):
                 color=path_colors.get(ps.path, "#6b7280"),
                 metrics_count=len(ps.metrics),
                 top_strength=ps.strengths[0] if ps.strengths else None,
-                top_improvement=(ps.areas_for_improvement[0] if ps.areas_for_improvement else None),
+                top_improvement=(
+                    ps.areas_for_improvement[0] if ps.areas_for_improvement else None
+                ),
                 breakdown=[
                     ScoreBreakdown(
                         label=m.name,
@@ -224,7 +228,9 @@ class DashboardData(BaseModel):
                 )
 
             if len(trend_data) >= 2:
-                recent_avg = sum(t.score for t in trend_data[-3:]) / min(3, len(trend_data))
+                recent_avg = sum(t.score for t in trend_data[-3:]) / min(
+                    3, len(trend_data)
+                )
                 older_avg = (
                     sum(t.score for t in trend_data[:-3]) / max(1, len(trend_data) - 3)
                     if len(trend_data) > 3
@@ -270,7 +276,9 @@ class DashboardData(BaseModel):
 
         except Exception as e:
             # Fallback if insights generation fails
-            logging.getLogger(__name__).warning("Failed to generate advanced insights: %s", str(e))
+            logging.getLogger(__name__).warning(
+                "Failed to generate advanced insights: %s", str(e)
+            )
 
         return cls(
             overall_score=result.overall_score,
@@ -476,9 +484,7 @@ class DashboardData(BaseModel):
         trend_color = (
             "#22c55e"
             if self.trend_direction == "improving"
-            else "#ef4444"
-            if self.trend_direction == "declining"
-            else "#6b7280"
+            else "#ef4444" if self.trend_direction == "declining" else "#6b7280"
         )
 
         return {
@@ -517,7 +523,9 @@ class DashboardData(BaseModel):
             return None
 
         # Sort by strength
-        sorted_motives = sorted(self.motives, key=lambda m: m.strength, reverse=True)[:8]  # Top 8
+        sorted_motives = sorted(self.motives, key=lambda m: m.strength, reverse=True)[
+            :8
+        ]  # Top 8
 
         labels = [m.label for m in sorted_motives]
         data = [m.strength * 100 for m in sorted_motives]  # Convert to percentage

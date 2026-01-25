@@ -33,11 +33,15 @@ class Config(BaseSettings):
     redis_password: Optional[str] = Field(default=None, alias="REDIS_PASSWORD")
 
     # Celery Task Queue
-    celery_broker_url: str = Field(default="redis://localhost:6379/1", alias="CELERY_BROKER_URL")
+    celery_broker_url: str = Field(
+        default="redis://localhost:6379/1", alias="CELERY_BROKER_URL"
+    )
     celery_result_backend: str = Field(
         default="redis://localhost:6379/2", alias="CELERY_RESULT_BACKEND"
     )
-    celery_task_always_eager: bool = Field(default=False, alias="CELERY_TASK_ALWAYS_EAGER")
+    celery_task_always_eager: bool = Field(
+        default=False, alias="CELERY_TASK_ALWAYS_EAGER"
+    )
 
     # MemU Configuration
     memu_storage_path: str = Field(default="./data/memory", alias="MEMU_STORAGE_PATH")
@@ -56,7 +60,9 @@ class Config(BaseSettings):
     tagstudio_auto_tag: bool = Field(default=True, alias="TAGSTUDIO_AUTO_TAG")
 
     # Assessment Configuration
-    assessment_engine_version: str = Field(default="1.0", alias="ASSESSMENT_ENGINE_VERSION")
+    assessment_engine_version: str = Field(
+        default="1.0", alias="ASSESSMENT_ENGINE_VERSION"
+    )
     assessment_enable_explanations: bool = Field(
         default=True, alias="ASSESSMENT_ENABLE_EXPLANATIONS"
     )
@@ -80,12 +86,16 @@ class Config(BaseSettings):
     )
 
     # Security
-    secret_key: str = Field(default="your-secret-key-here-change-in-production", alias="SECRET_KEY")
+    secret_key: str = Field(
+        default="your-secret-key-here-change-in-production", alias="SECRET_KEY"
+    )
     allowed_hosts: str = Field(default="localhost,127.0.0.1", alias="ALLOWED_HOSTS")
 
     # Auth
     jwt_algorithm: str = Field(default="HS256", alias="JWT_ALGORITHM")
-    access_token_expire_minutes: int = Field(default=30, alias="ACCESS_TOKEN_EXPIRE_MINUTES")
+    access_token_expire_minutes: int = Field(
+        default=30, alias="ACCESS_TOKEN_EXPIRE_MINUTES"
+    )
     api_key_prefix: str = Field(default="se_", alias="API_KEY_PREFIX")
 
     # Rate Limiting
@@ -107,7 +117,9 @@ class Config(BaseSettings):
 
     # Batch Processing
     batch_size: int = Field(default=32, alias="BATCH_SIZE")
-    max_concurrent_assessments: int = Field(default=4, alias="MAX_CONCURRENT_ASSESSMENTS")
+    max_concurrent_assessments: int = Field(
+        default=4, alias="MAX_CONCURRENT_ASSESSMENTS"
+    )
 
     def get_storage_path(self) -> Path:
         """Get the storage path for memory data."""

@@ -104,7 +104,9 @@ class TagStudioManager:
         # Store tags
         self._update_tag_index(file_id, tags)
 
-        logger.info(f"Added file {file_path.name} with ID {file_id} and {len(tags)} tags")
+        logger.info(
+            f"Added file {file_path.name} with ID {file_id} and {len(tags)} tags"
+        )
         return file_id
 
     def get_file(self, file_id: str) -> Optional[Dict[str, Any]]:
@@ -144,7 +146,9 @@ class TagStudioManager:
             return False
 
         current_tags = self._index[file_id]["tags"]
-        self._index[file_id]["tags"] = [t for t in current_tags if t not in tags_to_remove]
+        self._index[file_id]["tags"] = [
+            t for t in current_tags if t not in tags_to_remove
+        ]
         self._save_index()
         return True
 

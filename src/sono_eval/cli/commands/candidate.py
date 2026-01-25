@@ -53,7 +53,9 @@ def create(candidate_id: str, data: Optional[str], quiet: bool):
         # Check if candidate already exists
         existing = storage.get_candidate_memory(candidate_id)
         if existing:
-            console.print(f"[yellow]Warning: Candidate '{candidate_id}' already exists[/yellow]")
+            console.print(
+                f"[yellow]Warning: Candidate '{candidate_id}' already exists[/yellow]"
+            )
             if not click.confirm("Do you want to continue anyway?"):
                 raise click.Abort()
 
@@ -133,7 +135,9 @@ def list(quiet: bool):
 
         if not candidates:
             console.print("[yellow]No candidates found[/yellow]")
-            console.print("[dim]Use 'sono-eval candidate create' to create a candidate[/dim]")
+            console.print(
+                "[dim]Use 'sono-eval candidate create' to create a candidate[/dim]"
+            )
             return
 
         if quiet:
@@ -173,7 +177,9 @@ def delete(candidate_id: str):
 @candidate.command()
 @click.option("--id", "candidate_id", required=True, help="Candidate ID")
 @click.option("--limit", default=10, help="Maximum assessments to show")
-@click.option("--format", "output_format", type=click.Choice(["table", "json"]), default="table")
+@click.option(
+    "--format", "output_format", type=click.Choice(["table", "json"]), default="table"
+)
 def history(candidate_id: str, limit: int, output_format: str):
     """
     Show assessment history for a candidate.
@@ -221,7 +227,9 @@ def history(candidate_id: str, limit: int, output_format: str):
         if output_format == "json":
             console.print(json.dumps(assessments, indent=2, default=str))
         else:
-            console.print(f"\n[bold cyan]Assessment History for {candidate_id}[/bold cyan]")
+            console.print(
+                f"\n[bold cyan]Assessment History for {candidate_id}[/bold cyan]"
+            )
             console.print(
                 f"[dim]Showing {len(assessments)} of {len(assessments)} assessments[/dim]\n"
             )
@@ -236,7 +244,9 @@ def history(candidate_id: str, limit: int, output_format: str):
 
             for a in assessments:
                 score = a.get("overall_score", 0)
-                score_color = "green" if score >= 75 else "yellow" if score >= 60 else "red"
+                score_color = (
+                    "green" if score >= 75 else "yellow" if score >= 60 else "red"
+                )
 
                 # Format timestamp
                 ts = a.get("timestamp", "")
@@ -263,7 +273,9 @@ def history(candidate_id: str, limit: int, output_format: str):
                 scores = [a.get("overall_score", 0) for a in assessments]
                 recent_avg = sum(scores[:3]) / min(3, len(scores))
                 older_avg = (
-                    sum(scores[3:]) / max(1, len(scores) - 3) if len(scores) > 3 else recent_avg
+                    sum(scores[3:]) / max(1, len(scores) - 3)
+                    if len(scores) > 3
+                    else recent_avg
                 )
 
                 if recent_avg > older_avg + 5:

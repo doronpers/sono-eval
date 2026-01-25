@@ -196,11 +196,11 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
 
         # Initialize rate limiters
         if use_redis and redis_url:
-            self.per_minute: RateLimiterState | RedisRateLimiterState = RedisRateLimiterState(
-                max_requests_per_minute, 60, redis_url
+            self.per_minute: RateLimiterState | RedisRateLimiterState = (
+                RedisRateLimiterState(max_requests_per_minute, 60, redis_url)
             )
-            self.per_hour: RateLimiterState | RedisRateLimiterState = RedisRateLimiterState(
-                max_requests_per_hour, 3600, redis_url
+            self.per_hour: RateLimiterState | RedisRateLimiterState = (
+                RedisRateLimiterState(max_requests_per_hour, 3600, redis_url)
             )
             self.backend = "redis"
             logger.info("Rate limiting configured with Redis backend")
@@ -269,7 +269,9 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         hour_allowed = await self.per_hour.is_allowed(f"{client_ip}:hour")
         if not hour_allowed:
             if self.backend == "redis":
-                hour_allowed = await self._memory_fallback_hour.is_allowed(f"{client_ip}:hour")
+                hour_allowed = await self._memory_fallback_hour.is_allowed(
+                    f"{client_ip}:hour"
+                )
 
         if not hour_allowed:
             logger.warning(

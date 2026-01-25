@@ -1,7 +1,10 @@
 """Tests for real ML scorer implementation using AST analysis."""
 
 from sono_eval.assessment.scorers.ml import MLScorer
-from sono_eval.assessment.scorers.ml_utils import CodeComplexityAnalyzer, NamingConventionValidator
+from sono_eval.assessment.scorers.ml_utils import (
+    CodeComplexityAnalyzer,
+    NamingConventionValidator,
+)
 
 SAMPLE_CODE_GOOD = """
 def calculate_sum(a, b):
@@ -62,7 +65,10 @@ def test_ml_scorer_insights():
     assert insights is not None
     assert insights["score"] > 70
     assert "pattern" in insights
-    assert insights["pattern"] in ["clean_well_structured_code", "moderate_complexity_code"]
+    assert insights["pattern"] in [
+        "clean_well_structured_code",
+        "moderate_complexity_code",
+    ]
 
     # Test scoring complex code
     insights_bad = scorer.get_insights(SAMPLE_CODE_COMPLEX, "complex.py")

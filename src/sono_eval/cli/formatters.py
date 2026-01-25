@@ -96,7 +96,9 @@ class AssessmentFormatter:
         # Confidence indicator
         confidence_pct = result.confidence * 100
         confidence_color = (
-            "green" if confidence_pct >= 80 else "yellow" if confidence_pct >= 60 else "red"
+            "green"
+            if confidence_pct >= 80
+            else "yellow" if confidence_pct >= 60 else "red"
         )
         confidence_text = Text()
         confidence_text.append("Confidence: ", style="dim")
@@ -217,14 +219,18 @@ class AssessmentFormatter:
                 if isinstance(motive.evidence, list)
                 else str(motive.evidence)
             )
-            signal = evidence_text[:40] + "..." if len(evidence_text) > 40 else evidence_text
+            signal = (
+                evidence_text[:40] + "..." if len(evidence_text) > 40 else evidence_text
+            )
 
             table.add_row(motive_name, strength_display, signal)
 
         return table
 
     @classmethod
-    def format_complete_result(cls, result: AssessmentResult, verbose: bool = False) -> None:
+    def format_complete_result(
+        cls, result: AssessmentResult, verbose: bool = False
+    ) -> None:
         """Format and display a complete assessment result."""
         console.print()
         console.print("[bold green]✓ Assessment Complete![/bold green]")
@@ -235,7 +241,9 @@ class AssessmentFormatter:
         console.print()
 
         # Summary
-        console.print(Panel(result.summary, title="[bold]Summary[/bold]", border_style="blue"))
+        console.print(
+            Panel(result.summary, title="[bold]Summary[/bold]", border_style="blue")
+        )
         console.print()
 
         # Path scores table
@@ -348,7 +356,9 @@ class ErrorFormatter:
         console.print()
 
     @staticmethod
-    def format_validation_error(field: str, message: str, example: Optional[str] = None) -> None:
+    def format_validation_error(
+        field: str, message: str, example: Optional[str] = None
+    ) -> None:
         """Format validation error with example."""
         suggestions = [
             f"Check the '{field}' parameter",

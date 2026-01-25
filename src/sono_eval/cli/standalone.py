@@ -79,7 +79,9 @@ if __name__ == "__main__":
         # Session manager is optional - continue if it fails
 
         if hasattr(sys, "_getframe"):
-            print(f"Warning: Could not initialize session manager: {e}", file=sys.stderr)
+            print(
+                f"Warning: Could not initialize session manager: {e}", file=sys.stderr
+            )
 
     # Import main CLI after setting up environment
     from sono_eval.cli.main import cli

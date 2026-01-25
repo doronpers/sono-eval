@@ -84,7 +84,10 @@ def test_not_found_help_default_suggestion():
 
     assert help_obj.suggestion is not None
     assert "assessment" in help_obj.suggestion
-    assert "exists" in help_obj.suggestion.lower() or "create" in help_obj.suggestion.lower()
+    assert (
+        "exists" in help_obj.suggestion.lower()
+        or "create" in help_obj.suggestion.lower()
+    )
 
 
 def test_file_upload_help():
@@ -165,7 +168,10 @@ def test_service_help_default_hint():
 
     assert help_obj.suggestion is not None
     assert "Redis Cache" in help_obj.suggestion
-    assert "healthy" in help_obj.suggestion.lower() or "retry" in help_obj.suggestion.lower()
+    assert (
+        "healthy" in help_obj.suggestion.lower()
+        or "retry" in help_obj.suggestion.lower()
+    )
 
 
 def test_all_help_functions_return_error_help():

@@ -151,7 +151,9 @@ class AssessmentInput(BaseModel):
             "mobile_interactive",
         ]
         if v not in allowed_types:
-            raise ValueError(f'submission_type must be one of: {", ".join(allowed_types)}')
+            raise ValueError(
+                f'submission_type must be one of: {", ".join(allowed_types)}'
+            )
         return v
 
     @field_validator("content")

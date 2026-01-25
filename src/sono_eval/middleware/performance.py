@@ -42,7 +42,11 @@ class PerformanceLoggingMiddleware(BaseHTTPMiddleware):
             duration = time.time() - start_time
 
             # Log response
-            log_level = logging.WARNING if duration > self.slow_request_threshold else logging.INFO
+            log_level = (
+                logging.WARNING
+                if duration > self.slow_request_threshold
+                else logging.INFO
+            )
             log_message = (
                 f"Request completed: {request.method} {request.url.path} "
                 f"returned {response.status_code} in {duration:.3f}s"
