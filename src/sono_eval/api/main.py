@@ -287,6 +287,19 @@ mobile_app = create_mobile_app()
 app.mount("/mobile", mobile_app)
 
 
+# Simple favicon route (browsers request from root)
+@app.get("/favicon.ico")
+async def favicon():
+    """Return a simple SVG favicon."""
+    from fastapi.responses import Response
+    # Simple SVG favicon - Sono-Eval "S" logo
+    svg_favicon = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+        <rect width="100" height="100" fill="#2563eb"/>
+        <text x="50" y="70" font-family="Arial, sans-serif" font-size="60" font-weight="bold" fill="white" text-anchor="middle">S</text>
+    </svg>"""
+    return Response(content=svg_favicon, media_type="image/svg+xml")
+
+
 # Request/Response Models
 
 

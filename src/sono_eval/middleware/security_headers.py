@@ -28,16 +28,21 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         response = await call_next(request)
 
         # Baseline security headers
+        # CSP: Allow unsafe-inline in development for easier debugging
+        # In production, consider using nonces or hashes instead
+        # Default to allowing unsafe-inline if mode is not explicitly production
+        csp_script_src = "'self' 'unsafe-inline' 'unsafe-hashes'" if self.mode != "production" else "'self'"
+        
         headers = {
             "X-Content-Type-Options": "nosniff",
             "X-Frame-Options": "DENY",
             "X-XSS-Protection": "1; mode=block",
             "Referrer-Policy": "strict-origin-when-cross-origin",
-            # Basic CSP - strict but allows inline styles for now as they are common
+            # Basic CSP - allows inline styles and scripts in development
             "Content-Security-Policy": (
                 "default-src 'self'; "
                 "img-src 'self' data: https:; "
-                "script-src 'self'; "
+                f"script-src {csp_script_src}; "
                 "style-src 'self' 'unsafe-inline'; "
                 "object-src 'none'; "
                 "base-uri 'self';"

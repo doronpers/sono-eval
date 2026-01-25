@@ -108,6 +108,18 @@ def create_mobile_app() -> FastAPI:
     # Setup templates
     templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
 
+    # Simple favicon route
+    @app.get("/favicon.ico")
+    async def favicon():
+        """Return a simple SVG favicon."""
+        from fastapi.responses import Response
+        # Simple SVG favicon - Sono-Eval "S" logo
+        svg_favicon = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+            <rect width="100" height="100" fill="#2563eb"/>
+            <text x="50" y="70" font-family="Arial, sans-serif" font-size="60" font-weight="bold" fill="white" text-anchor="middle">S</text>
+        </svg>"""
+        return Response(content=svg_favicon, media_type="image/svg+xml")
+
     # Initialize assessment engine
     assessment_engine = AssessmentEngine()
 
@@ -117,31 +129,54 @@ def create_mobile_app() -> FastAPI:
     @app.get("/", response_class=HTMLResponse)
     async def mobile_home(request: Request):
         """Mobile home page with welcome and explanation."""
-        # Get or create session
-        session_id = request.cookies.get("session_id")
-        if not session_id or not session_manager.get_session(session_id):
-            session_id = session_manager.create_session()
-
-        session = session_manager.get_session(session_id)
+        # Start with default values
+        current_step = 0
+        session_id = None
+        
+        # Try to get/create session, but don't block if it fails
+        try:
+            session_id = request.cookies.get("session_id")
+            if session_id:
+                session = session_manager.get_session(session_id)
+                if session:
+                    current_step = session.current_step
+                else:
+                    # Session not found, try to create new one (non-blocking)
+                    try:
+                        session_id = session_manager.create_session()
+                    except Exception:
+                        session_id = None  # Continue without session
+            else:
+                # Try to create new session (non-blocking)
+                try:
+                    session_id = session_manager.create_session()
+                except Exception:
+                    session_id = None  # Continue without session
+        except Exception as e:
+            logger.warning(f"Session operation failed (non-critical): {e}")
+            # Continue without session - this is not critical for page load
 
         response = templates.TemplateResponse(
             request,
             "index.html",
             {
                 "title": "Welcome to Sono-Eval",
-                "current_step": session.current_step if session else 0,
+                "current_step": current_step,
             },
         )
 
-        # Set persistent cookie
-        if request.cookies.get("session_id") != session_id:
-            response.set_cookie(
-                key="session_id",
-                value=session_id,
-                max_age=30 * 24 * 60 * 60,  # 30 days
-                httponly=True,
-                samesite="lax",
-            )
+        # Set persistent cookie if we have a session_id
+        if session_id and request.cookies.get("session_id") != session_id:
+            try:
+                response.set_cookie(
+                    key="session_id",
+                    value=session_id,
+                    max_age=30 * 24 * 60 * 60,  # 30 days
+                    httponly=True,
+                    samesite="lax",
+                )
+            except Exception:
+                pass  # Cookie setting is non-critical
 
         return response
 
