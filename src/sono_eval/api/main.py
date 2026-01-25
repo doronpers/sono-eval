@@ -237,9 +237,6 @@ async def rate_limit_handler(request: Request, exc: RateLimitExceeded) -> Respon
 
 app.add_exception_handler(RateLimitExceeded, rate_limit_handler)
 
-# Add Security Headers Middleware
-app.add_middleware(SecurityHeadersMiddleware)
-
 # Add Request ID middleware (must be first to track all requests)
 app.add_middleware(RequestIDMiddleware)
 app.add_middleware(PerformanceMetricsMiddleware)
@@ -255,6 +252,7 @@ app.add_middleware(
 )
 
 # Add Security Headers middleware (outermost layer for headers)
+# This middleware respects the app_env mode and allows unsafe-inline in development
 app.add_middleware(SecurityHeadersMiddleware, mode=config.app_env)
 
 # Include Routers

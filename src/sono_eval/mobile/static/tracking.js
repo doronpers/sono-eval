@@ -1,14 +1,14 @@
 // Interaction Tracking System for Sono-Eval
 // Tracks user interactions from first page load for personalization and analytics
 
-(function() {
+(function () {
     'use strict';
 
     // Configuration
     const TRACKING_ENABLED = true;
     const BATCH_INTERVAL = 5000; // 5 seconds
     const MAX_QUEUE_SIZE = 50;
-    const TRACKING_ENDPOINT = '/mobile/api/mobile/track';
+    const TRACKING_ENDPOINT = '/mobile/api/track';
 
     // Session management
     let sessionId = null;
@@ -56,7 +56,7 @@
     // Setup event listeners
     function setupTrackingListeners() {
         // Track clicks
-        document.addEventListener('click', function(e) {
+        document.addEventListener('click', function (e) {
             // Skip tracking on navigation links and buttons (handled separately)
             if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON') {
                 return;
@@ -73,7 +73,7 @@
         }, true); // Use capture phase
 
         // Track scroll depth
-        let scrollTracking = debounce(function() {
+        let scrollTracking = debounce(function () {
             const scrollPercent = Math.round(
                 (window.scrollY / Math.max(document.body.scrollHeight - window.innerHeight, 1)) * 100
             );
@@ -88,7 +88,7 @@
         window.addEventListener('scroll', scrollTracking, { passive: true });
 
         // Track form interactions
-        document.addEventListener('input', function(e) {
+        document.addEventListener('input', function (e) {
             if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
                 trackEvent('form_input', {
                     field_name: e.target.name || e.target.id || 'unknown',
@@ -98,7 +98,7 @@
             }
         }, true);
 
-        document.addEventListener('change', function(e) {
+        document.addEventListener('change', function (e) {
             if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') {
                 trackEvent('form_change', {
                     field_name: e.target.name || e.target.id || 'unknown',
@@ -108,7 +108,7 @@
         }, true);
 
         // Track focus events (for accessibility and engagement)
-        document.addEventListener('focusin', function(e) {
+        document.addEventListener('focusin', function (e) {
             if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
                 trackEvent('focus', {
                     field_name: e.target.name || e.target.id || 'unknown',
@@ -117,7 +117,7 @@
         }, true);
 
         // Track page exit
-        window.addEventListener('beforeunload', function() {
+        window.addEventListener('beforeunload', function () {
             const timeOnPage = Date.now() - pageStartTime;
             trackEvent('page_exit', {
                 time_on_page: timeOnPage,
@@ -126,7 +126,7 @@
         });
 
         // Track visibility changes (tab switching)
-        document.addEventListener('visibilitychange', function() {
+        document.addEventListener('visibilitychange', function () {
             trackEvent('visibility_change', {
                 hidden: document.hidden,
             });
@@ -181,7 +181,7 @@
             },
             body: JSON.stringify(payload),
             keepalive: true, // Important for beforeunload events
-        }).catch(function(error) {
+        }).catch(function (error) {
             // If send fails, re-queue events (up to limit)
             console.warn('Tracking failed, re-queuing events:', error);
             eventQueue.unshift(...events.slice(-MAX_QUEUE_SIZE));
@@ -246,12 +246,12 @@
     }
 
     // Handle online/offline events
-    window.addEventListener('online', function() {
+    window.addEventListener('online', function () {
         trackEvent('connection_restored');
         flushQueue();
     });
 
-    window.addEventListener('offline', function() {
+    window.addEventListener('offline', function () {
         trackEvent('connection_lost');
     });
 })();

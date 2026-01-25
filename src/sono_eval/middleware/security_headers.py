@@ -33,6 +33,9 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         # Default to allowing unsafe-inline if mode is not explicitly production
         csp_script_src = "'self' 'unsafe-inline' 'unsafe-hashes'" if self.mode != "production" else "'self'"
         
+        # Force set CSP header (overwrite if exists) to ensure correct policy
+        # This ensures we always use the correct CSP for the current mode
+        
         headers = {
             "X-Content-Type-Options": "nosniff",
             "X-Frame-Options": "DENY",
@@ -56,8 +59,11 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
             )
 
         for key, value in headers.items():
-            # Don't overwrite if already set (e.g. by specific endpoint)
-            if key not in response.headers:
+            # Always set CSP header to ensure correct policy (overwrite if exists)
+            # Other headers: Don't overwrite if already set (e.g. by specific endpoint)
+            if key == "Content-Security-Policy":
+                response.headers[key] = value
+            elif key not in response.headers:
                 response.headers[key] = value
 
         return response

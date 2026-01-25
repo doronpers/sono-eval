@@ -113,6 +113,7 @@ def create_mobile_app() -> FastAPI:
     async def favicon():
         """Return a simple SVG favicon."""
         from fastapi.responses import Response
+
         # Simple SVG favicon - Sono-Eval "S" logo
         svg_favicon = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
             <rect width="100" height="100" fill="#2563eb"/>
@@ -132,7 +133,7 @@ def create_mobile_app() -> FastAPI:
         # Start with default values
         current_step = 0
         session_id = None
-        
+
         # Try to get/create session, but don't block if it fails
         try:
             session_id = request.cookies.get("session_id")
@@ -295,7 +296,7 @@ def create_mobile_app() -> FastAPI:
 
     # --- API Endpoints ---
 
-    @app.post("/api/mobile/assess")
+    @app.post("/api/assess")
     async def mobile_submit_assessment(submission: MobileSubmission):
         """Submit mobile assessment for evaluation."""
         try:
@@ -339,7 +340,7 @@ def create_mobile_app() -> FastAPI:
                 },
             )
 
-    @app.get("/api/mobile/explain/{path}")
+    @app.get("/api/explain/{path}")
     async def mobile_explain_path(path: str):
         """Get detailed explanation for a specific path."""
         path_lower = path.lower()
@@ -350,7 +351,7 @@ def create_mobile_app() -> FastAPI:
 
         raise HTTPException(status_code=404, detail=f"Path '{path}' not found")
 
-    @app.get("/api/mobile/recommendations")
+    @app.get("/api/recommendations")
     async def get_path_recommendations(
         candidate_id: Optional[str] = None,
         experience: Optional[str] = None,
@@ -413,7 +414,7 @@ def create_mobile_app() -> FastAPI:
             logger.error(f"Error generating recommendations: {e}")
             return {"success": False, "recommendations": [], "count": 0}
 
-    @app.post("/api/mobile/track")
+    @app.post("/api/track")
     async def track_interactions(batch: TrackingBatch):
         """
         Track user interactions for analytics and personalization.
@@ -461,7 +462,7 @@ def create_mobile_app() -> FastAPI:
                 },
             )
 
-    @app.get("/api/mobile/easter-eggs")
+    @app.get("/api/easter-eggs")
     async def list_easter_eggs():
         """List available easter eggs (for discovery documentation)."""
         from sono_eval.mobile.easter_eggs import get_registry
@@ -475,7 +476,7 @@ def create_mobile_app() -> FastAPI:
             "message": "Easter eggs are discoverable features that unlock valuable functionality",
         }
 
-    @app.post("/api/mobile/session/store")
+    @app.post("/api/session/store")
     async def store_session_data(data: Dict[str, Any]):
         """
         Store assessment result in server-side session for retrieval.
@@ -500,7 +501,7 @@ def create_mobile_app() -> FastAPI:
             },
         )
 
-    @app.get("/api/mobile/visualization/dashboard/{assessment_id}")
+    @app.get("/api/visualization/dashboard/{assessment_id}")
     async def get_dashboard_visualization(assessment_id: str):
         """
         Get complete dashboard visualization data for an assessment.
@@ -531,7 +532,7 @@ def create_mobile_app() -> FastAPI:
                 },
             )
 
-    @app.get("/api/mobile/visualization/radar/{assessment_id}")
+    @app.get("/api/visualization/radar/{assessment_id}")
     async def get_radar_chart_data(assessment_id: str):
         """Get radar chart data for path scores."""
         try:
@@ -564,7 +565,7 @@ def create_mobile_app() -> FastAPI:
                 status_code=500, content={"success": False, "error": str(e)}
             )
 
-    @app.get("/api/mobile/visualization/progress/{assessment_id}")
+    @app.get("/api/visualization/progress/{assessment_id}")
     async def get_progress_ring_data(assessment_id: str):
         """Get progress ring data for overall score."""
         try:
@@ -588,7 +589,7 @@ def create_mobile_app() -> FastAPI:
                 status_code=500, content={"success": False, "error": str(e)}
             )
 
-    @app.get("/api/mobile/visualization/breakdowns/{assessment_id}")
+    @app.get("/api/visualization/breakdowns/{assessment_id}")
     async def get_path_breakdowns(assessment_id: str):
         """Get detailed breakdown charts for each path."""
         try:
@@ -621,7 +622,7 @@ def create_mobile_app() -> FastAPI:
                 status_code=500, content={"success": False, "error": str(e)}
             )
 
-    @app.get("/api/mobile/visualization/trend/{candidate_id}")
+    @app.get("/api/visualization/trend/{candidate_id}")
     async def get_trend_data(candidate_id: str, limit: int = 10):
         """Get trend chart data for candidate's assessment history."""
         try:
@@ -649,7 +650,7 @@ def create_mobile_app() -> FastAPI:
                 status_code=500, content={"success": False, "error": str(e)}
             )
 
-    @app.get("/api/mobile/visualization/motives/{assessment_id}")
+    @app.get("/api/visualization/motives/{assessment_id}")
     async def get_motives_chart_data(assessment_id: str):
         """Get micro-motives visualization data."""
         try:
