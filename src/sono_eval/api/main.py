@@ -257,12 +257,23 @@ app.add_middleware(
 # Add Security Headers middleware (outermost layer for headers)
 app.add_middleware(SecurityHeadersMiddleware, mode=config.app_env)
 
-# CORS Configuration
-origins = config.cors_allowed_origins.split(",")
+# Include Routers
+app.include_router(auth_router, prefix="/api/v1/auth", tags=["auth"])
+from sono_eval.api.routes.batch import router as batch_router  # noqa: E402
+
+app.include_router(batch_router, prefix="/api/v1/assessments/batch", tags=["batch"])
+
+# CORS middleware - origins configured from ALLOWED_HOSTS
+# Security: Startup validation ensures proper configuration in production/staging
+allowed_origins = (
+    [origin.strip() for origin in config.allowed_hosts.split(",")]
+    if config.allowed_hosts and config.allowed_hosts != "*"
+    else ["*"]
+)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=allowed_origins,
     allow_credentials=config.cors_allow_credentials,
     allow_methods=["*"],
     allow_headers=["*"],

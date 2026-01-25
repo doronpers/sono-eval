@@ -65,7 +65,7 @@ class PerformanceLoggingMiddleware(BaseHTTPMiddleware):
             )
 
             response.headers["X-Process-Time"] = str(duration)
-            return response
+            return response  # type: ignore
 
         except Exception as e:
             duration = time.time() - start_time

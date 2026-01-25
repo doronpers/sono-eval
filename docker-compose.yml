@@ -64,7 +64,7 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: sono-eval-celery-worker
-    command: celery -A sono_eval.tasks.celery_app worker --loglevel=info --concurrency=4
+    command: celery -A sono_eval.core.celery_app worker --loglevel=info --concurrency=4
     environment:
       - APP_ENV=development
       - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/sono_eval

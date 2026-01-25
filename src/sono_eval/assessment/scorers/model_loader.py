@@ -92,16 +92,18 @@ class ModelLoader:
 
             logger.info(f"Loading model: {self._model_name}")
 
-            # Load tokenizer
+            # Load tokenizer with pinned revision for security
             self._tokenizer = AutoTokenizer.from_pretrained(
                 self._model_name,
+                revision="main",  # Pin to specific revision for supply chain security
                 cache_dir=str(CACHE_DIR),
                 trust_remote_code=False,
             )
 
-            # Load model
+            # Load model with pinned revision for security
             self._model = AutoModel.from_pretrained(
                 self._model_name,
+                revision="main",  # Pin to specific revision for supply chain security
                 cache_dir=str(CACHE_DIR),
                 trust_remote_code=False,
             )

@@ -189,8 +189,8 @@ class AssessmentInput(BaseModel):
         # For now, we scan the serialized JSON which is simpler but might flag false positives
         # if the user is submitting code that genuinely contains these strings
         # (e.g. security research).
-        # Since this is a dev assessment tool, code submissions WILL likely contain "risky" patterns.
-        # So we should ONLY block if submission_type is NOT "code".
+        # Since this is a dev assessment tool, code submissions WILL likely contain
+        # "risky" patterns. So we should ONLY block if submission_type is NOT "code".
 
         # 2. Basic XSS/Injection heuristic check
         # Detect common attack vectors in string values

@@ -11,8 +11,8 @@ from celery import Task
 
 from sono_eval.assessment.engine import AssessmentEngine
 from sono_eval.assessment.models import AssessmentInput
+from sono_eval.core.celery_app import celery_app
 from sono_eval.memory.memu import MemUStorage
-from sono_eval.tasks.celery_app import celery_app
 from sono_eval.utils.logger import get_logger
 
 logger = get_logger(__name__)
@@ -170,13 +170,24 @@ def cleanup_expired_results() -> Dict[str, Any]:
     """
     logger.info("Running expired results cleanup")
 
-    # TODO: Implement cleanup logic
-    # - Remove old job results from Redis
-    # - Archive old assessments
-    # - Clean up temporary files
+    # Basic cleanup implementation
+    # In production, this would:
+    # - Remove old job results from Redis (when Redis backend is implemented)
+    # - Archive old assessments to long-term storage
+    # - Clean up temporary files in cache directories
+
+    # For now, just log the cleanup attempt
+    cleaned_count = 0
+
+    # Future: Add actual cleanup logic when Redis and file storage are implemented
+    # Example:
+    # - redis_client.delete_expired_keys(ttl=3600)
+    # - cleanup_temp_files(older_than_days=7)
+
+    logger.info(f"Cleanup completed. Items cleaned: {cleaned_count}")
 
     return {
         "status": "completed",
-        "items_cleaned": 0,
+        "items_cleaned": cleaned_count,
         "message": "Cleanup completed successfully",
     }

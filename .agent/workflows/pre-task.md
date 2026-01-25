@@ -21,10 +21,24 @@ This file contains critical instructions including:
 
 ## Verification
 
-After completing your task:
+After completing your task, run the pre-commit checklist:
 
 ```bash
+# Format and lint
 black .
 flake8 .
+
+# Check types
+mypy src/sono_eval/ --ignore-missing-imports --no-strict-optional
+
+# Check YAML
+yamllint .
+
+# Run all pre-commit hooks (final check)
+pre-commit run --all-files
+
+# Run tests
 pytest
 ```
+
+**CRITICAL**: See `.agent/workflows/pre-commit-checklist.md` for detailed requirements to prevent commit failures.

@@ -81,3 +81,35 @@ export interface PaginatedResponse<T> {
   page_size: number;
   pages: number;
 }
+
+// Batch processing types
+export interface BatchSubmission {
+  items: AssessmentInput[];
+  callback_url?: string;
+}
+
+export interface AssessmentInput {
+  candidate_id: string;
+  submission_type: 'code' | 'text' | 'file';
+  content: {
+    code?: string;
+    text?: string;
+    description?: string;
+  };
+  paths_to_evaluate: string[];
+  metadata?: Record<string, unknown>;
+}
+
+export interface BatchStatus {
+  batch_id: string;
+  total: number;
+  completed: number;
+  failed: number;
+  pending: number;
+  status: 'pending' | 'processing' | 'completed' | 'failed';
+  results?: Array<{
+    data?: AssessmentResult;
+    error?: string;
+    status: 'completed' | 'failed';
+  }>;
+}
