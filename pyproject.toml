@@ -120,13 +120,3 @@ exclude_dirs = ["tests", "venv", "venv-test", ".venv", "scripts"]
 # Note: scripts/ directory is excluded as it contains security audit tools
 # that intentionally use subprocess and other "risky" patterns
 
-[tool.pyrefly]
-project-excludes = [
-    "build",
-    "dist",
-    "models",
-    "data",
-    "venv",
-    ".venv",
-    "**/__pycache__"
-]
