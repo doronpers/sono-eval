@@ -217,13 +217,14 @@ class TestMLScorerGetInsights:
         result = scorer.get_insights({"code": ""}, PathType.TECHNICAL)
         assert result is None
 
-    def test_returns_none_for_no_text(self):
-        """Test that content with no extractable text returns None."""
+    def test_insights_for_empty_dict_content(self):
+        """Test that an empty dict as content is handled and produces insights."""
         scorer = MLScorer()
         result = scorer.get_insights({}, PathType.TECHNICAL)
-        # extract_text_content returns str(content) when no keys match,
-        # so this won't be None/empty
-        assert result is not None or result is None  # depends on fallback text
+        # extract_text_content returns str(content), so this is not None.
+        # We should expect a valid insights dictionary.
+        assert result is not None
+        assert "score" in result
 
     def test_ast_only_insights_for_valid_python(self):
         """Test AST-only analysis for valid Python code."""
