@@ -61,7 +61,9 @@ class TestCompleteAssessmentWorkflow:
                 json={
                     "candidate_id": "candidate_001",
                     "submission_type": "code",
-                    "content": {"code": "def fibonacci(n): return n if n <= 1 else fibonacci(n-1) + fibonacci(n-2)"},
+                    "content": {
+                        "code": "def fibonacci(n): return n if n <= 1 else fibonacci(n-1) + fibonacci(n-2)"
+                    },
                     "paths_to_evaluate": ["technical", "problem_solving"],
                 },
             )
@@ -78,10 +80,14 @@ class TestCompleteAssessmentWorkflow:
             # Verify engine was called
             mock_engine.assess.assert_called_once()
 
-    def test_assessment_with_memory_storage(self, client_with_auth, mock_assessment_result):
+    def test_assessment_with_memory_storage(
+        self, client_with_auth, mock_assessment_result
+    ):
         """Test that assessment results are stored in memory."""
-        with patch("sono_eval.api.main.assessment_engine") as mock_engine, \
-             patch("sono_eval.api.main.memu_storage") as mock_storage:
+        with (
+            patch("sono_eval.api.main.assessment_engine") as mock_engine,
+            patch("sono_eval.api.main.memu_storage") as mock_storage,
+        ):
 
             mock_engine.assess = AsyncMock(return_value=mock_assessment_result)
             mock_memory = Mock()
@@ -105,8 +111,10 @@ class TestCompleteAssessmentWorkflow:
 
     def test_assessment_with_tagging(self, client_with_auth, mock_assessment_result):
         """Test assessment with automatic tag generation."""
-        with patch("sono_eval.api.main.assessment_engine") as mock_engine, \
-             patch("sono_eval.api.main.tag_generator") as mock_tagger:
+        with (
+            patch("sono_eval.api.main.assessment_engine") as mock_engine,
+            patch("sono_eval.api.main.tag_generator") as mock_tagger,
+        ):
 
             mock_engine.assess = AsyncMock(return_value=mock_assessment_result)
 
@@ -196,8 +204,10 @@ class TestErrorPropagation:
 
     def test_memory_error_handling(self, client_with_auth, mock_assessment_result):
         """Test handling when memory storage fails."""
-        with patch("sono_eval.api.main.assessment_engine") as mock_engine, \
-             patch("sono_eval.api.main.memu_storage") as mock_storage:
+        with (
+            patch("sono_eval.api.main.assessment_engine") as mock_engine,
+            patch("sono_eval.api.main.memu_storage") as mock_storage,
+        ):
 
             mock_engine.assess = AsyncMock(return_value=mock_assessment_result)
             mock_storage.get_candidate_memory.side_effect = Exception("Storage error")
@@ -298,14 +308,9 @@ class TestFileUploadWorkflow:
             mock_tag.model_dump.return_value = {"text": "python", "score": 0.98}
             mock_tagger.generate_tags.return_value = [mock_tag]
 
-            files = {
-                "file": ("test.py", b"def hello(): pass", "text/x-python")
-            }
+            files = {"file": ("test.py", b"def hello(): pass", "text/x-python")}
 
-            response = client_with_auth.post(
-                "/api/v1/files/upload",
-                files=files
-            )
+            response = client_with_auth.post("/api/v1/files/upload", files=files)
 
             assert response.status_code == 200
             data = response.json()
@@ -317,14 +322,9 @@ class TestFileUploadWorkflow:
         # Create large file (> 10MB if that's the limit)
         large_content = b"x" * (11 * 1024 * 1024)
 
-        files = {
-            "file": ("large.py", large_content, "text/x-python")
-        }
+        files = {"file": ("large.py", large_content, "text/x-python")}
 
-        response = client_with_auth.post(
-            "/api/v1/files/upload",
-            files=files
-        )
+        response = client_with_auth.post("/api/v1/files/upload", files=files)
 
         # Should reject large files
         assert response.status_code in [400, 413, 422]
@@ -355,10 +355,7 @@ class TestBatchProcessing:
 
             # Note: This endpoint might not exist yet
             # This is a forward-looking test
-            response = client_with_auth.post(
-                "/api/v1/batch/assess",
-                json=batch_data
-            )
+            response = client_with_auth.post("/api/v1/batch/assess", json=batch_data)
 
             # Endpoint might return 404 if not implemented
             # This test documents expected behavior
@@ -389,7 +386,10 @@ class TestSecurityHeaders:
             headers = response.headers
 
             # At minimum should have CORS headers
-            assert "access-control-allow-origin" in headers or "Access-Control-Allow-Origin" in headers
+            assert (
+                "access-control-allow-origin" in headers
+                or "Access-Control-Allow-Origin" in headers
+            )
 
 
 class TestAPIPerformance:
@@ -424,7 +424,9 @@ class TestAPIPerformance:
 class TestDataConsistency:
     """Test data consistency across operations."""
 
-    def test_assessment_result_consistency(self, client_with_auth, mock_assessment_result):
+    def test_assessment_result_consistency(
+        self, client_with_auth, mock_assessment_result
+    ):
         """Test that assessment results are consistent."""
         with patch("sono_eval.api.main.assessment_engine") as mock_engine:
             mock_engine.assess = AsyncMock(return_value=mock_assessment_result)
@@ -444,7 +446,9 @@ class TestDataConsistency:
             assert response2.status_code == 200
 
             # Scores should be identical (same mock result)
-            assert response1.json()["overall_score"] == response2.json()["overall_score"]
+            assert (
+                response1.json()["overall_score"] == response2.json()["overall_score"]
+            )
 
 
 class TestEdgeCasesIntegration:
@@ -482,7 +486,9 @@ class TestEdgeCasesIntegration:
         # Should either process or reject with size limit
         assert response.status_code in [200, 400, 413, 422]
 
-    def test_special_characters_in_candidate_id(self, client_with_auth, mock_assessment_result):
+    def test_special_characters_in_candidate_id(
+        self, client_with_auth, mock_assessment_result
+    ):
         """Test handling of special characters in candidate ID."""
         with patch("sono_eval.api.main.assessment_engine") as mock_engine:
             mock_engine.assess = AsyncMock(return_value=mock_assessment_result)

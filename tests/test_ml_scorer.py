@@ -14,7 +14,6 @@ from sono_eval.assessment.models import (
 from sono_eval.assessment.scorers.ml import MLScorer
 from sono_eval.assessment.scorers.model_loader import ModelLoader, get_model_loader
 
-
 # --- ModelLoader Tests ---
 
 
@@ -96,7 +95,9 @@ class TestModelLoaderProperties:
         loader._enabled = True
 
         with patch.object(
-            loader, "_load_transformer_model", side_effect=ImportError("no transformers")
+            loader,
+            "_load_transformer_model",
+            side_effect=ImportError("no transformers"),
         ):
             result = loader.load()
             assert result is False
@@ -299,9 +300,7 @@ class TestMLScorerGetInsights:
         scorer.load_model_if_available()
 
         simple_code = (
-            "def add(a, b):\n"
-            '    """Add two numbers."""\n'
-            "    return a + b\n"
+            "def add(a, b):\n" '    """Add two numbers."""\n' "    return a + b\n"
         )
 
         complex_code = (
@@ -557,7 +556,11 @@ class TestMLScorerScoreHelpers:
 
         # High complexity = low score
         score = scorer._score_complexity(
-            {"cyclomatic_complexity": 25, "nesting_depth": 8, "function_length_avg": 100}
+            {
+                "cyclomatic_complexity": 25,
+                "nesting_depth": 8,
+                "function_length_avg": 100,
+            }
         )
         assert score < 30
 
@@ -588,14 +591,20 @@ class TestMLScorerScoreHelpers:
 
         # High complexity triggers recommendation
         recs = scorer._generate_recommendations(
-            {"cyclomatic_complexity": 20, "nesting_depth": 6, "function_length_avg": 60},
+            {
+                "cyclomatic_complexity": 20,
+                "nesting_depth": 6,
+                "function_length_avg": 60,
+            },
             {"consistency": 0.4},
             {"flesch_reading_ease": 0},
         )
         assert any("complex" in r.lower() for r in recs)
         assert any("nesting" in r.lower() for r in recs)
         assert any("naming" in r.lower() for r in recs)
-        assert any("documentation" in r.lower() or "docstring" in r.lower() for r in recs)
+        assert any(
+            "documentation" in r.lower() or "docstring" in r.lower() for r in recs
+        )
 
     def test_recommendations_for_good_code(self):
         """Test that good code gets positive recommendation."""

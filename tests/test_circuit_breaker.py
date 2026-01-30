@@ -124,10 +124,7 @@ class TestCircuitBreakerBasics:
     async def test_half_open_success_closes_circuit(self):
         """Test that successful calls in HALF_OPEN close the circuit."""
         cb = CircuitBreaker(
-            name="test",
-            failure_threshold=2,
-            recovery_timeout=1,
-            success_threshold=2
+            name="test", failure_threshold=2, recovery_timeout=1, success_threshold=2
         )
 
         async def failing_func():
@@ -157,10 +154,7 @@ class TestCircuitBreakerBasics:
     async def test_half_open_failure_reopens_circuit(self):
         """Test that failure in HALF_OPEN reopens the circuit."""
         cb = CircuitBreaker(
-            name="test",
-            failure_threshold=2,
-            recovery_timeout=1,
-            success_threshold=2
+            name="test", failure_threshold=2, recovery_timeout=1, success_threshold=2
         )
 
         async def failing_func():
@@ -244,10 +238,7 @@ class TestCircuitBreakerConfiguration:
     async def test_custom_success_threshold(self):
         """Test custom success threshold for recovery."""
         cb = CircuitBreaker(
-            name="test",
-            failure_threshold=1,
-            recovery_timeout=1,
-            success_threshold=3
+            name="test", failure_threshold=1, recovery_timeout=1, success_threshold=3
         )
 
         async def failing_func():
@@ -360,15 +351,11 @@ class TestCircuitBreakerPool:
         pool = CircuitBreakerPool()
 
         cb1 = pool.get_or_create(
-            "critical-service",
-            failure_threshold=2,
-            recovery_timeout=30
+            "critical-service", failure_threshold=2, recovery_timeout=30
         )
 
         cb2 = pool.get_or_create(
-            "non-critical-service",
-            failure_threshold=10,
-            recovery_timeout=5
+            "non-critical-service", failure_threshold=10, recovery_timeout=5
         )
 
         assert cb1.failure_threshold == 2
@@ -429,6 +416,7 @@ class TestCircuitBreakerConcurrency:
 
         async def sometimes_fails(fail_probability):
             import random
+
             await asyncio.sleep(0.001)
             if random.random() < fail_probability:
                 raise ValueError("Random failure")
@@ -439,7 +427,11 @@ class TestCircuitBreakerConcurrency:
         results = await asyncio.gather(*tasks, return_exceptions=True)
 
         # State should be consistent (not corrupted by race conditions)
-        assert cb.state in [CircuitState.CLOSED, CircuitState.OPEN, CircuitState.HALF_OPEN]
+        assert cb.state in [
+            CircuitState.CLOSED,
+            CircuitState.OPEN,
+            CircuitState.HALF_OPEN,
+        ]
 
 
 class TestCircuitBreakerEdgeCases:
@@ -507,10 +499,7 @@ class TestCircuitBreakerEdgeCases:
         """Test behavior with minimal success threshold."""
         # success_threshold must be at least 1 for recovery
         cb = CircuitBreaker(
-            name="test",
-            failure_threshold=1,
-            recovery_timeout=1,
-            success_threshold=1
+            name="test", failure_threshold=1, recovery_timeout=1, success_threshold=1
         )
 
         async def failing_func():
@@ -541,7 +530,7 @@ class TestCircuitBreakerRealWorldScenarios:
             name="database",
             failure_threshold=3,
             recovery_timeout=2,
-            success_threshold=2
+            success_threshold=2,
         )
 
         connection_attempts = 0
@@ -570,9 +559,7 @@ class TestCircuitBreakerRealWorldScenarios:
     async def test_external_api_scenario(self):
         """Simulate external API rate limiting."""
         api_breaker = CircuitBreaker(
-            name="external-api",
-            failure_threshold=5,
-            recovery_timeout=1
+            name="external-api", failure_threshold=5, recovery_timeout=1
         )
 
         call_count = 0
@@ -610,6 +597,7 @@ class TestCircuitBreakerRealWorldScenarios:
             # Service A depends on Service B
             async def service_b_call():
                 raise Exception("Service B down")
+
             return await service_b.call(service_b_call)
 
         # Service B failures

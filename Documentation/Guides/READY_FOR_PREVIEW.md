@@ -51,7 +51,7 @@ python3 verify_setup.py
 # Install
 python3 -m venv venv
 source venv/bin/activate
-pip install -r requirements.txt
+pip install -r config/requirements.txt
 pip install -e .
 
 # Configure
@@ -121,7 +121,7 @@ curl http://localhost:8000/api/v1/candidates
 Before running, verify:
 
 - [ ] Python 3.13+ installed
-- [ ] Dependencies installed: `pip install -r requirements.txt`
+- [ ] Dependencies installed: `pip install -r config/requirements.txt`
 - [ ] Package installed: `pip install -e .`
 - [ ] .env file created: `cp .env.example .env`
 - [ ] Port 8000 available (or change API_PORT in .env)

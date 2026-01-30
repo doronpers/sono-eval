@@ -254,7 +254,9 @@ class TestPDFGeneration:
         result = generator.generate(minimal_result)
         assert isinstance(result, bytes)
 
-    def test_generate_special_characters_in_candidate_id(self, generator, minimal_result):
+    def test_generate_special_characters_in_candidate_id(
+        self, generator, minimal_result
+    ):
         """Test generation with special characters in candidate ID."""
         minimal_result.candidate_id = "user-with_special-chars-123"
         result = generator.generate(minimal_result)

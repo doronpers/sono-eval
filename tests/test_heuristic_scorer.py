@@ -29,6 +29,7 @@ def scorer(config):
 @pytest.fixture
 def make_input():
     """Factory fixture to create AssessmentInput with given code."""
+
     def _make(code: str, **kwargs):
         content = {"code": code}
         content.update(kwargs.pop("extra_content", {}))
@@ -38,6 +39,7 @@ def make_input():
             content=content,
             **kwargs,
         )
+
     return _make
 
 
@@ -79,7 +81,9 @@ class TestTechnicalPath:
         )
 
         simple_metrics = scorer.generate_metrics_for_path(PathType.TECHNICAL, simple)
-        structured_metrics = scorer.generate_metrics_for_path(PathType.TECHNICAL, structured)
+        structured_metrics = scorer.generate_metrics_for_path(
+            PathType.TECHNICAL, structured
+        )
 
         simple_cq = next(m for m in simple_metrics if m.name == "Code Quality")
         structured_cq = next(m for m in structured_metrics if m.name == "Code Quality")
@@ -128,7 +132,9 @@ class TestTechnicalPath:
             ),
         ]
 
-        metrics_no_viol = scorer.generate_metrics_for_path(PathType.TECHNICAL, input_data)
+        metrics_no_viol = scorer.generate_metrics_for_path(
+            PathType.TECHNICAL, input_data
+        )
         metrics_with_viol = scorer.generate_metrics_for_path(
             PathType.TECHNICAL, input_data, pattern_violations=violations
         )
@@ -260,10 +266,7 @@ class TestCollaborationPath:
     def test_documentation_boosts_for_docstrings(self, scorer, make_input):
         """Test that docstrings boost documentation score."""
         input_data = make_input(
-            '"""Module doc."""\n'
-            "def f():\n"
-            '    """Function doc."""\n'
-            "    pass"
+            '"""Module doc."""\n' "def f():\n" '    """Function doc."""\n' "    pass"
         )
         metrics = scorer.generate_metrics_for_path(PathType.COLLABORATION, input_data)
         doc = next(m for m in metrics if m.name == "Documentation")
@@ -336,8 +339,7 @@ class TestProblemSolvingPath:
     def test_optimization_keywords(self, scorer, make_input):
         """Test that optimization keywords boost the score."""
         input_data = make_input(
-            "# optimize for O(n log n) complexity\n"
-            "def fast_sort(data): pass"
+            "# optimize for O(n log n) complexity\n" "def fast_sort(data): pass"
         )
         metrics = scorer.generate_metrics_for_path(PathType.PROBLEM_SOLVING, input_data)
         opt = next(m for m in metrics if m.name == "Optimization")

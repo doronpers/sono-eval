@@ -66,14 +66,18 @@ def assess():
 @click.option("--file", type=click.Path(exists=True), help="Code file to assess")
 @click.option("--content", help="Content to assess")
 @click.option(
-    "--type", default="code", help="Submission type (code, project, interview, portfolio, test)"
+    "--type",
+    default="code",
+    help="Submission type (code, project, interview, portfolio, test)",
 )
 @click.option(
     "--paths",
     multiple=True,
     help="Paths to evaluate (technical, design, collaboration, problem_solving, communication)",
 )
-@click.option("--output", type=click.Path(), help="Output file for results (JSON format)")
+@click.option(
+    "--output", type=click.Path(), help="Output file for results (JSON format)"
+)
 @click.option("--quiet", is_flag=True, help="Quiet mode - minimal output")
 @click.option("--verbose", is_flag=True, help="Verbose mode - detailed output")
 def run(
@@ -104,7 +108,9 @@ def run(
         sono-eval assess run --candidate-id john_doe --file solution.py --output results.json
     """
     if not quiet:
-        console.print(f"[bold blue]Running assessment for candidate: {candidate_id}[/bold blue]")
+        console.print(
+            f"[bold blue]Running assessment for candidate: {candidate_id}[/bold blue]"
+        )
 
     # Get content
     try:
@@ -188,7 +194,9 @@ def run(
     # Display results
     if not quiet:
         console.print("\n[bold green]✓ Assessment Complete![/bold green]")
-        console.print(f"Overall Score: [bold cyan]{result.overall_score:.2f}/100[/bold cyan]")
+        console.print(
+            f"Overall Score: [bold cyan]{result.overall_score:.2f}/100[/bold cyan]"
+        )
         console.print(f"Confidence: [cyan]{result.confidence:.2%}[/cyan]")
         if verbose:
             console.print(
@@ -236,7 +244,9 @@ def run(
         if verbose and result.micro_motives:
             console.print("\n[bold]Micro-Motives:[/bold]")
             for motive in result.micro_motives:
-                console.print(f"  • {motive.motive_type.value}: {motive.strength:.2f} strength")
+                console.print(
+                    f"  • {motive.motive_type.value}: {motive.strength:.2f} strength"
+                )
 
     # Save to file if requested
     if output:
@@ -295,7 +305,9 @@ def create(candidate_id: str, data: Optional[str], quiet: bool):
         # Check if candidate already exists
         existing = storage.get_candidate_memory(candidate_id)
         if existing:
-            console.print(f"[yellow]Warning: Candidate '{candidate_id}' already exists[/yellow]")
+            console.print(
+                f"[yellow]Warning: Candidate '{candidate_id}' already exists[/yellow]"
+            )
             if not click.confirm("Do you want to continue anyway?"):
                 raise click.Abort()
 
@@ -375,7 +387,9 @@ def list(quiet: bool):
 
         if not candidates:
             console.print("[yellow]No candidates found[/yellow]")
-            console.print("[dim]Use 'sono-eval candidate create' to create a candidate[/dim]")
+            console.print(
+                "[dim]Use 'sono-eval candidate create' to create a candidate[/dim]"
+            )
             return
 
         if quiet:
@@ -415,7 +429,9 @@ def delete(candidate_id: str):
 @candidate.command()
 @click.option("--id", "candidate_id", required=True, help="Candidate ID")
 @click.option("--limit", default=10, help="Maximum assessments to show")
-@click.option("--format", "output_format", type=click.Choice(["table", "json"]), default="table")
+@click.option(
+    "--format", "output_format", type=click.Choice(["table", "json"]), default="table"
+)
 def history(candidate_id: str, limit: int, output_format: str):
     """
     Show assessment history for a candidate.
@@ -463,7 +479,9 @@ def history(candidate_id: str, limit: int, output_format: str):
         if output_format == "json":
             console.print(json.dumps(assessments, indent=2, default=str))
         else:
-            console.print(f"\n[bold cyan]Assessment History for {candidate_id}[/bold cyan]")
+            console.print(
+                f"\n[bold cyan]Assessment History for {candidate_id}[/bold cyan]"
+            )
             console.print(
                 f"[dim]Showing {len(assessments)} of {len(assessments)} assessments[/dim]\n"
             )
@@ -478,7 +496,9 @@ def history(candidate_id: str, limit: int, output_format: str):
 
             for a in assessments:
                 score = a.get("overall_score", 0)
-                score_color = "green" if score >= 75 else "yellow" if score >= 60 else "red"
+                score_color = (
+                    "green" if score >= 75 else "yellow" if score >= 60 else "red"
+                )
 
                 # Format timestamp
                 ts = a.get("timestamp", "")
@@ -505,7 +525,9 @@ def history(candidate_id: str, limit: int, output_format: str):
                 scores = [a.get("overall_score", 0) for a in assessments]
                 recent_avg = sum(scores[:3]) / min(3, len(scores))
                 older_avg = (
-                    sum(scores[3:]) / max(1, len(scores) - 3) if len(scores) > 3 else recent_avg
+                    sum(scores[3:]) / max(1, len(scores) - 3)
+                    if len(scores) > 3
+                    else recent_avg
                 )
 
                 if recent_avg > older_avg + 5:
@@ -630,7 +652,9 @@ def tag():
 @click.option("--max-tags", default=5, help="Maximum tags to generate (1-20)")
 @click.option("--quiet", is_flag=True, help="Quiet mode - just print tags")
 @click.option("--verbose", is_flag=True, help="Verbose mode - show details")
-def generate(file: Optional[str], text: Optional[str], max_tags: int, quiet: bool, verbose: bool):
+def generate(
+    file: Optional[str], text: Optional[str], max_tags: int, quiet: bool, verbose: bool
+):
     """
     Generate semantic tags for code or text.
 
@@ -808,14 +832,18 @@ def init(interactive: bool):
         if env_file.exists():
             console.print("[green]✓[/green] .env file exists")
         elif env_example.exists():
-            console.print("[yellow]⚠[/yellow] .env file missing (but .env.example exists)")
+            console.print(
+                "[yellow]⚠[/yellow] .env file missing (but .env.example exists)"
+            )
             if click.confirm("Create .env from .env.example?"):
                 import shutil
 
                 shutil.copy(env_example, env_file)
                 console.print("[green]✓[/green] .env file created")
         else:
-            console.print("[yellow]⚠[/yellow] No .env file found (optional for development)")
+            console.print(
+                "[yellow]⚠[/yellow] No .env file found (optional for development)"
+            )
 
         # Step 4: Data directories
         console.print("\n[bold]Step 4: Checking data directories...[/bold]")
@@ -859,7 +887,9 @@ def insights():
 
 @insights.command()
 @click.option("--deep", is_flag=True, help="Deep analysis mode (easter egg)")
-@click.option("--pattern-recognition", is_flag=True, help="Pattern recognition analysis")
+@click.option(
+    "--pattern-recognition", is_flag=True, help="Pattern recognition analysis"
+)
 def analyze(deep: bool, pattern_recognition: bool):
     """Unlock advanced analysis features (hidden command).
 
@@ -883,7 +913,9 @@ def analyze(deep: bool, pattern_recognition: bool):
         console.print("  • Code smell analysis")
         console.print("  • Best practice recommendations")
     else:
-        console.print("[yellow]Hint: Try --deep or --pattern-recognition flags[/yellow]")
+        console.print(
+            "[yellow]Hint: Try --deep or --pattern-recognition flags[/yellow]"
+        )
         console.print("[dim]This is a hidden feature. Explore to discover more![/dim]")
 
 

@@ -210,9 +210,9 @@ Created this SECRETS_AUDIT.md file to:
 
 - ✅ `.env.example` - Example values only
 - ✅ `docker-compose.yml` - Development credentials marked
-- ✅ `alembic.ini` - No secrets
+- ✅ `config/alembic.ini` - No secrets
 - ✅ `pyproject.toml` - No secrets
-- ✅ `requirements.txt` - No secrets
+- ✅ `config/requirements.txt` - No secrets
 
 ### Source Code
 

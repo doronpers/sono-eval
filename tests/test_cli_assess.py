@@ -66,9 +66,7 @@ class TestAssessRunCommand:
 
     def test_assess_run_missing_content(self, cli_runner):
         """Test that missing content/file raises error."""
-        result = cli_runner.invoke(
-            assess, ["run", "--candidate-id", "test_candidate"]
-        )
+        result = cli_runner.invoke(assess, ["run", "--candidate-id", "test_candidate"])
 
         # Should abort due to missing content
         assert result.exit_code != 0
@@ -90,9 +88,7 @@ class TestAssessRunCommand:
         assert result.exit_code != 0
 
     @patch("sono_eval.cli.commands.assess.AssessmentEngine")
-    def test_assess_run_empty_file(
-        self, mock_engine_class, cli_runner, empty_file
-    ):
+    def test_assess_run_empty_file(self, mock_engine_class, cli_runner, empty_file):
         """Test handling of empty file."""
         result = cli_runner.invoke(
             assess,
@@ -134,7 +130,12 @@ class TestAssessRunCommand:
 
     @patch("sono_eval.cli.commands.assess.AssessmentEngine")
     def test_assess_run_with_output_file(
-        self, mock_engine_class, cli_runner, temp_code_file, mock_assessment_result, tmp_path
+        self,
+        mock_engine_class,
+        cli_runner,
+        temp_code_file,
+        mock_assessment_result,
+        tmp_path,
     ):
         """Test saving results to output file."""
         # Setup mock
@@ -272,7 +273,13 @@ class TestAssessRunCommand:
     @patch("sono_eval.cli.commands.assess.AssessmentEngine")
     @patch("sono_eval.cli.commands.assess.MemUStorage")
     def test_assess_run_saves_to_memory(
-        self, mock_storage_class, mock_engine_class, cli_runner, temp_code_file, mock_assessment_result, mock_candidate_memory
+        self,
+        mock_storage_class,
+        mock_engine_class,
+        cli_runner,
+        temp_code_file,
+        mock_assessment_result,
+        mock_candidate_memory,
     ):
         """Test that assessment is saved to memory storage."""
         # Setup mocks

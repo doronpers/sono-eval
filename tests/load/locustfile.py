@@ -21,11 +21,15 @@ class AssessmentUser(HttpUser):
             "paths_to_evaluate": ["technical", "problem_solving"],
         }
 
-        with self.client.post("/api/v1/assessments", json=payload, catch_response=True) as response:
+        with self.client.post(
+            "/api/v1/assessments", json=payload, catch_response=True
+        ) as response:
             if response.status_code == 200:
                 response.success()
             else:
-                response.failure(f"Assessment submission failed: {response.status_code}")
+                response.failure(
+                    f"Assessment submission failed: {response.status_code}"
+                )
 
     @task(1)
     def check_health(self):

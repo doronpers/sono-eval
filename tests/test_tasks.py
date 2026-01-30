@@ -116,9 +116,11 @@ class TestProcessAssessmentTask:
         mock_task_self.storage = mock_storage
 
         # Execute task
-        with patch("asyncio.new_event_loop") as mock_new_loop, \
-             patch("asyncio.set_event_loop"), \
-             patch("sono_eval.tasks.assessment.AssessmentInput") as MockInput:
+        with (
+            patch("asyncio.new_event_loop") as mock_new_loop,
+            patch("asyncio.set_event_loop"),
+            patch("sono_eval.tasks.assessment.AssessmentInput") as MockInput,
+        ):
 
             mock_loop = Mock()
             mock_new_loop.return_value = mock_loop
@@ -130,9 +132,7 @@ class TestProcessAssessmentTask:
             MockInput.model_validate = Mock(return_value=mock_input)
 
             result = process_assessment_task(
-                mock_task_self,
-                "assessment-001",
-                sample_input_data
+                mock_task_self, "assessment-001", sample_input_data
             )
 
             # Verify result
@@ -157,9 +157,11 @@ class TestProcessAssessmentTask:
         mock_storage.get_candidate_memory = Mock(return_value=None)
         mock_task_self.storage = mock_storage
 
-        with patch("asyncio.new_event_loop") as mock_new_loop, \
-             patch("asyncio.set_event_loop"), \
-             patch("sono_eval.tasks.assessment.AssessmentInput") as MockInput:
+        with (
+            patch("asyncio.new_event_loop") as mock_new_loop,
+            patch("asyncio.set_event_loop"),
+            patch("sono_eval.tasks.assessment.AssessmentInput") as MockInput,
+        ):
 
             mock_loop = Mock()
             mock_new_loop.return_value = mock_loop
@@ -170,11 +172,7 @@ class TestProcessAssessmentTask:
             mock_input.candidate_id = "test_candidate_123"
             MockInput.model_validate = Mock(return_value=mock_input)
 
-            process_assessment_task(
-                mock_task_self,
-                "assessment-002",
-                sample_input_data
-            )
+            process_assessment_task(mock_task_self, "assessment-002", sample_input_data)
 
             # Verify input validation was called
             MockInput.model_validate.assert_called_once_with(sample_input_data)
@@ -194,9 +192,11 @@ class TestProcessAssessmentTask:
         mock_storage.add_memory_node = Mock()
         mock_task_self.storage = mock_storage
 
-        with patch("asyncio.new_event_loop") as mock_new_loop, \
-             patch("asyncio.set_event_loop"), \
-             patch("sono_eval.tasks.assessment.AssessmentInput") as MockInput:
+        with (
+            patch("asyncio.new_event_loop") as mock_new_loop,
+            patch("asyncio.set_event_loop"),
+            patch("sono_eval.tasks.assessment.AssessmentInput") as MockInput,
+        ):
 
             mock_loop = Mock()
             mock_new_loop.return_value = mock_loop
@@ -207,11 +207,7 @@ class TestProcessAssessmentTask:
             mock_input.candidate_id = "candidate_789"
             MockInput.model_validate = Mock(return_value=mock_input)
 
-            process_assessment_task(
-                mock_task_self,
-                "assessment-003",
-                sample_input_data
-            )
+            process_assessment_task(mock_task_self, "assessment-003", sample_input_data)
 
             # Verify memory node was added
             mock_storage.add_memory_node.assert_called_once()
@@ -235,9 +231,11 @@ class TestProcessAssessmentTask:
         mock_storage.get_candidate_memory = Mock(return_value=None)  # Not found
         mock_task_self.storage = mock_storage
 
-        with patch("asyncio.new_event_loop") as mock_new_loop, \
-             patch("asyncio.set_event_loop"), \
-             patch("sono_eval.tasks.assessment.AssessmentInput") as MockInput:
+        with (
+            patch("asyncio.new_event_loop") as mock_new_loop,
+            patch("asyncio.set_event_loop"),
+            patch("sono_eval.tasks.assessment.AssessmentInput") as MockInput,
+        ):
 
             mock_loop = Mock()
             mock_new_loop.return_value = mock_loop
@@ -249,15 +247,15 @@ class TestProcessAssessmentTask:
             MockInput.model_validate = Mock(return_value=mock_input)
 
             result = process_assessment_task(
-                mock_task_self,
-                "assessment-004",
-                sample_input_data
+                mock_task_self, "assessment-004", sample_input_data
             )
 
             # Should still return result
             assert result["job_status"] == "completed"
 
-    def test_assessment_task_failure_with_retry(self, mock_task_self, sample_input_data):
+    def test_assessment_task_failure_with_retry(
+        self, mock_task_self, sample_input_data
+    ):
         """Test task failure triggers retry."""
         mock_task_self.request.retries = 0
 
@@ -266,22 +264,24 @@ class TestProcessAssessmentTask:
         mock_engine.assess = AsyncMock(side_effect=Exception("Assessment failed"))
         mock_task_self.engine = mock_engine
 
-        with patch("asyncio.new_event_loop") as mock_new_loop, \
-             patch("asyncio.set_event_loop"), \
-             patch("sono_eval.tasks.assessment.AssessmentInput") as MockInput:
+        with (
+            patch("asyncio.new_event_loop") as mock_new_loop,
+            patch("asyncio.set_event_loop"),
+            patch("sono_eval.tasks.assessment.AssessmentInput") as MockInput,
+        ):
 
             mock_loop = Mock()
             mock_new_loop.return_value = mock_loop
-            mock_loop.run_until_complete = Mock(side_effect=Exception("Assessment failed"))
+            mock_loop.run_until_complete = Mock(
+                side_effect=Exception("Assessment failed")
+            )
             mock_loop.close = Mock()
 
             MockInput.model_validate = Mock(return_value=Mock())
 
             with pytest.raises(Exception):
                 process_assessment_task(
-                    mock_task_self,
-                    "assessment-005",
-                    sample_input_data
+                    mock_task_self, "assessment-005", sample_input_data
                 )
 
             # Verify retry was called
@@ -300,21 +300,23 @@ class TestProcessAssessmentTask:
         mock_engine.assess = AsyncMock(side_effect=ValueError("Persistent error"))
         mock_task_self.engine = mock_engine
 
-        with patch("asyncio.new_event_loop") as mock_new_loop, \
-             patch("asyncio.set_event_loop"), \
-             patch("sono_eval.tasks.assessment.AssessmentInput") as MockInput:
+        with (
+            patch("asyncio.new_event_loop") as mock_new_loop,
+            patch("asyncio.set_event_loop"),
+            patch("sono_eval.tasks.assessment.AssessmentInput") as MockInput,
+        ):
 
             mock_loop = Mock()
             mock_new_loop.return_value = mock_loop
-            mock_loop.run_until_complete = Mock(side_effect=ValueError("Persistent error"))
+            mock_loop.run_until_complete = Mock(
+                side_effect=ValueError("Persistent error")
+            )
             mock_loop.close = Mock()
 
             MockInput.model_validate = Mock(return_value=Mock())
 
             result = process_assessment_task(
-                mock_task_self,
-                "assessment-006",
-                sample_input_data
+                mock_task_self, "assessment-006", sample_input_data
             )
 
             # Should return failure result
@@ -337,9 +339,11 @@ class TestProcessAssessmentTask:
         mock_storage.get_candidate_memory = Mock(return_value=None)
         mock_task_self.storage = mock_storage
 
-        with patch("asyncio.new_event_loop") as mock_new_loop, \
-             patch("asyncio.set_event_loop"), \
-             patch("sono_eval.tasks.assessment.AssessmentInput") as MockInput:
+        with (
+            patch("asyncio.new_event_loop") as mock_new_loop,
+            patch("asyncio.set_event_loop"),
+            patch("sono_eval.tasks.assessment.AssessmentInput") as MockInput,
+        ):
 
             mock_loop = Mock()
             mock_new_loop.return_value = mock_loop
@@ -350,11 +354,7 @@ class TestProcessAssessmentTask:
             mock_input.candidate_id = "test_candidate"
             MockInput.model_validate = Mock(return_value=mock_input)
 
-            process_assessment_task(
-                mock_task_self,
-                "assessment-007",
-                sample_input_data
-            )
+            process_assessment_task(mock_task_self, "assessment-007", sample_input_data)
 
             # Verify state updates
             assert mock_task_self.update_state.call_count == 2
@@ -371,7 +371,9 @@ class TestProcessAssessmentTask:
             assert second_call[1]["meta"]["status"] == "storing"
             assert second_call[1]["meta"]["progress"] == 80
 
-    def test_assessment_task_exponential_backoff(self, mock_task_self, sample_input_data):
+    def test_assessment_task_exponential_backoff(
+        self, mock_task_self, sample_input_data
+    ):
         """Test retry uses exponential backoff."""
         mock_task_self.request.retries = 1  # Second attempt
 
@@ -379,22 +381,24 @@ class TestProcessAssessmentTask:
         mock_engine.assess = AsyncMock(side_effect=Exception("Temporary failure"))
         mock_task_self.engine = mock_engine
 
-        with patch("asyncio.new_event_loop") as mock_new_loop, \
-             patch("asyncio.set_event_loop"), \
-             patch("sono_eval.tasks.assessment.AssessmentInput") as MockInput:
+        with (
+            patch("asyncio.new_event_loop") as mock_new_loop,
+            patch("asyncio.set_event_loop"),
+            patch("sono_eval.tasks.assessment.AssessmentInput") as MockInput,
+        ):
 
             mock_loop = Mock()
             mock_new_loop.return_value = mock_loop
-            mock_loop.run_until_complete = Mock(side_effect=Exception("Temporary failure"))
+            mock_loop.run_until_complete = Mock(
+                side_effect=Exception("Temporary failure")
+            )
             mock_loop.close = Mock()
 
             MockInput.model_validate = Mock(return_value=Mock())
 
             with pytest.raises(Exception):
                 process_assessment_task(
-                    mock_task_self,
-                    "assessment-008",
-                    sample_input_data
+                    mock_task_self, "assessment-008", sample_input_data
                 )
 
             # Verify exponential backoff: 2^retries * 60
@@ -414,9 +418,11 @@ class TestProcessAssessmentTask:
         mock_storage.get_candidate_memory = Mock(return_value=None)
         mock_task_self.storage = mock_storage
 
-        with patch("asyncio.new_event_loop") as mock_new_loop, \
-             patch("asyncio.set_event_loop") as mock_set_loop, \
-             patch("sono_eval.tasks.assessment.AssessmentInput") as MockInput:
+        with (
+            patch("asyncio.new_event_loop") as mock_new_loop,
+            patch("asyncio.set_event_loop") as mock_set_loop,
+            patch("sono_eval.tasks.assessment.AssessmentInput") as MockInput,
+        ):
 
             mock_loop = Mock()
             mock_new_loop.return_value = mock_loop
@@ -425,11 +431,7 @@ class TestProcessAssessmentTask:
 
             MockInput.model_validate = Mock(return_value=Mock(candidate_id="test"))
 
-            process_assessment_task(
-                mock_task_self,
-                "assessment-009",
-                sample_input_data
-            )
+            process_assessment_task(mock_task_self, "assessment-009", sample_input_data)
 
             # Verify loop cleanup
             mock_loop.close.assert_called_once()
@@ -503,9 +505,7 @@ class TestTaskEdgeCases:
 
             with pytest.raises(Exception):
                 process_assessment_task(
-                    mock_task_self,
-                    "assessment-bad",
-                    malformed_data
+                    mock_task_self, "assessment-bad", malformed_data
                 )
 
             # Should trigger retry
@@ -517,11 +517,7 @@ class TestTaskEdgeCases:
             MockInput.model_validate = Mock(side_effect=ValueError("Empty input"))
 
             with pytest.raises(Exception):
-                process_assessment_task(
-                    mock_task_self,
-                    "assessment-empty",
-                    {}
-                )
+                process_assessment_task(mock_task_self, "assessment-empty", {})
 
     def test_engine_initialization_failure(self, mock_task_self):
         """Test handling when engine fails to initialize."""
@@ -531,9 +527,11 @@ class TestTaskEdgeCases:
             side_effect=RuntimeError("Engine not initialized")
         )
 
-        with patch("asyncio.new_event_loop") as mock_new_loop, \
-             patch("asyncio.set_event_loop"), \
-             patch("sono_eval.tasks.assessment.AssessmentInput") as MockInput:
+        with (
+            patch("asyncio.new_event_loop") as mock_new_loop,
+            patch("asyncio.set_event_loop"),
+            patch("sono_eval.tasks.assessment.AssessmentInput") as MockInput,
+        ):
 
             mock_loop = Mock()
             mock_new_loop.return_value = mock_loop
@@ -548,5 +546,5 @@ class TestTaskEdgeCases:
                 process_assessment_task(
                     mock_task_self,
                     "assessment-engine-fail",
-                    {"candidate_id": "test", "content": {}}
+                    {"candidate_id": "test", "content": {}},
                 )

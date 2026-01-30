@@ -42,7 +42,7 @@ class TestReplCommandParsing:
         with patch("sono_eval.cli.repl.AssessmentEngine"):
             session = ReplSession()
 
-            with patch.object(session, 'cmd_help') as mock_help:
+            with patch.object(session, "cmd_help") as mock_help:
                 session.handle_command("help")
                 mock_help.assert_called_once_with("")
 
@@ -51,14 +51,16 @@ class TestReplCommandParsing:
         with patch("sono_eval.cli.repl.AssessmentEngine"):
             session = ReplSession()
 
-            with patch.object(session, 'cmd_candidate') as mock_candidate:
+            with patch.object(session, "cmd_candidate") as mock_candidate:
                 session.handle_command("candidate test_user_123")
                 mock_candidate.assert_called_once_with("test_user_123")
 
     def test_handle_command_unknown(self):
         """Test handling unknown commands."""
-        with patch("sono_eval.cli.repl.AssessmentEngine"), \
-             patch("sono_eval.cli.repl.console") as mock_console:
+        with (
+            patch("sono_eval.cli.repl.AssessmentEngine"),
+            patch("sono_eval.cli.repl.console") as mock_console,
+        ):
 
             session = ReplSession()
             session.handle_command("unknown_command")
@@ -71,7 +73,7 @@ class TestReplCommandParsing:
         with patch("sono_eval.cli.repl.AssessmentEngine"):
             session = ReplSession()
 
-            with patch.object(session, 'cmd_help') as mock_help:
+            with patch.object(session, "cmd_help") as mock_help:
                 session.handle_command("HELP")
                 mock_help.assert_called_once()
 
@@ -84,8 +86,10 @@ class TestCmdCandidate:
 
     def test_cmd_candidate_set(self):
         """Test setting candidate ID."""
-        with patch("sono_eval.cli.repl.AssessmentEngine"), \
-             patch("sono_eval.cli.repl.console") as mock_console:
+        with (
+            patch("sono_eval.cli.repl.AssessmentEngine"),
+            patch("sono_eval.cli.repl.console") as mock_console,
+        ):
 
             session = ReplSession()
             session.cmd_candidate("test_candidate_123")
@@ -95,8 +99,10 @@ class TestCmdCandidate:
 
     def test_cmd_candidate_show_current(self):
         """Test showing current candidate."""
-        with patch("sono_eval.cli.repl.AssessmentEngine"), \
-             patch("sono_eval.cli.repl.console") as mock_console:
+        with (
+            patch("sono_eval.cli.repl.AssessmentEngine"),
+            patch("sono_eval.cli.repl.console") as mock_console,
+        ):
 
             session = ReplSession()
             session.current_candidate = "existing_candidate"
@@ -108,8 +114,10 @@ class TestCmdCandidate:
 
     def test_cmd_candidate_show_none(self):
         """Test showing when no candidate set."""
-        with patch("sono_eval.cli.repl.AssessmentEngine"), \
-             patch("sono_eval.cli.repl.console") as mock_console:
+        with (
+            patch("sono_eval.cli.repl.AssessmentEngine"),
+            patch("sono_eval.cli.repl.console") as mock_console,
+        ):
 
             session = ReplSession()
             session.cmd_candidate("")
@@ -127,7 +135,7 @@ class TestCmdAssess:
         return Mock(
             overall_score=85.5,
             timestamp=Mock(strftime=Mock(return_value="12:34:56")),
-            spec=AssessmentResult
+            spec=AssessmentResult,
         )
 
     def test_cmd_assess_with_file_path(self, tmp_path, mock_result):
@@ -136,13 +144,15 @@ class TestCmdAssess:
         test_file = tmp_path / "test.py"
         test_file.write_text("def hello(): return 'world'")
 
-        with patch("sono_eval.cli.repl.AssessmentEngine") as MockEngine, \
-             patch("sono_eval.cli.repl.Confirm") as MockConfirm, \
-             patch("sono_eval.cli.repl.Prompt") as MockPrompt, \
-             patch("sono_eval.cli.repl.console"), \
-             patch("sono_eval.cli.repl.ProgressFormatter"), \
-             patch("sono_eval.cli.repl.AssessmentFormatter"), \
-             patch("asyncio.run") as mock_run:
+        with (
+            patch("sono_eval.cli.repl.AssessmentEngine") as MockEngine,
+            patch("sono_eval.cli.repl.Confirm") as MockConfirm,
+            patch("sono_eval.cli.repl.Prompt") as MockPrompt,
+            patch("sono_eval.cli.repl.console"),
+            patch("sono_eval.cli.repl.ProgressFormatter"),
+            patch("sono_eval.cli.repl.AssessmentFormatter"),
+            patch("asyncio.run") as mock_run,
+        ):
 
             mock_engine = Mock()
             MockEngine.return_value = mock_engine
@@ -161,10 +171,12 @@ class TestCmdAssess:
         """Test assess command with non-existent file."""
         nonexistent = tmp_path / "nonexistent.py"
 
-        with patch("sono_eval.cli.repl.AssessmentEngine"), \
-             patch("sono_eval.cli.repl.ErrorFormatter") as MockErrorFormatter, \
-             patch("sono_eval.cli.repl.file_not_found_error") as mock_error, \
-             patch("sono_eval.cli.repl.console"):
+        with (
+            patch("sono_eval.cli.repl.AssessmentEngine"),
+            patch("sono_eval.cli.repl.ErrorFormatter") as MockErrorFormatter,
+            patch("sono_eval.cli.repl.file_not_found_error") as mock_error,
+            patch("sono_eval.cli.repl.console"),
+        ):
 
             mock_error.return_value = Mock()
 
@@ -183,10 +195,12 @@ class TestCmdAssess:
         with open(large_file, "w") as f:
             f.write("x" * (1_000_001))
 
-        with patch("sono_eval.cli.repl.AssessmentEngine"), \
-             patch("sono_eval.cli.repl.ErrorFormatter") as MockErrorFormatter, \
-             patch("sono_eval.cli.repl.validation_error") as mock_error, \
-             patch("sono_eval.cli.repl.console"):
+        with (
+            patch("sono_eval.cli.repl.AssessmentEngine"),
+            patch("sono_eval.cli.repl.ErrorFormatter") as MockErrorFormatter,
+            patch("sono_eval.cli.repl.validation_error") as mock_error,
+            patch("sono_eval.cli.repl.console"),
+        ):
 
             mock_error.return_value = Mock()
 
@@ -203,10 +217,12 @@ class TestCmdAssess:
         empty_file = tmp_path / "empty.py"
         empty_file.write_text("")
 
-        with patch("sono_eval.cli.repl.AssessmentEngine"), \
-             patch("sono_eval.cli.repl.ErrorFormatter") as MockErrorFormatter, \
-             patch("sono_eval.cli.repl.validation_error") as mock_error, \
-             patch("sono_eval.cli.repl.console"):
+        with (
+            patch("sono_eval.cli.repl.AssessmentEngine"),
+            patch("sono_eval.cli.repl.ErrorFormatter") as MockErrorFormatter,
+            patch("sono_eval.cli.repl.validation_error") as mock_error,
+            patch("sono_eval.cli.repl.console"),
+        ):
 
             mock_error.return_value = Mock()
 
@@ -223,13 +239,15 @@ class TestCmdAssess:
         test_file = tmp_path / "test.py"
         test_file.write_text("def hello(): pass")
 
-        with patch("sono_eval.cli.repl.AssessmentEngine") as MockEngine, \
-             patch("sono_eval.cli.repl.Prompt") as MockPrompt, \
-             patch("sono_eval.cli.repl.Confirm") as MockConfirm, \
-             patch("sono_eval.cli.repl.console"), \
-             patch("sono_eval.cli.repl.ProgressFormatter"), \
-             patch("sono_eval.cli.repl.AssessmentFormatter"), \
-             patch("asyncio.run") as mock_run:
+        with (
+            patch("sono_eval.cli.repl.AssessmentEngine") as MockEngine,
+            patch("sono_eval.cli.repl.Prompt") as MockPrompt,
+            patch("sono_eval.cli.repl.Confirm") as MockConfirm,
+            patch("sono_eval.cli.repl.console"),
+            patch("sono_eval.cli.repl.ProgressFormatter"),
+            patch("sono_eval.cli.repl.AssessmentFormatter"),
+            patch("asyncio.run") as mock_run,
+        ):
 
             mock_engine = Mock()
             MockEngine.return_value = mock_engine
@@ -251,13 +269,15 @@ class TestCmdAssess:
         test_file = tmp_path / "test.py"
         test_file.write_text("def hello(): pass")
 
-        with patch("sono_eval.cli.repl.AssessmentEngine") as MockEngine, \
-             patch("sono_eval.cli.repl.Confirm") as MockConfirm, \
-             patch("sono_eval.cli.repl.console"), \
-             patch("sono_eval.cli.repl.ProgressFormatter"), \
-             patch("sono_eval.cli.repl.ErrorFormatter") as MockErrorFormatter, \
-             patch("sono_eval.cli.repl.internal_error") as mock_error, \
-             patch("asyncio.run") as mock_run:
+        with (
+            patch("sono_eval.cli.repl.AssessmentEngine") as MockEngine,
+            patch("sono_eval.cli.repl.Confirm") as MockConfirm,
+            patch("sono_eval.cli.repl.console"),
+            patch("sono_eval.cli.repl.ProgressFormatter"),
+            patch("sono_eval.cli.repl.ErrorFormatter") as MockErrorFormatter,
+            patch("sono_eval.cli.repl.internal_error") as mock_error,
+            patch("asyncio.run") as mock_run,
+        ):
 
             mock_engine = Mock()
             MockEngine.return_value = mock_engine
@@ -279,9 +299,11 @@ class TestCmdResult:
 
     def test_cmd_result_with_result(self):
         """Test displaying last result."""
-        with patch("sono_eval.cli.repl.AssessmentEngine"), \
-             patch("sono_eval.cli.repl.AssessmentFormatter") as MockFormatter, \
-             patch("sono_eval.cli.repl.console"):
+        with (
+            patch("sono_eval.cli.repl.AssessmentEngine"),
+            patch("sono_eval.cli.repl.AssessmentFormatter") as MockFormatter,
+            patch("sono_eval.cli.repl.console"),
+        ):
 
             session = ReplSession()
             session.last_result = Mock()
@@ -292,8 +314,10 @@ class TestCmdResult:
 
     def test_cmd_result_without_result(self):
         """Test result command when no result available."""
-        with patch("sono_eval.cli.repl.AssessmentEngine"), \
-             patch("sono_eval.cli.repl.console") as mock_console:
+        with (
+            patch("sono_eval.cli.repl.AssessmentEngine"),
+            patch("sono_eval.cli.repl.console") as mock_console,
+        ):
 
             session = ReplSession()
             session.last_result = None
@@ -309,23 +333,25 @@ class TestCmdHistory:
 
     def test_cmd_history_with_entries(self):
         """Test displaying history with entries."""
-        with patch("sono_eval.cli.repl.AssessmentEngine"), \
-             patch("sono_eval.cli.repl.console") as mock_console, \
-             patch("sono_eval.cli.repl.Table"), \
-             patch("sono_eval.cli.repl.AssessmentFormatter"):
+        with (
+            patch("sono_eval.cli.repl.AssessmentEngine"),
+            patch("sono_eval.cli.repl.console") as mock_console,
+            patch("sono_eval.cli.repl.Table"),
+            patch("sono_eval.cli.repl.AssessmentFormatter"),
+        ):
 
             session = ReplSession()
             session.history = [
                 {
                     "candidate_id": "user1",
                     "score": 85.5,
-                    "timestamp": Mock(strftime=Mock(return_value="10:30:00"))
+                    "timestamp": Mock(strftime=Mock(return_value="10:30:00")),
                 },
                 {
                     "candidate_id": "user2",
                     "score": 92.0,
-                    "timestamp": Mock(strftime=Mock(return_value="11:45:00"))
-                }
+                    "timestamp": Mock(strftime=Mock(return_value="11:45:00")),
+                },
             ]
 
             session.cmd_history("")
@@ -335,8 +361,10 @@ class TestCmdHistory:
 
     def test_cmd_history_empty(self):
         """Test history command when no history."""
-        with patch("sono_eval.cli.repl.AssessmentEngine"), \
-             patch("sono_eval.cli.repl.console") as mock_console:
+        with (
+            patch("sono_eval.cli.repl.AssessmentEngine"),
+            patch("sono_eval.cli.repl.console") as mock_console,
+        ):
 
             session = ReplSession()
             session.cmd_history("")
@@ -346,10 +374,12 @@ class TestCmdHistory:
 
     def test_cmd_history_limits_to_ten(self):
         """Test that history shows only last 10 entries."""
-        with patch("sono_eval.cli.repl.AssessmentEngine"), \
-             patch("sono_eval.cli.repl.console"), \
-             patch("sono_eval.cli.repl.Table") as MockTable, \
-             patch("sono_eval.cli.repl.AssessmentFormatter"):
+        with (
+            patch("sono_eval.cli.repl.AssessmentEngine"),
+            patch("sono_eval.cli.repl.console"),
+            patch("sono_eval.cli.repl.Table") as MockTable,
+            patch("sono_eval.cli.repl.AssessmentFormatter"),
+        ):
 
             mock_table = Mock()
             MockTable.return_value = mock_table
@@ -360,7 +390,7 @@ class TestCmdHistory:
                 {
                     "candidate_id": f"user{i}",
                     "score": 80.0,
-                    "timestamp": Mock(strftime=Mock(return_value="10:00:00"))
+                    "timestamp": Mock(strftime=Mock(return_value="10:00:00")),
                 }
                 for i in range(15)
             ]
@@ -376,9 +406,11 @@ class TestCmdPaths:
 
     def test_cmd_paths(self):
         """Test displaying available paths."""
-        with patch("sono_eval.cli.repl.AssessmentEngine"), \
-             patch("sono_eval.cli.repl.console") as mock_console, \
-             patch("sono_eval.cli.repl.InteractiveFormatter") as MockFormatter:
+        with (
+            patch("sono_eval.cli.repl.AssessmentEngine"),
+            patch("sono_eval.cli.repl.console") as mock_console,
+            patch("sono_eval.cli.repl.InteractiveFormatter") as MockFormatter,
+        ):
 
             session = ReplSession()
             session.cmd_paths("")
@@ -391,9 +423,11 @@ class TestCmdHelp:
 
     def test_cmd_help(self):
         """Test displaying help."""
-        with patch("sono_eval.cli.repl.AssessmentEngine"), \
-             patch("sono_eval.cli.repl.console") as mock_console, \
-             patch("sono_eval.cli.repl.Table"):
+        with (
+            patch("sono_eval.cli.repl.AssessmentEngine"),
+            patch("sono_eval.cli.repl.console") as mock_console,
+            patch("sono_eval.cli.repl.Table"),
+        ):
 
             session = ReplSession()
             session.cmd_help("")
@@ -407,8 +441,10 @@ class TestCmdClear:
 
     def test_cmd_clear(self):
         """Test clearing screen."""
-        with patch("sono_eval.cli.repl.AssessmentEngine"), \
-             patch("sono_eval.cli.repl.console") as mock_console:
+        with (
+            patch("sono_eval.cli.repl.AssessmentEngine"),
+            patch("sono_eval.cli.repl.console") as mock_console,
+        ):
 
             session = ReplSession()
             session.cmd_clear("")
@@ -421,9 +457,11 @@ class TestCmdExit:
 
     def test_cmd_exit(self):
         """Test exit command."""
-        with patch("sono_eval.cli.repl.AssessmentEngine"), \
-             patch("sono_eval.cli.repl.console") as mock_console, \
-             patch("sys.exit") as mock_exit:
+        with (
+            patch("sono_eval.cli.repl.AssessmentEngine"),
+            patch("sono_eval.cli.repl.console") as mock_console,
+            patch("sys.exit") as mock_exit,
+        ):
 
             session = ReplSession()
             session.cmd_exit("")
@@ -433,9 +471,11 @@ class TestCmdExit:
 
     def test_cmd_quit_alias(self):
         """Test that quit is alias for exit."""
-        with patch("sono_eval.cli.repl.AssessmentEngine"), \
-             patch("sono_eval.cli.repl.console"), \
-             patch("sys.exit") as mock_exit:
+        with (
+            patch("sono_eval.cli.repl.AssessmentEngine"),
+            patch("sono_eval.cli.repl.console"),
+            patch("sys.exit") as mock_exit,
+        ):
 
             session = ReplSession()
             session.cmd_exit("")  # quit maps to cmd_exit
@@ -448,10 +488,12 @@ class TestReplSessionInteractivity:
 
     def test_start_displays_welcome(self):
         """Test that start displays welcome message."""
-        with patch("sono_eval.cli.repl.AssessmentEngine"), \
-             patch("sono_eval.cli.repl.WelcomeFormatter") as MockWelcome, \
-             patch("sono_eval.cli.repl.console") as mock_console, \
-             patch("sono_eval.cli.repl.Prompt") as MockPrompt:
+        with (
+            patch("sono_eval.cli.repl.AssessmentEngine"),
+            patch("sono_eval.cli.repl.WelcomeFormatter") as MockWelcome,
+            patch("sono_eval.cli.repl.console") as mock_console,
+            patch("sono_eval.cli.repl.Prompt") as MockPrompt,
+        ):
 
             # Make Prompt.ask raise EOFError to exit loop
             MockPrompt.ask.side_effect = EOFError()
@@ -467,10 +509,12 @@ class TestReplSessionInteractivity:
 
     def test_start_handles_keyboard_interrupt(self):
         """Test handling of Ctrl+C during session."""
-        with patch("sono_eval.cli.repl.AssessmentEngine"), \
-             patch("sono_eval.cli.repl.WelcomeFormatter"), \
-             patch("sono_eval.cli.repl.console") as mock_console, \
-             patch("sono_eval.cli.repl.Prompt") as MockPrompt:
+        with (
+            patch("sono_eval.cli.repl.AssessmentEngine"),
+            patch("sono_eval.cli.repl.WelcomeFormatter"),
+            patch("sono_eval.cli.repl.console") as mock_console,
+            patch("sono_eval.cli.repl.Prompt") as MockPrompt,
+        ):
 
             # First KeyboardInterrupt, then EOFError to exit
             MockPrompt.ask.side_effect = [KeyboardInterrupt(), EOFError()]
@@ -479,14 +523,18 @@ class TestReplSessionInteractivity:
             session.start()
 
             # Should have printed interrupted message
-            assert any("Interrupted" in str(call) for call in mock_console.print.call_args_list)
+            assert any(
+                "Interrupted" in str(call) for call in mock_console.print.call_args_list
+            )
 
     def test_start_handles_eof(self):
         """Test handling of EOF (Ctrl+D)."""
-        with patch("sono_eval.cli.repl.AssessmentEngine"), \
-             patch("sono_eval.cli.repl.WelcomeFormatter"), \
-             patch("sono_eval.cli.repl.console") as mock_console, \
-             patch("sono_eval.cli.repl.Prompt") as MockPrompt:
+        with (
+            patch("sono_eval.cli.repl.AssessmentEngine"),
+            patch("sono_eval.cli.repl.WelcomeFormatter"),
+            patch("sono_eval.cli.repl.console") as mock_console,
+            patch("sono_eval.cli.repl.Prompt") as MockPrompt,
+        ):
 
             MockPrompt.ask.side_effect = EOFError()
 
@@ -494,21 +542,25 @@ class TestReplSessionInteractivity:
             session.start()
 
             # Should have printed goodbye message
-            assert any("Goodbye" in str(call) for call in mock_console.print.call_args_list)
+            assert any(
+                "Goodbye" in str(call) for call in mock_console.print.call_args_list
+            )
 
     def test_start_handles_empty_input(self):
         """Test that empty input is handled gracefully."""
-        with patch("sono_eval.cli.repl.AssessmentEngine"), \
-             patch("sono_eval.cli.repl.WelcomeFormatter"), \
-             patch("sono_eval.cli.repl.console"), \
-             patch("sono_eval.cli.repl.Prompt") as MockPrompt:
+        with (
+            patch("sono_eval.cli.repl.AssessmentEngine"),
+            patch("sono_eval.cli.repl.WelcomeFormatter"),
+            patch("sono_eval.cli.repl.console"),
+            patch("sono_eval.cli.repl.Prompt") as MockPrompt,
+        ):
 
             # Empty string, then EOFError to exit
             MockPrompt.ask.side_effect = ["", "  ", EOFError()]
 
             session = ReplSession()
 
-            with patch.object(session, 'handle_command') as mock_handle:
+            with patch.object(session, "handle_command") as mock_handle:
                 session.start()
 
                 # Empty inputs should not call handle_command
@@ -523,18 +575,20 @@ class TestReplEdgeCases:
         test_file = tmp_path / "unicode.py"
         test_file.write_text("# 你好世界\ndef hello(): return '🌍'", encoding="utf-8")
 
-        with patch("sono_eval.cli.repl.AssessmentEngine") as MockEngine, \
-             patch("sono_eval.cli.repl.Confirm") as MockConfirm, \
-             patch("sono_eval.cli.repl.console"), \
-             patch("sono_eval.cli.repl.ProgressFormatter"), \
-             patch("sono_eval.cli.repl.AssessmentFormatter"), \
-             patch("asyncio.run") as mock_run:
+        with (
+            patch("sono_eval.cli.repl.AssessmentEngine") as MockEngine,
+            patch("sono_eval.cli.repl.Confirm") as MockConfirm,
+            patch("sono_eval.cli.repl.console"),
+            patch("sono_eval.cli.repl.ProgressFormatter"),
+            patch("sono_eval.cli.repl.AssessmentFormatter"),
+            patch("asyncio.run") as mock_run,
+        ):
 
             mock_engine = Mock()
             MockEngine.return_value = mock_engine
             mock_run.return_value = Mock(
                 overall_score=85.0,
-                timestamp=Mock(strftime=Mock(return_value="12:00:00"))
+                timestamp=Mock(strftime=Mock(return_value="12:00:00")),
             )
             MockConfirm.ask.return_value = True
 
@@ -549,11 +603,13 @@ class TestReplEdgeCases:
         test_file = tmp_path / "binary.dat"
         test_file.write_bytes(b"\x80\x81\x82")  # Invalid UTF-8
 
-        with patch("sono_eval.cli.repl.AssessmentEngine"), \
-             patch("sono_eval.cli.repl.ErrorFormatter") as MockErrorFormatter, \
-             patch("sono_eval.cli.repl.RecoverableError"), \
-             patch("sono_eval.cli.repl.ErrorSeverity"), \
-             patch("sono_eval.cli.repl.console"):
+        with (
+            patch("sono_eval.cli.repl.AssessmentEngine"),
+            patch("sono_eval.cli.repl.ErrorFormatter") as MockErrorFormatter,
+            patch("sono_eval.cli.repl.RecoverableError"),
+            patch("sono_eval.cli.repl.ErrorSeverity"),
+            patch("sono_eval.cli.repl.console"),
+        ):
 
             session = ReplSession()
             session.current_candidate = "test"
@@ -568,7 +624,7 @@ class TestReplEdgeCases:
         with patch("sono_eval.cli.repl.AssessmentEngine"):
             session = ReplSession()
 
-            with patch.object(session, 'cmd_candidate') as mock_candidate:
+            with patch.object(session, "cmd_candidate") as mock_candidate:
                 session.handle_command("candidate    test_user   ")
                 # Should parse correctly despite whitespace
                 assert mock_candidate.called

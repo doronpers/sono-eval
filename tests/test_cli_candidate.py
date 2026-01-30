@@ -20,16 +20,16 @@ class TestCandidateCreateCommand:
         mock_storage_class.return_value = mock_storage
 
         # Run command
-        result = cli_runner.invoke(
-            candidate, ["create", "--id", "john_doe", "--quiet"]
-        )
+        result = cli_runner.invoke(candidate, ["create", "--id", "john_doe", "--quiet"])
 
         # Verify
         assert result.exit_code == 0
         mock_storage.create_candidate_memory.assert_called_once_with("john_doe", None)
 
     @patch("sono_eval.cli.commands.candidate.MemUStorage")
-    def test_create_with_data(self, mock_storage_class, cli_runner, mock_candidate_memory):
+    def test_create_with_data(
+        self, mock_storage_class, cli_runner, mock_candidate_memory
+    ):
         """Test creating a candidate with initial data."""
         # Setup mock
         mock_storage = MagicMock()
@@ -181,7 +181,9 @@ class TestCandidateListCommand:
     """Tests for candidate list command."""
 
     @patch("sono_eval.cli.commands.candidate.MemUStorage")
-    def test_list_with_candidates(self, mock_storage_class, cli_runner, mock_candidate_memory):
+    def test_list_with_candidates(
+        self, mock_storage_class, cli_runner, mock_candidate_memory
+    ):
         """Test listing candidates."""
         # Setup mock
         mock_storage = MagicMock()
@@ -283,7 +285,9 @@ class TestCandidateDeleteCommand:
         assert "not found" in result.output
 
     @patch("sono_eval.cli.commands.candidate.MemUStorage")
-    def test_delete_cancelled(self, mock_storage_class, cli_runner, mock_candidate_memory):
+    def test_delete_cancelled(
+        self, mock_storage_class, cli_runner, mock_candidate_memory
+    ):
         """Test cancelling delete operation."""
         # Setup mock
         mock_storage = MagicMock()
@@ -300,7 +304,9 @@ class TestCandidateDeleteCommand:
         mock_storage.delete_candidate_memory.assert_not_called()
 
     @patch("sono_eval.cli.commands.candidate.MemUStorage")
-    def test_delete_with_force(self, mock_storage_class, cli_runner, mock_candidate_memory):
+    def test_delete_with_force(
+        self, mock_storage_class, cli_runner, mock_candidate_memory
+    ):
         """Test deleting with force flag."""
         # Setup mock
         mock_storage = MagicMock()
