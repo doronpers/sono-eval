@@ -147,13 +147,12 @@ class TestTechnicalPath:
         names = [m.name for m in metrics]
         assert "Error Handling" in names
 
-    def test_error_handling_metric_absent_for_trivial_code(self, scorer, make_input):
-        """Test that error handling metric is absent when score is 0."""
+    def test_error_handling_metric_present_for_trivial_code(self, scorer, make_input):
+        """Test that error handling metric is present even for trivial code."""
         input_data = make_input("x = 1")
         metrics = scorer.generate_metrics_for_path(PathType.TECHNICAL, input_data)
         names = [m.name for m in metrics]
-        # error handling base score is 40, so it will appear since > 0
-        # Actually the score is 40 (base), and 40 > 0, so it will appear
+        # The metric should appear with its base score.
         assert "Error Handling" in names
 
     def test_testing_score_boosts_for_test_keywords(self, scorer, make_input):
