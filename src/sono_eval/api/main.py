@@ -197,16 +197,6 @@ def _validate_security_config() -> None:
                 f"{config.app_env}. Change this immediately."
             )
         else:
-<<<<<<< Updated upstream
-=======
-            logger.warning(
-                "WARNING: Using default SUPERSET_SECRET_KEY (development only)"
-            )
-
-    # Validate allowed hosts in production
-    if config.app_env == "production":
-        if not config.allowed_hosts or config.allowed_hosts == "*":
->>>>>>> Stashed changes
             logger.warning(
                 "WARNING: Using default SUPERSET_SECRET_KEY (development only)"
             )
@@ -244,7 +234,6 @@ app = FastAPI(
 )
 
 app.state.limiter = limiter
-<<<<<<< Updated upstream
 
 
 async def rate_limit_handler(request: Request, exc: RateLimitExceeded) -> Response:
@@ -253,12 +242,9 @@ async def rate_limit_handler(request: Request, exc: RateLimitExceeded) -> Respon
 
 
 app.add_exception_handler(RateLimitExceeded, rate_limit_handler)
-=======
-app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 # Add Security Headers Middleware
 app.add_middleware(SecurityHeadersMiddleware)
->>>>>>> Stashed changes
 
 # Add Request ID middleware (must be first to track all requests)
 app.add_middleware(RequestIDMiddleware)

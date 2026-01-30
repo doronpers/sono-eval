@@ -1,8 +1,4 @@
-<<<<<<< Updated upstream
-"""Tests for input validation."""
-=======
 """Tests for input validation in assessment models."""
->>>>>>> Stashed changes
 
 import pytest
 from pydantic import ValidationError

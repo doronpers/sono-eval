@@ -1,10 +1,6 @@
 """Tests for the tagging system."""
 
-<<<<<<< Updated upstream
-from sono_eval.tagging.generator import SemanticTag, TagGenerator
-=======
 from sono_eval.tagging.generator import TagGenerator, SemanticTag
->>>>>>> Stashed changes
 
 
 def test_tag_generator_initialization():

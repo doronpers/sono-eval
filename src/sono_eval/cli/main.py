@@ -49,17 +49,11 @@ cli.add_command(session)
 try:
     from sono_eval.cli.onboarding import setup as interactive_setup_command
 
-<<<<<<< Updated upstream
-=======
-    # Add to the existing setup group
->>>>>>> Stashed changes
     setup.add_command(interactive_setup_command, name="interactive")
 except ImportError:
     pass
 
 
-<<<<<<< Updated upstream
-=======
 # Assessment Commands
 @cli.group()
 def assess():
@@ -893,7 +887,6 @@ def analyze(deep: bool, pattern_recognition: bool):
         console.print("[dim]This is a hidden feature. Explore to discover more![/dim]")
 
 
->>>>>>> Stashed changes
 @cli.command()
 def repl():
     """Start interactive REPL mode for guided assessments."""
