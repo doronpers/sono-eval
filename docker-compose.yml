@@ -20,7 +20,7 @@ services:
   sono-eval:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: config/Dockerfile
     container_name: sono-eval-app
     ports:
       - "${API_PORT:-8000}:8000" # Dynamic port assignment via API_PORT env var
@@ -62,7 +62,7 @@ services:
   celery-worker:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: config/Dockerfile
     container_name: sono-eval-celery-worker
     command: celery -A sono_eval.core.celery_app worker --loglevel=info --concurrency=4
     environment:

@@ -96,3 +96,8 @@ coverage/
 # Local data
 data/memory/
 data/sessions/
+
+# Generated files
+*.db
+coverage.json
+py_files.txt

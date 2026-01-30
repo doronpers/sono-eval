@@ -23,7 +23,7 @@ Choose the path that matches your setup:
 
 1. Clone your fork.
 2. Run `python3 -m venv venv && source venv/bin/activate`.
-3. Install dependencies: `pip install -r requirements.txt`.
+3. Install dependencies: `pip install -r config/requirements.txt`.
 4. Start dev server: `./launcher.sh dev`.
 
 ## Suggested First Issues (Low Friction)
