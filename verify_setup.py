@@ -18,35 +18,15 @@ def check_python_version():
     """Check Python version."""
     version = sys.version_info
     if version.major == 3 and version.minor >= 9:
-<<<<<<< Updated upstream
-        print(
-            f"✅ Python {version.major}.{version.minor}.{version.micro} (required: 3.9+)"
-        )
-        print("   💡 This version supports all Sono-Eval features")
-        print(
-            "   📚 Why this matters: Python 3.9+ enables modern features and better performance"
-        )
-        return True
-    else:
-        print(
-            f"❌ Python {version.major}.{version.minor}.{version.micro} (required: 3.9+)"
-        )
-        print(
-            "   💡 Update Python to access all features: https://www.python.org/downloads/"
-        )
-        print(
-            "   📚 Why this matters: Newer Python versions provide better security and performance"
-=======
         print(f"✅ Python {version.major}.{version.minor}.{version.micro} (required: 3.9+)")
-        print(f"   💡 This version supports all Sono-Eval features")
-        print(f"   📚 Why this matters: Python 3.9+ enables modern features and better performance")
+        print("   💡 This version supports all Sono-Eval features")
+        print("   📚 Why this matters: Python 3.9+ enables modern features and better performance")
         return True
     else:
         print(f"❌ Python {version.major}.{version.minor}.{version.micro} (required: 3.9+)")
-        print(f"   💡 Update Python to access all features: https://www.python.org/downloads/")
+        print("   💡 Update Python to access all features: https://www.python.org/downloads/")
         print(
-            f"   📚 Why this matters: Newer Python versions provide better security and performance"
->>>>>>> Stashed changes
+            "   📚 Why this matters: Newer Python versions provide better security and performance"
         )
         return False
 
@@ -152,13 +132,9 @@ def check_docker():
     import subprocess  # nosec B404
 
     try:
-<<<<<<< Updated upstream
         result = subprocess.run(
             ["docker", "--version"], capture_output=True, text=True, timeout=5
         )  # nosec B603, B607
-=======
-        result = subprocess.run(["docker", "--version"], capture_output=True, text=True, timeout=5)
->>>>>>> Stashed changes
         if result.returncode == 0:
             version = result.stdout.strip()
             print(f"✅ Docker available: {version}")

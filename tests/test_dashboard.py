@@ -352,3 +352,364 @@ class TestDashboardModels:
         assert point.metrics["score"] == 85.0
         assert point.velocity == 5.0
         assert point.acceleration == 1.0
+
+
+class TestDashboardChartMethods:
+    """Test chart data generation methods."""
+
+    @pytest.fixture
+    def dashboard_with_data(self, sample_assessment_result):
+        """Create dashboard with populated data."""
+        return DashboardData.from_assessment_result(sample_assessment_result)
+
+    @pytest.fixture
+    def dashboard_with_trends(self, sample_assessment_result, historical_results):
+        """Create dashboard with trend data."""
+        return DashboardData.from_assessment_result(
+            sample_assessment_result, historical_results=historical_results
+        )
+
+    def test_get_progress_ring_data(self, dashboard_with_data):
+        """Test progress ring chart data."""
+        data = dashboard_with_data.get_progress_ring_data()
+
+        assert data["type"] == "doughnut"
+        assert "labels" in data
+        assert "datasets" in data
+        assert len(data["datasets"]) == 1
+
+        dataset = data["datasets"][0]
+        assert len(dataset["data"]) == 2
+        score, remaining = dataset["data"]
+        assert score + remaining == 100.0
+
+    def test_get_path_breakdown_charts(self, dashboard_with_data):
+        """Test path breakdown chart data."""
+        charts = dashboard_with_data.get_path_breakdown_charts()
+
+        assert isinstance(charts, list)
+        for chart in charts:
+            assert chart["type"] == "bar"
+            assert "path" in chart
+            assert "labels" in chart
+            assert "datasets" in chart
+
+    def test_get_path_breakdown_skips_empty(self, sample_assessment_result):
+        """Test that path breakdown skips paths with no metrics."""
+        # Design path has no metrics breakdown in our fixture
+        dashboard = DashboardData.from_assessment_result(sample_assessment_result)
+        charts = dashboard.get_path_breakdown_charts()
+
+        # Only Technical path has metrics
+        paths_with_charts = [c["path"] for c in charts]
+        assert PathType.TECHNICAL.value in paths_with_charts
+
+    def test_get_trend_chart_data_with_trends(self, dashboard_with_trends):
+        """Test trend chart data when trends exist."""
+        data = dashboard_with_trends.get_trend_chart_data()
+
+        assert data is not None
+        assert data["type"] == "line"
+        assert "labels" in data
+        assert "datasets" in data
+        assert len(data["datasets"][0]["data"]) > 0
+
+    def test_get_trend_chart_data_without_trends(self, dashboard_with_data):
+        """Test that trend chart returns None when no trend data exists."""
+        dashboard_with_data.trend_data = []
+        data = dashboard_with_data.get_trend_chart_data()
+        assert data is None
+
+    def test_trend_chart_color_improving(self, sample_assessment_result):
+        """Test that improving trend uses green color."""
+        improving = [
+            AssessmentResult(
+                candidate_id="test_user",
+                assessment_id=f"assess_{i}",
+                overall_score=60.0 + (i * 8),
+                confidence=0.8,
+                summary="Assessment",
+                path_scores=[],
+                key_findings=[],
+                recommendations=[],
+            )
+            for i in range(5)
+        ]
+        dashboard = DashboardData.from_assessment_result(
+            sample_assessment_result, historical_results=improving
+        )
+        data = dashboard.get_trend_chart_data()
+        assert data is not None
+        assert data["datasets"][0]["borderColor"] == "#22c55e"
+
+    def test_trend_chart_color_declining(self, sample_assessment_result):
+        """Test that declining trend uses red color."""
+        declining = [
+            AssessmentResult(
+                candidate_id="test_user",
+                assessment_id=f"assess_{i}",
+                overall_score=95.0 - (i * 8),
+                confidence=0.8,
+                summary="Assessment",
+                path_scores=[],
+                key_findings=[],
+                recommendations=[],
+            )
+            for i in range(5)
+        ]
+        dashboard = DashboardData.from_assessment_result(
+            sample_assessment_result, historical_results=declining
+        )
+        data = dashboard.get_trend_chart_data()
+        assert data is not None
+        assert data["datasets"][0]["borderColor"] == "#ef4444"
+
+    def test_get_motive_chart_data_with_motives(self, dashboard_with_data):
+        """Test motive chart data when motives exist."""
+        data = dashboard_with_data.get_motive_chart_data()
+
+        assert data is not None
+        assert data["type"] == "bar"
+        assert len(data["datasets"][0]["data"]) > 0
+        # Strength should be in percentage (0-100)
+        assert all(0 <= d <= 100 for d in data["datasets"][0]["data"])
+
+    def test_get_motive_chart_data_without_motives(self, dashboard_with_data):
+        """Test that motive chart returns None when no motives exist."""
+        dashboard_with_data.motives = []
+        data = dashboard_with_data.get_motive_chart_data()
+        assert data is None
+
+    def test_get_roi_chart_data(self, dashboard_with_data):
+        """Test ROI chart data generation."""
+        data = dashboard_with_data.get_roi_chart_data()
+
+        assert data is not None
+        assert data["type"] == "bar"
+        assert len(data["datasets"][0]["data"]) == 2
+
+    def test_get_roi_chart_data_without_roi(self, dashboard_with_data):
+        """Test that ROI chart returns None when no ROI data exists."""
+        dashboard_with_data.roi_analysis = None
+        data = dashboard_with_data.get_roi_chart_data()
+        assert data is None
+
+
+class TestDashboardEdgeCases:
+    """Test edge cases for DashboardData."""
+
+    def test_empty_path_scores(self):
+        """Test dashboard creation with no path scores."""
+        result = AssessmentResult(
+            candidate_id="user",
+            assessment_id="assess-empty",
+            overall_score=50.0,
+            confidence=0.5,
+            summary="No paths evaluated.",
+            path_scores=[],
+            key_findings=[],
+            recommendations=[],
+        )
+        dashboard = DashboardData.from_assessment_result(result)
+
+        assert len(dashboard.path_scores) == 0
+        assert dashboard.radar_chart_data == {}
+        assert len(dashboard.strengths) == 0
+        assert len(dashboard.improvements) == 0
+
+    def test_duplicate_strengths_deduped(self):
+        """Test that duplicate strengths are deduplicated."""
+        result = AssessmentResult(
+            candidate_id="user",
+            assessment_id="assess-dup",
+            overall_score=80.0,
+            confidence=0.8,
+            summary="Test",
+            path_scores=[
+                PathScore(
+                    path=PathType.TECHNICAL,
+                    overall_score=80.0,
+                    metrics=[],
+                    strengths=["Strong skills", "Strong skills", "Another strength"],
+                    areas_for_improvement=[],
+                ),
+            ],
+            key_findings=[],
+            recommendations=[],
+        )
+        dashboard = DashboardData.from_assessment_result(result)
+        assert len(dashboard.strengths) == 2  # Deduped
+
+    def test_strengths_limited_to_five(self):
+        """Test that strengths are limited to 5 items."""
+        result = AssessmentResult(
+            candidate_id="user",
+            assessment_id="assess-many",
+            overall_score=90.0,
+            confidence=0.9,
+            summary="Test",
+            path_scores=[
+                PathScore(
+                    path=PathType.TECHNICAL,
+                    overall_score=90.0,
+                    metrics=[],
+                    strengths=[f"Strength {i}" for i in range(10)],
+                    areas_for_improvement=[],
+                ),
+            ],
+            key_findings=[],
+            recommendations=[],
+        )
+        dashboard = DashboardData.from_assessment_result(result)
+        assert len(dashboard.strengths) <= 5
+
+    def test_all_grade_boundaries(self):
+        """Test all grade boundary values."""
+        assert DashboardData._score_to_grade(100.0) == "A"
+        assert DashboardData._score_to_grade(90.0) == "A"
+        assert DashboardData._score_to_grade(89.9) == "B"
+        assert DashboardData._score_to_grade(80.0) == "B"
+        assert DashboardData._score_to_grade(79.9) == "C"
+        assert DashboardData._score_to_grade(70.0) == "C"
+        assert DashboardData._score_to_grade(69.9) == "D"
+        assert DashboardData._score_to_grade(60.0) == "D"
+        assert DashboardData._score_to_grade(59.9) == "F"
+        assert DashboardData._score_to_grade(0.0) == "F"
+
+    def test_all_headline_tiers(self):
+        """Test all headline generation tiers."""
+        for score, expected_fragment in [
+            (95.0, "Exceptional"),
+            (85.0, "Strong"),
+            (75.0, "Solid"),
+            (65.0, "Room"),
+            (45.0, "Opportunities"),
+        ]:
+            result = AssessmentResult(
+                candidate_id="user",
+                assessment_id="assess",
+                overall_score=score,
+                confidence=0.8,
+                summary="Test",
+                path_scores=[],
+                key_findings=[],
+                recommendations=[],
+            )
+            headline = DashboardData._generate_headline(result)
+            assert expected_fragment in headline
+
+    def test_all_confidence_labels(self):
+        """Test all confidence label thresholds."""
+        for confidence, expected_label in [
+            (0.9, "High"),
+            (0.8, "High"),
+            (0.7, "Medium"),
+            (0.6, "Medium"),
+            (0.5, "Low"),
+            (0.1, "Low"),
+        ]:
+            result = AssessmentResult(
+                candidate_id="user",
+                assessment_id="assess",
+                overall_score=80.0,
+                confidence=confidence,
+                summary="Test",
+                path_scores=[],
+                key_findings=[],
+                recommendations=[],
+            )
+            dashboard = DashboardData.from_assessment_result(result)
+            assert dashboard.confidence_label == expected_label
+
+    def test_motive_description_known_types(self):
+        """Test motive description for all known types."""
+        for motive_type in ["mastery", "efficiency", "quality", "innovation",
+                            "collaboration", "exploration"]:
+            desc = DashboardData._get_motive_description(motive_type)
+            assert len(desc) > 0
+            assert desc != "Underlying motivation pattern"
+
+    def test_motive_description_unknown_type(self):
+        """Test motive description for unknown type."""
+        desc = DashboardData._get_motive_description("unknown_type")
+        assert desc == "Underlying motivation pattern"
+
+    def test_dominant_motive_selection(self):
+        """Test that dominant motive is the one with highest strength."""
+        result = AssessmentResult(
+            candidate_id="user",
+            assessment_id="assess",
+            overall_score=80.0,
+            confidence=0.8,
+            summary="Test",
+            path_scores=[],
+            micro_motives=[
+                MicroMotive(
+                    motive_type=MotiveType.QUALITY,
+                    strength=0.5,
+                    path_alignment=PathType.TECHNICAL,
+                ),
+                MicroMotive(
+                    motive_type=MotiveType.MASTERY,
+                    strength=0.95,
+                    path_alignment=PathType.TECHNICAL,
+                ),
+                MicroMotive(
+                    motive_type=MotiveType.EFFICIENCY,
+                    strength=0.6,
+                    path_alignment=PathType.TECHNICAL,
+                ),
+            ],
+            key_findings=[],
+            recommendations=[],
+        )
+        dashboard = DashboardData.from_assessment_result(result)
+        assert dashboard.dominant_motive == "Mastery"
+
+    def test_historical_results_limited_to_10(self):
+        """Test that only last 10 historical results are used."""
+        result = AssessmentResult(
+            candidate_id="user",
+            assessment_id="assess",
+            overall_score=80.0,
+            confidence=0.8,
+            summary="Test",
+            path_scores=[],
+            key_findings=[],
+            recommendations=[],
+        )
+        history = [
+            AssessmentResult(
+                candidate_id="user",
+                assessment_id=f"assess_{i}",
+                overall_score=70.0 + i,
+                confidence=0.8,
+                summary="Hist",
+                path_scores=[],
+                key_findings=[],
+                recommendations=[],
+            )
+            for i in range(20)
+        ]
+
+        dashboard = DashboardData.from_assessment_result(result, historical_results=history)
+        assert len(dashboard.trend_data) == 10
+
+    def test_hex_to_rgb(self):
+        """Test hex to RGB conversion."""
+        assert DashboardData._hex_to_rgb("#ff0000") == "255, 0, 0"
+        assert DashboardData._hex_to_rgb("#00ff00") == "0, 255, 0"
+        assert DashboardData._hex_to_rgb("#0000ff") == "0, 0, 255"
+        assert DashboardData._hex_to_rgb("#ffffff") == "255, 255, 255"
+
+    def test_hex_to_rgba(self):
+        """Test hex to RGBA conversion."""
+        assert DashboardData._hex_to_rgba("#ff0000", 0.5) == "255, 0, 0, 0.5"
+        assert DashboardData._hex_to_rgba("#000000", 1.0) == "0, 0, 0, 1.0"
+
+    def test_get_score_color_hex(self):
+        """Test score color mapping."""
+        assert DashboardData._get_score_color_hex(90.0) == "#22c55e"  # green
+        assert DashboardData._get_score_color_hex(75.0) == "#3b82f6"  # blue
+        assert DashboardData._get_score_color_hex(65.0) == "#f59e0b"  # amber
+        assert DashboardData._get_score_color_hex(40.0) == "#ef4444"  # red

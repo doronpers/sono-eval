@@ -173,14 +173,7 @@ class TagGenerator:
             return self._fallback_tagging(text, max_tags, min_confidence)
 
     def _fallback_tagging(
-<<<<<<< Updated upstream
-        self,
-        text: str,
-        max_tags: int,
-        min_confidence: float = 0.5,
-=======
         self, text: str, max_tags: int, min_confidence: float = 0.5
->>>>>>> Stashed changes
     ) -> List[SemanticTag]:
         """
         Fallback heuristic tagging when model is not available.

@@ -1,6 +1,12 @@
 import sys
 from pathlib import Path
 from typing import Any, Dict
+from unittest.mock import MagicMock
+
+# Mock optional third-party modules before any imports that depend on them
+for _mod_name in ["council_ai", "celery", "celery.result", "shared_ai_utils"]:
+    if _mod_name not in sys.modules:
+        sys.modules[_mod_name] = MagicMock()
 
 import pytest
 
