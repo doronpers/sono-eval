@@ -1,0 +1,109 @@
+# GitHub Labels Configuration
+# This file defines all labels used in the repository
+# Labels are automatically synced by the label-sync workflow
+
+# Dependency management labels (used by Dependabot)
+- name: "dependencies"
+  color: "0366d6"
+  description: "Pull requests that update a dependency file"
+
+- name: "github-actions"
+  color: "000000"
+  description: "Pull requests that update GitHub Actions code"
+
+- name: "python"
+  color: "3572A5"
+  description: "Pull requests that update Python code"
+
+- name: "docker"
+  color: "2496ED"
+  description: "Pull requests that update Docker code"
+
+# Issue type labels
+- name: "bug"
+  color: "d73a4a"
+  description: "Something isn't working"
+
+- name: "enhancement"
+  color: "a2eeef"
+  description: "New feature or request"
+
+- name: "feature"
+  color: "a2eeef"
+  description: "New feature or request"
+
+- name: "feat"
+  color: "a2eeef"
+  description: "New feature (conventional commit style)"
+
+# Documentation labels
+- name: "documentation"
+  color: "0075ca"
+  description: "Improvements or additions to documentation"
+
+- name: "docs"
+  color: "0075ca"
+  description: "Documentation changes"
+
+# Security labels
+- name: "security"
+  color: "d93f0b"
+  description: "Security-related issues"
+
+- name: "vulnerability"
+  color: "d93f0b"
+  description: "Security vulnerability"
+
+# Maintenance labels
+- name: "maintenance"
+  color: "fbca04"
+  description: "Maintenance and chores"
+
+- name: "chore"
+  color: "fbca04"
+  description: "Chore or maintenance task"
+
+- name: "refactor"
+  color: "fbca04"
+  description: "Code refactoring"
+
+# Testing labels
+- name: "test"
+  color: "e99695"
+  description: "Testing-related changes"
+
+- name: "testing"
+  color: "e99695"
+  description: "Testing improvements"
+
+# Performance labels
+- name: "performance"
+  color: "d4c5f9"
+  description: "Performance improvements"
+
+- name: "perf"
+  color: "d4c5f9"
+  description: "Performance optimization"
+
+- name: "optimization"
+  color: "d4c5f9"
+  description: "Code optimization"
+
+# Build and CI labels
+- name: "build"
+  color: "bfd4f2"
+  description: "Build system changes"
+
+- name: "ci"
+  color: "bfd4f2"
+  description: "CI/CD pipeline changes"
+
+# Bug fix label
+- name: "fix"
+  color: "d73a4a"
+  description: "Bug fix"
+
+# Special labels
+- name: "ignore-for-release"
+  color: "ffffff"
+  description: "Exclude from release notes"
