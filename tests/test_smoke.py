@@ -22,7 +22,7 @@ def test_docker_files_exist():
     """Test that Docker configuration files exist."""
     import os
 
-    assert os.path.exists("Dockerfile")
+    assert os.path.exists("config/Dockerfile")
     assert os.path.exists("docker-compose.yml")
 
 
@@ -30,7 +30,7 @@ def test_migration_setup_exists():
     """Test that migration configuration exists."""
     import os
 
-    assert os.path.exists("alembic.ini")
+    assert os.path.exists("config/alembic.ini")
     assert os.path.exists("migrations/README.md")
     assert os.path.exists("migrations/env.py")
 
@@ -49,11 +49,11 @@ def test_documentation_exists():
     import os
 
     assert os.path.exists("README.md")
-    assert os.path.exists("SECURITY.md")
-    assert os.path.exists("documentation/Reports/CODE_REVIEW_REPORT.md")
-    assert os.path.exists("ROADMAP.md")
-    assert os.path.exists("documentation/Reports/ASSESSMENT_SUMMARY.md")
-    assert os.path.exists("documentation/Guides/QUICK_REFERENCE.md")
+    assert os.path.exists("Documentation/Security/SECURITY.md")
+    assert os.path.exists("Documentation/Reports/CODE_REVIEW_REPORT.md")
+    assert os.path.exists("Documentation/Governance/ROADMAP.md")
+    assert os.path.exists("Documentation/Reports/ASSESSMENT_SUMMARY.md")
+    assert os.path.exists("Documentation/Guides/QUICK_REFERENCE.md")
     assert os.path.exists("CHANGELOG.md")
     assert os.path.exists("CONTRIBUTING.md")
-    assert os.path.exists("CODE_OF_CONDUCT.md")
+    assert os.path.exists("Documentation/Governance/CODE_OF_CONDUCT.md")

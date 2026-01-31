@@ -6,6 +6,8 @@ understanding, installing, and using the system.
 **Primary experience**: desktop, single-user workflows.
 **Optional companion**: a mobile-friendly interface for guided assessments.
 
+> 📋 **Recent Update (January 30, 2026)**: Documentation reorganized for better clarity. See [REORGANIZATION_SUMMARY.md](REORGANIZATION_SUMMARY.md) for details.
+
 ---
 
 ## 🔍 Quick Navigation

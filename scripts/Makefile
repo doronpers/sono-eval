@@ -5,12 +5,12 @@ help: ## Show this help message
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
 install: ## Install dependencies
-	pip install -r requirements.txt
-	pip install -e .
+	pip install -r ../config/requirements.txt
+	pip install -e ..
 
 install-dev: ## Install development dependencies
-	pip install -r requirements.txt
-	pip install -e ".[dev]"
+	pip install -r ../config/requirements.txt
+	pip install -e "..[dev]"
 
 run: ## Run the API server (development mode)
 	sono-eval server start --reload
@@ -28,10 +28,10 @@ test-cov: ## Run tests with coverage report
 	pytest --cov=src/sono_eval --cov-report=html --cov-report=term
 
 format: ## Format code with black
-	black src/ tests/
+	black ../src/ ../tests/
 
 lint: ## Run linting checks
-	flake8 src/ tests/
+	cd .. && flake8 src/ tests/
 	@echo "Lint check complete!"
 
 clean: ## Clean up generated files
@@ -43,19 +43,19 @@ clean: ## Clean up generated files
 	rm -rf dist build
 
 docker-start: ## Start all Docker services
-	./launcher.sh start
+	../launcher.sh start
 
 docker-stop: ## Stop all Docker services
-	./launcher.sh stop
+	../launcher.sh stop
 
 docker-logs: ## View Docker service logs
-	./launcher.sh logs
+	../launcher.sh logs
 
 docker-status: ## Check Docker service status
-	./launcher.sh status
+	../launcher.sh status
 
 dev: ## Setup development environment
-	./launcher.sh dev
+	../launcher.sh dev
 	@echo "Environment ready! Activate with: source venv/bin/activate"
 
 verify: ## Verify setup and configuration

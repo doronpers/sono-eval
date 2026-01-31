@@ -22,6 +22,7 @@ def scorer():
 @pytest.fixture
 def make_input():
     """Factory fixture to create AssessmentInput with given code."""
+
     def _make(code: str, **kwargs):
         content = {"code": code}
         content.update(kwargs.pop("extra_content", {}))
@@ -31,6 +32,7 @@ def make_input():
             content=content,
             **kwargs,
         )
+
     return _make
 
 
@@ -145,9 +147,7 @@ class TestDesignMotives:
     def test_innovation_motive_detected(self, scorer, make_input):
         """Test that innovation motive is detected from alternative/creative keywords."""
         input_data = make_input(
-            "# alternative approach\n"
-            "# creative novel solution\n"
-            "def solve(): pass"
+            "# alternative approach\n" "# creative novel solution\n" "def solve(): pass"
         )
         motives = scorer.identify_micro_motives(PathType.DESIGN, input_data)
 
@@ -191,8 +191,7 @@ class TestCollaborationMotives:
     def test_collaboration_motive_detected(self, scorer, make_input):
         """Test that collaboration motive is detected from team/document keywords."""
         input_data = make_input(
-            "# Document the team collaboration strategy\n"
-            "def collaborate(): pass"
+            "# Document the team collaboration strategy\n" "def collaborate(): pass"
         )
         motives = scorer.identify_micro_motives(PathType.COLLABORATION, input_data)
 
@@ -264,9 +263,7 @@ class TestMotiveEvidence:
 
     def test_evidence_for_unknown_motive_type(self, scorer):
         """Test that unhandled motive types return empty evidence."""
-        evidence = scorer.generate_motive_evidence(
-            "some code", MotiveType.INNOVATION
-        )
+        evidence = scorer.generate_motive_evidence("some code", MotiveType.INNOVATION)
         assert len(evidence) == 0
 
 

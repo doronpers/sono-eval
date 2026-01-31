@@ -171,7 +171,9 @@ class TestDashboardData:
         dashboard = DashboardData.from_assessment_result(sample_assessment_result)
 
         assert len(dashboard.motives) > 0
-        mastery_motive = next((m for m in dashboard.motives if m.motive_type == "mastery"), None)
+        mastery_motive = next(
+            (m for m in dashboard.motives if m.motive_type == "mastery"), None
+        )
         assert mastery_motive is not None
         assert mastery_motive.strength == 0.85
 
@@ -623,8 +625,14 @@ class TestDashboardEdgeCases:
 
     def test_motive_description_known_types(self):
         """Test motive description for all known types."""
-        for motive_type in ["mastery", "efficiency", "quality", "innovation",
-                            "collaboration", "exploration"]:
+        for motive_type in [
+            "mastery",
+            "efficiency",
+            "quality",
+            "innovation",
+            "collaboration",
+            "exploration",
+        ]:
             desc = DashboardData._get_motive_description(motive_type)
             assert len(desc) > 0
             assert desc != "Underlying motivation pattern"
@@ -692,7 +700,9 @@ class TestDashboardEdgeCases:
             for i in range(20)
         ]
 
-        dashboard = DashboardData.from_assessment_result(result, historical_results=history)
+        dashboard = DashboardData.from_assessment_result(
+            result, historical_results=history
+        )
         assert len(dashboard.trend_data) == 10
 
     def test_hex_to_rgb(self):

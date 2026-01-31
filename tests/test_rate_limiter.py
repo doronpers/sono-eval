@@ -139,9 +139,7 @@ class TestRedisRateLimiterState:
     def test_initialization_without_redis(self):
         """Test initialization when Redis is not available."""
         limiter = RedisRateLimiterState(
-            max_requests=60,
-            window_seconds=60,
-            redis_url="redis://nonexistent:6379"
+            max_requests=60, window_seconds=60, redis_url="redis://nonexistent:6379"
         )
 
         # Should initialize without error
@@ -152,9 +150,7 @@ class TestRedisRateLimiterState:
     async def test_fallback_when_redis_unavailable(self):
         """Test that requests are allowed when Redis is unavailable."""
         limiter = RedisRateLimiterState(
-            max_requests=5,
-            window_seconds=60,
-            redis_url="redis://nonexistent:6379"
+            max_requests=5, window_seconds=60, redis_url="redis://nonexistent:6379"
         )
 
         # Should allow requests (fail-open behavior)
@@ -165,9 +161,7 @@ class TestRedisRateLimiterState:
     async def test_redis_connection_with_mock(self):
         """Test Redis operations with mocked Redis client."""
         limiter = RedisRateLimiterState(
-            max_requests=5,
-            window_seconds=60,
-            redis_url="redis://localhost:6379"
+            max_requests=5, window_seconds=60, redis_url="redis://localhost:6379"
         )
 
         # Mock Redis client
@@ -191,9 +185,7 @@ class TestRedisRateLimiterState:
     async def test_redis_rate_limit_exceeded(self):
         """Test rate limit exceeded with Redis."""
         limiter = RedisRateLimiterState(
-            max_requests=3,
-            window_seconds=60,
-            redis_url="redis://localhost:6379"
+            max_requests=3, window_seconds=60, redis_url="redis://localhost:6379"
         )
 
         # Mock Redis to return count at limit
@@ -216,9 +208,7 @@ class TestRedisRateLimiterState:
     async def test_redis_error_handling(self):
         """Test graceful handling of Redis errors."""
         limiter = RedisRateLimiterState(
-            max_requests=5,
-            window_seconds=60,
-            redis_url="redis://localhost:6379"
+            max_requests=5, window_seconds=60, redis_url="redis://localhost:6379"
         )
 
         # Mock Redis to raise error
@@ -235,9 +225,7 @@ class TestRedisRateLimiterState:
     def test_get_remaining_without_redis(self):
         """Test get_remaining when Redis is unavailable."""
         limiter = RedisRateLimiterState(
-            max_requests=100,
-            window_seconds=60,
-            redis_url="redis://nonexistent:6379"
+            max_requests=100, window_seconds=60, redis_url="redis://nonexistent:6379"
         )
 
         remaining = limiter.get_remaining("test_client")
@@ -382,7 +370,9 @@ class TestRateLimitMiddleware:
         """Test middleware initialization with Redis backend."""
         app = FastAPI()
 
-        with patch.dict("os.environ", {"RATE_LIMIT_REDIS_URL": "redis://localhost:6379"}):
+        with patch.dict(
+            "os.environ", {"RATE_LIMIT_REDIS_URL": "redis://localhost:6379"}
+        ):
             middleware = RateLimitMiddleware(
                 app,
                 max_requests_per_minute=60,
@@ -429,8 +419,8 @@ class TestRateLimitMiddleware:
         """Test that per-hour limit is checked independently."""
         # This would require more complex setup with time mocking
         # For now, verify the structure exists
-        assert hasattr(middleware_app, 'per_hour')
-        assert hasattr(middleware_app, 'per_minute')
+        assert hasattr(middleware_app, "per_hour")
+        assert hasattr(middleware_app, "per_minute")
         assert middleware_app.per_hour.max_requests == 20
         assert middleware_app.per_minute.max_requests == 5
 

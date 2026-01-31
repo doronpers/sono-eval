@@ -27,7 +27,9 @@ class TestCouncilScorerInitialization:
         """Test successful Council AI initialization."""
         scorer = CouncilScorer()
 
-        with patch("sono_eval.assessment.scorers.council_scorer.Council") as MockCouncil:
+        with patch(
+            "sono_eval.assessment.scorers.council_scorer.Council"
+        ) as MockCouncil:
             mock_council = Mock()
             MockCouncil.for_domain.return_value = mock_council
 
@@ -43,7 +45,9 @@ class TestCouncilScorerInitialization:
         scorer = CouncilScorer()
         scorer._council = Mock()
 
-        with patch("sono_eval.assessment.scorers.council_scorer.Council") as MockCouncil:
+        with patch(
+            "sono_eval.assessment.scorers.council_scorer.Council"
+        ) as MockCouncil:
             result = scorer.load_if_available()
 
             assert result is True
@@ -54,7 +58,9 @@ class TestCouncilScorerInitialization:
         """Test handling when Council AI initialization fails."""
         scorer = CouncilScorer()
 
-        with patch("sono_eval.assessment.scorers.council_scorer.Council") as MockCouncil:
+        with patch(
+            "sono_eval.assessment.scorers.council_scorer.Council"
+        ) as MockCouncil:
             MockCouncil.for_domain.side_effect = Exception("API key not found")
 
             result = scorer.load_if_available()
@@ -67,8 +73,12 @@ class TestCouncilScorerInitialization:
         """Test handling when Council AI package is not installed."""
         scorer = CouncilScorer()
 
-        with patch("sono_eval.assessment.scorers.council_scorer.Council") as MockCouncil:
-            MockCouncil.for_domain.side_effect = ImportError("No module named 'council_ai'")
+        with patch(
+            "sono_eval.assessment.scorers.council_scorer.Council"
+        ) as MockCouncil:
+            MockCouncil.for_domain.side_effect = ImportError(
+                "No module named 'council_ai'"
+            )
 
             result = scorer.load_if_available()
 
@@ -86,8 +96,7 @@ class TestGetInsights:
         scorer._available = False
 
         result = await scorer.get_insights(
-            {"code": "def hello(): pass"},
-            PathType.TECHNICAL
+            {"code": "def hello(): pass"}, PathType.TECHNICAL
         )
 
         assert result is None
@@ -115,12 +124,13 @@ class TestGetInsights:
         mock_council.consult_async = AsyncMock(return_value=mock_result)
         scorer._council = mock_council
 
-        with patch("sono_eval.assessment.scorers.council_scorer.extract_text_content") as mock_extract:
+        with patch(
+            "sono_eval.assessment.scorers.council_scorer.extract_text_content"
+        ) as mock_extract:
             mock_extract.return_value = "def hello(): pass"
 
             result = await scorer.get_insights(
-                {"code": "def hello(): pass"},
-                PathType.TECHNICAL
+                {"code": "def hello(): pass"}, PathType.TECHNICAL
             )
 
             assert result is not None
@@ -137,7 +147,9 @@ class TestGetInsights:
         scorer._available = True
         scorer._council = Mock()
 
-        with patch("sono_eval.assessment.scorers.council_scorer.extract_text_content") as mock_extract:
+        with patch(
+            "sono_eval.assessment.scorers.council_scorer.extract_text_content"
+        ) as mock_extract:
             mock_extract.return_value = ""
 
             result = await scorer.get_insights({}, PathType.TECHNICAL)
@@ -156,12 +168,13 @@ class TestGetInsights:
         )
         scorer._council = mock_council
 
-        with patch("sono_eval.assessment.scorers.council_scorer.extract_text_content") as mock_extract:
+        with patch(
+            "sono_eval.assessment.scorers.council_scorer.extract_text_content"
+        ) as mock_extract:
             mock_extract.return_value = "def hello(): pass"
 
             result = await scorer.get_insights(
-                {"code": "def hello(): pass"},
-                PathType.TECHNICAL
+                {"code": "def hello(): pass"}, PathType.TECHNICAL
             )
 
             assert result is None
@@ -173,14 +186,18 @@ class TestGetInsights:
         scorer._available = True
 
         mock_result = Mock()
-        mock_result.synthesis = "The code quality is good. I would give it a score: 92/100"
+        mock_result.synthesis = (
+            "The code quality is good. I would give it a score: 92/100"
+        )
         mock_result.responses = []
 
         mock_council = Mock()
         mock_council.consult_async = AsyncMock(return_value=mock_result)
         scorer._council = mock_council
 
-        with patch("sono_eval.assessment.scorers.council_scorer.extract_text_content") as mock_extract:
+        with patch(
+            "sono_eval.assessment.scorers.council_scorer.extract_text_content"
+        ) as mock_extract:
             mock_extract.return_value = "code"
 
             result = await scorer.get_insights({"code": "code"}, PathType.TECHNICAL)
@@ -201,7 +218,9 @@ class TestGetInsights:
         mock_council.consult_async = AsyncMock(return_value=mock_result)
         scorer._council = mock_council
 
-        with patch("sono_eval.assessment.scorers.council_scorer.extract_text_content") as mock_extract:
+        with patch(
+            "sono_eval.assessment.scorers.council_scorer.extract_text_content"
+        ) as mock_extract:
             mock_extract.return_value = "code"
 
             result = await scorer.get_insights({"code": "code"}, PathType.TECHNICAL)
@@ -222,7 +241,9 @@ class TestGetInsights:
         mock_council.consult_async = AsyncMock(return_value=mock_result)
         scorer._council = mock_council
 
-        with patch("sono_eval.assessment.scorers.council_scorer.extract_text_content") as mock_extract:
+        with patch(
+            "sono_eval.assessment.scorers.council_scorer.extract_text_content"
+        ) as mock_extract:
             mock_extract.return_value = "content"
 
             # Test different paths
@@ -250,7 +271,9 @@ class TestGetInsights:
 
         long_content = "x" * 10000
 
-        with patch("sono_eval.assessment.scorers.council_scorer.extract_text_content") as mock_extract:
+        with patch(
+            "sono_eval.assessment.scorers.council_scorer.extract_text_content"
+        ) as mock_extract:
             mock_extract.return_value = long_content
 
             await scorer.get_insights({"code": long_content}, PathType.TECHNICAL)
@@ -283,7 +306,9 @@ class TestGetInsights:
         mock_council.consult_async = AsyncMock(return_value=mock_result)
         scorer._council = mock_council
 
-        with patch("sono_eval.assessment.scorers.council_scorer.extract_text_content") as mock_extract:
+        with patch(
+            "sono_eval.assessment.scorers.council_scorer.extract_text_content"
+        ) as mock_extract:
             mock_extract.return_value = "code"
 
             result = await scorer.get_insights({"code": "code"}, PathType.TECHNICAL)
@@ -307,7 +332,7 @@ class TestEnhanceMetrics:
                 weight=1.0,
                 evidence=[],
                 explanation="Test",
-                confidence=0.9
+                confidence=0.9,
             )
         ]
 
@@ -328,7 +353,7 @@ class TestEnhanceMetrics:
                 weight=1.0,
                 evidence=[],
                 explanation="Test",
-                confidence=0.9
+                confidence=0.9,
             )
         ]
 
@@ -349,7 +374,7 @@ class TestEnhanceMetrics:
                 weight=0.6,
                 evidence=[],
                 explanation="Heuristic assessment",
-                confidence=0.85
+                confidence=0.85,
             )
         ]
 
@@ -357,13 +382,11 @@ class TestEnhanceMetrics:
             "synthesis": "Excellent code quality with minor improvements needed",
             "score": 88.5,
             "confidence": 0.92,
-            "responses": []
+            "responses": [],
         }
 
         result = scorer.enhance_metrics(
-            original_metrics,
-            council_insights,
-            PathType.TECHNICAL
+            original_metrics, council_insights, PathType.TECHNICAL
         )
 
         assert len(result) == 2
@@ -385,13 +408,11 @@ class TestEnhanceMetrics:
         council_insights = {
             "synthesis": "Good work",
             "score": None,  # No score provided
-            "confidence": 0.8
+            "confidence": 0.8,
         }
 
         result = scorer.enhance_metrics(
-            original_metrics,
-            council_insights,
-            PathType.DESIGN
+            original_metrics, council_insights, PathType.DESIGN
         )
 
         # Should use fallback score of 80.0
@@ -404,7 +425,7 @@ class TestEnhanceMetrics:
         council_insights = {
             "synthesis": "Detailed analysis of the submission",
             "score": 75.0,
-            "confidence": 0.88
+            "confidence": 0.88,
         }
 
         result = scorer.enhance_metrics([], council_insights, PathType.PROBLEM_SOLVING)
@@ -429,7 +450,7 @@ class TestEnhanceMetrics:
         council_insights = {
             "synthesis": long_synthesis,
             "score": 85.0,
-            "confidence": 0.9
+            "confidence": 0.9,
         }
 
         result = scorer.enhance_metrics([], council_insights, PathType.TECHNICAL)
@@ -451,7 +472,7 @@ class TestEnhanceMetrics:
                 weight=0.5,
                 evidence=[],
                 explanation="First",
-                confidence=0.8
+                confidence=0.8,
             ),
             ScoringMetric(
                 name="Metric 2",
@@ -460,17 +481,15 @@ class TestEnhanceMetrics:
                 weight=0.5,
                 evidence=[],
                 explanation="Second",
-                confidence=0.9
-            )
+                confidence=0.9,
+            ),
         ]
 
-        council_insights = {
-            "synthesis": "Good",
-            "score": 80.0,
-            "confidence": 0.85
-        }
+        council_insights = {"synthesis": "Good", "score": 80.0, "confidence": 0.85}
 
-        result = scorer.enhance_metrics(original_metrics, council_insights, PathType.TECHNICAL)
+        result = scorer.enhance_metrics(
+            original_metrics, council_insights, PathType.TECHNICAL
+        )
 
         # Original metrics should be first
         assert result[0].name == "Metric 1"
@@ -484,7 +503,7 @@ class TestEnhanceMetrics:
 
         council_insights = {
             "synthesis": "Review complete",
-            "score": 90.0
+            "score": 90.0,
             # No confidence field
         }
 
@@ -504,7 +523,9 @@ class TestCouncilScorerIntegration:
         scorer = CouncilScorer()
 
         # Mock successful initialization
-        with patch("sono_eval.assessment.scorers.council_scorer.Council") as MockCouncil:
+        with patch(
+            "sono_eval.assessment.scorers.council_scorer.Council"
+        ) as MockCouncil:
             mock_council = Mock()
             MockCouncil.for_domain.return_value = mock_council
 
@@ -517,13 +538,14 @@ class TestCouncilScorerIntegration:
             mock_result.responses = []
             mock_council.consult_async = AsyncMock(return_value=mock_result)
 
-            with patch("sono_eval.assessment.scorers.council_scorer.extract_text_content") as mock_extract:
+            with patch(
+                "sono_eval.assessment.scorers.council_scorer.extract_text_content"
+            ) as mock_extract:
                 mock_extract.return_value = "def test(): pass"
 
                 # Get insights
                 insights = await scorer.get_insights(
-                    {"code": "def test(): pass"},
-                    PathType.TECHNICAL
+                    {"code": "def test(): pass"}, PathType.TECHNICAL
                 )
 
                 assert insights is not None
@@ -541,7 +563,9 @@ class TestCouncilScorerIntegration:
         scorer = CouncilScorer()
 
         # Mock failed initialization
-        with patch("sono_eval.assessment.scorers.council_scorer.Council") as MockCouncil:
+        with patch(
+            "sono_eval.assessment.scorers.council_scorer.Council"
+        ) as MockCouncil:
             MockCouncil.for_domain.side_effect = Exception("Not available")
 
             # Initialize fails
@@ -549,8 +573,7 @@ class TestCouncilScorerIntegration:
 
             # Get insights returns None
             insights = await scorer.get_insights(
-                {"code": "def test(): pass"},
-                PathType.TECHNICAL
+                {"code": "def test(): pass"}, PathType.TECHNICAL
             )
 
             assert insights is None
@@ -572,7 +595,9 @@ class TestEdgeCases:
         scorer._available = True
         scorer._council = Mock()
 
-        with patch("sono_eval.assessment.scorers.council_scorer.extract_text_content") as mock_extract:
+        with patch(
+            "sono_eval.assessment.scorers.council_scorer.extract_text_content"
+        ) as mock_extract:
             mock_extract.return_value = None
 
             result = await scorer.get_insights(None, PathType.TECHNICAL)
@@ -602,7 +627,9 @@ class TestEdgeCases:
             mock_council.consult_async = AsyncMock(return_value=mock_result)
             scorer._council = mock_council
 
-            with patch("sono_eval.assessment.scorers.council_scorer.extract_text_content") as mock_extract:
+            with patch(
+                "sono_eval.assessment.scorers.council_scorer.extract_text_content"
+            ) as mock_extract:
                 mock_extract.return_value = "code"
 
                 result = await scorer.get_insights({"code": "code"}, PathType.TECHNICAL)

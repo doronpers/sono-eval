@@ -4,21 +4,23 @@
 
 - `src/sono_eval/` holds the Python package (API, assessment engine, CLI, tagging, utils).
 - `tests/` contains `unit/` and `integration/` suites; pytest discovers `test_*.py`.
-- `migrations/` and `alembic.ini` manage database schema changes.
-- `config/` stores configuration files; `scripts/` holds utility scripts.
-- `documentation/` and `README.md` cover user-facing docs.
+- `migrations/` and `config/alembic.ini` manage database schema changes.
+- `config/` stores configuration files; `scripts/` holds utility scripts and Makefile.
+- `Documentation/` and `README.md` cover user-facing docs.
 
 ## Build, Test, and Development Commands
 
-- `make install` / `make install-dev`: install runtime or dev dependencies.
-- `make run`: start the API server with reload enabled.
-- `make run-cli`: run a sample CLI assessment.
-- `make test`: run the full pytest suite.
-- `make test-cov`: run tests with coverage reports (HTML + terminal).
-- `make format`: format code with Black.
-- `make lint`: run Flake8 checks.
-- `make docker-start` / `make docker-stop`: manage Docker services.
-- `make verify`: validate local setup.
+All make commands should be run from the `scripts/` directory or use `make -C scripts <target>` from the root:
+
+- `make -C scripts install` / `make -C scripts install-dev`: install runtime or dev dependencies.
+- `make -C scripts run`: start the API server with reload enabled.
+- `make -C scripts run-cli`: run a sample CLI assessment.
+- `make -C scripts test`: run the full pytest suite.
+- `make -C scripts test-cov`: run tests with coverage reports (HTML + terminal).
+- `make -C scripts format`: format code with Black.
+- `make -C scripts lint`: run Flake8 checks.
+- `make -C scripts docker-start` / `make -C scripts docker-stop`: manage Docker services.
+- `make -C scripts verify`: validate local setup.
 
 ## Coding Style & Naming Conventions
 
@@ -43,7 +45,7 @@
 ## Security & Configuration Tips
 
 - Do not commit secrets; use local env files and `config/` as needed.
-- Run `make verify` after setup changes or dependency updates.
+- Run `make -C scripts verify` after setup changes or dependency updates.
 
 ## Common Pitfalls
 

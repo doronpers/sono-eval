@@ -31,11 +31,15 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         # CSP: Allow unsafe-inline in development for easier debugging
         # In production, consider using nonces or hashes instead
         # Default to allowing unsafe-inline if mode is not explicitly production
-        csp_script_src = "'self' 'unsafe-inline' 'unsafe-hashes'" if self.mode != "production" else "'self'"
-        
+        csp_script_src = (
+            "'self' 'unsafe-inline' 'unsafe-hashes'"
+            if self.mode != "production"
+            else "'self'"
+        )
+
         # Force set CSP header (overwrite if exists) to ensure correct policy
         # This ensures we always use the correct CSP for the current mode
-        
+
         headers = {
             "X-Content-Type-Options": "nosniff",
             "X-Frame-Options": "DENY",

@@ -144,16 +144,14 @@ def mock_candidate_memory():
 def temp_code_file(tmp_path):
     """Create a temporary code file for testing."""
     code_file = tmp_path / "test_code.py"
-    code_file.write_text(
-        """
+    code_file.write_text("""
 def hello_world():
     return "Hello, World!"
 
 class Calculator:
     def add(self, a, b):
         return a + b
-"""
-    )
+""")
     return str(code_file)
 
 

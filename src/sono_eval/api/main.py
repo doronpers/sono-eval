@@ -279,6 +279,7 @@ app.mount("/mobile", mobile_app)
 async def favicon():
     """Return a simple SVG favicon."""
     from fastapi.responses import Response
+
     # Simple SVG favicon - Sono-Eval "S" logo
     svg_favicon = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
         <rect width="100" height="100" fill="#2563eb"/>

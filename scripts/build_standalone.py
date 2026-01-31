@@ -62,7 +62,7 @@ def build():
         "sqlalchemy.dialects.postgresql",
         # Data files
         "--add-data",
-        "alembic.ini:.",
+        "config/alembic.ini:config",
         # Add src/sono_eval as package data if needed for non-code resources
         # "--add-data", "src/sono_eval:sono_eval",
         # Paths

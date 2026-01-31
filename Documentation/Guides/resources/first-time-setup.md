@@ -80,7 +80,7 @@ step downloads and installs them.
 **How to do it:**
 
 ```bash
-pip install -r requirements.txt
+pip install -r config/requirements.txt
 pip install -e .
 ```
 

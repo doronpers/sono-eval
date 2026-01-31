@@ -130,7 +130,7 @@ sudo apt-get install python3-dev build-essential
 xcode-select --install
 
 # Retry with verbose output
-pip install -r requirements.txt -v
+pip install -r config/requirements.txt -v
 ```
 
 ---
@@ -770,7 +770,7 @@ docker system prune -f
 ./launcher.sh restart
 
 # Monthly
-pip install -r requirements.txt --upgrade
+pip install -r config/requirements.txt --upgrade
 docker-compose pull
 ```
 

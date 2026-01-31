@@ -75,7 +75,9 @@ class PDFGenerator:
         # Header
         # Header
         elements.append(
-            Paragraph(f"Assessment Report: {result.candidate_id}", self.styles["Header1"])
+            Paragraph(
+                f"Assessment Report: {result.candidate_id}", self.styles["Header1"]
+            )
         )
         elements.append(
             Paragraph(
@@ -87,7 +89,9 @@ class PDFGenerator:
 
         # Overall Score
         elements.append(Paragraph("Overall Score", self.styles["SectionHeader"]))
-        elements.append(Paragraph(f"{result.overall_score:.1f}/100", self.styles["ScoreText"]))
+        elements.append(
+            Paragraph(f"{result.overall_score:.1f}/100", self.styles["ScoreText"])
+        )
         elements.append(Spacer(1, 0.2 * inch))
 
         # Executive Summary
@@ -104,7 +108,9 @@ class PDFGenerator:
 
         # Path Scores Table
         if result.path_scores:
-            elements.append(Paragraph("Detailed Path Analysis", self.styles["SectionHeader"]))
+            elements.append(
+                Paragraph("Detailed Path Analysis", self.styles["SectionHeader"])
+            )
             data = [["Path", "Score", "Status"]]
             for path_score in result.path_scores:
                 status = (
@@ -113,10 +119,16 @@ class PDFGenerator:
                     else (
                         "Good"
                         if path_score.overall_score >= 70
-                        else ("Fair" if path_score.overall_score >= 50 else "Needs Improvement")
+                        else (
+                            "Fair"
+                            if path_score.overall_score >= 50
+                            else "Needs Improvement"
+                        )
                     )
                 )
-                data.append([path_score.path.title(), f"{path_score.overall_score:.1f}", status])
+                data.append(
+                    [path_score.path.title(), f"{path_score.overall_score:.1f}", status]
+                )
 
             table = Table(data, colWidths=[3 * inch, 1.5 * inch, 2 * inch])
             table.setStyle(

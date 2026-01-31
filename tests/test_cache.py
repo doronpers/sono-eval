@@ -365,6 +365,7 @@ class TestCacheInvalidation:
 
         # Get cache keys for inspection
         from sono_eval.middleware.cache import _cache
+
         initial_count = len(_cache)
 
         # Invalidate with pattern (this is basic - keys are hashes)
@@ -454,6 +455,7 @@ class TestCacheEdgeCases:
 
     def test_cache_large_result(self):
         """Test caching large results."""
+
         @cached(ttl_seconds=60)
         def large_result_func():
             return {"data": [i for i in range(1000)]}
@@ -466,6 +468,7 @@ class TestCacheEdgeCases:
 
     def test_cache_mutable_results_isolation(self):
         """Test that cached mutable results can be problematic."""
+
         @cached(ttl_seconds=60)
         def mutable_func():
             return {"count": 0}
@@ -481,6 +484,7 @@ class TestCacheEdgeCases:
 
     def test_cache_decorator_preserves_function_metadata(self):
         """Test that decorator preserves function name and docstring."""
+
         @cached(ttl_seconds=60)
         def documented_func(x):
             """This function has documentation."""
@@ -589,13 +593,14 @@ class TestCacheRealWorldScenarios:
 
     def test_cache_warming_pattern(self):
         """Test pre-warming cache with common queries."""
+
         @cached(ttl_seconds=60)
         def get_config(key):
             # Simulate config lookup
             configs = {
                 "api_url": "https://api.example.com",
                 "timeout": 30,
-                "retries": 3
+                "retries": 3,
             }
             return configs.get(key)
 
